@@ -22,25 +22,29 @@ Distributed Artificial Intelligence is an interdisciplinary field integrating ar
 
 > ### Image 1: [label](https://www.educba.com/agents-in-artificial-intelligence/)
 
-Research in Distributed Artificial Intelligence is traditionally divided into two primary directions: Multiagent Systems and Distributed Problem Solving. Multiagent Systems focus on how independent agents coordinate their knowledge, communicate, and reason about their social interactions within a shared environment. In contrast, Distributed Problem Solving divides a specific overarching problem among multiple nodes that share knowledge to accelerate the solution process. Modern Distributed Problem Solving encompasses distributed planning, search, and sophisticated distributed machine learning techniques designed to handle massive datasets and reduce training times.
+Research in Distributed Artificial Intelligence is traditionally divided into two primary directions:
+- 🤖 **Multiagent Systems** (_**MAS**_): focus on how independent agents coordinate their knowledge, communicate and reason about their social interactions within a shared environment;
+- 📑 **Distributed Problem Solving** (_**DPS**_): divides a specific problem among multiple nodes that share knowledge to accelerate the solution process.
+Modern Distributed Problem Solving encompasses distributed planning, search and sophisticated distributed machine learning techniques designed to handle massive datasets and reduce training times.
 
-- Agent manifestations based on sensory and actuation mechanisms:
-  - Human agents utilize eyes and ears for sensors, and hands or vocal cords for effectors.
-  - Robotic agents utilize infrared or cameras for sensors, and grippers or wheels for effectors.
-  - Software agents utilize encoded input strings for sensors, and computational outputs for effectors.
-- Primary directions in Distributed Artificial Intelligence:
-  - Multiagent Systems involve agents reasoning about coordination, cooperation, and negotiation, often applied to scenarios like robotic football or predator-prey models.
-  - Distributed Problem Solving focuses on task decomposition and solution synthesis to distribute expertise and speed up processing.
-- Distributed Machine Learning architectures:
-  - Data Parallelism replicates the model across nodes and slices the data across processing units, representing the most widely adopted approach.
-  - Model Parallelism splits a single large model into different independent segments across nodes to accelerate training for complex architectures.
-  - Federated Learning enables multiple entities to collaboratively train a shared model without exchanging their localized raw data.
+Agent manifestations based on sensory and actuation mechanisms:
+  - _Human agents utilize eyes and ears for sensors and hands or vocal cords for effectors_;
+  - _Robotic agents utilize infrared or cameras for sensors and grippers or wheels for effectors_;
+  - _Software agents utilize encoded input strings for sensors and computational outputs for effectors_.
 
-## 3 - DAI vs AI
-The fundamental distinction between traditional Artificial Intelligence and Distributed Artificial Intelligence lies in their perspective on intelligence and interaction. The long-term objective of Distributed Artificial Intelligence is to develop mechanisms that enable seamless interaction among computational entities and humans, addressing the critical challenge of determining when, how, and with whom to interact. While both fields address the computational aspects of intelligence, Distributed Artificial Intelligence serves as a broader generalization of traditional paradigms that shifts focus from the individual to the collective.
+Distributed Machine Learning architectures:
+  - 🔴 **Data Parallelism** replicates the model across nodes and slices the data across processing units, representing the most widely adopted approach;
+  - 🔴 **Model Parallelism** splits a single large model into different independent segments across nodes to accelerate training for complex architectures;
+  - 🔴 **Federated Learning** enables multiple entities to collaboratively train a shared model without exchanging their localized raw data.
 
-- Traditional Artificial Intelligence concentrates on isolated cognitive processes within individuals, viewing intelligence as a property of a standalone, disconnected system.
-- Distributed Artificial Intelligence focuses on social processes within groups, treating intelligence as an emergent property of connected systems that actively interact, negotiate, and collaborate.
+## 📖 3 - DAI vs AI
+The fundamental distinction between traditional **Artificial Intelligence** (_**AI**_) and **Distributed Artificial Intelligence** (_**DAI**_) lies in their perspective on intelligence and interaction. The long-term objective of Distributed Artificial Intelligence is to develop mechanisms that enable seamless interaction among computational entities and humans, addressing the critical challenge of determining when, how and with whom to interact.
+While both fields address the computational aspects of intelligence, Distributed Artificial Intelligence serves as a broader generalization of traditional paradigms that shifts focus from the individual to the collective.
+
+- 💾 **Traditional Artificial Intelligence** **concentrates on isolated cognitive processes within individuals**, viewing intelligence as a property of a standalone disconnected system;
+- 📚 **Distributed Artificial Intelligence** **focuses on social processes within groups**, treating intelligence as an emergent property of connected systems that actively interact, negotiate and collaborate.
 
 <!-- -------------------- COURSE 2 APPLICATIONS -------------------- -->
+
+
 
