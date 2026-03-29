@@ -34,6 +34,15 @@ At a higher level, MAS adopt organizational paradigms like hierarchies, holarchi
 - **Agent design** (**micro level**): building autonomous agents capable of independent action;
 - **Society design** (**macro level**): enabling effective interaction through cooperation, coordination and negotiation.
 
+### 📑 5.1.4 MAS Advantages
+
+Advantages of a MAS:
+- **Decentralized**: does not suffer from the _single point of failure problem_ associated withcentralized systems;
+- **Efficiency**: Provides solutions in situations where data sources and expertise are spatially and/or temporallydistributed:
+  - Classical View: Data is distributed;
+  - Another View: Data is not distributed but multiple agents are used for increasing performance;
+- **Performance**: offers computational efficiency, robustness, maintainability and flexibility.
+
 ## 📖 5.2 - MAS Characteristics
 
 **A MAS needs an environment that gives agents a digital infrastructure to interact**, in order to function properly. This environment provides specific rules, called **protocols**.
