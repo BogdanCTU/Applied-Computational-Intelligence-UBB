@@ -34,15 +34,6 @@ At a higher level, MAS adopt organizational paradigms like hierarchies, holarchi
 - **Agent design** (**micro level**): building autonomous agents capable of independent action;
 - **Society design** (**macro level**): enabling effective interaction through cooperation, coordination and negotiation.
 
-### 📑 5.1.4 MAS Advantages
-
-Advantages of a MAS:
-- **Decentralized**: does not suffer from the _single point of failure problem_ associated withcentralized systems;
-- **Efficiency**: Provides solutions in situations where data sources and expertise are spatially and/or temporallydistributed:
-  - Classical View: Data is distributed;
-  - Another View: Data is not distributed but multiple agents are used for increasing performance;
-- **Performance**: offers computational efficiency, robustness, maintainability and flexibility.
-
 ## 📖 5.2 - MAS Characteristics
 
 🔴 **A Multiagent System relies on a robust computational infrastructure to enable autonomous-distributed agents to interact**. Agents operate based on explicit knowledge and use specific protocols to communicate, cooperate, or negotiate to achieve individual or system-wide goals. Communication within these systems generally falls into two architectures: indirect communication via Blackboard Systems or Direct Message Passing using standardized agent languages.
@@ -71,6 +62,10 @@ Agents communicate primarily to better achieve their own goals or the goals of t
 * **Cooperation:** Coordination specifically between _non-antagonistic_ (friendly/aligned) agents;
 * **Negotiation:** Coordination specifically among _competitive_ or _self-interested_ agents.
 
+<img width="452" height="259" alt="image" src="https://github.com/user-attachments/assets/f06a28b8-236c-47d5-bc58-2872b19e12bc" />
+
+> ##### Image: A taxonomy of coordination
+
 ### 📑 5.2.4 Communication Options in MAS
 
 Agents need structured ways to share information, there area two main known approaches:
@@ -83,13 +78,21 @@ A shared memory or data repository where agents interact _indirectly_. The black
 * **Pros:** Highly flexible mechanism, allows for the use of multiple ($n$) blackboards;
 * **Cons:** Centralized structure creates a single point of failure and a potential bottleneck, as everyone must read/write to the same place.
 
-#### **Direct Message Passing**
+<img width="305" height="183" alt="image" src="https://github.com/user-attachments/assets/3ccf3204-8a54-4090-8c6d-cc7f3d9083ae" />
+
+> ##### Image: Blackboard Communication
+
+#### **Direct Message Communication**
 
 Agents communicate directly using specialized **Agent Communication Languages** (_ACLs_).
 
 * **FIPA-ACL**: Developed by FIPA and implemented in the JADE framework. Uses specific communication protocols, message components and "performatives";
 * **Knowledge Query and Manipulation Language (KQML)**: **Knowledge Query and Manipulation Language**. A protocol for exchanging information between agents and applications, utilizing Lisp-like performatives;
 * **Knowledge Interchange Format (KIF)**: A logic language used to describe things declaratively within expert systems. It acts as a means for encoding knowledge, functioning as a prefix version of first-order logic extended to handle nonmonotonic reasoning.
+
+<img width="355" height="66" alt="image" src="https://github.com/user-attachments/assets/3da293b1-f661-43bd-b189-1ae562b48fc1" />
+
+> ##### Image: Direct Message Communication
 
 ## 📖 5.3 - A Dynamic MAS
 
