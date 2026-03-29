@@ -4,7 +4,7 @@
 
 # 🔖 **Course 1 - Introduction to Natural Language Processing**
 
----
+[//]: ---
 
 ## 📖 1.1 Introduction to Natural Language Processing (NLP)
 
@@ -12,7 +12,7 @@
 * **Goal**: To achieve human-like language processing and understanding;
 * **Origins**: Intersects **Linguistics** (formal structural models), **Computer Science** (internal data representation and efficient processing) and **Cognitive Psychology** (modeling language via human cognitive processes).
 
----
+[//]: ---
 
 ## 📖 1.2 Levels of Natural Language Processing
 
@@ -24,7 +24,7 @@
 * **Discourse Level**: Focuses on the text as a whole, connecting component sentences (_e.g., resolving pronouns to the entities they refer to_);
 * **Pragmatic Level**: Extracts extra context and meaning not explicitly encoded in the text, requiring world knowledge, intentions and goals.
 
----
+[//]: ---
 
 ## 📖 1.3 Basic Tasks for Written Language Processing
 
@@ -39,7 +39,7 @@
 * **Dependency Parsing**: Mapping the grammatical dependencies between words to understand structure;
 * **Syntactic Parsing**: Assigning a full hierarchical syntactic structure (parse tree) to a sentence based on grammar rules.
 
----
+[//]: ---
 
 ## 📖 1.4 Meaning and Disambiguation
 
@@ -49,7 +49,7 @@
 * **Co-reference Resolution**: Grouping words ("mentions") that refer to the same real-world entity. Includes **Anaphora resolution** (linking pronouns to previous nouns);
 * **Named Entity Recognition (NER)**: Classifying text items into predefined categories (_e.g., Person, Organization, Location, Date_).
 
----
+[//]: ---
 
 ## 📖 1.5 Practical NLP Tasks
 
@@ -60,7 +60,7 @@
 * **Sentiment Analysis / Opinion Mining**: Analyzing attitudes and emotions. Can be applied at the Document, Sentence (subjective vs. objective) or Entity/Aspect level;
 * **Other Tasks**: Authorship attribution, **Natural Language Generation** (_NLG_) and **Discourse Analysis**;
 
----
+[//]: ---
 
 ## 📖 1.6 Approaches to NLP
 
@@ -76,7 +76,7 @@ Use mathematical techniques and large text corpora to build probabilistic models
 Uses neural networks with many layers to extract features and classify data directly from text.
 * **Methods**: CNNs, RNNs, Autoencoders and pre-trained Transformer models.
 
----
+[//]: ---
 
 ## 📖 1.7 Knowledge Bases in NLP
 
@@ -85,14 +85,14 @@ Uses neural networks with many layers to extract features and classify data dire
 * **Thesauri**: Groupings of words by semantic similarity (_e.g., WordNet_);
 * **Ontologies**: Formal representations of concepts and their relationships within a specific domain.
 
----
+[//]: ---
 
 ## 📖 1.8 Language Models and LLMs
 
 * **Language Models**: Built to predict word sequences and probabilities. Feature **Word Embeddings** (_Word2Vec, GloVe_), where words with similar meanings have similar vector representations;
 * **Large Language Models (LLMs)**: Foundation models trained on immense datasets. Capable of generation, translation, summarization, and zero-shot reasoning. Rely heavily on **Transformer architecture** and **attention mechanisms** (_e.g., BERT, GPT_).
 
----
+[//]: ---
 
 ## 📖 1.9 Challenges in NLP
 
@@ -131,7 +131,7 @@ Uses neural networks with many layers to extract features and classify data dire
     * **Multi-label:** Any number of categories can be assigned to a single document;
 * **Common Applications:** Spam detection (intent detection), social media monitoring (sentiment analysis), sorting emails and virtual assistants (speech recognition).
 
----
+[//]: ---
 
 ## 📖 2.2 **Approaches to Text Classification**
 
@@ -139,7 +139,7 @@ Uses neural networks with many layers to extract features and classify data dire
 * **Machine Learning (ML):** Uses algorithms to learn patterns from large sets of annotated (labeled) data. This requires a step called feature extraction, which turns text into measurable data;
 * **Deep Learning:** Uses complex computational models with multiple processing layers to learn data representations automatically. It easily integrates pre-trained word embeddings (numerical representations of words);
 
----
+[//]: ---
 
 ## 📖 2.3 **The Machine Learning Pipeline**
 
@@ -150,7 +150,7 @@ Uses neural networks with many layers to extract features and classify data dire
 
 > ### Image: Overview of text classification pipeline
 
----
+[//]: ---
 
 ## 📖 2.4 **Dimensionality Reduction**
 
@@ -160,7 +160,7 @@ Uses neural networks with many layers to extract features and classify data dire
 * **t-distributed Stochastic Neighbor Embedding (t-SNE)**: **unsupervised non-linear technique**, is a visual tool that groups similar high-dimensional data points together in a simple 2D or 3D visual space;
 * **LSA (Latent Semantic Analysis):** The method applies **Singular Value Decomposition** (_SVD_). Reduces features while preserving the semantic (meaning) similarity between texts, changing sparse high-dimensional data into dense low-dimensional data. The output vector space is called **Latent Semantic Indexing** (_LSI_).
 
----
+[//]: ---
 
 ## 📖 2.5 **Text Pre-Processing**
 
@@ -177,8 +177,7 @@ Uses neural networks with many layers to extract features and classify data dire
 
 > ### Image: Dependency Tree of phrase "_Maria si Tudor studiaza la UBB, Cluj_."
 
-
----
+[//]: ---
 
 ## 📖 2.6 **Text Representation (Syntactic Features)**
 
@@ -192,7 +191,7 @@ Uses neural networks with many layers to extract features and classify data dire
     * *IDF* checks how rare the word is across all documents;
     * *Drawback:* These methods create sparse data with very high dimensionality.
 
----
+[//]: ---
 
 ## 📖 2.7 **Semantic Representations and Language Models**
 
@@ -230,13 +229,13 @@ Uses neural networks with many layers to extract features and classify data dire
 
 > ### Image: CoRoLa Analogies
 
----
+[//]: ---
 
 ## 📖 2.8 **Transfer Learning & Contextualized Embeddings**
 * **Transfer Learning:** Taking a large model trained on massive amounts of general data (pre-training) and tweaking it for a specific task using labeled data (fine-tuning);
 * **Contextualized Embeddings:** Dynamic representations where the exact same word receives a different numerical vector depending on the surrounding context in a sentence.
 
----
+[//]: ---
 
 ## 📖 2.9 **Bidirectional Encoder Representations from Transformers (BERT)**
 
