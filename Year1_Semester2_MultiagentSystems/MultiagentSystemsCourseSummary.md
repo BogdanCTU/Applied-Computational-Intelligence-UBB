@@ -191,8 +191,6 @@ Key Environmental Properties:
 ## 📖 3.5 - Abstract architectures for agents
 Abstract architectures formalize the mathematical view of agents interacting with environment states. An environment exists as a set of states ($S=\{s_{1},s_{2},...\}$), and the agent possesses a set of actions ($A=\{a_{1},a_{2},...\}$). Abstractly, an agent is a function that maps a sequence of environment states to a specific action. The environment's behavior is non-deterministic, modeled as a function mapping the current state and action to a set of possible resulting states. This continuous interaction forms a characteristic behavior represented as a sequence or history of states and actions over time.
 
-Agent architectures can be divided into purely reactive systems and state-based systems. Purely reactive agents make decisions based entirely on the present state without referencing past history, utilizing an action function that directly maps a state to an action. More complex state-based agents possess an internal state that is continuously updated; their architecture splits into a perception subsystem mapping environment states to percepts, a state-update function, and an action function mapping the internal state to the final action.
-
 Architectural Variations:
 - **Purely Reactive Agents**: Base actions strictly on the current state with no internal history. An example is a thermostat turning a heater on or off based solely on the current temperature;
 - **State-Based Agents**: Maintain an internal memory state to process interactions.
@@ -289,7 +287,7 @@ Several specialized programming languages and frameworks support agent-oriented 
 
 
 <!-- --------------------------------------------------------------- -->
-<!-- ------------------ COURSE 4 CHARACTERISTICS ------------------- -->
+<!-- ------------------ COURSE 5 CHARACTERISTICS ------------------- -->
 <!-- --------------------------------------------------------------- -->
 
 # 🔖 **Course 5 - Multiagent Systems Characteristics**
@@ -364,7 +362,7 @@ Agents communicate primarily to better achieve their own goals or the goals of t
 
 Agents need structured ways to share information, there area two main known approaches:
 
-#### **Blackboard Systems**
+#### 🔴 **Blackboard Systems**
 
 A shared memory or data repository where agents interact _indirectly_. The blackboard holds data, problem states, requests for help, intermediate results and current agent tasks.
 
@@ -376,7 +374,7 @@ A shared memory or data repository where agents interact _indirectly_. The black
 
 > ##### Image: Blackboard Communication
 
-#### **Direct Message Communication**
+#### 🔴 **Direct Message Communication**
 
 Agents communicate directly using specialized **Agent Communication Languages** (_ACLs_).
 
