@@ -4,8 +4,6 @@
 
 # 🔖 **Course 2 - Text Classification**
 
----
-
 | **Text Classification Task**       | **Applications**                                                                  |
 |------------------------------------|---------------------------------------------------------------------------------- |
 | **Topic Classification**           | Recommender systems, bio-informatics, document annotation                         |
@@ -18,8 +16,6 @@
 | **Speech Recognition**             | Virtual assistants (e.g., Siri, Alexa)                                            |
 | **Word-level Classification**      | Part-of-speech tagging, word-sense disambiguation                                 |
 
----
-
 ## 📖 2.1 **Text Classification (Categorization)**
 
 **Definition:** Text classification is the automated process of assigning natural language texts to one or more predefined groups (categories) based on their content. It uses a mathematical function called a classifier to match texts to the correct categories.
@@ -29,7 +25,7 @@
     * **Multi-label:** Any number of categories can be assigned to a single document;
 * **Common Applications:** Spam detection (intent detection), social media monitoring (sentiment analysis), sorting emails and virtual assistants (speech recognition).
 
----
+[//]: ---
 
 ## 📖 2.2 **Approaches to Text Classification**
 
@@ -37,7 +33,7 @@
 * **Machine Learning (ML):** Uses algorithms to learn patterns from large sets of annotated (labeled) data. This requires a step called feature extraction, which turns text into measurable data;
 * **Deep Learning:** Uses complex computational models with multiple processing layers to learn data representations automatically. It easily integrates pre-trained word embeddings (numerical representations of words);
 
----
+[//]: ---
 
 ## 📖 2.3 **The Machine Learning Pipeline**
 
@@ -48,7 +44,7 @@
 
 > ### Image: Overview of text classification pipeline
 
----
+[//]: ---
 
 ## 📖 2.4 **Dimensionality Reduction**
 
@@ -58,7 +54,7 @@
 * **t-distributed Stochastic Neighbor Embedding (t-SNE)**: **unsupervised non-linear technique**, is a visual tool that groups similar high-dimensional data points together in a simple 2D or 3D visual space;
 * **LSA (Latent Semantic Analysis):** The method applies **Singular Value Decomposition** (_SVD_). Reduces features while preserving the semantic (meaning) similarity between texts, changing sparse high-dimensional data into dense low-dimensional data. The output vector space is called **Latent Semantic Indexing** (_LSI_).
 
----
+[//]: ---
 
 ## 📖 2.5 **Text Pre-Processing**
 
@@ -75,8 +71,7 @@
 
 > ### Image: Dependency Tree of phrase "_Maria si Tudor studiaza la UBB, Cluj_."
 
-
----
+[//]: ---
 
 ## 📖 2.6 **Text Representation (Syntactic Features)**
 
@@ -90,7 +85,7 @@
     * *IDF* checks how rare the word is across all documents;
     * *Drawback:* These methods create sparse data with very high dimensionality.
 
----
+[//]: ---
 
 ## 📖 2.7 **Semantic Representations and Language Models**
 
@@ -128,13 +123,13 @@
 
 > ### Image: CoRoLa Analogies
 
----
+[//]: ---
 
 ## 📖 2.8 **Transfer Learning & Contextualized Embeddings**
 * **Transfer Learning:** Taking a large model trained on massive amounts of general data (pre-training) and tweaking it for a specific task using labeled data (fine-tuning);
 * **Contextualized Embeddings:** Dynamic representations where the exact same word receives a different numerical vector depending on the surrounding context in a sentence.
 
----
+[//]: ---
 
 ## 📖 2.9 **Bidirectional Encoder Representations from Transformers (BERT)**
 
