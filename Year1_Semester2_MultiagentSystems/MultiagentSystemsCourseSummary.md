@@ -399,7 +399,7 @@ This dynamic system is formally described using a mathematical tuple: $<S, \math
 The process works in a loop. At each time step ($t$), the agents observe the current state ($s_t$). Next, each agent chooses an action ($a_t^i$). The entire system then evolves into a new state based on those combined actions ($s_{t+1} = h(s_t, a_t)$). When the state changes, an agent's utility might improve. This measurable improvement is defined as a reward ($r_t^i$). Ultimately, an agent's goal is to maximize the utility of its final state, which is the exact same as maximizing the total sum of all the rewards it receives over time.
 
 <!-- --------------------------------------------------------------- -->
-<!-- ------------------- COURSE 4 ARCHITECTURES -------------------- -->
+<!-- ------------------- COURSE 6  -------------------- -->
 <!-- --------------------------------------------------------------- -->
 
-# 🔖 Course 5 -
+# 🔖 Course 6 -
