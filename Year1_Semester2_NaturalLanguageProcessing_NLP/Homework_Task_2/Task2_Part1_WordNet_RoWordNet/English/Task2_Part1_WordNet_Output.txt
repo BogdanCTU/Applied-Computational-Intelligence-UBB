@@ -1,0 +1,777 @@
+
+------------------------ NOUN word analysis ------------------------
+
+Current NOUN is 'student'
+
+Current synset is student.n.01 with literals ['student', 'pupil', 'educatee'].
+  Definition: 'a learner who is enrolled in an educational institution'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset enrollee.n.01, literals ['enrollee']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset skipper.n.01, literals ['skipper']
+    - Relation [hyponym] from synset ivy_leaguer.n.01, literals ['Ivy_Leaguer']
+    - Relation [hyponym] from synset passer.n.03, literals ['passer']
+    - Relation [hyponym] from synset collegian.n.01, literals ['collegian', 'college_man', 'college_boy']
+    - Relation [hyponym] from synset crammer.n.01, literals ['crammer']
+    - Relation [hyponym] from synset sixth-former.n.01, literals ['sixth-former']
+    - Relation [hyponym] from synset law_student.n.01, literals ['law_student']
+    - Relation [hyponym] from synset withdrawer.n.05, literals ['withdrawer']
+    - Relation [hyponym] from synset wykehamist.n.01, literals ['Wykehamist']
+    - Relation [hyponym] from synset seminarian.n.01, literals ['seminarian', 'seminarist']
+    - Relation [hyponym] from synset medical_student.n.01, literals ['medical_student', 'medico']
+    - Relation [hyponym] from synset underachiever.n.01, literals ['underachiever', 'underperformer', 'nonachiever']
+    - Relation [hyponym] from synset scholar.n.03, literals ['scholar']
+    - Relation [hyponym] from synset art_student.n.01, literals ['art_student']
+    - Relation [hyponym] from synset major.n.03, literals ['major']
+    - Relation [hyponym] from synset etonian.n.01, literals ['Etonian']
+    - Relation [hyponym] from synset nonreader.n.01, literals ['nonreader']
+    - Relation [hyponym] from synset catechumen.n.01, literals ['catechumen', 'neophyte']
+    - Relation [hyponym] from synset auditor.n.02, literals ['auditor']
+    - Relation [hyponym] from synset overachiever.n.01, literals ['overachiever']
+
+Current synset is scholar.n.01 with literals ['scholar', 'scholarly_person', 'bookman', 'student'].
+  Definition: 'a learned person (especially in the humanities); someone who by long study has gained mastery in one or more disciplines'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset intellectual.n.01, literals ['intellectual', 'intellect']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset vedist.n.01, literals ['Vedist']
+    - Relation [hyponym] from synset goliard.n.01, literals ['goliard']
+    - Relation [hyponym] from synset bibliophile.n.01, literals ['bibliophile', 'booklover', 'book_lover']
+    - Relation [hyponym] from synset shakespearian.n.01, literals ['Shakespearian', 'Shakespearean']
+    - Relation [hyponym] from synset alumnus.n.01, literals ['alumnus', 'alumna', 'alum', 'graduate', 'grad']
+    - Relation [hyponym] from synset musicologist.n.01, literals ['musicologist']
+    - Relation [hyponym] from synset sinologist.n.01, literals ['Sinologist']
+    - Relation [hyponym] from synset masorete.n.01, literals ['Masorete', 'Massorete', 'Masorite']
+    - Relation [hyponym] from synset islamist.n.01, literals ['Islamist']
+    - Relation [hyponym] from synset postdoc.n.02, literals ['postdoc', 'post_doc']
+    - Relation [hyponym] from synset reader.n.01, literals ['reader']
+    - Relation [hyponym] from synset humanist.n.01, literals ['humanist']
+    - Relation [hyponym] from synset theologian.n.01, literals ['theologian', 'theologist', 'theologizer', 'theologiser']
+    - Relation [hyponym] from synset scholiast.n.01, literals ['scholiast']
+    - Relation [hyponym] from synset schoolman.n.01, literals ['Schoolman', 'medieval_Schoolman']
+    - Relation [hyponym] from synset master.n.08, literals ['master']
+    - Relation [hyponym] from synset philomath.n.01, literals ['philomath']
+    - Relation [hyponym] from synset mujtihad.n.01, literals ['mujtihad']
+    - Relation [hyponym] from synset cabalist.n.03, literals ['Cabalist', 'Kabbalist']
+    - Relation [hyponym] from synset licentiate.n.01, literals ['licentiate']
+    - Relation [hyponym] from synset valedictorian.n.01, literals ['valedictorian', 'valedictory_speaker']
+    - Relation [hyponym] from synset pedant.n.01, literals ['pedant', 'bookworm', 'scholastic']
+    - Relation [hyponym] from synset bibliographer.n.01, literals ['bibliographer']
+    - Relation [hyponym] from synset arabist.n.01, literals ['Arabist']
+    - Relation [hyponym] from synset academician.n.02, literals ['academician', 'schoolman']
+    - Relation [hyponym] from synset initiate.n.02, literals ['initiate', 'learned_person', 'pundit', 'savant']
+    - Relation [hyponym] from synset salutatorian.n.01, literals ['salutatorian', 'salutatory_speaker']
+    - Relation [hyponym] from synset doctor.n.04, literals ['doctor', 'Dr.']
+    - Relation [hyponym] from synset renaissance_man.n.01, literals ['Renaissance_man', 'generalist']
+    - Relation [hyponym] from synset renaissance_man.n.02, literals ['Renaissance_man']
+    - Relation [hyponym] from synset philosopher.n.01, literals ['philosopher']
+    - Relation [hyponym] from synset historian.n.01, literals ['historian', 'historiographer']
+
+Current NOUN is 'teacher'
+
+Current synset is teacher.n.01 with literals ['teacher', 'instructor'].
+  Definition: 'a person whose occupation is teaching'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset educator.n.01, literals ['educator', 'pedagogue', 'pedagog']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset science_teacher.n.01, literals ['science_teacher']
+    - Relation [hyponym] from synset catechist.n.01, literals ['catechist']
+    - Relation [hyponym] from synset coach.n.02, literals ['coach', 'private_instructor', 'tutor']
+    - Relation [hyponym] from synset schoolteacher.n.01, literals ['schoolteacher', 'school_teacher']
+    - Relation [hyponym] from synset art_teacher.n.01, literals ['art_teacher']
+    - Relation [hyponym] from synset music_teacher.n.01, literals ['music_teacher']
+    - Relation [hyponym] from synset riding_master.n.01, literals ['riding_master']
+    - Relation [hyponym] from synset french_teacher.n.01, literals ['French_teacher']
+    - Relation [hyponym] from synset english_teacher.n.01, literals ['English_teacher', 'English_professor']
+    - Relation [hyponym] from synset governess.n.01, literals ['governess']
+    - Relation [hyponym] from synset section_man.n.01, literals ['section_man']
+    - Relation [hyponym] from synset docent.n.01, literals ['docent']
+    - Relation [hyponym] from synset preceptor.n.01, literals ['preceptor', 'don']
+    - Relation [hyponym] from synset instructress.n.01, literals ['instructress']
+    - Relation [hyponym] from synset reading_teacher.n.01, literals ['reading_teacher']
+    - Relation [hyponym] from synset dancing-master.n.01, literals ['dancing-master', 'dance_master']
+    - Relation [hyponym] from synset teaching_fellow.n.01, literals ['teaching_fellow']
+    - Relation [hyponym] from synset missionary.n.01, literals ['missionary']
+    - Relation [hyponym] from synset math_teacher.n.01, literals ['math_teacher', 'mathematics_teacher']
+    - Relation [hyponym] from synset demonstrator.n.01, literals ['demonstrator']
+    - Relation [hyponym] from synset bahai.n.01, literals ['Bahai']
+
+Current synset is teacher.n.02 with literals ['teacher'].
+  Definition: 'a personified abstraction that teaches'.
+  PNO score: Positive: 0.125, Negative: 0.0, Objective: 0.875
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset abstraction.n.01, literals ['abstraction', 'abstract']
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current NOUN is 'university'
+
+Current synset is university.n.01 with literals ['university'].
+  Definition: 'the body of faculty and students at a university'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset body.n.02, literals ['body']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset gown.n.02, literals ['gown']
+    - Relation [hyponym] from synset varsity.n.01, literals ['varsity']
+
+Current synset is university.n.02 with literals ['university'].
+  Definition: 'establishment where a seat of higher learning is housed, including administrative and living quarters as well as facilities for research and teaching'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset establishment.n.04, literals ['establishment']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset redbrick_university.n.01, literals ['redbrick_university']
+    - Relation [hyponym] from synset oxbridge.n.01, literals ['Oxbridge']
+    - Relation [hyponym] from synset city_university.n.01, literals ['city_university']
+
+Current synset is university.n.03 with literals ['university'].
+  Definition: 'a large and diverse institution of higher learning created to educate for life and for a profession and to grant degrees'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset educational_institution.n.01, literals ['educational_institution']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset multiversity.n.01, literals ['multiversity']
+    - Relation [hyponym] from synset open_university.n.01, literals ['Open_University']
+
+------------------------ VERB word analysis ------------------------
+
+Current VERB is 'study'
+
+Current synset is analyze.v.01 with literals ['analyze', 'analyse', 'study', 'examine', 'canvass', 'canvas'].
+  Definition: 'consider in detail and subject to an analysis in order to discover essential features or meaning'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset survey.v.05, literals ['survey']
+    - Relation [hyponym] from synset view.v.02, literals ['view', 'consider', 'look_at']
+    - Relation [hyponym] from synset assay.v.01, literals ['assay']
+    - Relation [hyponym] from synset review.v.01, literals ['review', 'reexamine']
+    - Relation [hyponym] from synset sieve.v.02, literals ['sieve', 'sift']
+    - Relation [hyponym] from synset anatomize.v.02, literals ['anatomize']
+    - Relation [hyponym] from synset check.v.01, literals ['check', 'check_up_on', 'look_into', 'check_out', 'suss_out', 'check_over', 'go_over', 'check_into']
+    - Relation [hyponym] from synset diagnose.v.02, literals ['diagnose']
+    - Relation [hyponym] from synset screen.v.02, literals ['screen']
+    - Relation [hyponym] from synset audit.v.01, literals ['audit', 'scrutinize', 'scrutinise', 'inspect']
+    - Relation [hyponym] from synset trace.v.01, literals ['trace', 'follow']
+    - Relation [hyponym] from synset diagnose.v.01, literals ['diagnose', 'name']
+    - Relation [hyponym] from synset survey.v.01, literals ['survey', 'appraise']
+    - Relation [hyponym] from synset compare.v.01, literals ['compare']
+    - Relation [hyponym] from synset investigate.v.01, literals ['investigate', 'look_into']
+
+Current synset is study.v.02 with literals ['study'].
+  Definition: 'be a student; follow a course of study; be enrolled at an institute of learning'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset major.v.01, literals ['major']
+
+Current synset is study.v.03 with literals ['study', 'consider'].
+  Definition: 'give careful consideration to'.
+  PNO score: Positive: 0.25, Negative: 0.0, Objective: 0.75
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset chew_over.v.01, literals ['chew_over', 'think_over', 'meditate', 'ponder', 'excogitate', 'contemplate', 'muse', 'reflect', 'mull', 'mull_over', 'ruminate', 'speculate']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset compare.v.03, literals ['compare', 'liken', 'equate']
+    - Relation [hyponym] from synset factor.v.03, literals ['factor', 'factor_in', 'factor_out']
+
+Current synset is learn.v.04 with literals ['learn', 'study', 'read', 'take'].
+  Definition: 'be a student of a certain subject'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset train.v.02, literals ['train', 'prepare']
+    - Relation [hyponym] from synset audit.v.02, literals ['audit']
+    - Relation [hyponym] from synset drill.v.03, literals ['drill', 'exercise', 'practice', 'practise']
+
+Current synset is study.v.05 with literals ['study', 'hit_the_books'].
+  Definition: 'learn by reading books'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset learn.v.01, literals ['learn', 'larn', 'acquire']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset cram.v.03, literals ['cram', 'grind_away', 'drum', 'bone_up', 'swot', 'get_up', 'mug_up', 'swot_up', 'bone']
+    - Relation [hyponym] from synset memorize.v.01, literals ['memorize', 'memorise', 'con', 'learn']
+
+Current synset is study.v.06 with literals ['study', 'meditate', 'contemplate'].
+  Definition: 'think intently and at length, as for spiritual purposes'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset think.v.03, literals ['think', 'cogitate', 'cerebrate']
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current VERB is 'present'
+
+Current synset is show.v.01 with literals ['show', 'demo', 'exhibit', 'present', 'demonstrate'].
+  Definition: 'give an exhibition of to an interested audience'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset show.v.04, literals ['show']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset bring_home.v.01, literals ['bring_home']
+
+Current synset is present.v.02 with literals ['present', 'represent', 'lay_out'].
+  Definition: 'bring forward and present to the mind'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset state.v.01, literals ['state', 'say', 'tell']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset spin.v.07, literals ['spin']
+    - Relation [hyponym] from synset argue.v.01, literals ['argue', 'reason']
+    - Relation [hyponym] from synset argue.v.03, literals ['argue', 'indicate']
+
+Current synset is stage.v.01 with literals ['stage', 'present', 'represent'].
+  Definition: 'perform (a play), especially on a stage'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset re-create.v.01, literals ['re-create']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset set.v.09, literals ['set', 'localize', 'localise', 'place']
+
+Current synset is present.v.04 with literals ['present', 'submit'].
+  Definition: 'hand over formally'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset give.v.03, literals ['give']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset bring_in.v.04, literals ['bring_in']
+
+Current synset is present.v.05 with literals ['present', 'pose'].
+  Definition: 'introduce'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset constitute.v.01, literals ['constitute', 'represent', 'make_up', 'comprise', 'be']
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is award.v.01 with literals ['award', 'present'].
+  Definition: 'give, especially as an honor or reward'.
+  PNO score: Positive: 0.125, Negative: 0.0, Objective: 0.875
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset allocate.v.01, literals ['allocate', 'apportion']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset confer.v.02, literals ['confer', 'bestow']
+    - Relation [hyponym] from synset certificate.v.01, literals ['certificate']
+
+Current synset is give.v.08 with literals ['give', 'gift', 'present'].
+  Definition: 'give as a present; make a gift of'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset tender.v.01, literals ['tender']
+    - Relation [hyponym] from synset raffle.v.01, literals ['raffle', 'raffle_off']
+    - Relation [hyponym] from synset distribute.v.04, literals ['distribute', 'give_out', 'hand_out', 'pass_out']
+    - Relation [hyponym] from synset endow.v.02, literals ['endow', 'dower']
+    - Relation [hyponym] from synset tip.v.03, literals ['tip', 'fee', 'bung']
+    - Relation [hyponym] from synset bequeath.v.01, literals ['bequeath', 'will', 'leave']
+    - Relation [hyponym] from synset treat.v.05, literals ['treat']
+    - Relation [hyponym] from synset donate.v.01, literals ['donate']
+    - Relation [hyponym] from synset give_away.v.01, literals ['give_away']
+    - Relation [hyponym] from synset surrender.v.02, literals ['surrender', 'cede', 'deliver', 'give_up']
+    - Relation [hyponym] from synset grant.v.07, literals ['grant', 'deed_over']
+    - Relation [hyponym] from synset render.v.06, literals ['render', 'submit']
+
+Current synset is deliver.v.01 with literals ['deliver', 'present'].
+  Definition: 'deliver (a speech, oration, or idea)'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset talk.v.02, literals ['talk', 'speak', 'utter', 'mouth', 'verbalize', 'verbalise']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset speechify.v.01, literals ['speechify']
+
+Current synset is introduce.v.01 with literals ['introduce', 'present', 'acquaint'].
+  Definition: 'cause to come to know personally'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset inform.v.01, literals ['inform']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset reintroduce.v.01, literals ['reintroduce', 're-introduce']
+    - Relation [hyponym] from synset introduce.v.07, literals ['introduce', 'bring_out']
+    - Relation [hyponym] from synset present.v.12, literals ['present']
+
+Current synset is portray.v.04 with literals ['portray', 'present'].
+  Definition: 'represent abstractly, for example in a painting, drawing, or sculpture'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset represent.v.09, literals ['represent', 'interpret']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset commend.v.02, literals ['commend']
+
+Current synset is confront.v.03 with literals ['confront', 'face', 'present'].
+  Definition: 'present somebody with something, usually to accuse or criticize'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is present.v.12 with literals ['present'].
+  Definition: 'formally present a debutante, a representative of a country, etc.'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset introduce.v.01, literals ['introduce', 'present', 'acquaint']
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is salute.v.06 with literals ['salute', 'present'].
+  Definition: 'recognize with a gesture prescribed by a military regulation; assume a prescribed position'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset greet.v.01, literals ['greet', 'recognize', 'recognise']
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current VERB is 'work'
+
+Current synset is work.v.01 with literals ['work'].
+  Definition: 'exert oneself by doing mental or physical work for a purpose or out of necessity'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset assist.v.02, literals ['assist']
+    - Relation [hyponym] from synset work.v.08, literals ['work']
+    - Relation [hyponym] from synset collaborate.v.01, literals ['collaborate', 'join_forces', 'cooperate', 'get_together']
+    - Relation [hyponym] from synset carpenter.v.01, literals ['carpenter']
+    - Relation [hyponym] from synset page.v.02, literals ['page']
+    - Relation [hyponym] from synset specialize.v.04, literals ['specialize', 'specialise']
+    - Relation [hyponym] from synset boondoggle.v.01, literals ['boondoggle']
+    - Relation [hyponym] from synset plug_away.v.01, literals ['plug_away', 'peg_away', 'slog', "keep_one's_nose_to_the_grindstone", "keep_one's_shoulder_to_the_wheel"]
+    - Relation [hyponym] from synset work_at.v.01, literals ['work_at', 'work_on']
+    - Relation [hyponym] from synset clerk.v.01, literals ['clerk']
+    - Relation [hyponym] from synset putter.v.02, literals ['putter', 'mess_around', 'potter', 'tinker', 'monkey', 'monkey_around', 'muck_about', 'muck_around']
+    - Relation [hyponym] from synset skimp.v.01, literals ['skimp', 'scant']
+    - Relation [hyponym] from synset intern.v.02, literals ['intern']
+    - Relation [hyponym] from synset volunteer.v.03, literals ['volunteer']
+    - Relation [hyponym] from synset wait.v.04, literals ['wait', 'waitress']
+    - Relation [hyponym] from synset beaver.v.01, literals ['beaver', 'beaver_away']
+    - Relation [hyponym] from synset minister.v.02, literals ['minister']
+    - Relation [hyponym] from synset pull_one's_weight.v.01, literals ["pull_one's_weight"]
+    - Relation [hyponym] from synset busy.v.01, literals ['busy', 'occupy']
+    - Relation [hyponym] from synset work_through.v.01, literals ['work_through', 'run_through', 'go_through']
+    - Relation [hyponym] from synset serve.v.07, literals ['serve']
+    - Relation [hyponym] from synset whore.v.01, literals ['whore']
+    - Relation [hyponym] from synset electioneer.v.01, literals ['electioneer']
+    - Relation [hyponym] from synset skipper.v.01, literals ['skipper']
+
+Current synset is work.v.02 with literals ['work', 'do_work'].
+  Definition: 'be employed'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset bank.v.05, literals ['bank']
+    - Relation [hyponym] from synset fill.v.04, literals ['fill', 'take', 'occupy']
+    - Relation [hyponym] from synset serve.v.13, literals ['serve']
+    - Relation [hyponym] from synset drive.v.13, literals ['drive']
+    - Relation [hyponym] from synset fink.v.01, literals ['fink', 'scab', 'rat', 'blackleg']
+    - Relation [hyponym] from synset farm.v.01, literals ['farm']
+    - Relation [hyponym] from synset subcontract.v.02, literals ['subcontract']
+    - Relation [hyponym] from synset slave.v.01, literals ['slave', "break_one's_back", 'buckle_down', 'knuckle_down']
+    - Relation [hyponym] from synset serve.v.02, literals ['serve']
+    - Relation [hyponym] from synset freelance.v.01, literals ['freelance']
+    - Relation [hyponym] from synset turn_a_trick.v.01, literals ['turn_a_trick']
+    - Relation [hyponym] from synset moonlight.v.01, literals ['moonlight']
+    - Relation [hyponym] from synset tinker.v.02, literals ['tinker']
+    - Relation [hyponym] from synset job.v.03, literals ['job']
+    - Relation [hyponym] from synset labor.v.02, literals ['labor', 'labour', 'toil', 'fag', 'travail', 'grind', 'drudge', 'dig', 'moil']
+    - Relation [hyponym] from synset man.v.01, literals ['man']
+
+Current synset is work.v.03 with literals ['work', 'act'].
+  Definition: 'have an effect or outcome; often the one desired or expected'.
+  PNO score: Positive: 0.125, Negative: 0.0, Objective: 0.875
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset succeed.v.01, literals ['succeed', 'win', 'come_through', 'bring_home_the_bacon', 'deliver_the_goods']
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is function.v.01 with literals ['function', 'work', 'operate', 'go', 'run'].
+  Definition: 'perform as expected when applied'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset double.v.04, literals ['double']
+    - Relation [hyponym] from synset service.v.01, literals ['service', 'serve']
+    - Relation [hyponym] from synset cut.v.24, literals ['cut']
+    - Relation [hyponym] from synset run.v.13, literals ['run']
+    - Relation [hyponym] from synset roll.v.07, literals ['roll']
+
+Current synset is work.v.05 with literals ['work', 'work_on', 'process'].
+  Definition: 'shape, form, or improve a material'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset transform.v.02, literals ['transform', 'transmute', 'transubstantiate']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset rework.v.01, literals ['rework', 'make_over', 'retread']
+    - Relation [hyponym] from synset tool.v.04, literals ['tool']
+    - Relation [hyponym] from synset rack.v.09, literals ['rack']
+    - Relation [hyponym] from synset overwork.v.01, literals ['overwork']
+    - Relation [hyponym] from synset hot-work.v.01, literals ['hot-work']
+    - Relation [hyponym] from synset till.v.01, literals ['till']
+    - Relation [hyponym] from synset coldwork.v.01, literals ['coldwork', 'cold_work']
+
+Current synset is exercise.v.03 with literals ['exercise', 'work', 'work_out'].
+  Definition: 'give a workout to'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset work.v.12, literals ['work', 'put_to_work']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset warm_up.v.04, literals ['warm_up']
+
+Current synset is make.v.36 with literals ['make', 'work'].
+  Definition: 'proceed along a path'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset pass.v.01, literals ['pass', 'go_through', 'go_across']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset claw.v.01, literals ['claw']
+    - Relation [hyponym] from synset bushwhack.v.03, literals ['bushwhack']
+    - Relation [hyponym] from synset jostle.v.01, literals ['jostle']
+
+Current synset is work.v.08 with literals ['work'].
+  Definition: 'operate in a certain place, area, or specialty'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset work.v.01, literals ['work']
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is work.v.09 with literals ['work'].
+  Definition: 'proceed towards a goal or along a path or through an activity'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset go.v.02, literals ['go', 'proceed', 'move']
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is work.v.10 with literals ['work'].
+  Definition: 'move in an agitated manner'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset move.v.02, literals ['move', 'displace']
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is bring.v.03 with literals ['bring', 'work', 'play', 'wreak', 'make_for'].
+  Definition: 'cause to happen or to occur as a consequence'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset make.v.03, literals ['make', 'create']
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is work.v.12 with literals ['work', 'put_to_work'].
+  Definition: 'cause to work'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset use.v.01, literals ['use', 'utilize', 'utilise', 'apply', 'employ']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset warm_up.v.04, literals ['warm_up']
+    - Relation [hyponym] from synset cybernate.v.01, literals ['cybernate', 'computerize', 'computerise']
+    - Relation [hyponym] from synset exercise.v.03, literals ['exercise', 'work', 'work_out']
+    - Relation [hyponym] from synset overwork.v.02, literals ['overwork', 'exploit']
+    - Relation [hyponym] from synset rack.v.03, literals ['rack']
+
+Current synset is cultivate.v.02 with literals ['cultivate', 'crop', 'work'].
+  Definition: 'prepare for crops'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset fix.v.12, literals ['fix', 'prepare', 'set_up', 'ready', 'gear_up', 'set']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset overcrop.v.01, literals ['overcrop', 'overcultivate']
+
+Current synset is work.v.14 with literals ['work'].
+  Definition: 'behave in a certain way when handled'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset be.v.01, literals ['be']
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is influence.v.01 with literals ['influence', 'act_upon', 'work'].
+  Definition: 'have and exert influence or effect'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset affect.v.01, literals ['affect', 'impact', 'bear_upon', 'bear_on', 'touch_on', 'touch']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset militate.v.01, literals ['militate']
+    - Relation [hyponym] from synset get_at.v.02, literals ['get_at']
+    - Relation [hyponym] from synset color.v.03, literals ['color', 'colour']
+    - Relation [hyponym] from synset imprint.v.01, literals ['imprint', 'form']
+    - Relation [hyponym] from synset blackmail.v.01, literals ['blackmail', 'blackjack', 'pressure']
+    - Relation [hyponym] from synset dominate.v.02, literals ['dominate']
+    - Relation [hyponym] from synset prejudice.v.02, literals ['prejudice', 'prepossess']
+    - Relation [hyponym] from synset manipulate.v.01, literals ['manipulate', 'pull_strings', 'pull_wires']
+    - Relation [hyponym] from synset swing.v.04, literals ['swing', 'swing_over']
+    - Relation [hyponym] from synset fix.v.10, literals ['fix']
+    - Relation [hyponym] from synset carry.v.23, literals ['carry', 'persuade', 'sway']
+
+Current synset is work.v.16 with literals ['work'].
+  Definition: 'operate in or through'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset operate.v.01, literals ['operate', 'run']
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is work.v.17 with literals ['work'].
+  Definition: 'cause to operate or function'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset manage.v.02, literals ['manage', 'deal', 'care', 'handle']
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is work.v.18 with literals ['work'].
+  Definition: 'provoke or excite'.
+  PNO score: Positive: 0.375, Negative: 0.25, Objective: 0.375
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset stimulate.v.06, literals ['stimulate', 'excite', 'stir']
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is work.v.19 with literals ['work'].
+  Definition: 'gratify and charm, usually in order to influence'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset capture.v.02, literals ['capture', 'enamour', 'trance', 'catch', 'becharm', 'enamor', 'captivate', 'beguile', 'charm', 'fascinate', 'bewitch', 'entrance', 'enchant']
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is shape.v.02 with literals ['shape', 'form', 'work', 'mold', 'mould', 'forge'].
+  Definition: 'make something, usually for a specific function'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset create_from_raw_material.v.01, literals ['create_from_raw_material', 'create_from_raw_stuff']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset cast.v.07, literals ['cast', 'mold', 'mould']
+    - Relation [hyponym] from synset grind.v.07, literals ['grind']
+    - Relation [hyponym] from synset sinter.v.01, literals ['sinter']
+    - Relation [hyponym] from synset stamp.v.07, literals ['stamp']
+    - Relation [hyponym] from synset reshape.v.02, literals ['reshape', 'remold']
+    - Relation [hyponym] from synset sculpt.v.01, literals ['sculpt', 'sculpture']
+    - Relation [hyponym] from synset roughcast.v.01, literals ['roughcast']
+    - Relation [hyponym] from synset beat.v.05, literals ['beat']
+    - Relation [hyponym] from synset layer.v.01, literals ['layer']
+    - Relation [hyponym] from synset preform.v.02, literals ['preform']
+    - Relation [hyponym] from synset hill.v.01, literals ['hill']
+    - Relation [hyponym] from synset swage.v.01, literals ['swage', 'upset']
+    - Relation [hyponym] from synset chip.v.04, literals ['chip']
+    - Relation [hyponym] from synset carve.v.01, literals ['carve']
+    - Relation [hyponym] from synset model.v.02, literals ['model', 'mold', 'mould']
+    - Relation [hyponym] from synset preform.v.01, literals ['preform']
+    - Relation [hyponym] from synset cut_out.v.02, literals ['cut_out']
+    - Relation [hyponym] from synset puddle.v.02, literals ['puddle']
+    - Relation [hyponym] from synset mound.v.01, literals ['mound']
+    - Relation [hyponym] from synset throw.v.12, literals ['throw']
+    - Relation [hyponym] from synset machine.v.01, literals ['machine']
+    - Relation [hyponym] from synset handbuild.v.01, literals ['handbuild', 'hand-build', 'coil']
+
+Current synset is work.v.21 with literals ['work'].
+  Definition: 'move into or onto'.
+  PNO score: Positive: 0.125, Negative: 0.0, Objective: 0.875
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset move.v.02, literals ['move', 'displace']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset stir.v.08, literals ['stir']
+
+Current synset is knead.v.01 with literals ['knead', 'work'].
+  Definition: 'make uniform'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset manipulate.v.02, literals ['manipulate']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset proof.v.02, literals ['proof']
+    - Relation [hyponym] from synset masticate.v.01, literals ['masticate']
+
+Current synset is exploit.v.01 with literals ['exploit', 'work'].
+  Definition: 'use or manipulate to one's advantage'.
+  PNO score: Positive: 0.375, Negative: 0.0, Objective: 0.625
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset use.v.01, literals ['use', 'utilize', 'utilise', 'apply', 'employ']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset prey.v.01, literals ['prey', 'feed']
+    - Relation [hyponym] from synset make_hay.v.01, literals ['make_hay']
+    - Relation [hyponym] from synset play.v.20, literals ['play']
+    - Relation [hyponym] from synset use.v.04, literals ['use']
+    - Relation [hyponym] from synset avail.v.03, literals ['avail', 'help']
+
+Current synset is solve.v.01 with literals ['solve', 'work_out', 'figure_out', 'puzzle_out', 'lick', 'work'].
+  Definition: 'find the solution to (a problem or question) or understand the meaning of'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset understand.v.01, literals ['understand']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset strike.v.21, literals ['strike']
+    - Relation [hyponym] from synset guess.v.04, literals ['guess', 'infer']
+    - Relation [hyponym] from synset riddle.v.06, literals ['riddle']
+    - Relation [hyponym] from synset answer.v.03, literals ['answer']
+    - Relation [hyponym] from synset break.v.51, literals ['break']
+    - Relation [hyponym] from synset answer.v.04, literals ['answer', 'resolve']
+
+Current synset is ferment.v.03 with literals ['ferment', 'work'].
+  Definition: 'cause to undergo fermentation'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset convert.v.02, literals ['convert']
+  Inbound Relations (Narrower Concepts):
+    - Relation [hyponym] from synset vinify.v.01, literals ['vinify']
+
+Current synset is sour.v.01 with literals ['sour', 'turn', 'ferment', 'work'].
+  Definition: 'go sour or spoil'.
+  PNO score: Positive: 0.0, Negative: 0.25, Objective: 0.75
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset change_state.v.01, literals ['change_state', 'turn']
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is work.v.27 with literals ['work'].
+  Definition: 'arrive at a certain condition through repeated motion'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - Relation [hypernym] to synset become.v.01, literals ['become', 'go', 'get']
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+------------------------ ADJECTIVE word analysis ------------------------
+
+Current ADJECTIVE is 'intelligent'
+
+Current synset is intelligent.a.01 with literals ['intelligent'].
+  Definition: 'having the capacity for thought and reason especially to a high degree'.
+  PNO score: Positive: 0.25, Negative: 0.0, Objective: 0.75
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is intelligent.s.01 with literals ['intelligent', 'well-informed'].
+  Definition: 'possessing sound knowledge'.
+  PNO score: Positive: 0.125, Negative: 0.0, Objective: 0.875
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is healthy.s.03 with literals ['healthy', 'intelligent', 'levelheaded', 'level-headed', 'sound'].
+  Definition: 'exercising or showing good judgment'.
+  PNO score: Positive: 0.75, Negative: 0.0, Objective: 0.25
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is intelligent.s.03 with literals ['intelligent', 'reasoning', 'thinking'].
+  Definition: 'endowed with the capacity to reason'.
+  PNO score: Positive: 0.25, Negative: 0.0, Objective: 0.75
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current ADJECTIVE is 'hard'
+
+Current synset is difficult.a.01 with literals ['difficult', 'hard'].
+  Definition: 'not easy; requiring great physical or mental effort to accomplish or comprehend or endure'.
+  PNO score: Positive: 0.0, Negative: 0.75, Objective: 0.25
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is hard.a.02 with literals ['hard'].
+  Definition: 'dispassionate'.
+  PNO score: Positive: 0.0, Negative: 0.25, Objective: 0.75
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is hard.a.03 with literals ['hard'].
+  Definition: 'resisting weight or pressure'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is hard.s.01 with literals ['hard', 'knockout', 'severe'].
+  Definition: 'very strong or vigorous'.
+  PNO score: Positive: 0.25, Negative: 0.25, Objective: 0.5
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is arduous.s.01 with literals ['arduous', 'backbreaking', 'grueling', 'gruelling', 'hard', 'heavy', 'laborious', 'operose', 'punishing', 'toilsome'].
+  Definition: 'characterized by effort to the point of exhaustion; especially physical effort'.
+  PNO score: Positive: 0.125, Negative: 0.5, Objective: 0.375
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is unvoiced.a.01 with literals ['unvoiced', 'voiceless', 'surd', 'hard'].
+  Definition: 'produced without vibration of the vocal cords'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is hard.a.07 with literals ['hard', 'concentrated'].
+  Definition: '(of light) transmitted directly from a pointed light source'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is hard.a.08 with literals ['hard'].
+  Definition: '(of speech sounds); produced with the back of the tongue raised toward or touching the velum'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is intemperate.s.01 with literals ['intemperate', 'hard', 'heavy'].
+  Definition: 'given to excessive indulgence of bodily appetites especially for intoxicating liquors'.
+  PNO score: Positive: 0.0, Negative: 0.25, Objective: 0.75
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is hard.s.04 with literals ['hard', 'strong'].
+  Definition: 'being distilled rather than fermented; having a high alcoholic content'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is hard.s.05 with literals ['hard', 'tough'].
+  Definition: 'unfortunate or hard to bear'.
+  PNO score: Positive: 0.0, Negative: 0.625, Objective: 0.375
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.
+
+Current synset is hard.s.06 with literals ['hard'].
+  Definition: 'dried out'.
+  PNO score: Positive: 0.0, Negative: 0.0, Objective: 1.0
+  Outbound Relations (Broader Concepts):
+    - No broader concepts found.
+  Inbound Relations (Narrower Concepts):
+    - No narrower concepts found.

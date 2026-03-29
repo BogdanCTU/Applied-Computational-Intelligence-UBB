@@ -1,0 +1,1137 @@
+
+------------------------ Analiza cuvintelor pentru NOUN ------------------------
+
+Cuvântul curent (NOUN) este 'student'
+
+Synset-ul curent este ENG30-10249869-n cu literalii ['student_la_drept'].
+  Definiție: 'Student la Facultatea de Drept'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-10665698-n, literali ['elev']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-10665698-n, literali ['elev']
+
+Synset-ul curent este ENG30-09813351-n cu literalii ['student_la_arte'].
+  Definiție: 'Cineva care studiază pentru a deveni artist'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-10665698-n, literali ['elev']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-10665698-n, literali ['elev']
+
+Synset-ul curent este ENG30-09926656-n cu literalii ['student_la_limbi_clasice'].
+  Definiție: 'Student în filologia și cultura clasică (greacă și latină)'.
+  Domeniu: 'school'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-10191192-n, literali ['umanist']
+    - Relația [near_eng_derivat] către synset-ul ENG30-06170371-n, literali ['clasice', 'filologie_clasică']
+    - Relația [instance_hyponym] către synset-ul ENG30-11092938-n, literali ['Benjamin_Jowett']
+    - Relația [instance_hyponym] către synset-ul ENG30-11394214-n, literali ['Friedrich_August_Wolf', 'Wolf']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-10191192-n, literali ['umanist']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-06170371-n, literali ['clasice', 'filologie_clasică']
+    - Relația [instance_hypernym] de la synset-ul ENG30-11092938-n, literali ['Benjamin_Jowett']
+    - Relația [instance_hypernym] de la synset-ul ENG30-11394214-n, literali ['Friedrich_August_Wolf', 'Wolf']
+
+Synset-ul curent este ENG30-09936892-n cu literalii ['student'].
+  Definiție: 'Persoană care urmează cursurile unei universități sau ale unui institut de învățământ superior.'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-09937056-n, literali ['student']
+    - Relația [hyponym] către synset-ul ENG30-10302905-n, literali []
+    - Relația [hyponym] către synset-ul ENG30-10666259-n, literali []
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-09937056-n, literali ['student']
+    - Relația [hypernym] de la synset-ul ENG30-10302905-n, literali []
+    - Relația [hypernym] de la synset-ul ENG30-10666259-n, literali []
+
+Synset-ul curent este ENG30-09937056-n cu literalii ['student'].
+  Definiție: 'Persoană care urmează cursurile unei universități sau ale unui institut de învățământ superior.'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-10665698-n, literali ['elev']
+    - Relația [hyponym] către synset-ul ENG30-09936892-n, literali ['student']
+    - Relația [hyponym] către synset-ul ENG30-10141109-n, literali []
+    - Relația [hyponym] către synset-ul ENG30-10736602-n, literali []
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-10665698-n, literali ['elev']
+    - Relația [hypernym] de la synset-ul ENG30-10141109-n, literali []
+    - Relația [hypernym] de la synset-ul ENG30-10736602-n, literali []
+    - Relația [hypernym] de la synset-ul ENG30-09936892-n, literali ['student']
+
+Cuvântul curent (NOUN) este 'profesor'
+
+Synset-ul curent este ENG30-10480730-n cu literalii ['profesor', 'profesor_universitar'].
+  Definiție: 'persoană care predă la universitate'.
+  Domeniu: 'school'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-09759069-n, literali ['cadru_universitar', 'profesor_universitar']
+    - Relația [member_holonym] către synset-ul ENG30-08287586-n, literali ['personalul_facultății', 'angajații_facultății']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00598056-n, literali ['profesorat', 'catedră']
+    - Relația [hyponym] către synset-ul ENG30-09816654-n, literali ['asistent', 'asistent_universitar']
+    - Relația [hyponym] către synset-ul ENG30-09817386-n, literali ['profesor_asociat', 'conferențiar']
+    - Relația [hyponym] către synset-ul ENG30-10115748-n, literali ['profesor']
+    - Relația [hyponym] către synset-ul ENG30-10757050-n, literali ['profesor_invitat']
+  Relații de intrare:
+    - Relația [member_meronym] de la synset-ul ENG30-08287586-n, literali ['personalul_facultății', 'angajații_facultății']
+    - Relația [hyponym] de la synset-ul ENG30-09759069-n, literali ['cadru_universitar', 'profesor_universitar']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00598056-n, literali ['profesorat', 'catedră']
+    - Relația [hypernym] de la synset-ul ENG30-09816654-n, literali ['asistent', 'asistent_universitar']
+    - Relația [hypernym] de la synset-ul ENG30-09817386-n, literali ['profesor_asociat', 'conferențiar']
+    - Relația [hypernym] de la synset-ul ENG30-10115748-n, literali ['profesor']
+    - Relația [hypernym] de la synset-ul ENG30-10757050-n, literali ['profesor_invitat']
+
+Synset-ul curent este ENG30-10480730-n cu literalii ['profesor', 'profesor_universitar'].
+  Definiție: 'persoană care predă la universitate'.
+  Domeniu: 'school'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-09759069-n, literali ['cadru_universitar', 'profesor_universitar']
+    - Relația [member_holonym] către synset-ul ENG30-08287586-n, literali ['personalul_facultății', 'angajații_facultății']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00598056-n, literali ['profesorat', 'catedră']
+    - Relația [hyponym] către synset-ul ENG30-09816654-n, literali ['asistent', 'asistent_universitar']
+    - Relația [hyponym] către synset-ul ENG30-09817386-n, literali ['profesor_asociat', 'conferențiar']
+    - Relația [hyponym] către synset-ul ENG30-10115748-n, literali ['profesor']
+    - Relația [hyponym] către synset-ul ENG30-10757050-n, literali ['profesor_invitat']
+  Relații de intrare:
+    - Relația [member_meronym] de la synset-ul ENG30-08287586-n, literali ['personalul_facultății', 'angajații_facultății']
+    - Relația [hyponym] de la synset-ul ENG30-09759069-n, literali ['cadru_universitar', 'profesor_universitar']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00598056-n, literali ['profesorat', 'catedră']
+    - Relația [hypernym] de la synset-ul ENG30-09816654-n, literali ['asistent', 'asistent_universitar']
+    - Relația [hypernym] de la synset-ul ENG30-09817386-n, literali ['profesor_asociat', 'conferențiar']
+    - Relația [hypernym] de la synset-ul ENG30-10115748-n, literali ['profesor']
+    - Relația [hypernym] de la synset-ul ENG30-10757050-n, literali ['profesor_invitat']
+
+Synset-ul curent este ENG30-09759069-n cu literalii ['cadru_universitar', 'profesor_universitar'].
+  Definiție: 'Profesor la un colegiu universitar sau la facultate.'.
+  Domeniu: 'university'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-10045713-n, literali ['pedagog', 'educator']
+    - Relația [near_eng_derivat] către synset-ul ENG30-08280124-n, literali ['academie']
+    - Relația [near_eng_derivat] către synset-ul ENG30-08277805-n, literali ['academie']
+    - Relația [near_eng_derivat] către synset-ul ENG30-08279298-n, literali []
+    - Relația [near_eng_derivat] către synset-ul ENG30-02669885-n, literali ['academie']
+    - Relația [hyponym] către synset-ul ENG30-10480730-n, literali ['profesor', 'profesor_universitar']
+  Relații de intrare:
+    - Relația [near_eng_derivat] de la synset-ul ENG30-02669885-n, literali ['academie']
+    - Relația [hyponym] de la synset-ul ENG30-10045713-n, literali ['pedagog', 'educator']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-08277805-n, literali ['academie']
+    - Relația [hypernym] de la synset-ul ENG30-10480730-n, literali ['profesor', 'profesor_universitar']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-08280124-n, literali ['academie']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-08279298-n, literali []
+
+Synset-ul curent este ENG30-09817386-n cu literalii ['profesor_asociat', 'conferențiar'].
+  Definiție: 'grad profesoral situat între profesor și asistent'.
+  Domeniu: 'school'
+  Scor PNO: [0.625, 0.25, 0.125]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-10480730-n, literali ['profesor', 'profesor_universitar']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-10480730-n, literali ['profesor', 'profesor_universitar']
+
+Synset-ul curent este ENG30-09813441-n cu literalii ['profesor_de_arte_plastice'].
+  Definiție: 'persoană care predă arte plastice'.
+  Domeniu: 'pedagogy'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-10694258-n, literali ['dascăl', 'profesor']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-10694258-n, literali ['dascăl', 'profesor']
+
+Synset-ul curent este ENG30-10560548-n cu literalii ['profesor_de_biologie'].
+  Definiție: 'cel care predă biologie'.
+  Domeniu: 'pedagogy'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-10694258-n, literali ['dascăl', 'profesor']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-10694258-n, literali ['dascăl', 'profesor']
+
+Synset-ul curent este ENG30-10757050-n cu literalii ['profesor_invitat'].
+  Definiție: 'profesor chemat din străinătate sau de la o altă universitate să predea pentru o perioadă limitată de timp'.
+  Domeniu: 'school'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-10480730-n, literali ['profesor', 'profesor_universitar']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-10480730-n, literali ['profesor', 'profesor_universitar']
+
+Synset-ul curent este ENG30-10115748-n cu literalii ['profesor'].
+  Definiție: 'Persoană având cel mai înalt titlu conferit cadrelor didactice universitare'.
+  Domeniu: 'school'
+  Scor PNO: [0.625, 0.0, 0.375]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-10480730-n, literali ['profesor', 'profesor_universitar']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-10480730-n, literali ['profesor', 'profesor_universitar']
+
+Synset-ul curent este ENG30-10694258-n cu literalii ['dascăl', 'profesor'].
+  Definiție: '(prin generalizare) Persoană care îndrumă, educă, învață pe cineva.'.
+  Domeniu: 'pedagogy'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-10045713-n, literali ['pedagog', 'educator']
+    - Relația [member_holonym] către synset-ul ENG30-13840553-n, literali ['relație_profesor-student']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00829107-v, literali ['învăța', 'instrui']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00273734-v, literali ['călăuzi', 'îndruma', 'învăța']
+    - Relația [hyponym] către synset-ul ENG30-09813441-n, literali ['profesor_de_arte_plastice']
+    - Relația [hyponym] către synset-ul ENG30-09931418-n, literali ['preparator', 'meditator']
+    - Relația [hyponym] către synset-ul ENG30-10140169-n, literali ['guvernantă']
+    - Relația [hyponym] către synset-ul ENG30-10209539-n, literali ['instructoare']
+    - Relația [hyponym] către synset-ul ENG30-10322957-n, literali ['misionar']
+    - Relația [hyponym] către synset-ul ENG30-10464542-n, literali []
+    - Relația [hyponym] către synset-ul ENG30-10509063-n, literali []
+    - Relația [hyponym] către synset-ul ENG30-10560352-n, literali ['dascăl', 'profesor']
+    - Relația [hyponym] către synset-ul ENG30-10560548-n, literali ['profesor_de_biologie']
+    - Relația [hyponym] către synset-ul ENG30-10694939-n, literali ['cadru_didactic']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-10045713-n, literali ['pedagog', 'educator']
+    - Relația [member_meronym] de la synset-ul ENG30-13840553-n, literali ['relație_profesor-student']
+    - Relația [hypernym] de la synset-ul ENG30-10560352-n, literali ['dascăl', 'profesor']
+    - Relația [hypernym] de la synset-ul ENG30-09931418-n, literali ['preparator', 'meditator']
+    - Relația [hypernym] de la synset-ul ENG30-10140169-n, literali ['guvernantă']
+    - Relația [hypernym] de la synset-ul ENG30-10322957-n, literali ['misionar']
+    - Relația [hypernym] de la synset-ul ENG30-10209539-n, literali ['instructoare']
+    - Relația [hypernym] de la synset-ul ENG30-10464542-n, literali []
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00829107-v, literali ['învăța', 'instrui']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00273734-v, literali ['călăuzi', 'îndruma', 'învăța']
+    - Relația [hypernym] de la synset-ul ENG30-09813441-n, literali ['profesor_de_arte_plastice']
+    - Relația [hypernym] de la synset-ul ENG30-10560548-n, literali ['profesor_de_biologie']
+    - Relația [hypernym] de la synset-ul ENG30-10694939-n, literali ['cadru_didactic']
+    - Relația [hypernym] de la synset-ul ENG30-10509063-n, literali []
+
+Synset-ul curent este ENG30-10560352-n cu literalii ['dascăl', 'profesor'].
+  Definiție: 'Persoană cu o pregătire specială într-un anumit domeniu de activitate și care predă o materie de învățământ (în școală)'.
+  Domeniu: 'school'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-10694258-n, literali ['dascăl', 'profesor']
+    - Relația [member_holonym] către synset-ul ENG30-08276720-n, literali ['facultate']
+    - Relația [hyponym] către synset-ul ENG30-10559840-n, literali []
+    - Relația [instance_hyponym] către synset-ul ENG30-11288528-n, literali ['John_Thomas_Scopes']
+  Relații de intrare:
+    - Relația [member_meronym] de la synset-ul ENG30-08276720-n, literali ['facultate']
+    - Relația [hyponym] de la synset-ul ENG30-10694258-n, literali ['dascăl', 'profesor']
+    - Relația [instance_hypernym] de la synset-ul ENG30-11288528-n, literali ['John_Thomas_Scopes']
+    - Relația [hypernym] de la synset-ul ENG30-10559840-n, literali []
+
+Cuvântul curent (NOUN) este 'universitate'
+
+Synset-ul curent este ENG30-04511002-n cu literalii ['universitate'].
+  Definiție: 'Localul acestei instituții.;'.
+  Domeniu: 'town_planning'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-03297735-n, literali ['așezămînt', 'stabiliment']
+    - Relația [instance_hyponym] către synset-ul ENG30-02907985-n, literali ['Universitatea_din_Brown']
+    - Relația [instance_hyponym] către synset-ul ENG30-02942227-n, literali ['Cambridge']
+    - Relația [instance_hyponym] către synset-ul ENG30-02965936-n, literali ['Universitatea_Carnegie-Mellon']
+    - Relația [instance_hyponym] către synset-ul ENG30-03073832-n, literali ['Universitatea_Columbia']
+    - Relația [instance_hyponym] către synset-ul ENG30-03103682-n, literali ['Cooper_Union_for_the_Advancement_of_Science_and_Art']
+    - Relația [instance_hyponym] către synset-ul ENG30-03109350-n, literali ['Universitarea_Cornell']
+    - Relația [instance_hyponym] către synset-ul ENG30-03254505-n, literali ['Universitatea_Duke']
+    - Relația [instance_hyponym] către synset-ul ENG30-03496749-n, literali ['Universitatea_Harvard', 'Harvard']
+    - Relația [instance_hyponym] către synset-ul ENG30-03600617-n, literali ['Universitatea_John_Hopkins', 'John_Hopkins']
+    - Relația [instance_hyponym] către synset-ul ENG30-03842868-n, literali ['Ohio_State_University']
+    - Relația [hyponym] către synset-ul ENG30-03868044-n, literali ['Oxbridge']
+    - Relația [instance_hyponym] către synset-ul ENG30-03868509-n, literali ['Universitatea_din_Oxford', 'Oxford']
+    - Relația [instance_hyponym] către synset-ul ENG30-04003453-n, literali ['Universitatea_Princeton', 'Princeton']
+    - Relația [hyponym] către synset-ul ENG30-04066023-n, literali []
+    - Relația [instance_hyponym] către synset-ul ENG30-04302740-n, literali ['Stanford']
+    - Relația [instance_hyponym] către synset-ul ENG30-04511832-n, literali ['Universitatea_Berkley', 'Universitatea_Berkley_din_California']
+    - Relația [instance_hyponym] către synset-ul ENG30-04511971-n, literali ['Universitatea_din_Chicago']
+    - Relația [instance_hyponym] către synset-ul ENG30-04512092-n, literali ['Universitatea_din_Michigan']
+    - Relația [instance_hyponym] către synset-ul ENG30-04512216-n, literali ['Universitatea_din_Nebraska']
+    - Relația [instance_hyponym] către synset-ul ENG30-04512338-n, literali ['Universitatea_din_Carolina_de_Nord', 'Universitatea_North_Carolina']
+    - Relația [instance_hyponym] către synset-ul ENG30-04512476-n, literali ['Universitatea_din_Pennsylvania']
+    - Relația [instance_hyponym] către synset-ul ENG30-04512652-n, literali ['Universitatea_din_Pittsburgh']
+    - Relația [instance_hyponym] către synset-ul ENG30-04512783-n, literali ['Universitatea_din_Sussex']
+    - Relația [instance_hyponym] către synset-ul ENG30-04512933-n, literali ['Universitatea_din_Texas']
+    - Relația [instance_hyponym] către synset-ul ENG30-04513048-n, literali ['Universitatea_din_Vermont']
+    - Relația [instance_hyponym] către synset-ul ENG30-04513171-n, literali ['Universitatea_din_Washington']
+    - Relația [instance_hyponym] către synset-ul ENG30-04513297-n, literali ['Universitatea_din_Virginia_de_Vest']
+    - Relația [instance_hyponym] către synset-ul ENG30-04513432-n, literali ['Universitatea_din_Wisconsin']
+    - Relația [instance_hyponym] către synset-ul ENG30-04610368-n, literali ['Yale', 'Universitatea_Yale']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-03297735-n, literali ['așezămînt', 'stabiliment']
+    - Relația [instance_hypernym] de la synset-ul ENG30-02907985-n, literali ['Universitatea_din_Brown']
+    - Relația [instance_hypernym] de la synset-ul ENG30-02942227-n, literali ['Cambridge']
+    - Relația [instance_hypernym] de la synset-ul ENG30-02965936-n, literali ['Universitatea_Carnegie-Mellon']
+    - Relația [instance_hypernym] de la synset-ul ENG30-03073832-n, literali ['Universitatea_Columbia']
+    - Relația [instance_hypernym] de la synset-ul ENG30-03103682-n, literali ['Cooper_Union_for_the_Advancement_of_Science_and_Art']
+    - Relația [instance_hypernym] de la synset-ul ENG30-03109350-n, literali ['Universitarea_Cornell']
+    - Relația [instance_hypernym] de la synset-ul ENG30-03254505-n, literali ['Universitatea_Duke']
+    - Relația [instance_hypernym] de la synset-ul ENG30-03496749-n, literali ['Universitatea_Harvard', 'Harvard']
+    - Relația [instance_hypernym] de la synset-ul ENG30-03600617-n, literali ['Universitatea_John_Hopkins', 'John_Hopkins']
+    - Relația [instance_hypernym] de la synset-ul ENG30-03842868-n, literali ['Ohio_State_University']
+    - Relația [hypernym] de la synset-ul ENG30-03868044-n, literali ['Oxbridge']
+    - Relația [instance_hypernym] de la synset-ul ENG30-03868509-n, literali ['Universitatea_din_Oxford', 'Oxford']
+    - Relația [instance_hypernym] de la synset-ul ENG30-04003453-n, literali ['Universitatea_Princeton', 'Princeton']
+    - Relația [hypernym] de la synset-ul ENG30-04066023-n, literali []
+    - Relația [instance_hypernym] de la synset-ul ENG30-04302740-n, literali ['Stanford']
+    - Relația [instance_hypernym] de la synset-ul ENG30-04511832-n, literali ['Universitatea_Berkley', 'Universitatea_Berkley_din_California']
+    - Relația [instance_hypernym] de la synset-ul ENG30-04511971-n, literali ['Universitatea_din_Chicago']
+    - Relația [instance_hypernym] de la synset-ul ENG30-04512092-n, literali ['Universitatea_din_Michigan']
+    - Relația [instance_hypernym] de la synset-ul ENG30-04512216-n, literali ['Universitatea_din_Nebraska']
+    - Relația [instance_hypernym] de la synset-ul ENG30-04512338-n, literali ['Universitatea_din_Carolina_de_Nord', 'Universitatea_North_Carolina']
+    - Relația [instance_hypernym] de la synset-ul ENG30-04512476-n, literali ['Universitatea_din_Pennsylvania']
+    - Relația [instance_hypernym] de la synset-ul ENG30-04512652-n, literali ['Universitatea_din_Pittsburgh']
+    - Relația [instance_hypernym] de la synset-ul ENG30-04512783-n, literali ['Universitatea_din_Sussex']
+    - Relația [instance_hypernym] de la synset-ul ENG30-04512933-n, literali ['Universitatea_din_Texas']
+    - Relația [instance_hypernym] de la synset-ul ENG30-04513048-n, literali ['Universitatea_din_Vermont']
+    - Relația [instance_hypernym] de la synset-ul ENG30-04513171-n, literali ['Universitatea_din_Washington']
+    - Relația [instance_hypernym] de la synset-ul ENG30-04513297-n, literali ['Universitatea_din_Virginia_de_Vest']
+    - Relația [instance_hypernym] de la synset-ul ENG30-04513432-n, literali ['Universitatea_din_Wisconsin']
+    - Relația [instance_hypernym] de la synset-ul ENG30-04610368-n, literali ['Yale', 'Universitatea_Yale']
+
+Synset-ul curent este ENG30-08286163-n cu literalii ['universitate'].
+  Definiție: 'conducerea universității și studenții înscriși'.
+  Domeniu: 'sociology'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-07965085-n, literali ['asociație', 'colectivitate', 'tabără']
+    - Relația [part_holonym] către synset-ul ENG30-08274923-n, literali ['mediu_academic']
+    - Relația [member_meronym] către synset-ul ENG30-08282696-n, literali ['școală_postliceală']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-07965085-n, literali ['asociație', 'colectivitate', 'tabără']
+    - Relația [member_holonym] de la synset-ul ENG30-08282696-n, literali ['școală_postliceală']
+    - Relația [part_meronym] de la synset-ul ENG30-08274923-n, literali ['mediu_academic']
+
+Synset-ul curent este ENG30-08286569-n cu literalii ['universitate'].
+  Definiție: 'Instituție de învățământ superior cu mai multe facultăți și secții.'.
+  Domeniu: 'school'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-08276342-n, literali ['învățământ', 'școală']
+    - Relația [member_meronym] către synset-ul ENG30-08278324-n, literali ['colegiu']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-08276342-n, literali ['învățământ', 'școală']
+    - Relația [member_holonym] de la synset-ul ENG30-08278324-n, literali ['colegiu']
+
+------------------------ Analiza cuvintelor pentru VERB ------------------------
+
+Cuvântul curent (VERB) este 'studia'
+
+Synset-ul curent este ENG30-00646271-v cu literalii ['explora', 'cerceta', 'studia'].
+  Definiție: 'A examina amănunțit'.
+  Domeniu: 'medicine'
+  Scor PNO: [0.125, 0.0, 0.875]
+  Relații de ieșire:
+    - Relația [verb_group] către synset-ul ENG30-00645939-v, literali ['examina']
+    - Relația [hypernym] către synset-ul ENG30-00645552-v, literali ['diagnostica']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00877345-a, literali ['explorator']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05785311-n, literali ['analiză', 'investigare', 'analizare']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00945777-n, literali ['explorare', 'sondare']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-00645552-v, literali ['diagnostica']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00877345-a, literali ['explorator']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05785311-n, literali ['analiză', 'investigare', 'analizare']
+    - Relația [verb_group] de la synset-ul ENG30-00645939-v, literali ['examina']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00945777-n, literali ['explorare', 'sondare']
+
+Synset-ul curent este ENG30-02152812-v cu literalii ['studia_cu_atenție'].
+  Definiție: 'A examina cu atenție'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.125, 0.0, 0.875]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-02131279-v, literali ['cerceta', 'examina', 'studia']
+    - Relația [near_eng_derivat] către synset-ul ENG30-06598445-n, literali ['lectură_atentă']
+    - Relația [hyponym] către synset-ul ENG30-02153023-v, literali ['frunzări', 'răsfoi']
+  Relații de intrare:
+    - Relația [hypernym] de la synset-ul ENG30-02153023-v, literali ['frunzări', 'răsfoi']
+    - Relația [hyponym] de la synset-ul ENG30-02131279-v, literali ['cerceta', 'examina', 'studia']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-06598445-n, literali ['lectură_atentă']
+
+Synset-ul curent este ENG30-00877327-v cu literalii ['analiza', 'cerceta', 'investiga', 'studia'].
+  Definiție: 'A căuta să afle, să descopere într-o manieră științifică, sistematică'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-00789138-v, literali ['investiga']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05797597-n, literali ['cercetare', 'studiu']
+    - Relația [near_eng_derivat] către synset-ul ENG30-10523076-n, literali ['cercetător']
+    - Relația [hyponym] către synset-ul ENG30-00877083-v, literali ['consulta']
+  Relații de intrare:
+    - Relația [near_eng_derivat] de la synset-ul ENG30-10523076-n, literali ['cercetător']
+    - Relația [hyponym] de la synset-ul ENG30-00789138-v, literali ['investiga']
+    - Relația [hypernym] de la synset-ul ENG30-00877083-v, literali ['consulta']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05797597-n, literali ['cercetare', 'studiu']
+
+Synset-ul curent este ENG30-00607114-v cu literalii ['citi', 'învăța', 'studia', '[se] pune_cu_burta_pe_carte'].
+  Definiție: 'A învăța, a studia (parcurgând scrieri, izvoare etc.).'.
+  Domeniu: 'school'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [entailment] către synset-ul ENG30-00625119-v, literali ['citi']
+    - Relația [hypernym] către synset-ul ENG30-00597915-v, literali ['deprinde', 'învăța']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05755883-n, literali ['învățare', 'studiere', 'studiu', 'învățătură', 'pregătire']
+    - Relația [near_eng_derivat] către synset-ul ENG30-06598445-n, literali ['lectură_atentă']
+    - Relația [hyponym] către synset-ul ENG30-00604576-v, literali ['memora', 'memoriza', 'învăța_pe_de_rost']
+    - Relația [hyponym] către synset-ul ENG30-00605783-v, literali ['toci', 'îngrășa_porcul_în_ajun']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-00597915-v, literali ['deprinde', 'învăța']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05755883-n, literali ['învățare', 'studiere', 'studiu', 'învățătură', 'pregătire']
+    - Relația [hypernym] de la synset-ul ENG30-00604576-v, literali ['memora', 'memoriza', 'învăța_pe_de_rost']
+    - Relația [hypernym] de la synset-ul ENG30-00605783-v, literali ['toci', 'îngrășa_porcul_în_ajun']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-06598445-n, literali ['lectură_atentă']
+
+Synset-ul curent este ENG30-00607405-v cu literalii ['studia', 'învăța', 'fi', 'face', 'urma'].
+  Definiție: 'a fi elev sau student, a urma cursuri, a fi înmatriculat într-o instituție de învățământ'.
+  Domeniu: 'school'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [near_eng_derivat] către synset-ul ENG30-05996646-n, literali ['domeniu', 'materie', 'specializare']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05755883-n, literali ['învățare', 'studiere', 'studiu', 'învățătură', 'pregătire']
+    - Relația [near_eng_derivat] către synset-ul ENG30-10665698-n, literali ['elev']
+    - Relația [hyponym] către synset-ul ENG30-00607609-v, literali ['[se] specializa']
+  Relații de intrare:
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05755883-n, literali ['învățare', 'studiere', 'studiu', 'învățătură', 'pregătire']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05996646-n, literali ['domeniu', 'materie', 'specializare']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-10665698-n, literali ['elev']
+    - Relația [hypernym] de la synset-ul ENG30-00607609-v, literali ['[se] specializa']
+
+Synset-ul curent este ENG30-02166460-v cu literalii ['analiza', 'cerceta', 'studia'].
+  Definiție: 'a acorda atenția cuvenită, a lua în considerare'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.25, 0.0, 0.75]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-00630380-v, literali ['chibzui', 'cugeta', '[se] gândi_bine', 'judeca', 'medita', 'reflecta', 'rumega']
+    - Relația [near_eng_derivat] către synset-ul ENG30-07138915-n, literali ['dezbatere', 'discuție', 'luare_în_considerație']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05822746-n, literali ['circumstanță', 'condiție', 'considerație', 'considerent', 'factor']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05784831-n, literali ['considerare', 'considerație']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05784242-n, literali ['chibzuință', 'cumpănire']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00644503-n, literali ['studiu']
+    - Relația [hyponym] către synset-ul ENG30-00653620-v, literali ['asemăna', 'asemui']
+    - Relația [verb_group] către synset-ul ENG30-00813044-v, literali ['chibzui', 'cântări']
+  Relații de intrare:
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05822746-n, literali ['circumstanță', 'condiție', 'considerație', 'considerent', 'factor']
+    - Relația [hyponym] de la synset-ul ENG30-00630380-v, literali ['chibzui', 'cugeta', '[se] gândi_bine', 'judeca', 'medita', 'reflecta', 'rumega']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00644503-n, literali ['studiu']
+    - Relația [hypernym] de la synset-ul ENG30-00653620-v, literali ['asemăna', 'asemui']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05784831-n, literali ['considerare', 'considerație']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-07138915-n, literali ['dezbatere', 'discuție', 'luare_în_considerație']
+    - Relația [verb_group] de la synset-ul ENG30-00813044-v, literali ['chibzui', 'cântări']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05784242-n, literali ['chibzuință', 'cumpănire']
+
+Synset-ul curent este ENG30-02131279-v cu literalii ['cerceta', 'examina', 'studia'].
+  Definiție: 'A studia amănunțit ceva sau pe cineva.'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [entailment] către synset-ul ENG30-02130524-v, literali ['privi', '[se] uita']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00635850-n, literali ['cercetare', 'examinare']
+    - Relația [near_eng_derivat] către synset-ul ENG30-10067968-n, literali ['examinator', 'inspector']
+    - Relația [hyponym] către synset-ul ENG30-01317723-v, literali ['controla']
+    - Relația [hyponym] către synset-ul ENG30-02149786-v, literali ['radiografia']
+    - Relația [hyponym] către synset-ul ENG30-02149899-v, literali []
+    - Relația [hyponym] către synset-ul ENG30-02150039-v, literali ['autopsia']
+    - Relația [hyponym] către synset-ul ENG30-02150192-v, literali ['ausculta']
+    - Relația [hyponym] către synset-ul ENG30-02150328-v, literali ['scruta']
+    - Relația [hyponym] către synset-ul ENG30-02152278-v, literali []
+    - Relația [hyponym] către synset-ul ENG30-02152504-v, literali ['cerceta']
+    - Relația [hyponym] către synset-ul ENG30-02152812-v, literali ['studia_cu_atenție']
+    - Relația [hyponym] către synset-ul ENG30-02153387-v, literali ['măsura']
+    - Relația [hyponym] către synset-ul ENG30-02153709-v, literali ['căuta']
+    - Relația [hyponym] către synset-ul ENG30-02165543-v, literali ['inspecta', 'studia']
+    - Relația [hyponym] către synset-ul ENG30-02533282-v, literali ['verifica']
+  Relații de intrare:
+    - Relația [hypernym] de la synset-ul ENG30-02149899-v, literali []
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00635850-n, literali ['cercetare', 'examinare']
+    - Relația [hypernym] de la synset-ul ENG30-01317723-v, literali ['controla']
+    - Relația [hypernym] de la synset-ul ENG30-02150039-v, literali ['autopsia']
+    - Relația [hypernym] de la synset-ul ENG30-02533282-v, literali ['verifica']
+    - Relația [hypernym] de la synset-ul ENG30-02150328-v, literali ['scruta']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-10067968-n, literali ['examinator', 'inspector']
+    - Relația [hypernym] de la synset-ul ENG30-02150192-v, literali ['ausculta']
+    - Relația [hypernym] de la synset-ul ENG30-02153387-v, literali ['măsura']
+    - Relația [hypernym] de la synset-ul ENG30-02153709-v, literali ['căuta']
+    - Relația [hypernym] de la synset-ul ENG30-02152812-v, literali ['studia_cu_atenție']
+    - Relația [hypernym] de la synset-ul ENG30-02152504-v, literali ['cerceta']
+    - Relația [hypernym] de la synset-ul ENG30-02152278-v, literali []
+    - Relația [hypernym] de la synset-ul ENG30-02165543-v, literali ['inspecta', 'studia']
+    - Relația [hypernym] de la synset-ul ENG30-02149786-v, literali ['radiografia']
+
+Synset-ul curent este ENG30-00599992-v cu literalii ['învăța', 'studia'].
+  Definiție: 'a fi student la o anumită disciplină'.
+  Domeniu: 'school'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [near_eng_derivat] către synset-ul ENG30-05996646-n, literali ['domeniu', 'materie', 'specializare']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05755883-n, literali ['învățare', 'studiere', 'studiu', 'învățătură', 'pregătire']
+    - Relația [near_eng_derivat] către synset-ul ENG30-06598445-n, literali ['lectură_atentă']
+    - Relația [hyponym] către synset-ul ENG30-00600235-v, literali ['audia']
+    - Relația [hyponym] către synset-ul ENG30-00602805-v, literali ['|se| pregăti', '|se| prepara']
+    - Relația [hyponym] către synset-ul ENG30-00606093-v, literali ['repeta']
+  Relații de intrare:
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05755883-n, literali ['învățare', 'studiere', 'studiu', 'învățătură', 'pregătire']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05996646-n, literali ['domeniu', 'materie', 'specializare']
+    - Relația [hypernym] de la synset-ul ENG30-00606093-v, literali ['repeta']
+    - Relația [hypernym] de la synset-ul ENG30-00602805-v, literali ['|se| pregăti', '|se| prepara']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-06598445-n, literali ['lectură_atentă']
+    - Relația [hypernym] de la synset-ul ENG30-00600235-v, literali ['audia']
+
+Synset-ul curent este ENG30-02400378-v cu literalii ['studia', 'examina', 'analiza'].
+  Definiție: 'A observa cu atenție, a examina pentru a stabili gradul de potrivire'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.125, 0.0, 0.875]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-00674607-v, literali ['alege', 'selecționa', 'selecta', 'lua']
+    - Relația [near_eng_derivat] către synset-ul ENG30-13558696-n, literali ['sortare', 'sortat']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00644967-n, literali ['examinare', 'screening']
+    - Relația [near_eng_derivat] către synset-ul ENG30-10564224-n, literali []
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-00674607-v, literali ['alege', 'selecționa', 'selecta', 'lua']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-13558696-n, literali ['sortare', 'sortat']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-10564224-n, literali []
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00644967-n, literali ['examinare', 'screening']
+
+Synset-ul curent este ENG30-02165543-v cu literalii ['inspecta', 'studia'].
+  Definiție: 'a cerceta amănunțit și cu atenție ceva.'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.125, 0.0, 0.875]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-02131279-v, literali ['cerceta', 'examina', 'studia']
+    - Relația [hyponym] către synset-ul ENG30-00696700-v, literali ['inspecta']
+    - Relația [hyponym] către synset-ul ENG30-02165982-v, literali ['fila']
+    - Relația [hyponym] către synset-ul ENG30-02166117-v, literali ['revedea', 'revizui', 'verifica']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-02131279-v, literali ['cerceta', 'examina', 'studia']
+    - Relația [hypernym] de la synset-ul ENG30-00696700-v, literali ['inspecta']
+    - Relația [hypernym] de la synset-ul ENG30-02165982-v, literali ['fila']
+    - Relația [hypernym] de la synset-ul ENG30-02166117-v, literali ['revedea', 'revizui', 'verifica']
+
+Cuvântul curent (VERB) este 'prezenta'
+
+Synset-ul curent este ENG30-00965687-v cu literalii ['prezenta'].
+  Definiție: 'A apărea, a se înfățișa într-un anumit loc sau în fața cuiva pentru a răspunde unei anumite obligații sau pentru a oferi ori a solicita ceva'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-00974367-v, literali ['anunța', 'declara']
+    - Relația [hyponym] către synset-ul ENG30-00966152-v, literali ['[se] înregistra']
+    - Relația [hyponym] către synset-ul ENG30-00966492-v, literali ['preda_camera']
+    - Relația [hyponym] către synset-ul ENG30-00966640-v, literali ['ponta_de_plecare']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-00974367-v, literali ['anunța', 'declara']
+    - Relația [hypernym] de la synset-ul ENG30-00966152-v, literali ['[se] înregistra']
+    - Relația [hypernym] de la synset-ul ENG30-00966492-v, literali ['preda_camera']
+    - Relația [hypernym] de la synset-ul ENG30-00966640-v, literali ['ponta_de_plecare']
+
+Synset-ul curent este ENG30-01060746-v cu literalii ['aduce', 'prezenta'].
+  Definiție: '(În loc.) Expresie : A aduce mulțumiri : a mulțumi'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [verb_group] către synset-ul ENG30-01069638-v, literali ['da']
+    - Relația [hypernym] către synset-ul ENG30-00740577-v, literali ['mărturisi', 'spune', 'comunica']
+    - Relația [hyponym] către synset-ul ENG30-00887142-v, literali ['dedica']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-00740577-v, literali ['mărturisi', 'spune', 'comunica']
+    - Relația [verb_group] de la synset-ul ENG30-01069638-v, literali ['da']
+    - Relația [hypernym] de la synset-ul ENG30-00887142-v, literali ['dedica']
+
+Synset-ul curent este ENG30-00901103-v cu literalii ['prezenta', 'face_cunoștință'].
+  Definiție: 'a determina faptul ca două persoane să se cunoască personal'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-00831651-v, literali ['înștiința', 'încunoștința', 'anunța', 'comunica', 'informa', 'vesti']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05817145-n, literali []
+    - Relația [near_eng_derivat] către synset-ul ENG30-07217349-n, literali ['prezentare']
+    - Relația [near_eng_derivat] către synset-ul ENG30-10466198-n, literali ['susținător']
+    - Relația [verb_group] către synset-ul ENG30-00874175-v, literali ['familiariza']
+    - Relația [hyponym] către synset-ul ENG30-00901464-v, literali ['[se] prezenta_din_nou']
+    - Relația [hyponym] către synset-ul ENG30-00901651-v, literali ['prezenta']
+  Relații de intrare:
+    - Relația [near_eng_derivat] de la synset-ul ENG30-10466198-n, literali ['susținător']
+    - Relația [hyponym] de la synset-ul ENG30-00831651-v, literali ['înștiința', 'încunoștința', 'anunța', 'comunica', 'informa', 'vesti']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-07217349-n, literali ['prezentare']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05817145-n, literali []
+    - Relația [verb_group] de la synset-ul ENG30-00874175-v, literali ['familiariza']
+    - Relația [hypernym] de la synset-ul ENG30-00901464-v, literali ['[se] prezenta_din_nou']
+    - Relația [hypernym] de la synset-ul ENG30-00901651-v, literali ['prezenta']
+
+Synset-ul curent este ENG30-02157361-v cu literalii ['prezenta'].
+  Definiție: 'A înfățișa (publicului) un spectacol.'.
+  Domeniu: 'publishing'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-02157100-v, literali ['publica', 'produce', 'edita', 'lansa_pe_piață']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-02157100-v, literali ['publica', 'produce', 'edita', 'lansa_pe_piață']
+
+Synset-ul curent este ENG30-01618547-v cu literalii ['aduce', 'prezenta'].
+  Definiție: 'a oferi probe în fața unei instanțe judecătorești'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-01617192-v, literali ['crea', 'face']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-01617192-v, literali ['crea', 'face']
+
+Synset-ul curent este ENG30-00987345-v cu literalii ['prezenta'].
+  Definiție: 'a descrie, de obicei cu referire la o anumită calitate'.
+  Domeniu: 'philosophy'
+  Scor PNO: [0.5, 0.0, 0.5]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-00987071-v, literali ['contura', 'schița', 'trasa']
+    - Relația [hyponym] către synset-ul ENG30-00987597-v, literali ['simboliza']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-00987071-v, literali ['contura', 'schița', 'trasa']
+    - Relația [hypernym] de la synset-ul ENG30-00987597-v, literali ['simboliza']
+
+Synset-ul curent este ENG30-00825447-v cu literalii ['prezenta'].
+  Definiție: 'a atrage atenția asupra a ceva, în semn de protest'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-01013230-v, literali ['protesta', 'obiecta', 'contesta']
+    - Relația [near_eng_derivat] către synset-ul ENG30-06739782-n, literali ['proclamație']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-01013230-v, literali ['protesta', 'obiecta', 'contesta']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-06739782-n, literali ['proclamație']
+
+Synset-ul curent este ENG30-00901651-v cu literalii ['prezenta'].
+  Definiție: 'A face cunoscută o persoană celor de față'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-00901103-v, literali ['prezenta', 'face_cunoștință']
+    - Relația [near_eng_derivat] către synset-ul ENG30-07217349-n, literali ['prezentare']
+  Relații de intrare:
+    - Relația [near_eng_derivat] de la synset-ul ENG30-07217349-n, literali ['prezentare']
+    - Relația [hyponym] de la synset-ul ENG30-00901103-v, literali ['prezenta', 'face_cunoștință']
+
+Synset-ul curent este ENG30-02148788-v cu literalii ['arăta', 'demonstra', 'prezenta'].
+  Definiție: 'A expune (cu ostentație) ceva pentru a fi privit sau admirat.;'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.125, 0.0, 0.875]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-02137132-v, literali ['arăta', 'da_la_iveală', 'lăsa_să_vadă']
+    - Relația [near_eng_derivat] către synset-ul ENG30-06879180-n, literali ['demonstrație']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00521562-n, literali ['prezentare', 'expunere']
+    - Relația [near_eng_derivat] către synset-ul ENG30-07167415-n, literali ['prezentare']
+    - Relația [near_eng_derivat] către synset-ul ENG30-06891022-n, literali ['prezentare']
+    - Relația [near_eng_derivat] către synset-ul ENG30-10070563-n, literali ['expozant', 'expunător']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00520257-n, literali []
+    - Relația [near_eng_derivat] către synset-ul ENG30-06619065-n, literali ['reprezentație', 'spectacol']
+    - Relația [near_eng_derivat] către synset-ul ENG30-06888345-n, literali ['prezentare', 'transmitere', 'difuzare']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00521209-n, literali ['exponat']
+  Relații de intrare:
+    - Relația [near_eng_derivat] de la synset-ul ENG30-06619065-n, literali ['reprezentație', 'spectacol']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-06879180-n, literali ['demonstrație']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00521209-n, literali ['exponat']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00520257-n, literali []
+    - Relația [near_eng_derivat] de la synset-ul ENG30-06888345-n, literali ['prezentare', 'transmitere', 'difuzare']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-06891022-n, literali ['prezentare']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00521562-n, literali ['prezentare', 'expunere']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-07167415-n, literali ['prezentare']
+    - Relația [hyponym] de la synset-ul ENG30-02137132-v, literali ['arăta', 'da_la_iveală', 'lăsa_să_vadă']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-10070563-n, literali ['expozant', 'expunător']
+
+Synset-ul curent este ENG30-01688771-v cu literalii ['zugrăvi', 'portretiza', 'prezenta'].
+  Definiție: 'a reprezenta în pictură, desen, sculptură sau verbal'.
+  Domeniu: 'art'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-01686132-v, literali ['reprezenta']
+    - Relația [domain_TOPIC] către synset-ul ENG30-00933420-n, literali ['artă']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00521562-n, literali ['prezentare', 'expunere']
+    - Relația [near_eng_derivat] către synset-ul ENG30-03210940-n, literali ['reprezentare']
+    - Relația [near_eng_derivat] către synset-ul ENG30-10455619-n, literali ['portretist']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00900957-n, literali ['portretistică']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05766984-n, literali ['portretizare']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00900726-n, literali ['pictare', 'zugrăvire', 'schițare', 'portretizare']
+    - Relația [hyponym] către synset-ul ENG30-01689169-v, literali ['recomanda']
+  Relații de intrare:
+    - Relația [domain_member_TOPIC] de la synset-ul ENG30-00933420-n, literali ['artă']
+    - Relația [hyponym] de la synset-ul ENG30-01686132-v, literali ['reprezenta']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00521562-n, literali ['prezentare', 'expunere']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05766984-n, literali ['portretizare']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00900726-n, literali ['pictare', 'zugrăvire', 'schițare', 'portretizare']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-10455619-n, literali ['portretist']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00900957-n, literali ['portretistică']
+    - Relația [hypernym] de la synset-ul ENG30-01689169-v, literali ['recomanda']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-03210940-n, literali ['reprezentare']
+
+Synset-ul curent este ENG30-02296615-v cu literalii ['prezenta', 'înmâna'].
+  Definiție: 'A pune înainte ceva spre a fi acceptat'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-02200686-v, literali ['dărui', 'da', 'oferi']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-02200686-v, literali ['dărui', 'da', 'oferi']
+
+Synset-ul curent este ENG30-00772967-v cu literalii ['arăta', 'expune', 'prezenta'].
+  Definiție: 'a oferi, a înfățișa (argumente)'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-01009240-v, literali ['declara', 'spune', 'zice', 'rosti']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05926676-n, literali ['reprezentare_interioară', 'reprezentare_mentală', 'reprezentare']
+    - Relația [near_eng_derivat] către synset-ul ENG30-06891022-n, literali ['prezentare']
+    - Relația [hyponym] către synset-ul ENG30-00772189-v, literali ['argumenta', 'demonstra', 'dovedi', 'proba']
+    - Relația [hyponym] către synset-ul ENG30-00772640-v, literali ['evidenția', 'indica']
+    - Relația [hyponym] către synset-ul ENG30-00953700-v, literali ['întoarce', 'interpreta']
+  Relații de intrare:
+    - Relația [hypernym] de la synset-ul ENG30-00772189-v, literali ['argumenta', 'demonstra', 'dovedi', 'proba']
+    - Relația [hypernym] de la synset-ul ENG30-00772640-v, literali ['evidenția', 'indica']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-06891022-n, literali ['prezentare']
+    - Relația [hyponym] de la synset-ul ENG30-01009240-v, literali ['declara', 'spune', 'zice', 'rosti']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05926676-n, literali ['reprezentare_interioară', 'reprezentare_mentală', 'reprezentare']
+    - Relația [hypernym] de la synset-ul ENG30-00953700-v, literali ['întoarce', 'interpreta']
+
+Synset-ul curent este ENG30-00711040-v cu literalii ['înfățișa', 'reda', 'prezenta'].
+  Definiție: 'a oferi un plan detaliat'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-00704690-v, literali ['plănui']
+    - Relația [near_eng_derivat] către synset-ul ENG30-01010901-n, literali ['proiectare', 'schițare']
+    - Relația [hyponym] către synset-ul ENG30-00711420-v, literali ['trasa']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-00704690-v, literali ['plănui']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-01010901-n, literali ['proiectare', 'schițare']
+    - Relația [hypernym] de la synset-ul ENG30-00711420-v, literali ['trasa']
+
+Synset-ul curent este ENG30-02592397-v cu literalii ['prezenta'].
+  Definiție: 'A fi maestru de ceremonii'.
+  Domeniu: 'sociology'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-01194418-v, literali ['găzdui', 'primi']
+    - Relația [near_eng_derivat] către synset-ul ENG30-10299250-n, literali ['maestru_de_ceremonie', 'maestru_de_ceremonii']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-01194418-v, literali ['găzdui', 'primi']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-10299250-n, literali ['maestru_de_ceremonie', 'maestru_de_ceremonii']
+
+Cuvântul curent (VERB) este 'munci'
+
+Synset-ul curent este ENG30-02594979-v cu literalii ['activa', 'lucra', 'munci'].
+  Definiție: 'A efectua, a presta o muncă, a face un lucru'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-02413480-v, literali ['lucra', 'munci']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00575741-n, literali ['lucru', 'muncă', 'treabă']
+    - Relația [verb_group] către synset-ul ENG30-02410855-v, literali ['lucra']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-02413480-v, literali ['lucra', 'munci']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00575741-n, literali ['lucru', 'muncă', 'treabă']
+    - Relația [verb_group] de la synset-ul ENG30-02410855-v, literali ['lucra']
+
+Synset-ul curent este ENG30-02415573-v cu literalii ['munci_pe_rupte', 'munci_pe_brânci'].
+  Definiție: 'A se strădui din greu, a depune multă trudă pentru o muncă.'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-02413480-v, literali ['lucra', 'munci']
+    - Relația [near_eng_derivat] către synset-ul ENG30-10442417-n, literali []
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-02413480-v, literali ['lucra', 'munci']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-10442417-n, literali []
+
+Synset-ul curent este ENG30-02415573-v cu literalii ['munci_pe_rupte', 'munci_pe_brânci'].
+  Definiție: 'A se strădui din greu, a depune multă trudă pentru o muncă.'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-02413480-v, literali ['lucra', 'munci']
+    - Relația [near_eng_derivat] către synset-ul ENG30-10442417-n, literali []
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-02413480-v, literali ['lucra', 'munci']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-10442417-n, literali []
+
+Synset-ul curent este ENG30-02413480-v cu literalii ['lucra', 'munci'].
+  Definiție: 'A desfășura o activitate, a depune un efort fizic sau intelectual pentru a produce, a crea ceva'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [near_eng_derivat] către synset-ul ENG30-09767197-n, literali []
+    - Relația [near_eng_derivat] către synset-ul ENG30-04599396-n, literali ['lucrare', 'rezultat']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00575741-n, literali ['lucru', 'muncă', 'treabă']
+    - Relația [near_eng_derivat] către synset-ul ENG30-09632518-n, literali ['lucrător', 'muncitor']
+    - Relația [near_eng_derivat] către synset-ul ENG30-02207449-n, literali ['lucrător']
+    - Relația [near_antonym] către synset-ul ENG30-02417504-v, literali ['lenevi', 'trândăvi']
+    - Relația [hyponym] către synset-ul ENG30-01161947-v, literali ['trece_prin']
+    - Relația [hyponym] către synset-ul ENG30-01473346-v, literali ['roboti', 'trebălui']
+    - Relația [hyponym] către synset-ul ENG30-02408843-v, literali ['tâmplări', 'dulgheri']
+    - Relația [verb_group] către synset-ul ENG30-02410855-v, literali ['lucra']
+    - Relația [hyponym] către synset-ul ENG30-02411802-v, literali ['fi_funcționar']
+    - Relația [hyponym] către synset-ul ENG30-02413290-v, literali ['servi']
+    - Relația [hyponym] către synset-ul ENG30-02414710-v, literali ['ajuta', 'asista', 'secunda']
+    - Relația [hyponym] către synset-ul ENG30-02415039-v, literali ['lucra']
+    - Relația [hyponym] către synset-ul ENG30-02415573-v, literali ['munci_pe_rupte', 'munci_pe_brânci']
+    - Relația [hyponym] către synset-ul ENG30-02415831-v, literali ['ocupa']
+    - Relația [hyponym] către synset-ul ENG30-02416278-v, literali ['colabora', 'conlucra', 'coopera', '[-și] uni_forțele']
+    - Relația [hyponym] către synset-ul ENG30-02424984-v, literali ['face_voluntariat', 'face_muncă_voluntară']
+    - Relația [hyponym] către synset-ul ENG30-02446164-v, literali ['[se] specializa']
+    - Relația [hyponym] către synset-ul ENG30-02446660-v, literali []
+    - Relația [hyponym] către synset-ul ENG30-02446819-v, literali ['face_stagiatura', 'lucra_ca_stagiar']
+    - Relația [hyponym] către synset-ul ENG30-02447001-v, literali ['conduce']
+    - Relația [hyponym] către synset-ul ENG30-02447247-v, literali []
+    - Relația [hyponym] către synset-ul ENG30-02516437-v, literali ['da', 'da_peste_cap']
+    - Relația [hyponym] către synset-ul ENG30-02593107-v, literali ['servi']
+    - Relația [hyponym] către synset-ul ENG30-02594979-v, literali ['activa', 'lucra', 'munci']
+  Relații de intrare:
+    - Relația [near_eng_derivat] de la synset-ul ENG30-02207449-n, literali ['lucrător']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-09632518-n, literali ['lucrător', 'muncitor']
+    - Relația [hypernym] de la synset-ul ENG30-02416278-v, literali ['colabora', 'conlucra', 'coopera', '[-și] uni_forțele']
+    - Relația [hypernym] de la synset-ul ENG30-02413290-v, literali ['servi']
+    - Relația [hypernym] de la synset-ul ENG30-02446819-v, literali ['face_stagiatura', 'lucra_ca_stagiar']
+    - Relația [near_antonym] de la synset-ul ENG30-02417504-v, literali ['lenevi', 'trândăvi']
+    - Relația [hypernym] de la synset-ul ENG30-02446164-v, literali ['[se] specializa']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-04599396-n, literali ['lucrare', 'rezultat']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00575741-n, literali ['lucru', 'muncă', 'treabă']
+    - Relația [hypernym] de la synset-ul ENG30-02424984-v, literali ['face_voluntariat', 'face_muncă_voluntară']
+    - Relația [hypernym] de la synset-ul ENG30-02593107-v, literali ['servi']
+    - Relația [hypernym] de la synset-ul ENG30-02415831-v, literali ['ocupa']
+    - Relația [hypernym] de la synset-ul ENG30-02594979-v, literali ['activa', 'lucra', 'munci']
+    - Relația [verb_group] de la synset-ul ENG30-02410855-v, literali ['lucra']
+    - Relația [hypernym] de la synset-ul ENG30-02446660-v, literali []
+    - Relația [hypernym] de la synset-ul ENG30-02411802-v, literali ['fi_funcționar']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-09767197-n, literali []
+    - Relația [hypernym] de la synset-ul ENG30-02447001-v, literali ['conduce']
+    - Relația [hypernym] de la synset-ul ENG30-02414710-v, literali ['ajuta', 'asista', 'secunda']
+    - Relația [hypernym] de la synset-ul ENG30-02415573-v, literali ['munci_pe_rupte', 'munci_pe_brânci']
+    - Relația [hypernym] de la synset-ul BILI-00000597, literali ['bichiri']
+    - Relația [hypernym] de la synset-ul ENG30-01161947-v, literali ['trece_prin']
+    - Relația [hypernym] de la synset-ul ENG30-01473346-v, literali ['roboti', 'trebălui']
+    - Relația [hypernym] de la synset-ul ENG30-02408843-v, literali ['tâmplări', 'dulgheri']
+    - Relația [hypernym] de la synset-ul ENG30-02415039-v, literali ['lucra']
+    - Relația [hypernym] de la synset-ul ENG30-02447247-v, literali []
+    - Relația [hypernym] de la synset-ul ENG30-02516437-v, literali ['da', 'da_peste_cap']
+
+Synset-ul curent este ENG30-00259927-v cu literalii ['canoni', 'căzni', 'chinui', 'munci'].
+  Definiție: 'A produce suferințe'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.875, 0.125]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-00258857-v, literali ['strica']
+    - Relația [near_eng_derivat] către synset-ul ENG30-01804175-a, literali ['dureros']
+    - Relația [near_eng_derivat] către synset-ul ENG30-14477342-n, literali ['belea', 'năpastă', 'nenorocire', 'pacoste']
+    - Relația [hyponym] către synset-ul ENG30-02771320-v, literali ['nenoroci']
+  Relații de intrare:
+    - Relația [near_eng_derivat] de la synset-ul ENG30-01804175-a, literali ['dureros']
+    - Relația [hyponym] de la synset-ul ENG30-00258857-v, literali ['strica']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-14477342-n, literali ['belea', 'năpastă', 'nenorocire', 'pacoste']
+    - Relația [hypernym] de la synset-ul ENG30-02771320-v, literali ['nenoroci']
+
+Synset-ul curent este ENG30-00071178-v cu literalii ['tortura', 'schingiui', 'căzni', 'munci'].
+  Definiție: 'A supune (pe cineva) la chinuri, suferințe, torturi fizice violente'.
+  Domeniu: 'military'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [hypernym] către synset-ul ENG30-00069879-v, literali ['leza', 'răni']
+    - Relația [near_eng_derivat] către synset-ul ENG30-14333433-n, literali ['chin', 'patimă', 'suferință', 'tortură']
+    - Relația [near_eng_derivat] către synset-ul ENG30-10716005-n, literali ['izvor_de_suferință']
+    - Relația [near_eng_derivat] către synset-ul ENG30-14324274-n, literali ['agonie', 'criză', 'paroxism']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00422551-n, literali ['caznă', 'patimă', 'supliciu', 'tortură']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00421437-n, literali ['chinuire', 'schingiuire', 'torturare']
+    - Relația [near_eng_derivat] către synset-ul ENG30-10716389-n, literali ['călău']
+    - Relația [hyponym] către synset-ul ENG30-00071547-v, literali ['trage_pe_roată']
+    - Relația [hyponym] către synset-ul ENG30-00071646-v, literali ['martiriza']
+  Relații de intrare:
+    - Relația [hyponym] de la synset-ul ENG30-00069879-v, literali ['leza', 'răni']
+    - Relația [hypernym] de la synset-ul ENG30-00071646-v, literali ['martiriza']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-10716005-n, literali ['izvor_de_suferință']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-10716389-n, literali ['călău']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-14324274-n, literali ['agonie', 'criză', 'paroxism']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-14333433-n, literali ['chin', 'patimă', 'suferință', 'tortură']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00421437-n, literali ['chinuire', 'schingiuire', 'torturare']
+    - Relația [hypernym] de la synset-ul ENG30-00071547-v, literali ['trage_pe_roată']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00422551-n, literali ['caznă', 'patimă', 'supliciu', 'tortură']
+
+------------------------ Analiza cuvintelor pentru ADJECTIVE ------------------------
+
+Cuvântul curent (ADJECTIVE) este 'inteligent'
+
+Synset-ul curent este ENG30-01335156-a cu literalii ['strălucit', 'inteligent'].
+  Definiție: 'Distins, remarcabil prin însușirile spirituale'.
+  Domeniu: 'None'
+  Scor PNO: [0.5, 0.0, 0.5]
+  Relații de ieșire:
+    - Relația [similar_to] către synset-ul ENG30-01334398-a, literali ['inteligent']
+    - Relația [near_eng_derivat] către synset-ul ENG30-04954920-n, literali ['splendoare', 'strălucire']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05619743-n, literali ['geniu', 'strălucire']
+    - Relația [near_eng_derivat] către synset-ul ENG30-10126926-n, literali ['geniu']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05618056-n, literali ['cap', 'capacitate_mentală']
+  Relații de intrare:
+    - Relația [near_eng_derivat] de la synset-ul ENG30-10126926-n, literali ['geniu']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-04954920-n, literali ['splendoare', 'strălucire']
+    - Relația [similar_to] de la synset-ul ENG30-01334398-a, literali ['inteligent']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05618056-n, literali ['cap', 'capacitate_mentală']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05619743-n, literali ['geniu', 'strălucire']
+    - Relația [near_derived_from] de la synset-ul ENG30-00077042-r, literali ['strălucit', 'sclipitor']
+
+Synset-ul curent este ENG30-01926089-a cu literalii ['gânditor', 'inteligent'].
+  Definiție: 'Înzestrat cu inteligență'.
+  Domeniu: 'None'
+  Scor PNO: [0.25, 0.0, 0.75]
+  Relații de ieșire:
+    - Relația [similar_to] către synset-ul ENG30-01925372-a, literali ['rațional']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05617606-n, literali ['inteligență', 'pricepere', 'minte']
+  Relații de intrare:
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05617606-n, literali ['inteligență', 'pricepere', 'minte']
+    - Relația [similar_to] de la synset-ul ENG30-01925372-a, literali ['rațional']
+
+Synset-ul curent este ENG30-01334398-a cu literalii ['inteligent'].
+  Definiție: 'Înzestrat cu inteligență'.
+  Domeniu: 'psychological_features'
+  Scor PNO: [0.25, 0.0, 0.75]
+  Relații de ieșire:
+    - Relația [also_see] către synset-ul ENG30-00438707-a, literali ['ager', 'agil', 'isteț', 'iute', 'repede', 'sprinten', 'vioi']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05617606-n, literali ['inteligență', 'pricepere', 'minte']
+    - Relația [near_antonym] către synset-ul ENG30-01336587-a, literali ['prost', 'neinteligent']
+    - Relația [similar_to] către synset-ul ENG30-01334833-a, literali ['ager', 'agil', 'isteț', 'sprinten', 'vioi']
+    - Relația [similar_to] către synset-ul ENG30-01334958-a, literali ['isteț']
+    - Relația [similar_to] către synset-ul ENG30-01335156-a, literali ['strălucit', 'inteligent']
+    - Relația [similar_to] către synset-ul ENG30-01335458-a, literali ['isteț', 'dotat']
+    - Relația [similar_to] către synset-ul ENG30-01335708-a, literali ['înnăscut', 'nativ']
+    - Relația [similar_to] către synset-ul ENG30-01335903-a, literali ['iute']
+  Relații de intrare:
+    - Relația [similar_to] de la synset-ul ENG30-01335156-a, literali ['strălucit', 'inteligent']
+    - Relația [attribute] de la synset-ul ENG30-05617606-n, literali ['inteligență', 'pricepere', 'minte']
+    - Relația [near_antonym] de la synset-ul ENG30-01336587-a, literali ['prost', 'neinteligent']
+    - Relația [similar_to] de la synset-ul ENG30-01335458-a, literali ['isteț', 'dotat']
+    - Relația [also_see] de la synset-ul ENG30-00438707-a, literali ['ager', 'agil', 'isteț', 'iute', 'repede', 'sprinten', 'vioi']
+    - Relația [similar_to] de la synset-ul ENG30-01334958-a, literali ['isteț']
+    - Relația [similar_to] de la synset-ul ENG30-01335903-a, literali ['iute']
+    - Relația [near_derived_from] de la synset-ul ENG30-00202028-r, literali ['inteligent']
+    - Relația [similar_to] de la synset-ul ENG30-01334833-a, literali ['ager', 'agil', 'isteț', 'sprinten', 'vioi']
+    - Relația [similar_to] de la synset-ul ENG30-01335708-a, literali ['înnăscut', 'nativ']
+
+Cuvântul curent (ADJECTIVE) este 'greu'
+
+Synset-ul curent este ENG30-01190683-a cu literalii ['greu'].
+  Definiție: 'mare în grad, intensitate, număr sau cantitate'.
+  Domeniu: 'factotum'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [near_eng_derivat] către synset-ul ENG30-04711031-n, literali ['greutate', 'povară']
+    - Relația [near_antonym] către synset-ul ENG30-01190993-a, literali ['ușor']
+    - Relația [similar_to] către synset-ul ENG30-01190916-a, literali ['drastic', 'sever', 'aspru']
+  Relații de intrare:
+    - Relația [near_eng_derivat] de la synset-ul ENG30-04711031-n, literali ['greutate', 'povară']
+    - Relația [near_antonym] de la synset-ul ENG30-01190993-a, literali ['ușor']
+    - Relația [similar_to] de la synset-ul ENG30-01190916-a, literali ['drastic', 'sever', 'aspru']
+    - Relația [near_derived_from] de la synset-ul ENG30-00176383-r, literali ['mult']
+
+Synset-ul curent este ENG30-01184932-a cu literalii ['greu'].
+  Definiție: 'Care apasă cu greutate asupra suprafeței pe care stă'.
+  Domeniu: 'quality'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [attribute] către synset-ul ENG30-05026843-n, literali ['greutate']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05027529-n, literali ['greutate', 'greime']
+    - Relația [near_antonym] către synset-ul ENG30-01186408-a, literali ['ușor']
+    - Relația [similar_to] către synset-ul ENG30-01185775-a, literali ['mare', 'voluminos']
+    - Relația [similar_to] către synset-ul ENG30-01185916-a, literali ['masiv']
+  Relații de intrare:
+    - Relația [attribute] de la synset-ul ENG30-05026843-n, literali ['greutate']
+    - Relația [near_antonym] de la synset-ul ENG30-01186408-a, literali ['ușor']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05027529-n, literali ['greutate', 'greime']
+    - Relația [similar_to] de la synset-ul ENG30-01185775-a, literali ['mare', 'voluminos']
+    - Relația [similar_to] de la synset-ul ENG30-01185916-a, literali ['masiv']
+
+Synset-ul curent este ENG30-00747910-a cu literalii ['anevoios', 'dificil', 'greu'].
+  Definiție: 'Plin de încercări sau probe'.
+  Domeniu: 'None'
+  Scor PNO: [0.0, 0.75, 0.25]
+  Relații de ieșire:
+    - Relația [similar_to] către synset-ul ENG30-00744916-a, literali ['dificil', 'greu']
+  Relații de intrare:
+    - Relația [similar_to] de la synset-ul ENG30-00744916-a, literali ['dificil', 'greu']
+
+Synset-ul curent este ENG30-00747727-a cu literalii ['greu'].
+  Definiție: 'Exasperant de dificil de tratat sau rezolvat'.
+  Domeniu: 'None'
+  Scor PNO: [0.0, 0.75, 0.25]
+  Relații de ieșire:
+    - Relația [similar_to] către synset-ul ENG30-00744916-a, literali ['dificil', 'greu']
+  Relații de intrare:
+    - Relația [similar_to] de la synset-ul ENG30-00744916-a, literali ['dificil', 'greu']
+
+Synset-ul curent este ENG30-00693020-a cu literalii ['profund', 'adânc', 'greu'].
+  Definiție: '(Despre somn) Adânc'.
+  Domeniu: 'None'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [similar_to] către synset-ul ENG30-00692762-a, literali ['adânc']
+  Relații de intrare:
+    - Relația [similar_to] de la synset-ul ENG30-00692762-a, literali ['adânc']
+    - Relația [near_derived_from] de la synset-ul ENG30-00057892-r, literali ['adânc']
+
+Synset-ul curent este ENG30-00173391-a cu literalii ['greu', 'însărcinat', 'gravid'].
+  Definiție: 'într-un stadiu avansat de graviditate'.
+  Domeniu: 'None'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [similar_to] către synset-ul ENG30-00173220-a, literali ['gravidă', 'însărcinată', 'borțoasă']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05103946-n, literali ['mărime']
+    - Relația [near_eng_derivat] către synset-ul ENG30-14046861-n, literali ['graviditate']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00059376-v, literali []
+    - Relația [near_eng_derivat] către synset-ul ENG30-00059019-v, literali ['fi_însărcinată', 'aștepta_un_copil']
+  Relații de intrare:
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00059019-v, literali ['fi_însărcinată', 'aștepta_un_copil']
+    - Relația [similar_to] de la synset-ul ENG30-00173220-a, literali ['gravidă', 'însărcinată', 'borțoasă']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05103946-n, literali ['mărime']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00059376-v, literali []
+    - Relația [near_eng_derivat] de la synset-ul ENG30-14046861-n, literali ['graviditate']
+
+Synset-ul curent este ENG30-02560402-a cu literalii ['greu'].
+  Definiție: '(Despre alimente) Care produce ușor indigestie'.
+  Domeniu: 'None'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Nu s-au găsit relații de ieșire.
+  Relații de intrare:
+    - Nu s-au găsit relații de intrare.
+
+Synset-ul curent este ENG30-02564330-a cu literalii ['greu'].
+  Definiție: 'Dificil de manevrat'.
+  Domeniu: 'None'
+  Scor PNO: [0.0, 0.375, 0.625]
+  Relații de ieșire:
+    - Relația [similar_to] către synset-ul ENG30-02563727-a, literali ['nemaniabil']
+  Relații de intrare:
+    - Relația [similar_to] de la synset-ul ENG30-02563727-a, literali ['nemaniabil']
+
+Synset-ul curent este ENG30-01189853-a cu literalii ['greu'].
+  Definiție: 'care cântărește din ce în ce mai mult'.
+  Domeniu: 'None'
+  Scor PNO: [0.125, 0.0, 0.875]
+  Relații de ieșire:
+    - Nu s-au găsit relații de ieșire.
+  Relații de intrare:
+    - Nu s-au găsit relații de intrare.
+
+Synset-ul curent este ENG30-01085268-a cu literalii ['greu'].
+  Definiție: 'Care este plin de, îngreuiat de ceva'.
+  Domeniu: 'None'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [similar_to] către synset-ul ENG30-01083157-a, literali ['plin']
+    - Relația [near_eng_derivat] către synset-ul ENG30-05027529-n, literali ['greutate', 'greime']
+  Relații de intrare:
+    - Relația [near_eng_derivat] de la synset-ul ENG30-05027529-n, literali ['greutate', 'greime']
+    - Relația [similar_to] de la synset-ul ENG30-01083157-a, literali ['plin']
+
+Synset-ul curent este ENG30-00748563-a cu literalii ['greu'].
+  Definiție: 'extrem de dificil'.
+  Domeniu: 'None'
+  Scor PNO: [0.125, 0.875, 0.0]
+  Relații de ieșire:
+    - Relația [similar_to] către synset-ul ENG30-00744916-a, literali ['dificil', 'greu']
+    - Relația [domain_USAGE] către synset-ul ENG30-07075172-n, literali ['colocvialism', 'colocvialitate']
+  Relații de intrare:
+    - Relația [domain_member_USAGE] de la synset-ul ENG30-07075172-n, literali ['colocvialism', 'colocvialitate']
+    - Relația [similar_to] de la synset-ul ENG30-00744916-a, literali ['dificil', 'greu']
+
+Synset-ul curent este ENG30-00836544-a cu literalii ['epuizant', 'extenuant', 'istovitor', 'greu', 'chinuitor'].
+  Definiție: 'Care necesită efort (în general fizic) până la epuizare'.
+  Domeniu: 'None'
+  Scor PNO: [0.125, 0.5, 0.375]
+  Relații de ieșire:
+    - Relația [near_eng_derivat] către synset-ul ENG30-04709944-n, literali ['laboriozitate']
+    - Relația [near_eng_derivat] către synset-ul ENG30-00620752-n, literali ['lucru', 'muncă', 'treabă', 'slujbă']
+    - Relația [near_eng_derivat] către synset-ul ENG30-04711031-n, literali ['greutate', 'povară']
+  Relații de intrare:
+    - Relația [near_eng_derivat] de la synset-ul ENG30-00620752-n, literali ['lucru', 'muncă', 'treabă', 'slujbă']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-04711031-n, literali ['greutate', 'povară']
+    - Relația [near_derived_from] de la synset-ul ENG30-00091332-r, literali ['greu']
+    - Relația [near_derived_from] de la synset-ul ENG30-00385333-r, literali ['laborios']
+    - Relația [near_derived_from] de la synset-ul ENG30-00274268-r, literali ['cu_ardoare']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-04709944-n, literali ['laboriozitate']
+
+Synset-ul curent este ENG30-01625893-a cu literalii ['dezgustător', 'grețos', 'greu', 'infect', 'puturos', 'scârbos'].
+  Definiție: 'Care provoacă scârbă , greață, repulsie, silă'.
+  Domeniu: 'None'
+  Scor PNO: [0.25, 0.75, 0.0]
+  Relații de ieșire:
+    - Relația [similar_to] către synset-ul ENG30-01624633-a, literali ['dezagreabil', 'pătrunzător']
+    - Relația [near_eng_derivat] către synset-ul ENG30-04781349-n, literali ['scârboșenie', 'caracter_respingător', 'caracter_repulsiv']
+    - Relația [near_eng_derivat] către synset-ul ENG30-14856752-n, literali ['mizerie', 'jeg', 'murdărie', 'gunoi']
+    - Relația [near_eng_derivat] către synset-ul ENG30-02194913-v, literali ['dezgusta']
+    - Relația [near_eng_derivat] către synset-ul ENG30-01808769-v, literali ['dezgusta']
+    - Relația [near_eng_derivat] către synset-ul ENG30-04780958-n, literali ['odiozitate']
+  Relații de intrare:
+    - Relația [near_eng_derivat] de la synset-ul ENG30-01808769-v, literali ['dezgusta']
+    - Relația [similar_to] de la synset-ul ENG30-01624633-a, literali ['dezagreabil', 'pătrunzător']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-02194913-v, literali ['dezgusta']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-04781349-n, literali ['scârboșenie', 'caracter_respingător', 'caracter_repulsiv']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-14856752-n, literali ['mizerie', 'jeg', 'murdărie', 'gunoi']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-04780958-n, literali ['odiozitate']
+    - Relația [near_derived_from] de la synset-ul ENG30-00314141-r, literali ['dezgustător', 'revoltător']
+    - Relația [near_derived_from] de la synset-ul ENG30-00441043-r, literali ['respingător']
+    - Relația [near_derived_from] de la synset-ul ENG30-00319765-r, literali ['abject']
+
+Synset-ul curent este ENG30-00744916-a cu literalii ['dificil', 'greu'].
+  Definiție: 'Care prezintă dificultăți'.
+  Domeniu: 'quality'
+  Scor PNO: [0.0, 0.75, 0.25]
+  Relații de ieșire:
+    - Relația [also_see] către synset-ul ENG30-01155354-a, literali ['acerb', 'aspru', 'necruțător']
+    - Relația [near_eng_derivat] către synset-ul ENG30-04709253-n, literali ['dificultate']
+    - Relația [near_antonym] către synset-ul ENG30-00749230-a, literali ['ușor']
+    - Relația [similar_to] către synset-ul ENG30-00745642-a, literali ['ambițios']
+    - Relația [similar_to] către synset-ul ENG30-00746047-a, literali ['jenant', 'penibil']
+    - Relația [similar_to] către synset-ul ENG30-00746451-a, literali ['complicat']
+    - Relația [similar_to] către synset-ul ENG30-00746819-a, literali ['încuietor']
+    - Relația [similar_to] către synset-ul ENG30-00746994-a, literali ['delicat']
+    - Relația [similar_to] către synset-ul ENG30-00747226-a, literali ['impredictibil']
+    - Relația [similar_to] către synset-ul ENG30-00747727-a, literali ['greu']
+    - Relația [similar_to] către synset-ul ENG30-00747910-a, literali ['anevoios', 'dificil', 'greu']
+    - Relația [similar_to] către synset-ul ENG30-00748058-a, literali ['dur']
+    - Relația [similar_to] către synset-ul ENG30-00748359-a, literali ['serios']
+    - Relația [similar_to] către synset-ul ENG30-00748563-a, literali ['greu']
+    - Relația [similar_to] către synset-ul ENG30-00748674-a, literali ['spinos']
+    - Relația [similar_to] către synset-ul ENG30-00748795-a, literali ['dificil']
+  Relații de intrare:
+    - Relația [near_antonym] de la synset-ul ENG30-00749230-a, literali ['ușor']
+    - Relația [similar_to] de la synset-ul ENG30-00746994-a, literali ['delicat']
+    - Relația [similar_to] de la synset-ul ENG30-00746819-a, literali ['încuietor']
+    - Relația [similar_to] de la synset-ul ENG30-00748674-a, literali ['spinos']
+    - Relația [near_derived_from] de la synset-ul ENG30-00091678-r, literali ['abia', 'anevoie', 'greu']
+    - Relația [attribute] de la synset-ul ENG30-04709253-n, literali ['dificultate']
+    - Relația [similar_to] de la synset-ul ENG30-00748359-a, literali ['serios']
+    - Relația [also_see] de la synset-ul ENG30-02176178-a, literali ['complex']
+    - Relația [also_see] de la synset-ul ENG30-01155354-a, literali ['acerb', 'aspru', 'necruțător']
+    - Relația [similar_to] de la synset-ul ENG30-00746451-a, literali ['complicat']
+    - Relația [similar_to] de la synset-ul ENG30-00748795-a, literali ['dificil']
+    - Relația [similar_to] de la synset-ul ENG30-00747226-a, literali ['impredictibil']
+    - Relația [similar_to] de la synset-ul ENG30-00745642-a, literali ['ambițios']
+    - Relația [similar_to] de la synset-ul ENG30-00747910-a, literali ['anevoios', 'dificil', 'greu']
+    - Relația [similar_to] de la synset-ul ENG30-00747727-a, literali ['greu']
+    - Relația [similar_to] de la synset-ul ENG30-00746047-a, literali ['jenant', 'penibil']
+    - Relația [similar_to] de la synset-ul ENG30-00748563-a, literali ['greu']
+    - Relația [similar_to] de la synset-ul ENG30-00748058-a, literali ['dur']
+
+Synset-ul curent este ENG30-00837415-a cu literalii ['greu'].
+  Definiție: 'Care se face cu greutate, care cere eforturi mari'.
+  Domeniu: 'None'
+  Scor PNO: [0.125, 0.125, 0.75]
+  Relații de ieșire:
+    - Nu s-au găsit relații de ieșire.
+  Relații de intrare:
+    - Nu s-au găsit relații de intrare.
+
+Synset-ul curent este ENG30-00462409-a cu literalii ['greu', 'amenințător'].
+  Definiție: 'Închis, plin de nori'.
+  Domeniu: 'None'
+  Scor PNO: [0.0, 0.0, 1.0]
+  Relații de ieșire:
+    - Relația [similar_to] către synset-ul ENG30-00461311-a, literali ['înnorat', 'noros']
+    - Relația [near_eng_derivat] către synset-ul ENG30-07552367-n, literali ['posomorală', 'ursuzenie']
+  Relații de intrare:
+    - Relația [similar_to] de la synset-ul ENG30-00461311-a, literali ['înnorat', 'noros']
+    - Relația [near_eng_derivat] de la synset-ul ENG30-07552367-n, literali ['posomorală', 'ursuzenie']
+    - Relația [near_derived_from] de la synset-ul ENG30-00508771-r, literali ['întunecos']

@@ -1,0 +1,2 @@
+This folder contains the first part of task 2 for the Natural Language Processing (NLP) Course.
+this project uses the English WordNet for practical reasons, as working with English text is often more practical and easier to integrate with standard global tools.

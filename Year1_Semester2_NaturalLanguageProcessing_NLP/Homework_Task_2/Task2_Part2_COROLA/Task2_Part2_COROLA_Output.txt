@@ -1,0 +1,375 @@
+--------------------------- The WORDS specific word embeddings ---------------------------
+
+Neighbors for 'student':
+  studentă: 0.7049
+  studenti: 0.7030
+  studenție: 0.6897
+  studentul: 0.6839
+  elev: 0.6743
+  studenției: 0.6497
+  doctorand: 0.6253
+  studenți: 0.6218
+  studentului: 0.6153
+  absolvent: 0.6148
+
+Neighbors for 'profesor':
+  profesoru: 0.7946
+  profesorul: 0.7758
+  profesor-pedagog: 0.7423
+  conferențiar: 0.7357
+  învățător: 0.7334
+  profesor-sociolog: 0.7177
+  profesorelev: 0.7161
+  suplinitor: 0.7039
+  dascăl: 0.7038
+  lector: 0.6936
+
+Neighbors for 'universitate':
+  universitat: 0.7672
+  universitatea: 0.7586
+  universita: 0.7494
+  universit: 0.7395
+  universitații: 0.7386
+  facultate: 0.7315
+  universitățile: 0.7039
+  politehnică: 0.7005
+  universității: 0.6997
+  universitara: 0.6969
+
+Neighbors for 'examen':
+  examenul: 0.7977
+  examenului: 0.7721
+  examene: 0.6987
+  examenele: 0.6675
+  bacalaureat: 0.6547
+  examinare: 0.6357
+  examenelor: 0.6304
+  concurs: 0.6184
+  test: 0.5750
+  definitivare: 0.5673
+
+Neighbors for 'studia':
+  studieze: 0.6898
+  studiind: 0.6884
+  studias: 0.6883
+  studiat: 0.6860
+  studiază: 0.6730
+  studiau: 0.6670
+  studiam: 0.6607
+  studiase: 0.6600
+  studiasem: 0.6191
+  studiez: 0.6179
+
+Neighbors for 'prezenta':
+  ordonanță: 0.6066
+  integrantă: 0.5622
+  prezentele: 0.5601
+  anexele: 0.5593
+  anexa: 0.5412
+  hotărâre: 0.5278
+  directivă: 0.4945
+  prezentul: 0.4802
+  prevăzute: 0.4785
+  prezentei: 0.4722
+
+Neighbors for 'munci':
+  muncile: 0.7035
+  muncilor: 0.6716
+  muncească: 0.6578
+  munca: 0.6527
+  muncind: 0.6334
+  muncesc: 0.6206
+  muncea: 0.6018
+  muncei: 0.6008
+  muncite: 0.5757
+  muncit: 0.5738
+
+Neighbors for 'inteligent':
+  inteligentul: 0.8453
+  inteligenta: 0.7233
+  deștept: 0.7221
+  curajos: 0.7126
+  talentat: 0.7047
+  perspicace: 0.6959
+  sofisticat: 0.6928
+  cinic: 0.6854
+  descurcăreț: 0.6820
+  inteligentă: 0.6807
+
+Neighbors for 'greu':
+  dificil: 0.7587
+  imposibil: 0.7505
+  ușor: 0.7420
+  anevoie: 0.6619
+  lesne: 0.6616
+  bine: 0.6389
+  anevoios: 0.6269
+  destul: 0.6163
+  foarte: 0.6111
+  rău: 0.6090
+
+Neighbors for 'creativ':
+  creativitatea: 0.7764
+  creativității: 0.7594
+  creativă: 0.7556
+  creativitate: 0.7481
+  creativități: 0.7412
+  creative: 0.7240
+  creativii: 0.7022
+  ideativ: 0.6985
+  creativi: 0.6892
+  motivațional: 0.6866
+
+bărbat - femeie + persoană = [('persoan', 0.7344115972518921), ('persoana', 0.6298782825469971), ('persoană-limită', 0.5481025576591492), ('fizică', 0.5293501615524292), ('persoaneă', 0.5206366181373596)]
+România - Italia + Franța = [Word missing from vocabulary]
+
+--------------------------- The LEMMA specific word embeddings ---------------------------
+
+Neighbors for 'student':
+  studente: 0.7894
+  studenti: 0.7652
+  masterand: 0.7305
+  studenție: 0.7271
+  elev: 0.7019
+  doctorand: 0.6764
+  studentă: 0.6505
+  studențime: 0.6323
+  cursant: 0.6166
+  medicinist: 0.6088
+
+Neighbors for 'profesor':
+  învățător: 0.7119
+  profesore: 0.7071
+  dascăl: 0.7051
+  profesoară: 0.6940
+  conferențiar: 0.6860
+  profesorat: 0.6687
+  profesor-metodist: 0.6623
+  professor: 0.6617
+  institutor: 0.6609
+  suplinitor: 0.6557
+
+Neighbors for 'universitate':
+  universit: 0.7913
+  Universitații: 0.7600
+  Universitatii: 0.7567
+  facultate: 0.7504
+  Universita: 0.7450
+  Babeș-Bolyai: 0.7310
+  politehnic: 0.7252
+  politehnică: 0.7207
+  Babes-Bolyai: 0.6995
+  Universite: 0.6930
+
+Neighbors for 'examen':
+  bacalaureat: 0.6634
+  examinare: 0.6442
+  examenul-concurs: 0.5694
+  definitivat: 0.5637
+  probă: 0.5432
+  examinator: 0.5429
+  concurs: 0.5265
+  absolvire: 0.5198
+  parazitologie: 0.5148
+  corigență: 0.5135
+
+Neighbors for 'studia':
+  studiat: 0.6026
+  compara: 0.5907
+  studiu: 0.5896
+  studi: 0.5839
+  aprofunda: 0.5834
+  studiaa: 0.5740
+  comparat: 0.5495
+  investiga: 0.5376
+  familiariza: 0.5303
+  observa: 0.5257
+
+Neighbors for 'prezenta':
+  prezentat: 0.5836
+  prezentinde: 0.5361
+  evidenția: 0.4886
+  prezentare: 0.4880
+  enumera: 0.4688
+  remite: 0.4661
+  prezentație: 0.4643
+  însoți: 0.4612
+  descrie: 0.4582
+  prezență: 0.4535
+
+Neighbors for 'munci':
+  lucra: 0.6985
+  trudi: 0.6974
+  muncit: 0.6753
+  speti: 0.6693
+  agonisi: 0.6332
+  treabă: 0.6219
+  brânci: 0.6088
+  salahor: 0.6073
+  trăi: 0.6047
+  nemuncit: 0.5987
+
+Neighbors for 'inteligent':
+  inteligență: 0.7074
+  deștept: 0.6597
+  prietenos: 0.6431
+  isteț: 0.6319
+  descurcăreț: 0.6202
+  ingenios: 0.6191
+  sofisticat: 0.6093
+  educat: 0.6031
+  curajos: 0.5998
+  simpatic: 0.5913
+
+Neighbors for 'greu':
+  dificil: 0.6734
+  anevoie: 0.6438
+  ușor: 0.6273
+  anevoios: 0.6118
+  împovărat: 0.5773
+  cumplit: 0.5768
+  greoi: 0.5683
+  povară: 0.5606
+  lesne: 0.5594
+  chinuitor: 0.5564
+
+Neighbors for 'creativ':
+  creativitate: 0.8167
+  necreativ: 0.7352
+  imaginativ: 0.6724
+  creativity: 0.6629
+  inovațional: 0.6536
+  euristic: 0.6397
+  intuitiv: 0.6314
+  cognitiv: 0.6298
+  imaginație: 0.6295
+  motivațional: 0.6240
+
+bărbat - femeie + persoană = [('persoan', 0.6501433253288269), ('persoanea', 0.6463427543640137), ('fizic', 0.5398173332214355), ('juridic', 0.5043579936027527), ('pesoană', 0.4934469759464264)]
+România - Italia + Franța = [('Uniunea~Europeană', 0.505090057849884), ('Germania', 0.48047205805778503), ('Uniunea~Europeana', 0.46014633774757385), ('Austria', 0.4493471384048462), ('Ungaria', 0.44511452317237854)]
+
+--------------------------- The LEMMA + POS specific word embeddings ---------------------------
+
+Neighbors for 'Nc_student':
+  Nc_studente: 0.8346
+  Nc_studenti: 0.8200
+  Nc_elev: 0.7780
+  Nc_studenție: 0.7364
+  Nc_masterand: 0.7040
+  Nc_doctorand: 0.6979
+  Nc_studentă: 0.6960
+  Nc_studențime: 0.6757
+  Nc_cursant: 0.6648
+  Nc_student-doctorand: 0.6415
+
+Neighbors for 'Nc_profesor':
+  Nc_profesorat: 0.7398
+  Nc_învățător: 0.7344
+  Nc_conferențiar: 0.7245
+  Nc_profesoară: 0.7163
+  Nc_professor: 0.7135
+  Nc_profesoraș: 0.7125
+  Nc_pedagog: 0.7094
+  Nc_profesor-metodist: 0.7057
+  Nc_dascăl: 0.7023
+  Nc_institutor: 0.6905
+
+Neighbors for 'Nc_universitate':
+  Nc_facultate: 0.7895
+  Nc_universitare: 0.7536
+  Nc_universitară: 0.7514
+  Np_Universitații: 0.7441
+  Nc_politehnică: 0.7306
+  Np_Babeș-Bolyai: 0.7113
+  Np_Universitatii: 0.7094
+  Np_Universita: 0.7079
+  Nc_filologie: 0.7070
+  Af_politehnic: 0.6886
+
+Neighbors for 'Nc_examen':
+  Nc_bacalaureat: 0.6840
+  Nc_examinare: 0.6691
+  Nc_examenul-concurs: 0.6502
+  Nc_definitivat: 0.6161
+  Nc_absolvire: 0.6110
+  Nc_concurs: 0.6046
+  Nc_examinator: 0.5823
+  Nc_testea: 0.5759
+  Nc_test: 0.5673
+  Nc_bacal: 0.5649
+
+Neighbors for 'Vm_studia':
+  Vm_studiaa: 0.6604
+  Vm_aprofunda: 0.5847
+  Af_studiat: 0.5832
+  Af_comparat: 0.5722
+  Vm_compara: 0.5699
+  Nc_studiu: 0.5588
+  Vm_investiga: 0.5527
+  Vm_invata: 0.5401
+  Nc_doctorantură: 0.5344
+  Nc_matematică: 0.5337
+
+Neighbors for 'Vm_prezenta':
+  Vm_prezentinde: 0.6099
+  Af_prezentat: 0.5901
+  Nc_prezentare: 0.4912
+  Vm_expune: 0.4794
+  Vm_indica: 0.4779
+  Af_explicativ: 0.4768
+  Vm_remite: 0.4692
+  Vm_evidenția: 0.4620
+  Vm_menționa: 0.4588
+  Vm_însoți: 0.4577
+
+Neighbors for 'Vm_munci':
+  Vm_trudi: 0.7332
+  Vm_lucra: 0.6918
+  Nc_muncit: 0.6677
+  Vm_speti: 0.6559
+  Vm_agonisi: 0.6521
+  Vm_trăi: 0.6468
+  Vm_trai: 0.6333
+  Af_muncit: 0.6251
+  Vm_huzuri: 0.6170
+  Vm_chinui: 0.6032
+
+Neighbors for 'Af_inteligent':
+  Rg_inteligent: 0.8700
+  Nc_inteligență: 0.7036
+  Af_isteț: 0.6824
+  Af_prietenos: 0.6578
+  Af_deștept: 0.6545
+  Af_descurcăreț: 0.6505
+  Af_sofisticat: 0.6501
+  Af_atrăgător: 0.6383
+  Af_educat: 0.6372
+  Af_curajos: 0.6371
+
+Neighbors for 'Af_greu':
+  Nc_greu: 0.6500
+  Rg_greu: 0.6039
+  Af_crunt: 0.5527
+  Af_crâncen: 0.5405
+  Nc_povară: 0.5374
+  Af_aspru: 0.5366
+  Af_dificil: 0.5340
+  Af_cumplit: 0.5274
+  Af_împovărat: 0.5271
+  Af_dur: 0.5229
+
+Neighbors for 'Af_creativ':
+  Nc_creativitate: 0.8240
+  Af_creator: 0.7453
+  Af_imaginativ: 0.7173
+  Af_necreativ: 0.7064
+  Af_inventiv: 0.6757
+  Nc_creativity: 0.6698
+  Af_inovațional: 0.6679
+  Af_afectiv-motivațional: 0.6614
+  Af_motivațional: 0.6576
+  Nc_inventivitate: 0.6502
+
+Nc_bărbat - Nc_femeie + Nc_persoană = [('Nc_persoan', 0.6701770424842834), ('Vm_persoanea', 0.5484634041786194), ('Np_persoan', 0.5461867451667786), ('Af_fizic', 0.5440331101417542), ('Nc_per-soană', 0.5107865333557129)]
+Np_România - Np_Italia + Np_Franța = [('Np_Româniatc', 0.5342593789100647), ('Np_nia', 0.5184393525123596), ('Np_niei', 0.4785460829734802), ('Np_Uniunea~Europeană', 0.4720842242240906), ('Np_Ungaria', 0.4615582823753357)]
+

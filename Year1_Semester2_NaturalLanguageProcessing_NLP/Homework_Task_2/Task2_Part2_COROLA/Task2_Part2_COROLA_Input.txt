@@ -1,0 +1,5 @@
+NOUN: student, profesor, universitate, examen
+VERB: studia, prezenta, munci
+ADJECTIVE: inteligent, greu, creativ
+ANALOGY: bărbat:NOUN, femeie:NOUN, persoană:NOUN
+ANALOGY: România:PROPN, Italia:PROPN, Franța:PROPN

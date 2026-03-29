@@ -1,0 +1,3 @@
+NOUN: student, teacher, university
+VERB: study, present, work
+ADJECTIVE: intelligent, hard

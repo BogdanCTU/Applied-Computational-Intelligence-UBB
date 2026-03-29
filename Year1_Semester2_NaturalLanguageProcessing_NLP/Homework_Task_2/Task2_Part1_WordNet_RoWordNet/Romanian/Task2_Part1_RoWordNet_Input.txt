@@ -1,0 +1,3 @@
+NOUN: student, profesor, universitate
+VERB: studia, prezenta, munci
+ADJECTIVE: inteligent, greu
