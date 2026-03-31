@@ -1,0 +1,152 @@
+--- Syntax Tree for: Fresh basil leaves are the main ingredient for pesto. ---
+(S
+  (GPE Fresh/JJ)
+  basil/NN
+  leaves/NNS
+  are/VBP
+  the/DT
+  main/JJ
+  ingredient/NN
+  for/IN
+  pesto/NN
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: You must wash and dry the basil leaves carefully. ---
+(S
+  You/PRP
+  must/MD
+  wash/VB
+  and/CC
+  dry/VB
+  the/DT
+  basil/NN
+  leaves/VBZ
+  carefully/RB
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: Pine nuts add a creamy texture to the sauce. ---
+(S
+  (GPE Pine/NNP)
+  nuts/NNS
+  add/VBP
+  a/DT
+  creamy/JJ
+  texture/NN
+  to/TO
+  the/DT
+  sauce/NN
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: Garlic gives the pesto a strong and spicy flavor. ---
+(S
+  (GPE Garlic/NNP)
+  gives/VBZ
+  the/DT
+  pesto/NN
+  a/DT
+  strong/JJ
+  and/CC
+  spicy/NN
+  flavor/NN
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: Extra virgin olive oil connects all the ingredients together. ---
+(S
+  (GPE Extra/NNP)
+  virgin/NN
+  olive/JJ
+  oil/NN
+  connects/NNS
+  all/PDT
+  the/DT
+  ingredients/NNS
+  together/RB
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: Parmigiano Reggiano cheese adds a rich and salty taste. ---
+(S
+  (PERSON Parmigiano/NNP)
+  Reggiano/NNP
+  cheese/JJ
+  adds/VBZ
+  a/DT
+  rich/JJ
+  and/CC
+  salty/JJ
+  taste/NN
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: Pecorino cheese makes the flavor even more intense. ---
+(S
+  (GPE Pecorino/NNP)
+  cheese/JJ
+  makes/VBZ
+  the/DT
+  flavor/NN
+  even/RB
+  more/RBR
+  intense/JJ
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: A traditional marble mortar is best for crushing the ingredients. ---
+(S
+  A/DT
+  traditional/JJ
+  marble/JJ
+  mortar/NN
+  is/VBZ
+  best/RBS
+  for/IN
+  crushing/VBG
+  the/DT
+  ingredients/NNS
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: You should crush the garlic and pine nuts first. ---
+(S
+  You/PRP
+  should/MD
+  crush/VB
+  the/DT
+  garlic/NN
+  and/CC
+  pine/NN
+  nuts/NNS
+  first/RB
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: Add the oil slowly while mixing everything into a smooth paste. ---
+(S
+  Add/VB
+  the/DT
+  oil/NN
+  slowly/RB
+  while/IN
+  mixing/VBG
+  everything/NN
+  into/IN
+  a/DT
+  smooth/JJ
+  paste/NN
+  ./.)
+
+============================================================
+

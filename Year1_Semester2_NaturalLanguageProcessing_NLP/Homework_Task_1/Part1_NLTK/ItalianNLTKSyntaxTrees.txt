@@ -1,0 +1,153 @@
+--- Syntax Tree for: Le foglie di basilico fresco sono l'ingrediente principale per il pesto. ---
+(S
+  (GPE Le/NNP)
+  foglie/NN
+  di/NN
+  basilico/NN
+  fresco/NN
+  sono/NN
+  l'ingrediente/JJ
+  principale/NN
+  per/IN
+  il/NN
+  pesto/NN
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: Devi lavare e asciugare le foglie di basilico con cura. ---
+(S
+  (GPE Devi/NNP)
+  lavare/NN
+  e/NN
+  asciugare/NN
+  le/FW
+  foglie/NN
+  di/NN
+  basilico/NN
+  con/NN
+  cura/NN
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: I pinoli aggiungono una consistenza cremosa alla salsa. ---
+(S
+  I/PRP
+  pinoli/VBP
+  aggiungono/JJ
+  una/JJ
+  consistenza/NN
+  cremosa/NN
+  alla/NN
+  salsa/NN
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: L'aglio dà al pesto un sapore forte e piccante. ---
+(S
+  L'aglio/NNP
+  dà/NN
+  al/NN
+  pesto/NN
+  un/JJ
+  sapore/NN
+  forte/NN
+  e/NN
+  piccante/NN
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: L'olio extravergine di oliva unisce tutti gli ingredienti. ---
+(S
+  L'olio/NNP
+  extravergine/NN
+  di/NN
+  oliva/FW
+  unisce/JJ
+  tutti/NNS
+  gli/VBP
+  ingredienti/NN
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: Il formaggio Parmigiano Reggiano aggiunge un gusto ricco e salato. ---
+(S
+  Il/NNP
+  formaggio/JJ
+  (ORGANIZATION Parmigiano/NNP Reggiano/NNP)
+  aggiunge/NN
+  un/JJ
+  gusto/NN
+  ricco/NN
+  e/NN
+  salato/NN
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: Il formaggio Pecorino rende il sapore ancora più intenso. ---
+(S
+  (GPE Il/NNP)
+  formaggio/NN
+  (PERSON Pecorino/NNP)
+  rende/NN
+  il/NN
+  sapore/NN
+  ancora/JJ
+  più/NN
+  intenso/NN
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: Un mortaio di marmo tradizionale è il migliore per schiacciare gli ingredienti. ---
+(S
+  (GPE Un/NNP)
+  mortaio/NN
+  di/NN
+  marmo/FW
+  tradizionale/JJ
+  è/FW
+  il/NN
+  migliore/NN
+  per/IN
+  schiacciare/NN
+  gli/NN
+  ingredienti/NN
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: Dovresti schiacciare prima l'aglio e i pinoli. ---
+(S
+  (GPE Dovresti/NNP)
+  schiacciare/NN
+  prima/NN
+  l'aglio/NN
+  e/NN
+  i/NN
+  pinoli/VBP
+  ./.)
+
+============================================================
+
+--- Syntax Tree for: Aggiungi l'olio lentamente mentre mescoli tutto in una pasta liscia. ---
+(S
+  (GPE Aggiungi/NNP)
+  l'olio/NN
+  lentamente/NN
+  mentre/FW
+  mescoli/NN
+  tutto/NN
+  in/IN
+  una/JJ
+  pasta/NN
+  liscia/NN
+  ./.)
+
+============================================================
+

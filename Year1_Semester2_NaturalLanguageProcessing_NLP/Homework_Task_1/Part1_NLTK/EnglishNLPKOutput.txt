@@ -1,0 +1,130 @@
+--- Original Sentence ---
+Fresh basil leaves are the main ingredient for pesto.
+
+Tokens: ['Fresh', 'basil', 'leaves', 'are', 'the', 'main', 'ingredient', 'for', 'pesto', '.']
+Stems: ['fresh', 'basil', 'leav', 'are', 'the', 'main', 'ingredi', 'for', 'pesto', '.']
+Lemmas: ['Fresh', 'basil', 'leaf', 'be', 'the', 'main', 'ingredient', 'for', 'pesto', '.']
+POS (General): [('Fresh', 'ADJ'), ('basil', 'NOUN'), ('leaves', 'NOUN'), ('are', 'VERB'), ('the', 'DET'), ('main', 'ADJ'), ('ingredient', 'NOUN'), ('for', 'ADP'), ('pesto', 'NOUN'), ('.', '.')]
+POS (Detailed): [('Fresh', 'JJ'), ('basil', 'NN'), ('leaves', 'NNS'), ('are', 'VBP'), ('the', 'DT'), ('main', 'JJ'), ('ingredient', 'NN'), ('for', 'IN'), ('pesto', 'NN'), ('.', '.')]
+Dependency Relations: Not supported natively by NLTK without external models like Stanford CoreNLP.
+Noun Chunks: ['Fresh basil', 'the main ingredient', 'pesto']
+Named Entities (NER): [('Fresh', 'GPE')]
+============================================================
+
+--- Original Sentence ---
+You must wash and dry the basil leaves carefully.
+
+Tokens: ['You', 'must', 'wash', 'and', 'dry', 'the', 'basil', 'leaves', 'carefully', '.']
+Stems: ['you', 'must', 'wash', 'and', 'dri', 'the', 'basil', 'leav', 'care', '.']
+Lemmas: ['You', 'must', 'wash', 'and', 'dry', 'the', 'basil', 'leave', 'carefully', '.']
+POS (General): [('You', 'PRON'), ('must', 'VERB'), ('wash', 'VERB'), ('and', 'CONJ'), ('dry', 'VERB'), ('the', 'DET'), ('basil', 'NOUN'), ('leaves', 'VERB'), ('carefully', 'ADV'), ('.', '.')]
+POS (Detailed): [('You', 'PRP'), ('must', 'MD'), ('wash', 'VB'), ('and', 'CC'), ('dry', 'VB'), ('the', 'DT'), ('basil', 'NN'), ('leaves', 'VBZ'), ('carefully', 'RB'), ('.', '.')]
+Dependency Relations: Not supported natively by NLTK without external models like Stanford CoreNLP.
+Noun Chunks: ['the basil']
+Named Entities (NER): []
+============================================================
+
+--- Original Sentence ---
+Pine nuts add a creamy texture to the sauce.
+
+Tokens: ['Pine', 'nuts', 'add', 'a', 'creamy', 'texture', 'to', 'the', 'sauce', '.']
+Stems: ['pine', 'nut', 'add', 'a', 'creami', 'textur', 'to', 'the', 'sauc', '.']
+Lemmas: ['Pine', 'nut', 'add', 'a', 'creamy', 'texture', 'to', 'the', 'sauce', '.']
+POS (General): [('Pine', 'NOUN'), ('nuts', 'NOUN'), ('add', 'VERB'), ('a', 'DET'), ('creamy', 'ADJ'), ('texture', 'NOUN'), ('to', 'PRT'), ('the', 'DET'), ('sauce', 'NOUN'), ('.', '.')]
+POS (Detailed): [('Pine', 'NNP'), ('nuts', 'NNS'), ('add', 'VBP'), ('a', 'DT'), ('creamy', 'JJ'), ('texture', 'NN'), ('to', 'TO'), ('the', 'DT'), ('sauce', 'NN'), ('.', '.')]
+Dependency Relations: Not supported natively by NLTK without external models like Stanford CoreNLP.
+Noun Chunks: ['a creamy texture', 'the sauce']
+Named Entities (NER): [('Pine', 'GPE')]
+============================================================
+
+--- Original Sentence ---
+Garlic gives the pesto a strong and spicy flavor.
+
+Tokens: ['Garlic', 'gives', 'the', 'pesto', 'a', 'strong', 'and', 'spicy', 'flavor', '.']
+Stems: ['garlic', 'give', 'the', 'pesto', 'a', 'strong', 'and', 'spici', 'flavor', '.']
+Lemmas: ['Garlic', 'give', 'the', 'pesto', 'a', 'strong', 'and', 'spicy', 'flavor', '.']
+POS (General): [('Garlic', 'NOUN'), ('gives', 'VERB'), ('the', 'DET'), ('pesto', 'NOUN'), ('a', 'DET'), ('strong', 'ADJ'), ('and', 'CONJ'), ('spicy', 'NOUN'), ('flavor', 'NOUN'), ('.', '.')]
+POS (Detailed): [('Garlic', 'NNP'), ('gives', 'VBZ'), ('the', 'DT'), ('pesto', 'NN'), ('a', 'DT'), ('strong', 'JJ'), ('and', 'CC'), ('spicy', 'NN'), ('flavor', 'NN'), ('.', '.')]
+Dependency Relations: Not supported natively by NLTK without external models like Stanford CoreNLP.
+Noun Chunks: ['the pesto', 'spicy', 'flavor']
+Named Entities (NER): [('Garlic', 'GPE')]
+============================================================
+
+--- Original Sentence ---
+Extra virgin olive oil connects all the ingredients together.
+
+Tokens: ['Extra', 'virgin', 'olive', 'oil', 'connects', 'all', 'the', 'ingredients', 'together', '.']
+Stems: ['extra', 'virgin', 'oliv', 'oil', 'connect', 'all', 'the', 'ingredi', 'togeth', '.']
+Lemmas: ['Extra', 'virgin', 'olive', 'oil', 'connects', 'all', 'the', 'ingredient', 'together', '.']
+POS (General): [('Extra', 'NOUN'), ('virgin', 'NOUN'), ('olive', 'ADJ'), ('oil', 'NOUN'), ('connects', 'NOUN'), ('all', 'DET'), ('the', 'DET'), ('ingredients', 'NOUN'), ('together', 'ADV'), ('.', '.')]
+POS (Detailed): [('Extra', 'NNP'), ('virgin', 'NN'), ('olive', 'JJ'), ('oil', 'NN'), ('connects', 'NNS'), ('all', 'PDT'), ('the', 'DT'), ('ingredients', 'NNS'), ('together', 'RB'), ('.', '.')]
+Dependency Relations: Not supported natively by NLTK without external models like Stanford CoreNLP.
+Noun Chunks: ['virgin', 'olive oil']
+Named Entities (NER): [('Extra', 'GPE')]
+============================================================
+
+--- Original Sentence ---
+Parmigiano Reggiano cheese adds a rich and salty taste.
+
+Tokens: ['Parmigiano', 'Reggiano', 'cheese', 'adds', 'a', 'rich', 'and', 'salty', 'taste', '.']
+Stems: ['parmigiano', 'reggiano', 'chees', 'add', 'a', 'rich', 'and', 'salti', 'tast', '.']
+Lemmas: ['Parmigiano', 'Reggiano', 'cheese', 'add', 'a', 'rich', 'and', 'salty', 'taste', '.']
+POS (General): [('Parmigiano', 'NOUN'), ('Reggiano', 'NOUN'), ('cheese', 'ADJ'), ('adds', 'VERB'), ('a', 'DET'), ('rich', 'ADJ'), ('and', 'CONJ'), ('salty', 'ADJ'), ('taste', 'NOUN'), ('.', '.')]
+POS (Detailed): [('Parmigiano', 'NNP'), ('Reggiano', 'NNP'), ('cheese', 'JJ'), ('adds', 'VBZ'), ('a', 'DT'), ('rich', 'JJ'), ('and', 'CC'), ('salty', 'JJ'), ('taste', 'NN'), ('.', '.')]
+Dependency Relations: Not supported natively by NLTK without external models like Stanford CoreNLP.
+Noun Chunks: ['salty taste']
+Named Entities (NER): [('Parmigiano', 'PERSON')]
+============================================================
+
+--- Original Sentence ---
+Pecorino cheese makes the flavor even more intense.
+
+Tokens: ['Pecorino', 'cheese', 'makes', 'the', 'flavor', 'even', 'more', 'intense', '.']
+Stems: ['pecorino', 'chees', 'make', 'the', 'flavor', 'even', 'more', 'intens', '.']
+Lemmas: ['Pecorino', 'cheese', 'make', 'the', 'flavor', 'even', 'more', 'intense', '.']
+POS (General): [('Pecorino', 'NOUN'), ('cheese', 'ADJ'), ('makes', 'VERB'), ('the', 'DET'), ('flavor', 'NOUN'), ('even', 'ADV'), ('more', 'ADV'), ('intense', 'ADJ'), ('.', '.')]
+POS (Detailed): [('Pecorino', 'NNP'), ('cheese', 'JJ'), ('makes', 'VBZ'), ('the', 'DT'), ('flavor', 'NN'), ('even', 'RB'), ('more', 'RBR'), ('intense', 'JJ'), ('.', '.')]
+Dependency Relations: Not supported natively by NLTK without external models like Stanford CoreNLP.
+Noun Chunks: ['the flavor']
+Named Entities (NER): [('Pecorino', 'GPE')]
+============================================================
+
+--- Original Sentence ---
+A traditional marble mortar is best for crushing the ingredients.
+
+Tokens: ['A', 'traditional', 'marble', 'mortar', 'is', 'best', 'for', 'crushing', 'the', 'ingredients', '.']
+Stems: ['a', 'tradit', 'marbl', 'mortar', 'is', 'best', 'for', 'crush', 'the', 'ingredi', '.']
+Lemmas: ['A', 'traditional', 'marble', 'mortar', 'be', 'best', 'for', 'crush', 'the', 'ingredient', '.']
+POS (General): [('A', 'DET'), ('traditional', 'ADJ'), ('marble', 'ADJ'), ('mortar', 'NOUN'), ('is', 'VERB'), ('best', 'ADV'), ('for', 'ADP'), ('crushing', 'VERB'), ('the', 'DET'), ('ingredients', 'NOUN'), ('.', '.')]
+POS (Detailed): [('A', 'DT'), ('traditional', 'JJ'), ('marble', 'JJ'), ('mortar', 'NN'), ('is', 'VBZ'), ('best', 'RBS'), ('for', 'IN'), ('crushing', 'VBG'), ('the', 'DT'), ('ingredients', 'NNS'), ('.', '.')]
+Dependency Relations: Not supported natively by NLTK without external models like Stanford CoreNLP.
+Noun Chunks: ['A traditional marble mortar']
+Named Entities (NER): []
+============================================================
+
+--- Original Sentence ---
+You should crush the garlic and pine nuts first.
+
+Tokens: ['You', 'should', 'crush', 'the', 'garlic', 'and', 'pine', 'nuts', 'first', '.']
+Stems: ['you', 'should', 'crush', 'the', 'garlic', 'and', 'pine', 'nut', 'first', '.']
+Lemmas: ['You', 'should', 'crush', 'the', 'garlic', 'and', 'pine', 'nut', 'first', '.']
+POS (General): [('You', 'PRON'), ('should', 'VERB'), ('crush', 'VERB'), ('the', 'DET'), ('garlic', 'NOUN'), ('and', 'CONJ'), ('pine', 'NOUN'), ('nuts', 'NOUN'), ('first', 'ADV'), ('.', '.')]
+POS (Detailed): [('You', 'PRP'), ('should', 'MD'), ('crush', 'VB'), ('the', 'DT'), ('garlic', 'NN'), ('and', 'CC'), ('pine', 'NN'), ('nuts', 'NNS'), ('first', 'RB'), ('.', '.')]
+Dependency Relations: Not supported natively by NLTK without external models like Stanford CoreNLP.
+Noun Chunks: ['the garlic', 'pine']
+Named Entities (NER): []
+============================================================
+
+--- Original Sentence ---
+Add the oil slowly while mixing everything into a smooth paste.
+
+Tokens: ['Add', 'the', 'oil', 'slowly', 'while', 'mixing', 'everything', 'into', 'a', 'smooth', 'paste', '.']
+Stems: ['add', 'the', 'oil', 'slowli', 'while', 'mix', 'everyth', 'into', 'a', 'smooth', 'past', '.']
+Lemmas: ['Add', 'the', 'oil', 'slowly', 'while', 'mix', 'everything', 'into', 'a', 'smooth', 'paste', '.']
+POS (General): [('Add', 'VERB'), ('the', 'DET'), ('oil', 'NOUN'), ('slowly', 'ADV'), ('while', 'ADP'), ('mixing', 'VERB'), ('everything', 'NOUN'), ('into', 'ADP'), ('a', 'DET'), ('smooth', 'ADJ'), ('paste', 'NOUN'), ('.', '.')]
+POS (Detailed): [('Add', 'VB'), ('the', 'DT'), ('oil', 'NN'), ('slowly', 'RB'), ('while', 'IN'), ('mixing', 'VBG'), ('everything', 'NN'), ('into', 'IN'), ('a', 'DT'), ('smooth', 'JJ'), ('paste', 'NN'), ('.', '.')]
+Dependency Relations: Not supported natively by NLTK without external models like Stanford CoreNLP.
+Noun Chunks: ['the oil', 'everything', 'a smooth paste']
+Named Entities (NER): []
+============================================================
+

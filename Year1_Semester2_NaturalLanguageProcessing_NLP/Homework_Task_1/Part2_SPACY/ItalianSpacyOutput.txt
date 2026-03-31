@@ -1,0 +1,130 @@
+--- Original Sentence ---
+Le foglie di basilico fresco sono l'ingrediente principale per il pesto.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['Le', 'foglie', 'di', 'basilico', 'fresco', 'sono', "l'", 'ingrediente', 'principale', 'per', 'il', 'pesto', '.']
+Lemmas: ['il', 'foglia', 'di', 'basilico', 'fresco', 'essere', 'il', 'ingrediente', 'principale', 'per', 'il', 'pesto', '.']
+POS (General): ['DET', 'NOUN', 'ADP', 'NOUN', 'ADJ', 'AUX', 'DET', 'NOUN', 'ADJ', 'ADP', 'DET', 'NOUN', 'PUNCT']
+POS (Detailed): ['RD', 'S', 'E', 'S', 'A', 'V', 'RD', 'S', 'A', 'E', 'RD', 'S', 'FS']
+Dependency Relations: [('Le', 'det', 'foglie'), ('foglie', 'nsubj', 'ingrediente'), ('di', 'case', 'basilico'), ('basilico', 'nmod', 'foglie'), ('fresco', 'amod', 'basilico'), ('sono', 'cop', 'ingrediente'), ("l'", 'det', 'ingrediente'), ('ingrediente', 'ROOT', 'ingrediente'), ('principale', 'amod', 'ingrediente'), ('per', 'case', 'pesto'), ('il', 'det', 'pesto'), ('pesto', 'nmod', 'ingrediente'), ('.', 'punct', 'ingrediente')]
+Noun Chunks: ['Le foglie', 'basilico fresco', 'il pesto']
+Named Entities (NER): []
+============================================================
+
+--- Original Sentence ---
+Devi lavare e asciugare le foglie di basilico con cura.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['Devi', 'lavare', 'e', 'asciugare', 'le', 'foglie', 'di', 'basilico', 'con', 'cura', '.']
+Lemmas: ['Devi', 'lavare', 'e', 'asciugare', 'il', 'foglia', 'di', 'basilico', 'con', 'cura', '.']
+POS (General): ['AUX', 'VERB', 'CCONJ', 'VERB', 'DET', 'NOUN', 'ADP', 'NOUN', 'ADP', 'NOUN', 'PUNCT']
+POS (Detailed): ['VM', 'V', 'CC', 'V', 'RD', 'S', 'E', 'S', 'E', 'S', 'FS']
+Dependency Relations: [('Devi', 'aux', 'lavare'), ('lavare', 'ROOT', 'lavare'), ('e', 'cc', 'asciugare'), ('asciugare', 'conj', 'lavare'), ('le', 'det', 'foglie'), ('foglie', 'obj', 'asciugare'), ('di', 'case', 'basilico'), ('basilico', 'nmod', 'foglie'), ('con', 'case', 'cura'), ('cura', 'nmod', 'basilico'), ('.', 'punct', 'lavare')]
+Noun Chunks: ['le foglie', 'basilico', 'cura']
+Named Entities (NER): []
+============================================================
+
+--- Original Sentence ---
+I pinoli aggiungono una consistenza cremosa alla salsa.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['I', 'pinoli', 'aggiungono', 'una', 'consistenza', 'cremosa', 'alla', 'salsa', '.']
+Lemmas: ['il', 'pinolo', 'aggiungere', 'uno', 'consistenza', 'cremoso', 'a il', 'salsa', '.']
+POS (General): ['DET', 'NOUN', 'VERB', 'DET', 'NOUN', 'ADJ', 'ADP', 'NOUN', 'PUNCT']
+POS (Detailed): ['RD', 'S', 'V', 'RI', 'S', 'A', 'E_RD', 'S', 'FS']
+Dependency Relations: [('I', 'det', 'pinoli'), ('pinoli', 'nsubj', 'aggiungono'), ('aggiungono', 'ROOT', 'aggiungono'), ('una', 'det', 'consistenza'), ('consistenza', 'obj', 'aggiungono'), ('cremosa', 'amod', 'consistenza'), ('alla', 'case', 'salsa'), ('salsa', 'nmod', 'consistenza'), ('.', 'punct', 'aggiungono')]
+Noun Chunks: ['I pinoli', 'una consistenza cremosa', 'salsa']
+Named Entities (NER): []
+============================================================
+
+--- Original Sentence ---
+L'aglio dà al pesto un sapore forte e piccante.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ["L'", 'aglio', 'dà', 'al', 'pesto', 'un', 'sapore', 'forte', 'e', 'piccante', '.']
+Lemmas: ['il', 'aglio', 'dare', 'a il', 'pesto', 'uno', 'sapore', 'forte', 'e', 'piccante', '.']
+POS (General): ['DET', 'NOUN', 'VERB', 'ADP', 'NOUN', 'DET', 'NOUN', 'ADJ', 'CCONJ', 'ADV', 'PUNCT']
+POS (Detailed): ['RD', 'S', 'V', 'E_RD', 'S', 'RI', 'S', 'A', 'CC', 'A', 'FS']
+Dependency Relations: [("L'", 'det', 'aglio'), ('aglio', 'nsubj', 'dà'), ('dà', 'ROOT', 'dà'), ('al', 'case', 'pesto'), ('pesto', 'obl', 'dà'), ('un', 'det', 'sapore'), ('sapore', 'obj', 'dà'), ('forte', 'amod', 'sapore'), ('e', 'cc', 'piccante'), ('piccante', 'conj', 'forte'), ('.', 'punct', 'dà')]
+Noun Chunks: ["L'aglio", 'pesto', 'un sapore forte e piccante']
+Named Entities (NER): []
+============================================================
+
+--- Original Sentence ---
+L'olio extravergine di oliva unisce tutti gli ingredienti.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ["L'", 'olio', 'extravergine', 'di', 'oliva', 'unisce', 'tutti', 'gli', 'ingredienti', '.']
+Lemmas: ['il', 'olio', 'extravergine', 'di', 'oliva', 'unire', 'tutto', 'il', 'ingrediente', '.']
+POS (General): ['DET', 'NOUN', 'ADJ', 'ADP', 'NOUN', 'VERB', 'DET', 'DET', 'NOUN', 'PUNCT']
+POS (Detailed): ['RD', 'S', 'A', 'E', 'S', 'V', 'T', 'RD', 'A', 'FS']
+Dependency Relations: [("L'", 'det', 'olio'), ('olio', 'nsubj', 'unisce'), ('extravergine', 'amod', 'olio'), ('di', 'case', 'oliva'), ('oliva', 'nmod', 'olio'), ('unisce', 'ROOT', 'unisce'), ('tutti', 'det:predet', 'ingredienti'), ('gli', 'det', 'ingredienti'), ('ingredienti', 'obj', 'unisce'), ('.', 'punct', 'unisce')]
+Noun Chunks: ["L'olio extravergine", 'oliva', 'tutti gli ingredienti']
+Named Entities (NER): []
+============================================================
+
+--- Original Sentence ---
+Il formaggio Parmigiano Reggiano aggiunge un gusto ricco e salato.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['Il', 'formaggio', 'Parmigiano', 'Reggiano', 'aggiunge', 'un', 'gusto', 'ricco', 'e', 'salato', '.']
+Lemmas: ['il', 'formaggio', 'Parmigiano', 'Reggiano', 'aggiungere', 'uno', 'gusto', 'ricco', 'e', 'salato', '.']
+POS (General): ['DET', 'NOUN', 'PROPN', 'PROPN', 'VERB', 'DET', 'NOUN', 'ADJ', 'CCONJ', 'NOUN', 'PUNCT']
+POS (Detailed): ['RD', 'S', 'SP', 'SP', 'V', 'RI', 'S', 'A', 'CC', 'S', 'FS']
+Dependency Relations: [('Il', 'det', 'formaggio'), ('formaggio', 'nsubj', 'aggiunge'), ('Parmigiano', 'nmod', 'formaggio'), ('Reggiano', 'flat:name', 'Parmigiano'), ('aggiunge', 'ROOT', 'aggiunge'), ('un', 'det', 'gusto'), ('gusto', 'obj', 'aggiunge'), ('ricco', 'amod', 'gusto'), ('e', 'cc', 'salato'), ('salato', 'conj', 'ricco'), ('.', 'punct', 'aggiunge')]
+Noun Chunks: ['Il formaggio', 'Parmigiano Reggiano', 'un gusto ricco e salato']
+Named Entities (NER): [('Parmigiano Reggiano', 'LOC')]
+============================================================
+
+--- Original Sentence ---
+Il formaggio Pecorino rende il sapore ancora più intenso.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['Il', 'formaggio', 'Pecorino', 'rende', 'il', 'sapore', 'ancora', 'più', 'intenso', '.']
+Lemmas: ['il', 'formaggio', 'Pecorino', 'rendere', 'il', 'sapore', 'ancora', 'più', 'intenso', '.']
+POS (General): ['DET', 'NOUN', 'PROPN', 'VERB', 'DET', 'NOUN', 'ADV', 'ADV', 'ADJ', 'PUNCT']
+POS (Detailed): ['RD', 'S', 'SP', 'V', 'RD', 'S', 'B', 'B', 'A', 'FS']
+Dependency Relations: [('Il', 'det', 'formaggio'), ('formaggio', 'nsubj', 'rende'), ('Pecorino', 'nmod', 'formaggio'), ('rende', 'ROOT', 'rende'), ('il', 'det', 'sapore'), ('sapore', 'obj', 'rende'), ('ancora', 'advmod', 'più'), ('più', 'advmod', 'intenso'), ('intenso', 'xcomp', 'rende'), ('.', 'punct', 'rende')]
+Noun Chunks: ['Il formaggio', 'Pecorino', 'il sapore']
+Named Entities (NER): [('Pecorino', 'LOC')]
+============================================================
+
+--- Original Sentence ---
+Un mortaio di marmo tradizionale è il migliore per schiacciare gli ingredienti.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['Un', 'mortaio', 'di', 'marmo', 'tradizionale', 'è', 'il', 'migliore', 'per', 'schiacciare', 'gli', 'ingredienti', '.']
+Lemmas: ['uno', 'mortaio', 'di', 'marmo', 'tradizionale', 'essere', 'il', 'migliore', 'per', 'schiacciare', 'il', 'ingrediente', '.']
+POS (General): ['DET', 'NOUN', 'ADP', 'NOUN', 'ADJ', 'AUX', 'DET', 'ADJ', 'ADP', 'VERB', 'DET', 'NOUN', 'PUNCT']
+POS (Detailed): ['RI', 'S', 'E', 'S', 'A', 'V', 'RD', 'A', 'E', 'V', 'RD', 'A', 'FS']
+Dependency Relations: [('Un', 'det', 'mortaio'), ('mortaio', 'nsubj', 'migliore'), ('di', 'case', 'marmo'), ('marmo', 'nmod', 'mortaio'), ('tradizionale', 'amod', 'marmo'), ('è', 'cop', 'migliore'), ('il', 'det', 'migliore'), ('migliore', 'ROOT', 'migliore'), ('per', 'mark', 'schiacciare'), ('schiacciare', 'advcl', 'migliore'), ('gli', 'det', 'ingredienti'), ('ingredienti', 'obj', 'schiacciare'), ('.', 'punct', 'migliore')]
+Noun Chunks: ['Un mortaio', 'marmo tradizionale', 'gli ingredienti']
+Named Entities (NER): []
+============================================================
+
+--- Original Sentence ---
+Dovresti schiacciare prima l'aglio e i pinoli.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['Dovresti', 'schiacciare', 'prima', "l'", 'aglio', 'e', 'i', 'pinoli', '.']
+Lemmas: ['Dovresti', 'schiacciare', 'prima', 'il', 'aglio', 'e', 'il', 'pinolo', '.']
+POS (General): ['AUX', 'VERB', 'ADV', 'DET', 'NOUN', 'CCONJ', 'DET', 'NOUN', 'PUNCT']
+POS (Detailed): ['VM', 'V', 'B', 'RD', 'S', 'CC', 'RD', 'S', 'FS']
+Dependency Relations: [('Dovresti', 'aux', 'schiacciare'), ('schiacciare', 'ROOT', 'schiacciare'), ('prima', 'advmod', 'schiacciare'), ("l'", 'det', 'aglio'), ('aglio', 'obj', 'schiacciare'), ('e', 'cc', 'pinoli'), ('i', 'det', 'pinoli'), ('pinoli', 'conj', 'aglio'), ('.', 'punct', 'schiacciare')]
+Noun Chunks: ["l'aglio", 'i pinoli']
+Named Entities (NER): []
+============================================================
+
+--- Original Sentence ---
+Aggiungi l'olio lentamente mentre mescoli tutto in una pasta liscia.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['Aggiungi', "l'", 'olio', 'lentamente', 'mentre', 'mescoli', 'tutto', 'in', 'una', 'pasta', 'liscia', '.']
+Lemmas: ['Aggiungi', 'il', 'olio', 'lentamente', 'mentre', 'mescolare', 'tutto', 'in', 'uno', 'pasta', 'liscia', '.']
+POS (General): ['ADV', 'DET', 'NOUN', 'ADV', 'SCONJ', 'VERB', 'PRON', 'ADP', 'DET', 'NOUN', 'NOUN', 'PUNCT']
+POS (Detailed): ['B', 'RD', 'S', 'B', 'CS', 'V', 'PI', 'E', 'RI', 'S', 'S', 'FS']
+Dependency Relations: [('Aggiungi', 'ROOT', 'Aggiungi'), ("l'", 'det', 'olio'), ('olio', 'nsubj', 'Aggiungi'), ('lentamente', 'advmod', 'Aggiungi'), ('mentre', 'mark', 'mescoli'), ('mescoli', 'advcl', 'Aggiungi'), ('tutto', 'obj', 'mescoli'), ('in', 'case', 'liscia'), ('una', 'det', 'liscia'), ('pasta', 'amod', 'liscia'), ('liscia', 'obl', 'mescoli'), ('.', 'punct', 'Aggiungi')]
+Noun Chunks: ["l'olio", 'tutto', 'una pasta liscia']
+Named Entities (NER): []
+============================================================
+

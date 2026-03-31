@@ -1,0 +1,130 @@
+--- Original Sentence ---
+Fresh basil leaves are the main ingredient for pesto.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['Fresh', 'basil', 'leaves', 'are', 'the', 'main', 'ingredient', 'for', 'pesto', '.']
+Lemmas: ['fresh', 'basil', 'leaf', 'be', 'the', 'main', 'ingredient', 'for', 'pesto', '.']
+POS (General): ['ADJ', 'NOUN', 'NOUN', 'AUX', 'DET', 'ADJ', 'NOUN', 'ADP', 'NOUN', 'PUNCT']
+POS (Detailed): ['JJ', 'NN', 'NNS', 'VBP', 'DT', 'JJ', 'NN', 'IN', 'NN', '.']
+Dependency Relations: [('Fresh', 'amod', 'leaves'), ('basil', 'compound', 'leaves'), ('leaves', 'nsubj', 'are'), ('are', 'ROOT', 'are'), ('the', 'det', 'ingredient'), ('main', 'amod', 'ingredient'), ('ingredient', 'attr', 'are'), ('for', 'prep', 'ingredient'), ('pesto', 'pobj', 'for'), ('.', 'punct', 'are')]
+Noun Chunks: ['Fresh basil leaves', 'the main ingredient', 'pesto']
+Named Entities (NER): []
+============================================================
+
+--- Original Sentence ---
+You must wash and dry the basil leaves carefully.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['You', 'must', 'wash', 'and', 'dry', 'the', 'basil', 'leaves', 'carefully', '.']
+Lemmas: ['you', 'must', 'wash', 'and', 'dry', 'the', 'basil', 'leave', 'carefully', '.']
+POS (General): ['PRON', 'AUX', 'VERB', 'CCONJ', 'VERB', 'DET', 'NOUN', 'VERB', 'ADV', 'PUNCT']
+POS (Detailed): ['PRP', 'MD', 'VB', 'CC', 'VB', 'DT', 'NN', 'VBZ', 'RB', '.']
+Dependency Relations: [('You', 'nsubj', 'wash'), ('must', 'aux', 'wash'), ('wash', 'ROOT', 'wash'), ('and', 'cc', 'wash'), ('dry', 'conj', 'wash'), ('the', 'det', 'basil'), ('basil', 'nsubj', 'leaves'), ('leaves', 'dobj', 'dry'), ('carefully', 'advmod', 'leaves'), ('.', 'punct', 'wash')]
+Noun Chunks: ['You', 'the basil']
+Named Entities (NER): []
+============================================================
+
+--- Original Sentence ---
+Pine nuts add a creamy texture to the sauce.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['Pine', 'nuts', 'add', 'a', 'creamy', 'texture', 'to', 'the', 'sauce', '.']
+Lemmas: ['pine', 'nut', 'add', 'a', 'creamy', 'texture', 'to', 'the', 'sauce', '.']
+POS (General): ['NOUN', 'NOUN', 'VERB', 'DET', 'ADJ', 'NOUN', 'ADP', 'DET', 'NOUN', 'PUNCT']
+POS (Detailed): ['NN', 'NNS', 'VBP', 'DT', 'JJ', 'NN', 'IN', 'DT', 'NN', '.']
+Dependency Relations: [('Pine', 'compound', 'nuts'), ('nuts', 'nsubj', 'add'), ('add', 'ROOT', 'add'), ('a', 'det', 'texture'), ('creamy', 'amod', 'texture'), ('texture', 'dobj', 'add'), ('to', 'prep', 'add'), ('the', 'det', 'sauce'), ('sauce', 'pobj', 'to'), ('.', 'punct', 'add')]
+Noun Chunks: ['Pine nuts', 'a creamy texture', 'the sauce']
+Named Entities (NER): []
+============================================================
+
+--- Original Sentence ---
+Garlic gives the pesto a strong and spicy flavor.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['Garlic', 'gives', 'the', 'pesto', 'a', 'strong', 'and', 'spicy', 'flavor', '.']
+Lemmas: ['Garlic', 'give', 'the', 'pesto', 'a', 'strong', 'and', 'spicy', 'flavor', '.']
+POS (General): ['PROPN', 'VERB', 'DET', 'NOUN', 'DET', 'ADJ', 'CCONJ', 'ADJ', 'NOUN', 'PUNCT']
+POS (Detailed): ['NNP', 'VBZ', 'DT', 'NN', 'DT', 'JJ', 'CC', 'JJ', 'NN', '.']
+Dependency Relations: [('Garlic', 'nsubj', 'gives'), ('gives', 'ROOT', 'gives'), ('the', 'det', 'pesto'), ('pesto', 'dative', 'gives'), ('a', 'det', 'flavor'), ('strong', 'amod', 'flavor'), ('and', 'cc', 'strong'), ('spicy', 'conj', 'strong'), ('flavor', 'dobj', 'gives'), ('.', 'punct', 'gives')]
+Noun Chunks: ['Garlic', 'the pesto', 'a strong and spicy flavor']
+Named Entities (NER): [('Garlic', 'NORP')]
+============================================================
+
+--- Original Sentence ---
+Extra virgin olive oil connects all the ingredients together.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['Extra', 'virgin', 'olive', 'oil', 'connects', 'all', 'the', 'ingredients', 'together', '.']
+Lemmas: ['extra', 'virgin', 'olive', 'oil', 'connect', 'all', 'the', 'ingredient', 'together', '.']
+POS (General): ['ADJ', 'ADJ', 'NOUN', 'NOUN', 'VERB', 'DET', 'DET', 'NOUN', 'ADV', 'PUNCT']
+POS (Detailed): ['JJ', 'JJ', 'NN', 'NN', 'VBZ', 'PDT', 'DT', 'NNS', 'RB', '.']
+Dependency Relations: [('Extra', 'amod', 'oil'), ('virgin', 'amod', 'oil'), ('olive', 'compound', 'oil'), ('oil', 'nsubj', 'connects'), ('connects', 'ROOT', 'connects'), ('all', 'predet', 'ingredients'), ('the', 'det', 'ingredients'), ('ingredients', 'dobj', 'connects'), ('together', 'advmod', 'connects'), ('.', 'punct', 'connects')]
+Noun Chunks: ['Extra virgin olive oil', 'all the ingredients']
+Named Entities (NER): [('Extra', 'ORG')]
+============================================================
+
+--- Original Sentence ---
+Parmigiano Reggiano cheese adds a rich and salty taste.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['Parmigiano', 'Reggiano', 'cheese', 'adds', 'a', 'rich', 'and', 'salty', 'taste', '.']
+Lemmas: ['Parmigiano', 'Reggiano', 'cheese', 'add', 'a', 'rich', 'and', 'salty', 'taste', '.']
+POS (General): ['PROPN', 'PROPN', 'NOUN', 'VERB', 'DET', 'ADJ', 'CCONJ', 'ADJ', 'NOUN', 'PUNCT']
+POS (Detailed): ['NNP', 'NNP', 'NN', 'VBZ', 'DT', 'JJ', 'CC', 'JJ', 'NN', '.']
+Dependency Relations: [('Parmigiano', 'compound', 'Reggiano'), ('Reggiano', 'compound', 'cheese'), ('cheese', 'nsubj', 'adds'), ('adds', 'ROOT', 'adds'), ('a', 'det', 'taste'), ('rich', 'amod', 'taste'), ('and', 'cc', 'rich'), ('salty', 'conj', 'rich'), ('taste', 'dobj', 'adds'), ('.', 'punct', 'adds')]
+Noun Chunks: ['Parmigiano Reggiano cheese', 'a rich and salty taste']
+Named Entities (NER): [('Parmigiano Reggiano', 'PERSON')]
+============================================================
+
+--- Original Sentence ---
+Pecorino cheese makes the flavor even more intense.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['Pecorino', 'cheese', 'makes', 'the', 'flavor', 'even', 'more', 'intense', '.']
+Lemmas: ['pecorino', 'cheese', 'make', 'the', 'flavor', 'even', 'more', 'intense', '.']
+POS (General): ['ADJ', 'NOUN', 'VERB', 'DET', 'NOUN', 'ADV', 'ADV', 'ADJ', 'PUNCT']
+POS (Detailed): ['JJ', 'NN', 'VBZ', 'DT', 'NN', 'RB', 'RBR', 'JJ', '.']
+Dependency Relations: [('Pecorino', 'amod', 'cheese'), ('cheese', 'nsubj', 'makes'), ('makes', 'ROOT', 'makes'), ('the', 'det', 'flavor'), ('flavor', 'nsubj', 'intense'), ('even', 'advmod', 'more'), ('more', 'advmod', 'intense'), ('intense', 'ccomp', 'makes'), ('.', 'punct', 'makes')]
+Noun Chunks: ['Pecorino cheese', 'the flavor']
+Named Entities (NER): [('Pecorino', 'GPE')]
+============================================================
+
+--- Original Sentence ---
+A traditional marble mortar is best for crushing the ingredients.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['A', 'traditional', 'marble', 'mortar', 'is', 'best', 'for', 'crushing', 'the', 'ingredients', '.']
+Lemmas: ['a', 'traditional', 'marble', 'mortar', 'be', 'good', 'for', 'crush', 'the', 'ingredient', '.']
+POS (General): ['DET', 'ADJ', 'NOUN', 'NOUN', 'AUX', 'ADJ', 'ADP', 'VERB', 'DET', 'NOUN', 'PUNCT']
+POS (Detailed): ['DT', 'JJ', 'NN', 'NN', 'VBZ', 'JJS', 'IN', 'VBG', 'DT', 'NNS', '.']
+Dependency Relations: [('A', 'det', 'mortar'), ('traditional', 'amod', 'mortar'), ('marble', 'compound', 'mortar'), ('mortar', 'nsubj', 'is'), ('is', 'ROOT', 'is'), ('best', 'acomp', 'is'), ('for', 'prep', 'is'), ('crushing', 'pcomp', 'for'), ('the', 'det', 'ingredients'), ('ingredients', 'dobj', 'crushing'), ('.', 'punct', 'is')]
+Noun Chunks: ['A traditional marble mortar', 'the ingredients']
+Named Entities (NER): []
+============================================================
+
+--- Original Sentence ---
+You should crush the garlic and pine nuts first.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['You', 'should', 'crush', 'the', 'garlic', 'and', 'pine', 'nuts', 'first', '.']
+Lemmas: ['you', 'should', 'crush', 'the', 'garlic', 'and', 'pine', 'nut', 'first', '.']
+POS (General): ['PRON', 'AUX', 'VERB', 'DET', 'NOUN', 'CCONJ', 'ADJ', 'NOUN', 'ADV', 'PUNCT']
+POS (Detailed): ['PRP', 'MD', 'VB', 'DT', 'NN', 'CC', 'JJ', 'NNS', 'RB', '.']
+Dependency Relations: [('You', 'nsubj', 'crush'), ('should', 'aux', 'crush'), ('crush', 'ROOT', 'crush'), ('the', 'det', 'garlic'), ('garlic', 'dobj', 'crush'), ('and', 'cc', 'garlic'), ('pine', 'conj', 'garlic'), ('nuts', 'dobj', 'crush'), ('first', 'advmod', 'crush'), ('.', 'punct', 'crush')]
+Noun Chunks: ['You', 'the garlic', 'nuts']
+Named Entities (NER): [('first', 'ORDINAL')]
+============================================================
+
+--- Original Sentence ---
+Add the oil slowly while mixing everything into a smooth paste.
+
+Stemming: Not supported natively by Spacy (uses Lemmatization instead)
+Tokens: ['Add', 'the', 'oil', 'slowly', 'while', 'mixing', 'everything', 'into', 'a', 'smooth', 'paste', '.']
+Lemmas: ['add', 'the', 'oil', 'slowly', 'while', 'mix', 'everything', 'into', 'a', 'smooth', 'paste', '.']
+POS (General): ['VERB', 'DET', 'NOUN', 'ADV', 'SCONJ', 'VERB', 'PRON', 'ADP', 'DET', 'ADJ', 'NOUN', 'PUNCT']
+POS (Detailed): ['VB', 'DT', 'NN', 'RB', 'IN', 'VBG', 'NN', 'IN', 'DT', 'JJ', 'NN', '.']
+Dependency Relations: [('Add', 'ROOT', 'Add'), ('the', 'det', 'oil'), ('oil', 'dobj', 'Add'), ('slowly', 'advmod', 'Add'), ('while', 'mark', 'mixing'), ('mixing', 'advcl', 'Add'), ('everything', 'dobj', 'mixing'), ('into', 'prep', 'mixing'), ('a', 'det', 'paste'), ('smooth', 'amod', 'paste'), ('paste', 'pobj', 'into'), ('.', 'punct', 'Add')]
+Noun Chunks: ['the oil', 'everything', 'a smooth paste']
+Named Entities (NER): []
+============================================================
+
