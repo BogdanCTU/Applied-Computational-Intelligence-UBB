@@ -563,6 +563,57 @@ When designing agents as objects, the primary components are:
 2.  **Select Framework:** Choose a platform (like **JADE for Java** or **SPADE for Pyhton**);
 3.  **Implement:** Build the agents, their communication protocols, and the solution logic.
 
+```mermaid
+classDiagram
+    class Action {
+        <<abstract>>
+        +execute(Agent, State) State*
+    }
+
+    class State {
+        <<abstract>>
+        +display() void*
+    }
+    
+    note for State "methods to update and retrieve aspects of the state"
+
+    class Percept {
+        <<abstract>>
+        +Percept(State, Agent)
+    }
+    
+    note for Percept "every subclass should override this default constructor"
+```
+
+```mermaid
+classDiagram
+
+class Agent {
+    +Percept perceive()
+    +Action act(Percept p)
+}
+
+class Environment {
+    -State state
+    +Percept getPercept(Agent a)
+    +void updateState(Agent a, Action act)
+    +State currentState()
+    +void setInitialState(State s)
+}
+
+class Simulation {
+    -Agent agent
+    -Environment environment
+    +Simulation(Agent a, Environment e)
+    +void start(State s)
+    +boolean isComplete()
+}
+
+Agent --> Environment : interacts
+Simulation --> Agent : contains
+Simulation --> Environment : contains
+```
+
 ---
 
 <!-- --------------------------------------------------------------- -->
