@@ -83,7 +83,7 @@ _Brief Example_: Think of a standard traffic light.
 
 ---
 
-### 📑 6.3.3. Agent-Based Systems Design
+### 📖 6.3 Agent-Based Systems Design
 
 **Multi-Agent System (MAS) Design** focuses on how multiple intelligent entities interact with their environment and each other.
 
@@ -146,7 +146,7 @@ class MultiAgentSimulator:
 
 ---
 
-### 📑 6.4 Object-Oriented (OO) Design: PAGE(S)
+### 📖 6.4 Object-Oriented (OO) Design: PAGE(S)
 When designing agents as objects, the primary components are:
 * **Agent:** The entity selecting actions;
 * **Environment:** The external world the agent lives in;
