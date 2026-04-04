@@ -154,6 +154,60 @@ When designing agents as objects, the primary components are:
 * **Percept:** The specific data the agent receives from the state;
 * **Action:** The output/movement the agent performs.
 
+%% Defines the structure of the agent-based system classes based on the sketch.
+%% The abstract nature of the classes and methods is indicated using standard Mermaid syntax.
+
+```mermaid
+classDiagram
+    class Action {
+        <<abstract>>
+        +execute(Agent, State) State*
+    }
+
+    class State {
+        <<abstract>>
+        +display() void*
+    }
+    
+    note for State "methods to update and retrieve aspects of the state"
+
+    class Percept {
+        <<abstract>>
+        +Percept(State, Agent)
+    }
+    
+    note for Percept "every subclass should override this default constructor"
+```
+
+```mermaid
+classDiagram
+
+class Agent {
+    +Percept perceive()
+    +Action act(Percept p)
+}
+
+class Environment {
+    -State state
+    +Percept getPercept(Agent a)
+    +void updateState(Agent a, Action act)
+    +State currentState()
+    +void setInitialState(State s)
+}
+
+class Simulation {
+    -Agent agent
+    -Environment environment
+    +Simulation(Agent a, Environment e)
+    +void start(State s)
+    +boolean isComplete()
+}
+
+Agent --> Environment : interacts
+Simulation --> Agent : contains
+Simulation --> Environment : contains
+```
+
 ### 📑 6.4.1 Communication Models
 1.  🔴 **Blackboard:** A shared data repository where agents read and write information indirectly;
 2.  🔴 **Message Passing:** Agents send direct messages to one another, often using **ACL (Agent Communication Language)**.
