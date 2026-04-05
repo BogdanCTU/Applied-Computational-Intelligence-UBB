@@ -42,6 +42,23 @@ To write a good summary, the text must make sense. This relies on two concepts:
 | **Meronymy**    | Using a part-to-whole relationship.                                        | "tire" → part of "car"                                                  |
 | **Antonymy**    | Using words with opposite meanings.                                        | "old" ↔ "new"                                                           |
 
+### 📑 4.2.3 Tool for the Automatic Analysis of Cohesion (TAACO)
+
+🔴 **Tool for the Automatic Analysis of Cohesion** (_TAACO_) is a free software program used to measure how well a text connects and flows together, which is known as cohesion. It is easy to use, works on most operating systems like Windows, Mac and Linux, and can process many text files at once. The tool uses over 150 different measurements, called indices, to evaluate a text.
+
+The Three Levels of CohesionTAACO focuses on three main ways a text sticks together:
+* **Local Cohesion**: This looks at connections at the sentence level, meaning how well smaller chunks of text link to one another;
+* **Global Cohesion**: This looks at connections between larger chunks of text, which are usually paragraphs;
+* **Overall text Cohesion**: This looks at the entire text as a whole to see how often cohesive features appear, such as how much the vocabulary varies across the document.
+
+Here are six specific ways TAACO measures cohesion:
+* **Sentence overlap**: This measures local cohesion by checking if neighboring sentences share the same root words, which are called lemmas;
+* **Paragraph overlap**: This measures global cohesion by checking if neighboring paragraphs share the same root words;
+* **Semantic overlap**: This measures both local and global cohesion. It uses a dictionary database called WordNet to check if words or groups of similar words (synsets) are shared between sentences and paragraphs;
+* **Givenness**: This measures overall text cohesion by counting how many pointing words are used. These include pronouns (like "he" or "it"), definite articles (like "the"), and demonstratives (like "this" or "that");
+* **Type-token ratio**: This measures overall text cohesion by checking how much words are repeated. It does this by dividing the total number of words in the text (tokens) by the number of unique, individual words (types);
+* **Connectives**: This measures local cohesion by counting linking words. It tracks different types of links, such as positive versus negative words, or words that show time (temporal), add information (additive), or show cause and effect (causative).
+
 ---
 
 ## 📖 4.3 Types of Summaries
