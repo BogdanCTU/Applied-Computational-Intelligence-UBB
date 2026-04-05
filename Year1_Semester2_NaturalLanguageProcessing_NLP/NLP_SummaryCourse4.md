@@ -81,8 +81,27 @@ Every summarizer follows three steps:
 Definitions:
 * **Extractive Summarization**: This method selects existing, important sentences from the original document and glues them together. It uses statistics and word patterns to find the best sentences.
     * _Outcome_: It has high factual accuracy but can read like a choppy list of sentences;
+
+<img width="714" height="280" alt="image" src="https://github.com/user-attachments/assets/6eeba4aa-2503-4cd6-9a8b-ef013bb6334e" />
+
+> ##### Image: Architecture for extraction
+
 * **Abstractive Summarization**: This method understands the original text and retells it in fewer, new words. It uses complex Natural Language Processing (NLP)—how computers interpret human language—to write fluently.
     * _Outcome_: It creates a very natural summary using Generative AI, but it might accidentally change the original facts.
+
+<img width="717" height="277" alt="image" src="https://github.com/user-attachments/assets/7aafb078-af3a-4f65-b0c2-246a4312962e" />
+
+> ##### Image: Architecture for abstraction
+
+| Feature                              | Extractive Summarization        | Abstractive Summarization            |
+|--------------------------------------|--------------------------------|-------------------------------------|
+| Approach                             | Extracts key sentences         | Generates new summaries             |
+| Focus                                | Surface-level features         | Context and meaning                 |
+| Use of AI                            | Limited                        | Generative AI (LLMs)                |
+| Generate creative and engaging summaries | No                         | Yes                                 |
+| Output Style                         | Choppy, sentence-like          | More fluent and coherent            |
+| Preserve original content            | Yes                            | No                                  |
+| Information Preservation             | High factual accuracy          | May introduce paraphrases           |
 
 ---
 
