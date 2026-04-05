@@ -29,7 +29,11 @@ The mathematical model is defined as $M=(Q,V,A,B,q_{0})$:
 To make the math simple, HMMs rely on two strict rules:
 * **Markov Assumption**: The probability of the next state depends only on the current state, ignoring all older history. The formula is $P(q_{i}|q_{1},...,q_{i-1})=P(q_{i}|q_{i-1})$.
 * **Output Independence**: The probability of an observed event depends only on the hidden state that made it, ignoring all other states or observations.
-  The formula is $P(o_{i}|q_{1}...q_{i}...q_{T},o_{1}...o_{i}...o_{T})=P(o_{i}|q_{i})$.
+  The formula is $P(o_{i}|q_{1}...q_{i}...q_{T},o_{1}...o_{i}...o_{T})=P(o_{i}|q_{i})$. Note, "o1, o2, o3" are the output sequence (the sequence of observations)
+
+<img width="813" height="267" alt="image" src="https://github.com/user-attachments/assets/e0c06f90-9151-4dd9-b0c8-0b357812b327" />
+
+> ##### Image: Temporal evolution of an HMM
 
 ---
 
@@ -47,7 +51,32 @@ When working with HMMs, there are three main mathematical tasks:
 Both the Forward and Viterbi algorithms use dynamic programming. They process events in a sequence step-by-step.
 * **Forward Algorithm**: Calculates the overall probability that a sequence of observations could happen at all. It does this by adding up the probabilities of every possible path through the hidden states;
 * **Viterbi Algorithm**: Finds the single best path of hidden states. Instead of adding probabilities, it looks for the maximum probability at each step and uses a "backpointer" to remember the winning path;
-Example on "Weather Problem": If Alice only observes Bob's activities (Walk, Shop, Clean), she can use the Viterbi algorithm to guess the hidden weather (Rainy, Sunny) that caused those activities.
+
+
+## 📖 6.3.1 Weather Problem Example
+If Alice only observes Bob's activities (Walk, Shop, Clean), she can use the Viterbi algorithm to guess the hidden weather (Rainy, Sunny) that caused those activities.
+
+* HMM - finite state automaton
+    * M = (Q, V, A, B, q0);
+    * Q = {Rainy, Sunny}, _states(hidden events)_;
+    * V = {Walk, Shop, Clean}, _observations_;
+    * q0 = Start / Start State;
+    * model: u=(A,B).
+
+The **transition probability matrix** A:
+
+| A      | Rainy                 | Sunny                  |
+|--------|-----------------------|------------------------|
+| Start  | P(Rainy|Start) = 0.6  | P(Sunny|Start) = 0.4   |
+| Rainy  | P(Rainy|Rainy) = 0.7  | P(Sunny|Rainy) = 0.3   |
+| Sunny  | P(Rainy|Sunny) = 0.4  |  P(Sunny|Sunny) = 0.6  |
+
+The **emission probability matrix** B:
+
+| B      | Walk                 | Shop                   | Clean               |
+|--------|----------------------|------------------------|---------------------|
+| Rainy  | P(Walk|Rainy) = 0.1  | P(Shop|Rainy) = 0.4  | P(Clean|Rainy) = 0.5  |
+| Sunny  | P(Walk|Sunny) = 0.6  | P(Shop|Sunny) = 0.3  | P(Clean|Sunny) = 0.1  |
 
 ---
 
