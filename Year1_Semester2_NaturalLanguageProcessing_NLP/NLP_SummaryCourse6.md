@@ -119,10 +119,89 @@ Forward Algorithm calculations over the probability of a sequence of observation
 
 **POS Tagging is the process of labeling each word in a text with its grammatical class**, **like noun or verb**.
 It helps computers process text for searches, information extraction and correct pronunciation.
+
 **How HMMs do it**:
 * **Words are the observed events**;
 * **POS tags are the hidden events**;
 * **Transition Probability** $P(t2|t1)$: The chance of one tag following another (e.g., a noun following an adjective);
 * **Emission Probability** $P(w|t)$: The chance of a specific tag emitting a specific word (e.g., the tag "Verb" emitting the word "race").
 
-To decode a sentence (like "I want to race"), the system runs the Viterbi algorithm to find the sequence of POS tags with the highest final probability.
+### 📑 6.4.1 Penn Treebank POS Tags
+
+| Tag    | Description             | Example      |
+|--------|-------------------------|--------------|
+| **CC** | coordinated conjunction | and, but, or |
+| **CD** | cardinal number | one, two, four |
+| **DT** | determiner | a, the |
+| **EX** | existential ,,there" | there |
+| **FW** | foreign word | mea culpa |
+| **IN** | preposition | of, in ,by |
+| **JJ** | adjective | red |
+| **JJR** | adj. comparative | smaller |
+| **JJS** | adj.superlative | biggest |
+| **MD** | modal | can,should |
+| **NN** | noun singular | cat |
+| **NNS** | noun plural | books |
+| **NNP** | proper noun singular | John |
+| **NNPS** | proper noun plural | Carolinas |
+| **PDT** | predeterminer | all, both |
+| **POS** | possessive ending | 's |
+| **PRP** | personal pronoun | i,you,we |
+| **PRP$** | possessive pronoun | your, one's |
+| **RB** | adverb | quickly, soon |
+| **RBR** | adverb comparative | faster |
+| **RBS** | adverb superlative | fastest |
+| **TO** | ,,to" | to |
+| **RP** | Particle | off, up |
+| **VB** | verb, base form | eat |
+| **VBD** | verb, past tense | ate |
+| **VBG** | verb, gerund | eating |
+| **VBN** | verb, past participle | eaten |
+| **VBP** | verb, non pers 3sg | eat |
+| **VBZ** | verb, pers 3sg | eats |
+| **WDT** | wh-determiner | which, that |
+| **WP** | wh-pronoun | what, who |
+| **WP$** | possessive wh | whose |
+| **WRB** | wh-adverb | how, where |
+
+
+
+### 📑 6.4.2 Example of a HMM used for POS Tagging
+
+Assign POS-Tags for the words of the sentence "I want to race".
+To decode a sentence, the system runs the Viterbi algorithm to find the sequence of POS-Tags with the highest final probability.
+
+* M = (Q, V, A, B, q0), where: q0 = start (initial state);
+* Q = {VB, TO, NN, PPSS, ... } the set of hidden states corresponding to the parts-of-speech;
+* V = the set of English words;
+* O = ([I, want, to, race]), the sequence of observations.
+
+Transition Probability Matrix:
+
+| A | VB | TO | NN | PPSS |
+|-----|-----|-----|-----|-----|
+| **start** | P(VB\|start)=0.019 | P(TO\|start)=0.043 | P(NN\|start)=0.041 | P(PPSS\|start)=0.067 |
+| **VB** | P(VB\|VB)=0.0038 | P(TO\|VB)=0.035 | P(NN\|VB)=0.047 | P(PPSS\|VB)=0.007 |
+| **TO** | P(VB\|TO)=0.83 | P(TO\|TO)=0 | P(NN\|TO)=0.00047 | P(PPSS\|TO)=0 |
+| **NN** | P(VB\|NN)=0.004 | P(TO\|NN)=0.016 | P(NN\|NN)=0.087 | P(PPSS\|NN)=0.0045 |
+| **PPSS** | P(VB\|PPSS)=0.23 | P(TO\|PPSS)=0.00079 | P(NN\|PPSS)=0.0012 | P(PPSS\|PPSS)=0.00014 |
+
+Emission Probability Matrix>
+
+| B | I | want | to | race |
+|-----|-----|-----|-----|-----|
+| **VB** | P(I\|VB)=0 | P(want\|VB)=0.0093 | P(to\|VB)=0 | P(race\|VB)=0.00012 |
+| **TO / TQ** | P(I\|TQ)=0 | P(want\|TQ)=0 | P(to\|TO) 0.99 | P(race\|TO)=0 |
+| **NN** | P(I\|NN)=0 | P(want\|NN)=0.000054 | P(to\|NN)=0 | P(race\|NN)=0.00057 |
+| **PPSS** | P(I\|PPSS)=0.37 | P(want\|PPSS)=0 | P(to\|PPSS)=0 | P(race\|PPSS)=0 |
+
+Viterbi's Algorithm:
+
+| Viterbi | I | want | to | race |
+|-----|-----|-----|-----|-----|
+| **VB** | 0\*0.019=0 | 0.02479\*0.0093\*<br>\*0.23=0.000053 | 0 | 0.1836\*10-5 \*0.00012\*<br>\*0.83=1.8286656\*10-10 |
+| **TO** | 0\*0.043=0 | 0 | 0.000053\*0.99\*<br>\*0.035=<br>=0.1836\*10-5 | 0 |
+| **NN** | 0\*0.041=0 | 0.02479\*0.000054\*<br>\*0.0012=0.2\*10-8 | 0 | 0.1836\*10-5 \*0.00057\*<br>\*0.00047=4.918644\*10-13 |
+| **PPSS** | 0.37\*0.067=<br>= 0.02479 | 0 | 0 | 0 |
+
+
