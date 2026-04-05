@@ -52,7 +52,6 @@ Both the Forward and Viterbi algorithms use dynamic programming. They process ev
 * **Forward Algorithm**: Calculates the overall probability that a sequence of observations could happen at all. It does this by adding up the probabilities of every possible path through the hidden states;
 * **Viterbi Algorithm**: Finds the single best path of hidden states. Instead of adding probabilities, it looks for the maximum probability at each step and uses a "backpointer" to remember the winning path;
 
-
 ## 📖 6.3.1 Weather Problem Example
 If Alice only observes Bob's activities (Walk, Shop, Clean), she can use the Viterbi algorithm to guess the hidden weather (Rainy, Sunny) that caused those activities.
 
@@ -77,6 +76,18 @@ The **emission probability matrix** B:
 |--------|----------------------|------------------------|---------------------|
 | Rainy  | P(Walk|Rainy) = 0.1  | P(Shop|Rainy) = 0.4  | P(Clean|Rainy) = 0.5  |
 | Sunny  | P(Walk|Sunny) = 0.6  | P(Shop|Sunny) = 0.3  | P(Clean|Sunny) = 0.1  |
+
+<img width="697" height="390" alt="image" src="https://github.com/user-attachments/assets/8132357c-6499-4e30-9082-5882aeef9e5a" />
+
+> ##### Image: HMM State Machine
+
+Forward Algorithm calculations over the probability of a sequence of observations:
+
+| Time:     | Day 1 (t=1)           | Day 2 (t=2)                                                 | Day 3 (t=3)                                                      |
+|-----------|-----------------------|-------------------------------------------------------------|------------------------------------------------------------------|
+| Forward:  | Walk                  | Shop                                                        | Clean                                                            |
+| Rainy     | 0.6 * 0.1 = **0.06**  | **0.06** * 0.7 * 0.4 + **0.24** * 0.4 * 0.4 = _**0.0552**_  | _**0.0552**_ * 0.7 * 0.5 + _**0.0486**_ * 0.4 * 0.5 = 0.02904    |
+| Sunny     | 0.4 * 0.6 = **0.24**  | **0.06** * 0.3 * 0.3 + **0.24** * 0.6 * 0.3 = _**0.0486**_  | _**0.0552**_ * 0.3 * 0.1 + _**0.0486**_ * 0.6  * 0.1 = 0.004476  |
 
 ---
 
