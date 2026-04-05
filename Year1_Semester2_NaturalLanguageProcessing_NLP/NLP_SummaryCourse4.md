@@ -107,28 +107,41 @@ Definitions:
 
 ## 📖 4.6 How Computers Score Sentences (Extractive Features)
 In extractive summarization, a computer grades sentences to decide which ones to keep. Sentences score higher if they:
-* **Contain Keywords**: Sentences with highly frequent nouns get high scores;
-* **Match the Title**: Sentences that share words with the document's title are seen as important;
-* **Have Good Location**: The first and last sentences of paragraphs are usually the most valuable;
-* **Are the Right Length**: Sentences that are too short or too long are penalized;
-* **Include Clues**: Sentences with proper names, uppercase words, or cue phrases (like "in conclusion") get a boost.
+
+1) **Content word (Keyword) feature**: Sentences that contain frequent nouns, known as keywords, have a higher chance of being included in the summary;
+2) **Title word feature**: Sentences that share words with the document's title indicate the main theme and are more likely to be selected;
+3) **Sentence location feature**: The first and last sentences of the first and last paragraphs are usually considered the most important;
+4) **Sentence Length feature**: Sentences are penalized if they are too short or too long compared to the longest sentence in the document;
+5) **Proper Noun feature**: Sentences containing proper nouns, such as names of specific people or places, have a greater chance of being included;
+6) **Upper-case word feature**: Sentences that contain acronyms or proper names written in capital letters are more likely to be selected;
+7) **Cue-Phrase Feature**: Sentences containing transition words, such as "for example," "first," or "in conclusion," are highly likely to be included;
+8) **Biased Word Feature**: Sentences are marked as important if they contain words from a predefined list of topic-specific vocabulary;
+9) **Font based feature**: Sentences with words styled in bold, italics, underlined, or upper-case fonts are usually considered more important;
+10) **Pronouns**: Sentences containing pronouns, such as "she" or "it," are excluded unless the pronoun can be replaced with the specific noun it refers to;
+11) **Sentence-to-Sentence Cohesion**: Cohesion is how well parts of a text connect to each other. A sentence is scored by calculating how similar it is to every other sentence in the text, and sentences with high overall similarity are kept;
+12) **Sentence-to-Centroid Cohesion**: A centroid is the mathematical average of all sentences, representing the core idea. Sentences are compared to this central average, and those that are highly similar are selected because they represent the basic ideas of the document.
 
 ---
 
 ## 📖 4.7 Mathematical and AI Methods
 Computers use different algorithms to pick the best sentences:
 1) **Machine Learning**: The program looks at human-made summaries to learn the rules of extraction. It treats summarization as a simple choice: "Is this a summary sentence, Yes or No?";
-2) **Graph-Based Ranking** (**TextRank**): This treats sentences as points on a map (a graph).
+
+<img width="732" height="392" alt="image" src="https://github.com/user-attachments/assets/6f159d23-feeb-496b-8783-e06aa53d3116" />
+
+> ##### Image: Classifier learning how to summarize
+
+3) **Graph-Based Ranking** (**TextRank**): This treats sentences as points on a map (a graph).
     * Sentences "vote" for each other based on how similar they are;
     * Similarity is calculated by counting how many words the two sentences share;
     * Sentences with the most votes win and go into the summary;
     * The Formula: The ranking score uses a damping factor ($d$) and edge weights ($w$) for similarity:
     $$WS(V_{i})=(1-d)+d^{*}\sum_{V_{j}\in In(V_{i})}\frac{w_{ji}}{\sum_{V_{k}\in Out(V_{j})}w_{jk}}WS(V_{j})$$
-3) **Summarization by Clustering**: Clustering means grouping similar sentences together.
+4) **Summarization by Clustering**: Clustering means grouping similar sentences together.
     * By picking just one sentence from each group (cluster), the summary avoids repeating the same information;
     * **The Formula**: Computers group these sentences by measuring cosine similarity, as following:
     $$\mathrm{sim}(S_i,S_j)=\cos(V_i,V_j)=\frac{\sum_{k=1}^{m}f(i,t_k)\,f(j,t_k)}{\sqrt{\left(\sum_{k=1}^{m}f(i,t_k)^2\right)\left(\sum_{k=1}^{m}f(j,t_k)^2\right)}}$$
-4) **BERTSum** (**Neural Networks**): BERTSum is an advanced AI model that reads an entire document. It transforms words into complex mathematical vectors (embeddings) and uses a classifier to predict exactly which sentences should make the final cut.
+5) **BERTSum** (**Neural Networks**): BERTSum is an advanced AI model that reads an entire document. It transforms words into complex mathematical vectors (embeddings) and uses a classifier to predict exactly which sentences should make the final cut.
 
 ---
 
