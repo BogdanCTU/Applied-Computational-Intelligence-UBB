@@ -7,7 +7,15 @@
 
 ## 📖 5.1 Parsing Techniques
 * **Constituency Parsing**: Identifies groups of words, called constituents and arranges them in a hierarchical tree structure;
-**Dependency Parsing**: Connects words directly to each other using directed links to show how they relate. 
+* **Dependency Parsing**: Connects words directly to each other using directed links to show how they relate. 
+
+<img width="826" height="328" alt="image" src="https://github.com/user-attachments/assets/d2e6707c-3498-469b-91a5-85186ab92b82" />
+
+> ##### Image: Dependency Parsing using Relate-Teprolin
+
+<img width="675" height="564" alt="image" src="https://github.com/user-attachments/assets/e2b1dd02-2ec7-4a93-b1d3-a140e4664586" />
+
+> ##### Image: Constituency and Dependency Parsing
 
 ---
 
@@ -22,6 +30,7 @@ Words in a sentence naturally group together into units called phrases or consti
 
 ## 📖 5.3 Context-Free Grammars (_CFG_)
 🔴 **Syntactic Parsing** is the task of assigning a grammatical structure to a sentence using formal rules. For English, we model this using a **Context-Free Grammar** (_CFG_), which is a mathematical system that describes how to build correct sentences.
+
 A CFG has four parts:
 * **Start symbol** (_S_): The root of the entire sentence;
 * **Non-terminals** (_N_): Symbols representing phrases (like NP) or part-of-speech tags;
@@ -47,23 +56,32 @@ Parsers search for the correct grammatical tree using two main strategies:
 
 ## 📖 5.6 Dynamic Programming Parsing Methods
 These methods solve the re-parsing problem by using tables to save phrases as soon as they are discovered. 
-* **CKY Algorithm**: A bottom-up method driven by a table. It requires the grammar to be in **Chomsky Normal Form** (_CNF_), meaning every rule must break down into exactly two non-terminals or one word. It builds a matrix where each cell holds the phrases that cover a specific span of words;
+* 🔴 **Cocke-Kasami-Younger Algorithm** (_CKY_): A bottom-up method driven by a table. It requires the grammar to be in **Chomsky Normal Form** (_CNF_), meaning every rule must break down into exactly two non-terminals or one word. It builds a matrix where each cell holds the phrases that cover a specific span of words;
+
+<img width="571" height="413" alt="image" src="https://github.com/user-attachments/assets/57ea3b0c-e7c9-4c99-8b42-91618ef06fc9" />
+
+> ##### Image: Cocke-Kasami-Younger Algorithm
+ 
 * **Earley Algorithm**: A top-down search method that also uses tables to build predictions. 
 
 ---
 
 ## 📖 5.7 Statistical Parsing
-**Probabilistic Context-Free Grammar** (_PCFG_) is a CFG where every production rule is assigned a probability. 
+🔴 **Probabilistic Context-Free Grammar** (_PCFG_) is a Context-Free Grammar (CFG) where every production rule is assigned a **probability**.
 * These probabilities help solve ambiguity by allowing the computer to choose the most likely parse tree;
 * The probability of a specific parse tree is calculated by multiplying the probabilities of all the rules used to build it;
 * Rule probabilities are usually learned from a Treebank, which is a large database of sentences already parsed by humans. 
 
+<img width="843" height="510" alt="image" src="https://github.com/user-attachments/assets/29124110-5ca6-46b0-8d24-7bc6c634dd91" />
+
+> ##### Image: Probabilities sample for finding the right parse tree
+
 ---
 
 ## 📖 5.8 Evaluating Parsers
-🔴 **PARSEVAL** measures are standard formulas used to compare a computer's parse tree against a human-made "gold standard" reference tree. 
+🔴 **PARSEVAL** measures are standard formulas used to compare a computer's parse tree against a human-made "gold standard" reference tree;
 * **Labeled Recall**: The fraction of correct phrases in the human reference tree that the computer successfully found;
-* **Labeled Precision**: The fraction of phrases proposed by the computer that are actually correct. 
+* **Labeled Precision**: The fraction of phrases proposed by the computer that are actually correct.
 
 ---
 
