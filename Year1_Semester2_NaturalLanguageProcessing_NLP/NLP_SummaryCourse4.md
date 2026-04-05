@@ -20,6 +20,28 @@ To write a good summary, the text must make sense. This relies on two concepts:
     * _Grammatical cohesion_ links words using grammar, such as using pronouns (like "she") or conjunctions (like "because").
 * **The Rule**: A coherent text is always cohesive, but a cohesive text might not be coherent. Think of coherence as a finished building, and cohesion as the bricks.
 
+> ### 📚 Grammar Concepts
+
+### 4.2.1 Grammatical Cohesion
+
+| Concept        | Definition                                                                 | Example                                                                 |
+|----------------|-----------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| **Anaphora**       | Referring back to something previously mentioned.                           | "Jane was brilliant. She got the best score." ("She" → "Jane")          |
+| **Cataphora**      | Referring forward to something that will be mentioned.                      | "Here he comes our hero. Please, welcome John." ("he" → "John")         |
+| **Ellipsis**       | Omitting words that are understood from context.                            | "A: Where are you going? B: To dance." ("I am going" omitted)            |
+| **Substitution**   | Replacing a word/phrase with another to avoid repetition.                   | "I would like the pink one." ("one" → "T-shirt")                         |
+| **Conjunctions**   | Linking words that connect ideas or sentences.                              | "We agree on the principle but disagree on the method."                 |
+
+### 4.2.2 Lexical Cohesion
+
+| Concept     | Definition                                                                 | Example                                                                 |
+|-------------|-----------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| **Repetition**  | Reusing the same word multiple times.                                      | "Birds are beautiful. Everybody likes birds."                           |
+| **Synonymy**    | Using words with similar or identical meanings.                            | "snake" → "serpent"                                                     |
+| **Hyponymy**    | Using a general category to refer to a specific item.                      | "cat" → "animal"                                                        |
+| **Meronymy**    | Using a part-to-whole relationship.                                        | "tire" → part of "car"                                                  |
+| **Antonymy**    | Using words with opposite meanings.                                        | "old" ↔ "new"                                                           |
+
 ---
 
 ## 📖 4.3 Types of Summaries
