@@ -81,6 +81,8 @@ The **emission probability matrix** B:
 
 > ##### Image: HMM State Machine
 
+## 📖 6.3.2 Forward Algorithm on Weather Problem Example
+
 Forward Algorithm calculations over the probability of a sequence of observations:
 
 | Time:     | Day 1 (t=1)           | Day 2 (t=2)                                                 | Day 3 (t=3)                                                      |
@@ -88,6 +90,28 @@ Forward Algorithm calculations over the probability of a sequence of observation
 | Forward:  | Walk                  | Shop                                                        | Clean                                                            |
 | Rainy     | 0.6 * 0.1 = **0.06**  | **0.06** * 0.7 * 0.4 + **0.24** * 0.4 * 0.4 = _**0.0552**_  | _**0.0552**_ * 0.7 * 0.5 + _**0.0486**_ * 0.4 * 0.5 = 0.02904    |
 | Sunny     | 0.4 * 0.6 = **0.24**  | **0.06** * 0.3 * 0.3 + **0.24** * 0.6 * 0.3 = _**0.0486**_  | _**0.0552**_ * 0.3 * 0.1 + _**0.0486**_ * 0.6  * 0.1 = 0.004476  |
+
+<img width="478" height="388" alt="image" src="https://github.com/user-attachments/assets/27203798-f8f4-4bbc-aa12-893deabd1b56" />
+
+> ##### Image: Forward Algorithm State Machine
+
+## 📖 6.3.3 Viterbi Algorithm on Weather Problem Example
+
+| Time:     | Day 1 (t=1)           | Day 2 (t=2)                                                        | Day 3 (t=3)                                                            |
+|-----------|-----------------------|--------------------------------------------------------------------|------------------------------------------------------------------------|
+| Forward:  | Walk                  | Shop                                                               | Clean                                                                  |
+| Rainy     | 0.6 * 0.1 = **0.06**  | MAX( **0.06** * 0.7 * 0.4 , **0.24** * 0.4 * 0.4 ) = _**0.0384**_  | MAX( _**0.0384**_ * 0.7 * 0.5 , _**0.0432**_ * 0.4 * 0.5 ) = 0.01344   |
+| Sunny     | 0.4 * 0.6 = **0.24**  | MAX( **0.06** * 0.3 * 0.3 , **0.24** * 0.6 * 0.3 ) = _**0.0432**_  | MAX( _**0.0384**_ * 0.3 * 0.1 , _**0.0432**_ * 0.6  * 0.1 ) = 0.00259  |
+
+<img width="612" height="463" alt="image" src="https://github.com/user-attachments/assets/af016906-d092-42e6-9dda-febc72fb69e3" />
+
+> ##### Image: Viterbi Algorithm State Machine
+
+🔴 A **Trellis Diagram** _is a graph with the nodes ordered into vertical slices (time) and each node at each time is connected to (at least) one node at an earlier time and (at least) one node at a later time_. The **Viterbi Path** _is the shortest path through this trellis diagram_. The trellis for the weather example is shown in image below:
+
+<img width="901" height="372" alt="image" src="https://github.com/user-attachments/assets/fd9224f8-2801-4b93-a597-727f36a3ad0d" />
+
+> ##### Image: Viterbi Algorithm Trellis Diagram
 
 ---
 
