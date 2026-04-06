@@ -45,33 +45,39 @@ To fully process opinions in text, a system must complete six steps:
 * **Contextual Polarity**: The actual feeling of a word based on how it is used in a specific sentence;
 * **Meaning Shifts**: Positive words can turn negative depending on the context, such as when used with sarcasm, in bad situations, or with negations like "not great".
 
-Approach 1: Lexicon-Based Classification
+---
 
-Lexicon: A specialized dictionary that lists words and their pre-calculated positive or negative scores.
+## 📖 7.6 Approaches
 
+### 📑 7.6.1 Lexicon-Based Classification (Approach 1)
+
+**A Lexicon is a specialized dictionary that lists words and their pre-calculated positive or negative scores**.
 This approach calculates the overall sentiment score of a text by adding up the scores of the individual words inside it.
 
-Micro-phrases: A system splits text into small chunks using grammar rules (like Adverb + Adjective + Noun) to calculate scores more accurately.
+* **Micro-phrases**: A system splits text into small chunks using grammar rules (like Adverb + Adjective + Noun) to calculate scores more accurately;
+* **Modifiers**: Some words change the score of nearby words. Amplifiers (like "very") increase the intensity, downtoners (like "slightly") decrease the intensity, and negation shifters (like "not") reverse the score completely.
 
-Modifiers: Some words change the score of nearby words. Amplifiers (like "very") increase the intensity, downtoners (like "slightly") decrease the intensity, and negation shifters (like "not") reverse the score completely.
+There are four math formulas to calculate the final text score:
+* **Basic** (total score divided by text length);
+* **Normalized** (adjusted for phrase length);
+* **Emphasized** (gives more weight to important words like verbs and adjectives);
+* **Emphasized - Normalized**.
 
-There are four math formulas to calculate the final text score: Basic (total score divided by text length), Normalized (adjusted for phrase length), Emphasized (gives more weight to important words like verbs and adjectives), and Emphasized-Normalized.
+### 📑 7.6.2 Supervised Learning Classification (Approach 2)
 
-Approach 2: Supervised Learning Classification
+**This method treats sentiment analysis like a standard text sorting problem**.
+Algorithms (like _Naïve Bayes_ or _Support Vector Machines_ (_SVM_)) are trained using data that already has known ratings, such as 1-star to 5-star product reviews.
+Important Features for Learning:
+* **Term Frequency**: Counting how often specific words appear in the text;
+* **Term Frequency-Inverse Document Frequency** (_TF-IDF_): A mathematical formula that gives higher importance to words that are rare across all documents but frequent in one specific document;
+* **Parts of speech** (especially adjectives) **and punctuation** (like exclamation marks) are also used to help the system learn.
 
-This method treats sentiment analysis like a standard text sorting problem.
+---
 
-Algorithms (like Naïve Bayes or Support Vector Machines) are trained using data that already has known ratings, such as 1-star to 5-star product reviews. * Important Features for Learning:
-
-Term Frequency: Counting how often specific words appear in the text.
-
-TF-IDF (Term Frequency-Inverse Document Frequency): A mathematical formula that gives higher importance to words that are rare across all documents but frequent in one specific document.
-
-Parts of speech (especially adjectives) and punctuation (like exclamation marks) are also used to help the system learn.
-
-Emotion Analysis
+## 📖 7.7 Emotion Analysis
 
 Unlike basic sentiment analysis, emotion analysis detects specific, complex feelings.
-
-Plutchik's Model: A psychological framework stating there are 8 basic, biological emotions: Joy, Trust, Fear, Surprise, Sadness, Disgust, Anger, and Anticipation. * Derived Emotions: Complex emotions created by combining two basic ones. For instance, Love is a combination of Joy and Trust.
-Modern Tools: Deep learning models, like BERT (a powerful neural network for understanding language context), are fine-tuned to classify text into highly specific emotion categories. Massive datasets, such as the GoEmotions dataset (which labels Reddit comments with 27 different emotions), are used to train these advanced models.
+* **Plutchik's Model**: A psychological framework stating there are 8 basic, biological emotions: _Joy, Trust, Fear, Surprise, Sadness, Disgust, Anger and Anticipation_;
+* **Derived Emotions**: Complex emotions created by combining two basic ones. For instance, Love is a combination of Joy and Trust;
+* **Modern Tools**: Deep learning models, like **BERT** (**a powerful neural network for understanding language context**), are fine-tuned to classify text into highly specific emotion categories.
+Massive datasets, such as the **GoEmotions Dataset** (which labels Reddit comments with 27 different emotions), are used to train these advanced models.
