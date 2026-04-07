@@ -62,9 +62,18 @@ class MainGUI:
         self.s_var = tk.IntVar(value=0)
         ttk.Entry(control_frame, textvariable=self.s_var, width=10).grid(row=1, column=3, padx=5, pady=5)
 
+        # Strategy Selection
+        ttk.Label(control_frame, text="P1 Strategy:").grid(row=2, column=0, padx=5, pady=5, sticky=tk.W)
+        self.p1_strat_var = tk.StringVar(value="TitForTat")
+        ttk.Combobox(control_frame, textvariable=self.p1_strat_var, values=["TitForTat", "RandomStrategy", "AlwaysCooperate", "AlwaysDefect"], state="readonly", width=15).grid(row=2, column=1, padx=5, pady=5)
+
+        ttk.Label(control_frame, text="P2 Strategy:").grid(row=2, column=2, padx=5, pady=5, sticky=tk.W)
+        self.p2_strat_var = tk.StringVar(value="RandomStrategy")
+        ttk.Combobox(control_frame, textvariable=self.p2_strat_var, values=["TitForTat", "RandomStrategy", "AlwaysCooperate", "AlwaysDefect"], state="readonly", width=15).grid(row=2, column=3, padx=5, pady=5)
+
         # Buttons Frame
         btn_frame = ttk.Frame(control_frame)
-        btn_frame.grid(row=0, column=6, rowspan=2, padx=20, pady=5)
+        btn_frame.grid(row=0, column=6, rowspan=3, padx=20, pady=5)
 
         self.btn_start = ttk.Button(btn_frame, text="Start Simulation", command=self.start_sim)
         self.btn_start.pack(fill=tk.X, pady=2)
@@ -107,6 +116,8 @@ class MainGUI:
             r = self.r_var.get()
             p = self.p_var.get()
             s = self.s_var.get()
+            p1_strat = self.p1_strat_var.get()
+            p2_strat = self.p2_strat_var.get()
         except tk.TclError:
             messagebox.showerror("Error", "Please enter valid integers for parameters.")
             return
@@ -127,7 +138,7 @@ class MainGUI:
         self.btn_stop.config(state=tk.NORMAL)
         
         # Start Controller
-        self.controller.start_simulation(rnds, t, r, p, s)
+        self.controller.start_simulation(rnds, t, r, p, s, p1_strat, p2_strat)
 
     def stop_sim(self):
         self.controller.stop_simulation()

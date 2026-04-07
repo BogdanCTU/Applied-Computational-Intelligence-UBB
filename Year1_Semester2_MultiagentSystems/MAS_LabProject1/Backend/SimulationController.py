@@ -17,7 +17,7 @@ class SimulationController:
         self.player2 = None
         self.manager = None
 
-    def start_simulation(self, rounds, T, R, P, S):
+    def start_simulation(self, rounds, T, R, P, S, p1_strat="TitForTat", p2_strat="RandomStrategy"):
         if self.is_running:
             return
             
@@ -25,7 +25,7 @@ class SimulationController:
         self.results_list.clear()
         
         # Start a new thread for the asyncio loop
-        self._thread = threading.Thread(target=self._run_async_loop, args=(rounds, T, R, P, S), daemon=True)
+        self._thread = threading.Thread(target=self._run_async_loop, args=(rounds, T, R, P, S, p1_strat, p2_strat), daemon=True)
         self._thread.start()
         
     def stop_simulation(self):
@@ -36,11 +36,11 @@ class SimulationController:
             # Schedule the stop agents concurrently so we don't block the GUI
             asyncio.run_coroutine_threadsafe(self._stop_agents(), self._loop)
 
-    def _run_async_loop(self, rounds, T, R, P, S):
+    def _run_async_loop(self, rounds, T, R, P, S, p1_strat, p2_strat):
         self._loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self._loop)
         try:
-            self._loop.run_until_complete(self._async_simulation(rounds, T, R, P, S))
+            self._loop.run_until_complete(self._async_simulation(rounds, T, R, P, S, p1_strat, p2_strat))
         except Exception as e:
             print(f"Async loop exception: {e}")
         finally:
@@ -54,7 +54,7 @@ class SimulationController:
         if self.player2: await self.player2.stop()
         if self.manager: await self.manager.stop()
         
-    async def _async_simulation(self, rounds, T, R, P, S):
+    async def _async_simulation(self, rounds, T, R, P, S, p1_strat, p2_strat):
         xmpp_server = "bogdanpc" 
         password = "admin"
 
@@ -62,8 +62,15 @@ class SimulationController:
         p2_jid = f"player2@{xmpp_server}"
         gm_jid = f"manager@{xmpp_server}"
 
-        self.player1 = PlayerAgent(p1_jid, password, strategy=TitForTat())
-        self.player2 = PlayerAgent(p2_jid, password, strategy=RandomStrategy())
+        strategy_map = {
+            "TitForTat": TitForTat,
+            "RandomStrategy": RandomStrategy,
+            "AlwaysCooperate": AlwaysCooperate,
+            "AlwaysDefect": AlwaysDefect
+        }
+
+        self.player1 = PlayerAgent(p1_jid, password, strategy=strategy_map.get(p1_strat, TitForTat)())
+        self.player2 = PlayerAgent(p2_jid, password, strategy=strategy_map.get(p2_strat, RandomStrategy)())
         self.manager = ManagerAgent(gm_jid, password)
 
         try:
