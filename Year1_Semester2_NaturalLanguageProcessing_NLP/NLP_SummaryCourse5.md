@@ -1,10 +1,10 @@
 <!-- --------------------------------------------------------------- -->
-<!-- ------------------- COURSE 4 SUMMARIZATION -------------------- -->
+<!-- ------------------- COURSE 5 SUMMARIZATION -------------------- -->
 <!-- --------------------------------------------------------------- -->
 
-# 🔖 **Course 4 - Summarization**
+# 🔖 **Course 5 - Summarization**
 
-## 📖 4.1 Definition of Summarization
+## 📖 5.1 Definition of Summarization
 
 🔴 The **Document Summarization** is the process of taking an information source, extracting its content and presenting the most important parts in a short form.
 The goal is to meet the specific needs of a user or application. **A summary is a short version of a text** (usually half the size or less) **that keeps the main ideas**.
@@ -12,7 +12,7 @@ An **Automatic Summarization** happens when a computer program creates the short
 
 ---
 
-## 📖 4.2 Coherence and Cohesion
+## 📖 5.2 Coherence and Cohesion
 To write a good summary, the text must make sense. This relies on two concepts:
 * **Coherence**: This is what makes a text logically meaningful overall. It is an abstract quality that focuses on how ideas are organized. Because it deals with ideas, coherence is qualitative and hard to measure;
 * **Cohesion**: This is the actual grammatical and vocabulary glue that holds words and sentences together. It is a visible, measurable property.
@@ -22,7 +22,7 @@ To write a good summary, the text must make sense. This relies on two concepts:
 
 > ### 📚 Grammar Concepts
 
-### 4.2.1 Grammatical Cohesion
+### 5.2.1 Grammatical Cohesion
 
 | Concept        | Definition                                                                 | Example                                                                 |
 |----------------|-----------------------------------------------------------------------------|-------------------------------------------------------------------------|
@@ -32,7 +32,7 @@ To write a good summary, the text must make sense. This relies on two concepts:
 | **Substitution**   | Replacing a word/phrase with another to avoid repetition.                   | "I would like the pink one." ("one" → "T-shirt")                         |
 | **Conjunctions**   | Linking words that connect ideas or sentences.                              | "We agree on the principle but disagree on the method."                 |
 
-### 4.2.2 Lexical Cohesion
+### 5.2.2 Lexical Cohesion
 
 | Concept     | Definition                                                                 | Example                                                                 |
 |-------------|-----------------------------------------------------------------------------|-------------------------------------------------------------------------|
@@ -42,7 +42,7 @@ To write a good summary, the text must make sense. This relies on two concepts:
 | **Meronymy**    | Using a part-to-whole relationship.                                        | "tire" → part of "car"                                                  |
 | **Antonymy**    | Using words with opposite meanings.                                        | "old" ↔ "new"                                                           |
 
-### 📑 4.2.3 Tool for the Automatic Analysis of Cohesion (TAACO)
+### 📑 5.2.3 Tool for the Automatic Analysis of Cohesion (TAACO)
 
 🔴 **Tool for the Automatic Analysis of Cohesion** (_TAACO_) is a free software program used to measure how well a text connects and flows together, which is known as cohesion. It is easy to use, works on most operating systems like Windows, Mac and Linux, and can process many text files at once. The tool uses over 150 different measurements, called indices, to evaluate a text.
 
@@ -61,7 +61,7 @@ Here are six specific ways TAACO measures cohesion:
 
 ---
 
-## 📖 4.3 Types of Summaries
+## 📖 5.3 Types of Summaries
 Summaries come in different forms:
 * **Extract vs. Abstract**: An extract copies exact sentences from the text, while an abstract rewrites the content in new words;
 * **Single vs. Multi-document**: A summary can be made from just one text or by combining many texts;
@@ -69,7 +69,7 @@ Summaries come in different forms:
 
 ---
 
-## 📖 4.4 The Three Stages of Summarization
+## 📖 5.4 The Three Stages of Summarization
 Every summarizer follows three steps:
 * **Analysis**: The system reads and understands the source text to build a mental map of it;
 * **Transformation**: The system selects the most important content from that map;
@@ -77,7 +77,7 @@ Every summarizer follows three steps:
 
 ---
 
-## 📖 4.5 Extractive vs. Abstractive Summarization
+## 📖 5.5 Extractive vs. Abstractive Summarization
 Definitions:
 * **Extractive Summarization**: This method selects existing, important sentences from the original document and glues them together. It uses statistics and word patterns to find the best sentences.
     * _Outcome_: It has high factual accuracy but can read like a choppy list of sentences;
@@ -105,7 +105,7 @@ Definitions:
 
 ---
 
-## 📖 4.6 How Computers Score Sentences (Extractive Features)
+## 📖 5.6 How Computers Score Sentences (Extractive Features)
 In extractive summarization, a computer grades sentences to decide which ones to keep. Sentences score higher if they:
 
 1) **Content word (Keyword) feature**: Sentences that contain frequent nouns, known as keywords, have a higher chance of being included in the summary;
@@ -123,7 +123,7 @@ In extractive summarization, a computer grades sentences to decide which ones to
 
 ---
 
-## 📖 4.7 Mathematical and AI Methods
+## 📖 5.7 Mathematical and AI Methods
 Computers use different algorithms to pick the best sentences:
 1) **Machine Learning**: The program looks at human-made summaries to learn the rules of extraction. It treats summarization as a simple choice: "Is this a summary sentence, Yes or No?";
 
@@ -145,7 +145,7 @@ Computers use different algorithms to pick the best sentences:
 
 ---
 
-## 📖 4.8 Evaluating a Summary
+## 📖 5.8 Evaluating a Summary
 We need to test if a summary is actually good.
 * **Intrinsic Evaluation**: Humans grade the summary by reading it. They check for good spelling, grammar, and informativeness (how much original text survived);
 * **Extrinsic Evaluation**: Testers see if the summary helps a person accomplish a real-world task, like answering a reading comprehension test;
