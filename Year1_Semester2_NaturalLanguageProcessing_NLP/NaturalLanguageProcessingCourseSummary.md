@@ -257,254 +257,14 @@ Uses neural networks with many layers to extract features and classify data dire
 
 > ### Image: Models comparasion
 
-<!-- --------------------------------------------------------------- -->
-<!-- --------------------- COURSE 3 CLUSTERING --------------------- -->
-<!-- --------------------------------------------------------------- -->
-
-# 🔖 **Course 3 - Clustering**
-
-## 📖 3.1 Definition of Clustering
-
-🔴 **Clustering is the task of dividing data points into groups**, which are called **clusters**:
-* **Data points in the same cluster are highly similar to each other**;
-* **Data points in different clusters are highly different from each other**;
-* **It is an unsupervised learning method**. This means the algorithm finds patterns on its own without using pre-labeled data;
-* The input is usually a vector, which is just a list of numbers representing a single data point.
-
----
-
-## 📖 3.2 Types of Clustering
-* **Hard Clustering**: A data point completely belongs to one specific cluster, or it does not.
-Example: A store places a customer exactly into group A;
-* **Soft Clustering**: A data point is given a probability or chance, of belonging to different clusters.
-Example: A customer has a 70% chance of being in group A and a 30% chance of being in group B.
-
----
-
-## 📖 3.3 Distance Metrics
-🔴 **Distance metrics are math formulas used to measure how similar two objects are**.
-We treat the objects as vectors, $g_{1}$ and $g_{2}$.
-* **Euclidean distance**: The straight-line distance between two points.
-Formula: $d(g_{1},g_{2})=\sqrt{\sum_{i=1}^{n}(x_{i}-y_{i})^{2}}$.
-* **Manhattan distance**: The distance measured along axes at right angles, like walking city blocks.
-Formula: $d(g_{1},g_{2})=\sum_{i=1}^{n}|(x_{i}-y_{i})|$.
-* **Minkowski distance**: A flexible formula that generalizes the two above.
-Formula: $d(g_{1},g_{2})=\sqrt[m]{\sum_{i=1}^{n}(x_{i}-y_{i})^{m}}$.
-
----
-
-## 📖 3.4 Clustering Models
-
-### 📑 3.4.1 Hierarchical Clustering (Connectivity Model)
-
-🔴 **Connectivity models group points based on the idea that closer points in space are more similar**.
-
-* **Bottom-Up Approach**: Starts by treating every single data point as its own separate cluster. It repeatedly merges the closest pair of clusters together. It stops when all points are combined into one single giant cluster;
-* **Dendrogram**: A tree-like diagram that shows the history of how clusters were merged.  The root is the final giant cluster, and the leaves are the starting single points.
-
-Similarity Measures:
-* **Single-link**: Measures distance by looking only at the two closest (most similar) points between two clusters;
-* **Complete-link**: Measures distance by looking at the two farthest (most dissimilar) points between two clusters.
-
-### 📑 3.4.2 K-Means Clustering (Centroid Model)
-
-🔴 **Centroid models group points based on how close they are to a central point**, **known as the centroid**.
-
-Algorithm Steps:
-1) Choose K, which is the exact number of clusters you want to find;
-2) Randomly assign points to K clusters and calculate the center (centroid) for each group;
-3) Measure the distance from each point to every center. Move the point to the cluster with the closest center;
-4) Recalculate the centers based on the new groups;
-5) Repeat steps 3 and 4 until the centers stop moving.
-
-| Feature           | Hierarchical Clustering                                   | K-Means Clustering                          |
-|-------------------|-----------------------------------------------------------|---------------------------------------------|
-| Speed             | Slow, time complexity is O(n³).                           | Fast, time complexity is O(n).              |
-| Number of Clusters| Decided at the end by cutting the dendrogram tree.        | Must be known and set before starting.      |
-| Consistency       | Always produces the exact same results.                   | Results can change because starting points are random. |
-| Best Used For     | Discovering hidden tree-like structures.                  | Data where clusters are round (spherical).  |
-
----
-
-## 📖 3.5 Evaluation Metrics
-Metrics are used to score how good the resulting clusters are.
-
-### 📑 3.5.1 Internal Metrics
-Used when you do not know the true groups. They check for compactness (points are packed tightly) and separation (clusters are far apart);
-* **Silhouette Coefficient**: Measures if a point is close to its own cluster but far from others. Scores range from -1 to 1, and closer to 1 is better;
-* **Dunn Index**: The ratio of the shortest distance between clusters to the largest cluster size. Higher scores mean tighter, better-separated clusters;
-* **Inertia**: The sum of squared distances between points and their centers. Lower scores mean tighter clusters;
-* **Davies-Bouldin Index** (_DBI_): Calculates the ratio of distances inside a cluster compared to distances between clusters. A lower score is better;
-* **Calinski-Harabasz Index**: Measures how spread apart the clusters are compared to how spread apart the points inside a cluster are. A higher score is better.
-
-### 📑 3.5.2 External Metrics
-Used when you already know the true, correct groups (ground truth labels) to compare against.
-* **Adjusted Rand Index** (_ARI_): Looks at pairs of points to see if the algorithm grouped them correctly. It adjusts for random guessing. A score of 1.0 is perfect, while 0.0 is random;
-* **Rand Index** (_RI_): Measures the percentage of correctly grouped pairs, but does not adjust for random guessing;
-* **Jaccard Index**: Measures shared correct pairs divided by the total number of unique pairs;
-* **Normalized Mutual Information** (_NMI_): Measures how much correct information is shared between the true groups and the predicted groups. Scores range from 0 to 1.
 
 <!-- --------------------------------------------------------------- -->
-<!-- ------------------- COURSE 4 SUMMARIZATION -------------------- -->
+<!-- ----------------- COURSE 3 SYNTACTIC PARSING ------------------ -->
 <!-- --------------------------------------------------------------- -->
 
-# 🔖 **Course 4 - Summarization**
+# 🔖 **Course 3 - Syntactic Parsing**
 
-## 📖 4.1 Definition of Summarization
-
-🔴 The **Document Summarization** is the process of taking an information source, extracting its content and presenting the most important parts in a short form.
-The goal is to meet the specific needs of a user or application. **A summary is a short version of a text** (usually half the size or less) **that keeps the main ideas**.
-An **Automatic Summarization** happens when a computer program creates the shortened text. Good automatic summaries must preserve key information and remain short and logical.
-
----
-
-## 📖 4.2 Coherence and Cohesion
-To write a good summary, the text must make sense. This relies on two concepts:
-* **Coherence**: This is what makes a text logically meaningful overall. It is an abstract quality that focuses on how ideas are organized. Because it deals with ideas, coherence is qualitative and hard to measure;
-* **Cohesion**: This is the actual grammatical and vocabulary glue that holds words and sentences together. It is a visible, measurable property.
-    * _Lexical cohesion_ links words by meaning, such as repeating a word or using a synonym;
-    * _Grammatical cohesion_ links words using grammar, such as using pronouns (like "she") or conjunctions (like "because").
-* **The Rule**: A coherent text is always cohesive, but a cohesive text might not be coherent. Think of coherence as a finished building, and cohesion as the bricks.
-
-> ### 📚 Grammar Concepts
-
-### 4.2.1 Grammatical Cohesion
-
-| Concept        | Definition                                                                 | Example                                                                 |
-|----------------|-----------------------------------------------------------------------------|-------------------------------------------------------------------------|
-| **Anaphora**       | Referring back to something previously mentioned.                           | "Jane was brilliant. She got the best score." ("She" → "Jane")          |
-| **Cataphora**      | Referring forward to something that will be mentioned.                      | "Here he comes our hero. Please, welcome John." ("he" → "John")         |
-| **Ellipsis**       | Omitting words that are understood from context.                            | "A: Where are you going? B: To dance." ("I am going" omitted)            |
-| **Substitution**   | Replacing a word/phrase with another to avoid repetition.                   | "I would like the pink one." ("one" → "T-shirt")                         |
-| **Conjunctions**   | Linking words that connect ideas or sentences.                              | "We agree on the principle but disagree on the method."                 |
-
-### 4.2.2 Lexical Cohesion
-
-| Concept     | Definition                                                                 | Example                                                                 |
-|-------------|-----------------------------------------------------------------------------|-------------------------------------------------------------------------|
-| **Repetition**  | Reusing the same word multiple times.                                      | "Birds are beautiful. Everybody likes birds."                           |
-| **Synonymy**    | Using words with similar or identical meanings.                            | "snake" → "serpent"                                                     |
-| **Hyponymy**    | Using a general category to refer to a specific item.                      | "cat" → "animal"                                                        |
-| **Meronymy**    | Using a part-to-whole relationship.                                        | "tire" → part of "car"                                                  |
-| **Antonymy**    | Using words with opposite meanings.                                        | "old" ↔ "new"                                                           |
-
-### 📑 4.2.3 Tool for the Automatic Analysis of Cohesion (TAACO)
-
-🔴 **Tool for the Automatic Analysis of Cohesion** (_TAACO_) is a free software program used to measure how well a text connects and flows together, which is known as cohesion. It is easy to use, works on most operating systems like Windows, Mac and Linux, and can process many text files at once. The tool uses over 150 different measurements, called indices, to evaluate a text.
-
-The Three Levels of CohesionTAACO focuses on three main ways a text sticks together:
-* **Local Cohesion**: This looks at connections at the sentence level, meaning how well smaller chunks of text link to one another;
-* **Global Cohesion**: This looks at connections between larger chunks of text, which are usually paragraphs;
-* **Overall text Cohesion**: This looks at the entire text as a whole to see how often cohesive features appear, such as how much the vocabulary varies across the document.
-
-Here are six specific ways TAACO measures cohesion:
-* **Sentence overlap**: This measures local cohesion by checking if neighboring sentences share the same root words, which are called lemmas;
-* **Paragraph overlap**: This measures global cohesion by checking if neighboring paragraphs share the same root words;
-* **Semantic overlap**: This measures both local and global cohesion. It uses a dictionary database called WordNet to check if words or groups of similar words (synsets) are shared between sentences and paragraphs;
-* **Givenness**: This measures overall text cohesion by counting how many pointing words are used. These include pronouns (like "he" or "it"), definite articles (like "the"), and demonstratives (like "this" or "that");
-* **Type-token ratio**: This measures overall text cohesion by checking how much words are repeated. It does this by dividing the total number of words in the text (tokens) by the number of unique, individual words (types);
-* **Connectives**: This measures local cohesion by counting linking words. It tracks different types of links, such as positive versus negative words, or words that show time (temporal), add information (additive), or show cause and effect (causative).
-
----
-
-## 📖 4.3 Types of Summaries
-Summaries come in different forms:
-* **Extract vs. Abstract**: An extract copies exact sentences from the text, while an abstract rewrites the content in new words;
-* **Single vs. Multi-document**: A summary can be made from just one text or by combining many texts;
-* **Indicative vs. Informative**: Indicative summaries act as a quick alert to tell you what a text is about. Informative summaries act as a substitute for the full text.
-
----
-
-## 📖 4.4 The Three Stages of Summarization
-Every summarizer follows three steps:
-* **Analysis**: The system reads and understands the source text to build a mental map of it;
-* **Transformation**: The system selects the most important content from that map;
-* **Synthesis**: The system generates the final shortened text.
-
----
-
-## 📖 4.5 Extractive vs. Abstractive Summarization
-Definitions:
-* **Extractive Summarization**: This method selects existing, important sentences from the original document and glues them together. It uses statistics and word patterns to find the best sentences.
-    * _Outcome_: It has high factual accuracy but can read like a choppy list of sentences;
-
-<img width="714" height="280" alt="image" src="https://github.com/user-attachments/assets/6eeba4aa-2503-4cd6-9a8b-ef013bb6334e" />
-
-> ##### Image: Architecture for extraction
-
-* **Abstractive Summarization**: This method understands the original text and retells it in fewer, new words. It uses complex Natural Language Processing (NLP)—how computers interpret human language—to write fluently.
-    * _Outcome_: It creates a very natural summary using Generative AI, but it might accidentally change the original facts.
-
-<img width="717" height="277" alt="image" src="https://github.com/user-attachments/assets/7aafb078-af3a-4f65-b0c2-246a4312962e" />
-
-> ##### Image: Architecture for abstraction
-
-| Feature                              | Extractive Summarization        | Abstractive Summarization            |
-|--------------------------------------|--------------------------------|-------------------------------------|
-| Approach                             | Extracts key sentences         | Generates new summaries             |
-| Focus                                | Surface-level features         | Context and meaning                 |
-| Use of AI                            | Limited                        | Generative AI (LLMs)                |
-| Generate creative and engaging summaries | No                         | Yes                                 |
-| Output Style                         | Choppy, sentence-like          | More fluent and coherent            |
-| Preserve original content            | Yes                            | No                                  |
-| Information Preservation             | High factual accuracy          | May introduce paraphrases           |
-
----
-
-## 📖 4.6 How Computers Score Sentences (Extractive Features)
-In extractive summarization, a computer grades sentences to decide which ones to keep. Sentences score higher if they:
-
-1) **Content word (Keyword) feature**: Sentences that contain frequent nouns, known as keywords, have a higher chance of being included in the summary;
-2) **Title word feature**: Sentences that share words with the document's title indicate the main theme and are more likely to be selected;
-3) **Sentence location feature**: The first and last sentences of the first and last paragraphs are usually considered the most important;
-4) **Sentence Length feature**: Sentences are penalized if they are too short or too long compared to the longest sentence in the document;
-5) **Proper Noun feature**: Sentences containing proper nouns, such as names of specific people or places, have a greater chance of being included;
-6) **Upper-case word feature**: Sentences that contain acronyms or proper names written in capital letters are more likely to be selected;
-7) **Cue-Phrase Feature**: Sentences containing transition words, such as "for example," "first," or "in conclusion," are highly likely to be included;
-8) **Biased Word Feature**: Sentences are marked as important if they contain words from a predefined list of topic-specific vocabulary;
-9) **Font based feature**: Sentences with words styled in bold, italics, underlined, or upper-case fonts are usually considered more important;
-10) **Pronouns**: Sentences containing pronouns, such as "she" or "it," are excluded unless the pronoun can be replaced with the specific noun it refers to;
-11) **Sentence-to-Sentence Cohesion**: Cohesion is how well parts of a text connect to each other. A sentence is scored by calculating how similar it is to every other sentence in the text, and sentences with high overall similarity are kept;
-12) **Sentence-to-Centroid Cohesion**: A centroid is the mathematical average of all sentences, representing the core idea. Sentences are compared to this central average, and those that are highly similar are selected because they represent the basic ideas of the document.
-
----
-
-## 📖 4.7 Mathematical and AI Methods
-Computers use different algorithms to pick the best sentences:
-1) **Machine Learning**: The program looks at human-made summaries to learn the rules of extraction. It treats summarization as a simple choice: "Is this a summary sentence, Yes or No?";
-
-<img width="732" height="392" alt="image" src="https://github.com/user-attachments/assets/6f159d23-feeb-496b-8783-e06aa53d3116" />
-
-> ##### Image: Classifier learning how to summarize
-
-3) **Graph-Based Ranking** (**TextRank**): This treats sentences as points on a map (a graph).
-    * Sentences "vote" for each other based on how similar they are;
-    * Similarity is calculated by counting how many words the two sentences share;
-    * Sentences with the most votes win and go into the summary;
-    * The Formula: The ranking score uses a damping factor ($d$) and edge weights ($w$) for similarity:
-    $$WS(V_{i})=(1-d)+d^{*}\sum_{V_{j}\in In(V_{i})}\frac{w_{ji}}{\sum_{V_{k}\in Out(V_{j})}w_{jk}}WS(V_{j})$$
-4) **Summarization by Clustering**: Clustering means grouping similar sentences together.
-    * By picking just one sentence from each group (cluster), the summary avoids repeating the same information;
-    * **The Formula**: Computers group these sentences by measuring cosine similarity, as following:
-    $$\mathrm{sim}(S_i,S_j)=\cos(V_i,V_j)=\frac{\sum_{k=1}^{m}f(i,t_k)\,f(j,t_k)}{\sqrt{\left(\sum_{k=1}^{m}f(i,t_k)^2\right)\left(\sum_{k=1}^{m}f(j,t_k)^2\right)}}$$
-5) **BERTSum** (**Neural Networks**): BERTSum is an advanced AI model that reads an entire document. It transforms words into complex mathematical vectors (embeddings) and uses a classifier to predict exactly which sentences should make the final cut.
-
----
-
-## 📖 4.8 Evaluating a Summary
-We need to test if a summary is actually good.
-* **Intrinsic Evaluation**: Humans grade the summary by reading it. They check for good spelling, grammar, and informativeness (how much original text survived);
-* **Extrinsic Evaluation**: Testers see if the summary helps a person accomplish a real-world task, like answering a reading comprehension test;
-* **ROUGE**: This is an automated software tool. It mathematically compares a computer's summary to a perfect human summary by counting how many words and phrases match.
-
-
-<!-- --------------------------------------------------------------- -->
-<!-- ----------------- COURSE 5 SYNTACTIC PARSING ------------------ -->
-<!-- --------------------------------------------------------------- -->
-
-# 🔖 **Course 5 - Syntactic Parsing**
-
-## 📖 5.1 Parsing Techniques
+## 📖 3.1 Parsing Techniques
 * **Constituency Parsing**: Identifies groups of words, called constituents and arranges them in a hierarchical tree structure;
 * **Dependency Parsing**: Connects words directly to each other using directed links to show how they relate. 
 
@@ -518,7 +278,7 @@ We need to test if a summary is actually good.
 
 ---
 
-## 📖 5.2 Phrase Structure and Constituents
+## 📖 3.2 Phrase Structure and Constituents
 Words in a sentence naturally group together into units called phrases or constituents. 
 * **Noun Phrase** (_NP_): A group of words centered around a noun. It can include determiners (words like "a" or "the") and adjectives;
 * **Prepositional Phrase** (_PP_): Starts with a preposition (like "on" or "in") and includes a Noun Phrase;
@@ -527,7 +287,7 @@ Words in a sentence naturally group together into units called phrases or consti
 
 ---
 
-## 📖 5.3 Context-Free Grammars (_CFG_)
+## 📖 3.3 Context-Free Grammars (_CFG_)
 🔴 **Syntactic Parsing** is the task of assigning a grammatical structure to a sentence using formal rules. For English, we model this using a **Context-Free Grammar** (_CFG_), which is a mathematical system that describes how to build correct sentences.
 
 A CFG has four parts:
@@ -538,14 +298,14 @@ A CFG has four parts:
 
 ---
 
-## 📖 5.4 Attachment Ambiguity
+## 📖 3.4 Attachment Ambiguity
 🔴 **Attachment Ambiguity** is the confusion about where a phrase belongs in a sentence. It usually happens when a sentence has multiple prepositional phrases. 
 
 Example: "The boy saw the girl with the telescope." It is unclear if the girl is carrying a telescope, or if the boy is looking through a telescope to see the girl. 
 
 ---
 
-## 📖 5.5 Parsing Strategies
+## 📖 3.5 Parsing Strategies
 Parsers search for the correct grammatical tree using two main strategies: 
 * **Top-down search**: Starts at the root (S) and builds down to the words, guided by the grammar rules;
 * **Bottom-up search**: Starts with the actual words and builds up to the root, ensuring the tree matches the input data;
@@ -553,7 +313,7 @@ Parsers search for the correct grammatical tree using two main strategies:
 
 ---
 
-## 📖 5.6 Dynamic Programming Parsing Methods
+## 📖 3.6 Dynamic Programming Parsing Methods
 These methods solve the re-parsing problem by using tables to save phrases as soon as they are discovered. 
 * 🔴 **Cocke-Kasami-Younger Algorithm** (_CKY_): A bottom-up method driven by a table. It requires the grammar to be in **Chomsky Normal Form** (_CNF_), meaning every rule must break down into exactly two non-terminals or one word. It builds a matrix where each cell holds the phrases that cover a specific span of words;
 
@@ -565,7 +325,7 @@ These methods solve the re-parsing problem by using tables to save phrases as so
 
 ---
 
-## 📖 5.7 Statistical Parsing
+## 📖 3.7 Statistical Parsing
 🔴 **Probabilistic Context-Free Grammar** (_PCFG_) is a Context-Free Grammar (CFG) where every production rule is assigned a **probability**.
 * These probabilities help solve ambiguity by allowing the computer to choose the most likely parse tree;
 * The probability of a specific parse tree is calculated by multiplying the probabilities of all the rules used to build it;
@@ -577,14 +337,14 @@ These methods solve the re-parsing problem by using tables to save phrases as so
 
 ---
 
-## 📖 5.8 Evaluating Parsers
+## 📖 3.8 Evaluating Parsers
 🔴 **PARSEVAL** measures are standard formulas used to compare a computer's parse tree against a human-made "gold standard" reference tree;
 * **Labeled Recall**: The fraction of correct phrases in the human reference tree that the computer successfully found;
 * **Labeled Precision**: The fraction of phrases proposed by the computer that are actually correct.
 
 ---
 
-## 📖 5.9 Applications of Syntactic Analysis
+## 📖 3.9 Applications of Syntactic Analysis
 
 Understanding word relationships is a core step for many advanced language technologies.  It is used heavily in:
 * **Machine Translation**: To ensure translated sentences follow correct grammar;
@@ -592,13 +352,14 @@ Understanding word relationships is a core step for many advanced language techn
 * **Speech Recognition**: To figure out the grammatical structure of spoken words;
 * **Sentiment Analysis**, Text Summarization, and Grammar Checking.
 
+
 <!-- --------------------------------------------------------------- -->
-<!-- ------------------------ COURSE 6 HMM ------------------------- -->
+<!-- ------------------------ COURSE 4 HMM ------------------------- -->
 <!-- --------------------------------------------------------------- -->
 
-# 🔖 **Course 6 - Hidden Markov Model (HMM)**
+# 🔖 **Course 4 - Hidden Markov Model (HMM)**
 
-## 📖 6.1 Introduction to Hidden Markov Models (_HMM_)
+## 📖 4.1 Introduction to Hidden Markov Models (_HMM_)
 
 🔴 **An HMM is a statistical machine learning tool used for sequence classification and text processing**.
 It looks at a sequence of items and finds the best sequence of labels for them.
@@ -607,7 +368,7 @@ HMMs use probability to link two types of events:
 * **Hidden events**: Things we cannot see but act as causes, such as grammatical part-of-speech (POS) tags.
 HMMs are widely used in speech recognition (observed: sounds, hidden: words), part-of-speech tagging (observed: words, hidden: tags), and machine translation.
 
-### 📑 6.1.1 Formal Definition
+### 📑 4.1.1 Formal Definition
 
 🔴 **An HMM is a finite state automaton** (**a machine that moves between different states**) **that uses random probabilities to transition between states and emit symbols**.
 It models a generative process. This means it creates a sequence by starting in an initial state, moving to a new state, and outputting an observed symbol.
@@ -618,7 +379,7 @@ The mathematical model is defined as $M=(Q,V,A,B,q_{0})$:
 * $B$: The emission probability matrix. This is the chance of a hidden state generating a specific observation;
 * $q_{0}$: The starting state, which does not emit any observation.
 
-### 📑 6.1.2 Key Assumptions
+### 📑 4.1.2 Key Assumptions
 
 To make the math simple, HMMs rely on two strict rules:
 * **Markov Assumption**: The probability of the next state depends only on the current state, ignoring all older history. The formula is $P(q_{i}|q_{1},...,q_{i-1})=P(q_{i}|q_{i-1})$.
@@ -631,7 +392,7 @@ To make the math simple, HMMs rely on two strict rules:
 
 ---
 
-## 📖 6.2 The Three Canonical Problems of HMMs
+## 📖 4.2 The Three Canonical Problems of HMMs
 
 When working with HMMs, there are three main mathematical tasks:
 * **Problem 1 - Evaluation**: We want to know how well a specific HMM matches a given sequence of observations. This uses the Forward algorithm;
@@ -640,13 +401,13 @@ When working with HMMs, there are three main mathematical tasks:
 
 ---
 
-## 📖 6.3 Core Algorithms
+## 📖 4.3 Core Algorithms
 
 Both the Forward and Viterbi algorithms use dynamic programming. They process events in a sequence step-by-step.
 * **Forward Algorithm**: Calculates the overall probability that a sequence of observations could happen at all. It does this by adding up the probabilities of every possible path through the hidden states;
 * **Viterbi Algorithm**: Finds the single best path of hidden states. Instead of adding probabilities, it looks for the maximum probability at each step and uses a "backpointer" to remember the winning path;
 
-## 📖 6.3.1 Weather Problem Example
+## 📖 4.3.1 Weather Problem Example
 If Alice only observes Bob's activities (Walk, Shop, Clean), she can use the Viterbi algorithm to guess the hidden weather (Rainy, Sunny) that caused those activities.
 
 * HMM - finite state automaton
@@ -675,7 +436,7 @@ The **emission probability matrix** B:
 
 > ##### Image: HMM State Machine
 
-## 📖 6.3.2 Forward Algorithm on Weather Problem Example
+## 📖 4.3.2 Forward Algorithm on Weather Problem Example
 
 Forward Algorithm calculations over the probability of a sequence of observations:
 
@@ -689,7 +450,7 @@ Forward Algorithm calculations over the probability of a sequence of observation
 
 > ##### Image: Forward Algorithm State Machine
 
-## 📖 6.3.3 Viterbi Algorithm on Weather Problem Example
+## 📖 4.3.3 Viterbi Algorithm on Weather Problem Example
 
 | Time:     | Day 1 (t=1)           | Day 2 (t=2)                                                        | Day 3 (t=3)                                                            |
 |-----------|-----------------------|--------------------------------------------------------------------|------------------------------------------------------------------------|
@@ -709,7 +470,7 @@ Forward Algorithm calculations over the probability of a sequence of observation
 
 ---
 
-## 📖 6.4 Application: Part-of-Speech (POS) Tagging
+## 📖 4.4 Application: Part-of-Speech (POS) Tagging
 
 **POS Tagging is the process of labeling each word in a text with its grammatical class**, **like noun or verb**.
 It helps computers process text for searches, information extraction and correct pronunciation.
@@ -720,7 +481,7 @@ It helps computers process text for searches, information extraction and correct
 * **Transition Probability** $P(t2|t1)$: The chance of one tag following another (e.g., a noun following an adjective);
 * **Emission Probability** $P(w|t)$: The chance of a specific tag emitting a specific word (e.g., the tag "Verb" emitting the word "race").
 
-### 📑 6.4.1 Penn Treebank POS Tags
+### 📑 4.4.1 Penn Treebank POS Tags
 
 | Tag    | Description             | Example      |
 |--------|-------------------------|--------------|
@@ -760,7 +521,7 @@ It helps computers process text for searches, information extraction and correct
 
 
 
-### 📑 6.4.2 Example of a HMM used for POS Tagging
+### 📑 4.4.2 Example of a HMM used for POS Tagging
 
 Assign POS-Tags for the words of the sentence "I want to race".
 To decode a sentence, the system runs the Viterbi algorithm to find the sequence of POS-Tags with the highest final probability.
@@ -798,11 +559,338 @@ Viterbi's Algorithm:
 | **NN** | 0\*0.041=0 | 0.02479\*0.000054\*<br>\*0.0012=0.2\*10-8 | 0 | 0.1836\*10-5 \*0.00057\*<br>\*0.00047=4.918644\*10-13 |
 | **PPSS** | 0.37\*0.067=<br>= 0.02479 | 0 | 0 | 0 |
 
+
 <!-- --------------------------------------------------------------- -->
-<!-- --------------------- COURSE 7 aaa --------------------- -->
+<!-- ------------------- COURSE 5 SUMMARIZATION -------------------- -->
 <!-- --------------------------------------------------------------- -->
 
-# 🔖 **Course 7 - aaa**
+# 🔖 **Course 5 - Summarization**
 
-aaa
+## 📖 5.1 Definition of Summarization
 
+🔴 The **Document Summarization** is the process of taking an information source, extracting its content and presenting the most important parts in a short form.
+The goal is to meet the specific needs of a user or application. **A summary is a short version of a text** (usually half the size or less) **that keeps the main ideas**.
+An **Automatic Summarization** happens when a computer program creates the shortened text. Good automatic summaries must preserve key information and remain short and logical.
+
+---
+
+## 📖 5.2 Coherence and Cohesion
+To write a good summary, the text must make sense. This relies on two concepts:
+* **Coherence**: This is what makes a text logically meaningful overall. It is an abstract quality that focuses on how ideas are organized. Because it deals with ideas, coherence is qualitative and hard to measure;
+* **Cohesion**: This is the actual grammatical and vocabulary glue that holds words and sentences together. It is a visible, measurable property.
+    * _Lexical cohesion_ links words by meaning, such as repeating a word or using a synonym;
+    * _Grammatical cohesion_ links words using grammar, such as using pronouns (like "she") or conjunctions (like "because").
+* **The Rule**: A coherent text is always cohesive, but a cohesive text might not be coherent. Think of coherence as a finished building, and cohesion as the bricks.
+
+> ### 📚 Grammar Concepts
+
+### 5.2.1 Grammatical Cohesion
+
+| Concept        | Definition                                                                 | Example                                                                 |
+|----------------|-----------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| **Anaphora**       | Referring back to something previously mentioned.                           | "Jane was brilliant. She got the best score." ("She" → "Jane")          |
+| **Cataphora**      | Referring forward to something that will be mentioned.                      | "Here he comes our hero. Please, welcome John." ("he" → "John")         |
+| **Ellipsis**       | Omitting words that are understood from context.                            | "A: Where are you going? B: To dance." ("I am going" omitted)            |
+| **Substitution**   | Replacing a word/phrase with another to avoid repetition.                   | "I would like the pink one." ("one" → "T-shirt")                         |
+| **Conjunctions**   | Linking words that connect ideas or sentences.                              | "We agree on the principle but disagree on the method."                 |
+
+### 5.2.2 Lexical Cohesion
+
+| Concept     | Definition                                                                 | Example                                                                 |
+|-------------|-----------------------------------------------------------------------------|-------------------------------------------------------------------------|
+| **Repetition**  | Reusing the same word multiple times.                                      | "Birds are beautiful. Everybody likes birds."                           |
+| **Synonymy**    | Using words with similar or identical meanings.                            | "snake" → "serpent"                                                     |
+| **Hyponymy**    | Using a general category to refer to a specific item.                      | "cat" → "animal"                                                        |
+| **Meronymy**    | Using a part-to-whole relationship.                                        | "tire" → part of "car"                                                  |
+| **Antonymy**    | Using words with opposite meanings.                                        | "old" ↔ "new"                                                           |
+
+### 📑 5.2.3 Tool for the Automatic Analysis of Cohesion (TAACO)
+
+🔴 **Tool for the Automatic Analysis of Cohesion** (_TAACO_) is a free software program used to measure how well a text connects and flows together, which is known as cohesion. It is easy to use, works on most operating systems like Windows, Mac and Linux, and can process many text files at once. The tool uses over 150 different measurements, called indices, to evaluate a text.
+
+The Three Levels of CohesionTAACO focuses on three main ways a text sticks together:
+* **Local Cohesion**: This looks at connections at the sentence level, meaning how well smaller chunks of text link to one another;
+* **Global Cohesion**: This looks at connections between larger chunks of text, which are usually paragraphs;
+* **Overall text Cohesion**: This looks at the entire text as a whole to see how often cohesive features appear, such as how much the vocabulary varies across the document.
+
+Here are six specific ways TAACO measures cohesion:
+* **Sentence overlap**: This measures local cohesion by checking if neighboring sentences share the same root words, which are called lemmas;
+* **Paragraph overlap**: This measures global cohesion by checking if neighboring paragraphs share the same root words;
+* **Semantic overlap**: This measures both local and global cohesion. It uses a dictionary database called WordNet to check if words or groups of similar words (synsets) are shared between sentences and paragraphs;
+* **Givenness**: This measures overall text cohesion by counting how many pointing words are used. These include pronouns (like "he" or "it"), definite articles (like "the"), and demonstratives (like "this" or "that");
+* **Type-token ratio**: This measures overall text cohesion by checking how much words are repeated. It does this by dividing the total number of words in the text (tokens) by the number of unique, individual words (types);
+* **Connectives**: This measures local cohesion by counting linking words. It tracks different types of links, such as positive versus negative words, or words that show time (temporal), add information (additive), or show cause and effect (causative).
+
+---
+
+## 📖 5.3 Types of Summaries
+Summaries come in different forms:
+* **Extract vs. Abstract**: An extract copies exact sentences from the text, while an abstract rewrites the content in new words;
+* **Single vs. Multi-document**: A summary can be made from just one text or by combining many texts;
+* **Indicative vs. Informative**: Indicative summaries act as a quick alert to tell you what a text is about. Informative summaries act as a substitute for the full text.
+
+---
+
+## 📖 5.4 The Three Stages of Summarization
+Every summarizer follows three steps:
+* **Analysis**: The system reads and understands the source text to build a mental map of it;
+* **Transformation**: The system selects the most important content from that map;
+* **Synthesis**: The system generates the final shortened text.
+
+---
+
+## 📖 5.5 Extractive vs. Abstractive Summarization
+Definitions:
+* **Extractive Summarization**: This method selects existing, important sentences from the original document and glues them together. It uses statistics and word patterns to find the best sentences.
+    * _Outcome_: It has high factual accuracy but can read like a choppy list of sentences;
+
+<img width="714" height="280" alt="image" src="https://github.com/user-attachments/assets/6eeba4aa-2503-4cd6-9a8b-ef013bb6334e" />
+
+> ##### Image: Architecture for extraction
+
+* **Abstractive Summarization**: This method understands the original text and retells it in fewer, new words. It uses complex Natural Language Processing (NLP)—how computers interpret human language—to write fluently.
+    * _Outcome_: It creates a very natural summary using Generative AI, but it might accidentally change the original facts.
+
+<img width="717" height="277" alt="image" src="https://github.com/user-attachments/assets/7aafb078-af3a-4f65-b0c2-246a4312962e" />
+
+> ##### Image: Architecture for abstraction
+
+| Feature                              | Extractive Summarization        | Abstractive Summarization            |
+|--------------------------------------|--------------------------------|-------------------------------------|
+| Approach                             | Extracts key sentences         | Generates new summaries             |
+| Focus                                | Surface-level features         | Context and meaning                 |
+| Use of AI                            | Limited                        | Generative AI (LLMs)                |
+| Generate creative and engaging summaries | No                         | Yes                                 |
+| Output Style                         | Choppy, sentence-like          | More fluent and coherent            |
+| Preserve original content            | Yes                            | No                                  |
+| Information Preservation             | High factual accuracy          | May introduce paraphrases           |
+
+---
+
+## 📖 5.6 How Computers Score Sentences (Extractive Features)
+In extractive summarization, a computer grades sentences to decide which ones to keep. Sentences score higher if they:
+
+1) **Content word (Keyword) feature**: Sentences that contain frequent nouns, known as keywords, have a higher chance of being included in the summary;
+2) **Title word feature**: Sentences that share words with the document's title indicate the main theme and are more likely to be selected;
+3) **Sentence location feature**: The first and last sentences of the first and last paragraphs are usually considered the most important;
+4) **Sentence Length feature**: Sentences are penalized if they are too short or too long compared to the longest sentence in the document;
+5) **Proper Noun feature**: Sentences containing proper nouns, such as names of specific people or places, have a greater chance of being included;
+6) **Upper-case word feature**: Sentences that contain acronyms or proper names written in capital letters are more likely to be selected;
+7) **Cue-Phrase Feature**: Sentences containing transition words, such as "for example," "first," or "in conclusion," are highly likely to be included;
+8) **Biased Word Feature**: Sentences are marked as important if they contain words from a predefined list of topic-specific vocabulary;
+9) **Font based feature**: Sentences with words styled in bold, italics, underlined, or upper-case fonts are usually considered more important;
+10) **Pronouns**: Sentences containing pronouns, such as "she" or "it," are excluded unless the pronoun can be replaced with the specific noun it refers to;
+11) **Sentence-to-Sentence Cohesion**: Cohesion is how well parts of a text connect to each other. A sentence is scored by calculating how similar it is to every other sentence in the text, and sentences with high overall similarity are kept;
+12) **Sentence-to-Centroid Cohesion**: A centroid is the mathematical average of all sentences, representing the core idea. Sentences are compared to this central average, and those that are highly similar are selected because they represent the basic ideas of the document.
+
+---
+
+## 📖 5.7 Mathematical and AI Methods
+Computers use different algorithms to pick the best sentences:
+1) **Machine Learning**: The program looks at human-made summaries to learn the rules of extraction. It treats summarization as a simple choice: "Is this a summary sentence, Yes or No?";
+
+<img width="732" height="392" alt="image" src="https://github.com/user-attachments/assets/6f159d23-feeb-496b-8783-e06aa53d3116" />
+
+> ##### Image: Classifier learning how to summarize
+
+3) **Graph-Based Ranking** (**TextRank**): This treats sentences as points on a map (a graph).
+    * Sentences "vote" for each other based on how similar they are;
+    * Similarity is calculated by counting how many words the two sentences share;
+    * Sentences with the most votes win and go into the summary;
+    * The Formula: The ranking score uses a damping factor ($d$) and edge weights ($w$) for similarity:
+    $$WS(V_{i})=(1-d)+d^{*}\sum_{V_{j}\in In(V_{i})}\frac{w_{ji}}{\sum_{V_{k}\in Out(V_{j})}w_{jk}}WS(V_{j})$$
+4) **Summarization by Clustering**: Clustering means grouping similar sentences together.
+    * By picking just one sentence from each group (cluster), the summary avoids repeating the same information;
+    * **The Formula**: Computers group these sentences by measuring cosine similarity, as following:
+    $$\mathrm{sim}(S_i,S_j)=\cos(V_i,V_j)=\frac{\sum_{k=1}^{m}f(i,t_k)\,f(j,t_k)}{\sqrt{\left(\sum_{k=1}^{m}f(i,t_k)^2\right)\left(\sum_{k=1}^{m}f(j,t_k)^2\right)}}$$
+5) **BERTSum** (**Neural Networks**): BERTSum is an advanced AI model that reads an entire document. It transforms words into complex mathematical vectors (embeddings) and uses a classifier to predict exactly which sentences should make the final cut.
+
+---
+
+## 📖 5.8 Evaluating a Summary
+We need to test if a summary is actually good.
+* **Intrinsic Evaluation**: Humans grade the summary by reading it. They check for good spelling, grammar, and informativeness (how much original text survived);
+* **Extrinsic Evaluation**: Testers see if the summary helps a person accomplish a real-world task, like answering a reading comprehension test;
+* **ROUGE**: This is an automated software tool. It mathematically compares a computer's summary to a perfect human summary by counting how many words and phrases match.
+
+
+<!-- --------------------------------------------------------------- -->
+<!-- --------------------- COURSE 6 CLUSTERING --------------------- -->
+<!-- --------------------------------------------------------------- -->
+
+# 🔖 **Course 6 - Clustering**
+
+## 📖 6.1 Definition of Clustering
+
+🔴 **Clustering is the task of dividing data points into groups**, which are called **clusters**:
+* **Data points in the same cluster are highly similar to each other**;
+* **Data points in different clusters are highly different from each other**;
+* **It is an unsupervised learning method**. This means the algorithm finds patterns on its own without using pre-labeled data;
+* The input is usually a vector, which is just a list of numbers representing a single data point.
+
+---
+
+## 📖 6.2 Types of Clustering
+* **Hard Clustering**: A data point completely belongs to one specific cluster, or it does not.
+Example: A store places a customer exactly into group A;
+* **Soft Clustering**: A data point is given a probability or chance, of belonging to different clusters.
+Example: A customer has a 70% chance of being in group A and a 30% chance of being in group B.
+
+---
+
+## 📖 6.3 Distance Metrics
+🔴 **Distance metrics are math formulas used to measure how similar two objects are**.
+We treat the objects as vectors, $g_{1}$ and $g_{2}$.
+* **Euclidean distance**: The straight-line distance between two points.
+Formula: $d(g_{1},g_{2})=\sqrt{\sum_{i=1}^{n}(x_{i}-y_{i})^{2}}$.
+* **Manhattan distance**: The distance measured along axes at right angles, like walking city blocks.
+Formula: $d(g_{1},g_{2})=\sum_{i=1}^{n}|(x_{i}-y_{i})|$.
+* **Minkowski distance**: A flexible formula that generalizes the two above.
+Formula: $d(g_{1},g_{2})=\sqrt[m]{\sum_{i=1}^{n}(x_{i}-y_{i})^{m}}$.
+
+---
+
+## 📖 6.4 Clustering Models
+
+### 📑 6.4.1 Hierarchical Clustering (Connectivity Model)
+
+🔴 **Connectivity models group points based on the idea that closer points in space are more similar**.
+
+* **Bottom-Up Approach**: Starts by treating every single data point as its own separate cluster. It repeatedly merges the closest pair of clusters together. It stops when all points are combined into one single giant cluster;
+* **Dendrogram**: A tree-like diagram that shows the history of how clusters were merged.  The root is the final giant cluster, and the leaves are the starting single points.
+
+Similarity Measures:
+* **Single-link**: Measures distance by looking only at the two closest (most similar) points between two clusters;
+* **Complete-link**: Measures distance by looking at the two farthest (most dissimilar) points between two clusters.
+
+### 📑 6.4.2 K-Means Clustering (Centroid Model)
+
+🔴 **Centroid models group points based on how close they are to a central point**, **known as the centroid**.
+
+Algorithm Steps:
+1) Choose K, which is the exact number of clusters you want to find;
+2) Randomly assign points to K clusters and calculate the center (centroid) for each group;
+3) Measure the distance from each point to every center. Move the point to the cluster with the closest center;
+4) Recalculate the centers based on the new groups;
+5) Repeat steps 3 and 4 until the centers stop moving.
+
+| Feature           | Hierarchical Clustering                                   | K-Means Clustering                          |
+|-------------------|-----------------------------------------------------------|---------------------------------------------|
+| Speed             | Slow, time complexity is O(n³).                           | Fast, time complexity is O(n).              |
+| Number of Clusters| Decided at the end by cutting the dendrogram tree.        | Must be known and set before starting.      |
+| Consistency       | Always produces the exact same results.                   | Results can change because starting points are random. |
+| Best Used For     | Discovering hidden tree-like structures.                  | Data where clusters are round (spherical).  |
+
+---
+
+## 📖 6.5 Evaluation Metrics
+Metrics are used to score how good the resulting clusters are.
+
+### 📑 6.5.1 Internal Metrics
+Used when you do not know the true groups. They check for compactness (points are packed tightly) and separation (clusters are far apart);
+* **Silhouette Coefficient**: Measures if a point is close to its own cluster but far from others. Scores range from -1 to 1, and closer to 1 is better;
+* **Dunn Index**: The ratio of the shortest distance between clusters to the largest cluster size. Higher scores mean tighter, better-separated clusters;
+* **Inertia**: The sum of squared distances between points and their centers. Lower scores mean tighter clusters;
+* **Davies-Bouldin Index** (_DBI_): Calculates the ratio of distances inside a cluster compared to distances between clusters. A lower score is better;
+* **Calinski-Harabasz Index**: Measures how spread apart the clusters are compared to how spread apart the points inside a cluster are. A higher score is better.
+
+### 📑 6.5.2 External Metrics
+Used when you already know the true, correct groups (ground truth labels) to compare against.
+* **Adjusted Rand Index** (_ARI_): Looks at pairs of points to see if the algorithm grouped them correctly. It adjusts for random guessing. A score of 1.0 is perfect, while 0.0 is random;
+* **Rand Index** (_RI_): Measures the percentage of correctly grouped pairs, but does not adjust for random guessing;
+* **Jaccard Index**: Measures shared correct pairs divided by the total number of unique pairs;
+* **Normalized Mutual Information** (_NMI_): Measures how much correct information is shared between the true groups and the predicted groups. Scores range from 0 to 1.
+
+
+<!-- --------------------------------------------------------------- -->
+<!-- ----------------- COURSE 7 SENTIMENT ANALYSIS ----------------- -->
+<!-- --------------------------------------------------------------- -->
+
+# 🔖 **Course 7 - Sentiment and Emotion Analysis**
+
+## 📖 7.1 Sentiment Analysis - Opinion Mining
+🔴 **Sentiment analysis is a field of study that looks at people's opinions, feelings, attitudes and emotions toward entities like products, services or individuals**.
+The main goal is to **classify text based on its polarity**, which means deciding if the feeling expressed is **positive, negative or neutral**.
+
+---
+
+## 📖 7.2 Levels of Sentiment Analysis
+* **Document Level**: This level decides if an entire text document expresses an overall positive or negative feeling;
+* **Sentence Level**: This level separates objective sentences (which state facts) from subjective sentences (which state personal views);
+* **Entity and Aspect Level**: This is a highly detailed approach that finds feelings about specific parts of a target object.
+For example, in a phone review, it separates opinions about the "battery life" aspect from the "call quality" aspect.
+
+---
+
+## 📖 7.3 The Formal Definition of an Opinion
+An opinion is formally defined by five core parts (a quintuple):
+* **Entity** ($e_j$): The main object being discussed;
+* **Aspect** ($a_{jk}$): A specific feature of that main object;
+* **Sentiment** ($S0_{ijkl}$): The actual feeling or rating given;
+* **Holder** ($h_i$): The person or organization sharing the opinion;
+* **Time** ($t_l$): When the opinion was expressed.
+
+---
+
+## 📖 7.4 Tasks of Sentiment Analysis
+To fully process opinions in text, a system must complete six steps:
+* Extract and group the main entities;
+* Extract and group the specific aspects of those entities;
+* Identify the opinion holder;
+* Extract and standardize the time the opinion was given;
+* Classify the sentiment on each aspect as positive, negative, or neutral;
+* Generate the final 5-part opinion structure.
+
+---
+
+## 📖 7.5 Semantic Orientation and Polarity
+* **Semantic Orientation**: A measurement of how subjective a text is, evaluating its polarity (positive or negative) and strength (how intense the feeling is);
+* **Prior Polarity**: The standard feeling of a word when looked up in a dictionary outside of any text;
+* **Contextual Polarity**: The actual feeling of a word based on how it is used in a specific sentence;
+* **Meaning Shifts**: Positive words can turn negative depending on the context, such as when used with sarcasm, in bad situations, or with negations like "not great".
+
+---
+
+## 📖 7.6 Approaches
+
+### 📑 7.6.1 Lexicon-Based Classification
+
+**A Lexicon is a specialized dictionary that lists words and their pre-calculated positive or negative scores**.
+This approach calculates the overall sentiment score of a text by adding up the scores of the individual words inside it.
+
+* **Micro-phrases**: A system splits text into small chunks using grammar rules (like Adverb + Adjective + Noun) to calculate scores more accurately;
+* **Modifiers**: Some words change the score of nearby words. Amplifiers (like "very") increase the intensity, downtoners (like "slightly") decrease the intensity, and negation shifters (like "not") reverse the score completely.
+
+There are four math formulas to calculate the final text score:
+* **Basic** (total score divided by text length);
+* **Normalized** (adjusted for phrase length);
+* **Emphasized** (gives more weight to important words like verbs and adjectives);
+* **Emphasized - Normalized**.
+
+### 📑 7.6.2 Supervised Learning Classification
+
+**This method treats sentiment analysis like a standard text sorting problem**.
+Algorithms (like _Naïve Bayes_ or _Support Vector Machines_ (_SVM_)) are trained using data that already has known ratings, such as 1-star to 5-star product reviews.
+Important Features for Learning:
+* **Term Frequency**: Counting how often specific words appear in the text;
+* **Term Frequency-Inverse Document Frequency** (_TF-IDF_): A mathematical formula that gives higher importance to words that are rare across all documents but frequent in one specific document;
+* **Parts of speech** (especially adjectives) **and punctuation** (like exclamation marks) are also used to help the system learn.
+
+---
+
+## 📖 7.7 Emotion Analysis
+
+Unlike basic sentiment analysis, emotion analysis detects specific, complex feelings.
+* **Plutchik's Model**: A psychological framework stating there are 8 basic, biological emotions: _Joy, Trust, Fear, Surprise, Sadness, Disgust, Anger and Anticipation_;
+* **Derived Emotions**: Complex emotions created by combining two basic ones. For instance, Love is a combination of Joy and Trust;
+* **Modern Tools**: Deep learning models, like **BERT** (**a powerful neural network for understanding language context**), are fine-tuned to classify text into highly specific emotion categories;
+Massive datasets, such as the **GoEmotions Dataset** (which labels Reddit comments with 27 different emotions), are used to train these advanced models.
+
+
+<!-- --------------------------------------------------------------- -->
+<!-- ----------------- COURSE 8 aaa ----------------- -->
+<!-- --------------------------------------------------------------- -->
+
+# 🔖 **Course 8 - aaa**
+
+## 📖 8.1 aaa
