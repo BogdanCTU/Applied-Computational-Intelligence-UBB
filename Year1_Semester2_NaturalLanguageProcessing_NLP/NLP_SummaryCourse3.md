@@ -1,11 +1,11 @@
 
 <!-- --------------------------------------------------------------- -->
-<!-- ----------------- COURSE 5 SYNTACTIC PARSING ------------------ -->
+<!-- ----------------- COURSE 3 SYNTACTIC PARSING ------------------ -->
 <!-- --------------------------------------------------------------- -->
 
-# 🔖 **Course 5 - Syntactic Parsing**
+# 🔖 **Course 3 - Syntactic Parsing**
 
-## 📖 5.1 Parsing Techniques
+## 📖 3.1 Parsing Techniques
 * **Constituency Parsing**: Identifies groups of words, called constituents and arranges them in a hierarchical tree structure;
 * **Dependency Parsing**: Connects words directly to each other using directed links to show how they relate. 
 
@@ -19,7 +19,7 @@
 
 ---
 
-## 📖 5.2 Phrase Structure and Constituents
+## 📖 3.2 Phrase Structure and Constituents
 Words in a sentence naturally group together into units called phrases or constituents. 
 * **Noun Phrase** (_NP_): A group of words centered around a noun. It can include determiners (words like "a" or "the") and adjectives;
 * **Prepositional Phrase** (_PP_): Starts with a preposition (like "on" or "in") and includes a Noun Phrase;
@@ -28,7 +28,7 @@ Words in a sentence naturally group together into units called phrases or consti
 
 ---
 
-## 📖 5.3 Context-Free Grammars (_CFG_)
+## 📖 3.3 Context-Free Grammars (_CFG_)
 🔴 **Syntactic Parsing** is the task of assigning a grammatical structure to a sentence using formal rules. For English, we model this using a **Context-Free Grammar** (_CFG_), which is a mathematical system that describes how to build correct sentences.
 
 A CFG has four parts:
@@ -39,14 +39,14 @@ A CFG has four parts:
 
 ---
 
-## 📖 5.4 Attachment Ambiguity
+## 📖 3.4 Attachment Ambiguity
 🔴 **Attachment Ambiguity** is the confusion about where a phrase belongs in a sentence. It usually happens when a sentence has multiple prepositional phrases. 
 
 Example: "The boy saw the girl with the telescope." It is unclear if the girl is carrying a telescope, or if the boy is looking through a telescope to see the girl. 
 
 ---
 
-## 📖 5.5 Parsing Strategies
+## 📖 3.5 Parsing Strategies
 Parsers search for the correct grammatical tree using two main strategies: 
 * **Top-down search**: Starts at the root (S) and builds down to the words, guided by the grammar rules;
 * **Bottom-up search**: Starts with the actual words and builds up to the root, ensuring the tree matches the input data;
@@ -54,7 +54,7 @@ Parsers search for the correct grammatical tree using two main strategies:
 
 ---
 
-## 📖 5.6 Dynamic Programming Parsing Methods
+## 📖 3.6 Dynamic Programming Parsing Methods
 These methods solve the re-parsing problem by using tables to save phrases as soon as they are discovered. 
 * 🔴 **Cocke-Kasami-Younger Algorithm** (_CKY_): A bottom-up method driven by a table. It requires the grammar to be in **Chomsky Normal Form** (_CNF_), meaning every rule must break down into exactly two non-terminals or one word. It builds a matrix where each cell holds the phrases that cover a specific span of words;
 
@@ -66,7 +66,7 @@ These methods solve the re-parsing problem by using tables to save phrases as so
 
 ---
 
-## 📖 5.7 Statistical Parsing
+## 📖 3.7 Statistical Parsing
 🔴 **Probabilistic Context-Free Grammar** (_PCFG_) is a Context-Free Grammar (CFG) where every production rule is assigned a **probability**.
 * These probabilities help solve ambiguity by allowing the computer to choose the most likely parse tree;
 * The probability of a specific parse tree is calculated by multiplying the probabilities of all the rules used to build it;
@@ -78,14 +78,14 @@ These methods solve the re-parsing problem by using tables to save phrases as so
 
 ---
 
-## 📖 5.8 Evaluating Parsers
+## 📖 3.8 Evaluating Parsers
 🔴 **PARSEVAL** measures are standard formulas used to compare a computer's parse tree against a human-made "gold standard" reference tree;
 * **Labeled Recall**: The fraction of correct phrases in the human reference tree that the computer successfully found;
 * **Labeled Precision**: The fraction of phrases proposed by the computer that are actually correct.
 
 ---
 
-## 📖 5.9 Applications of Syntactic Analysis
+## 📖 3.9 Applications of Syntactic Analysis
 
 Understanding word relationships is a core step for many advanced language technologies.  It is used heavily in:
 * **Machine Translation**: To ensure translated sentences follow correct grammar;
