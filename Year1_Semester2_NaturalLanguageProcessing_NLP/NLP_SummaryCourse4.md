@@ -1,10 +1,10 @@
 <!-- --------------------------------------------------------------- -->
-<!-- ------------------------ COURSE 6 HMM ------------------------- -->
+<!-- ------------------------ COURSE 4 HMM ------------------------- -->
 <!-- --------------------------------------------------------------- -->
 
-# 🔖 **Course 6 - Hidden Markov Model (HMM)**
+# 🔖 **Course 4 - Hidden Markov Model (HMM)**
 
-## 📖 6.1 Introduction to Hidden Markov Models (_HMM_)
+## 📖 4.1 Introduction to Hidden Markov Models (_HMM_)
 
 🔴 **An HMM is a statistical machine learning tool used for sequence classification and text processing**.
 It looks at a sequence of items and finds the best sequence of labels for them.
@@ -13,7 +13,7 @@ HMMs use probability to link two types of events:
 * **Hidden events**: Things we cannot see but act as causes, such as grammatical part-of-speech (POS) tags.
 HMMs are widely used in speech recognition (observed: sounds, hidden: words), part-of-speech tagging (observed: words, hidden: tags), and machine translation.
 
-### 📑 6.1.1 Formal Definition
+### 📑 4.1.1 Formal Definition
 
 🔴 **An HMM is a finite state automaton** (**a machine that moves between different states**) **that uses random probabilities to transition between states and emit symbols**.
 It models a generative process. This means it creates a sequence by starting in an initial state, moving to a new state, and outputting an observed symbol.
@@ -24,7 +24,7 @@ The mathematical model is defined as $M=(Q,V,A,B,q_{0})$:
 * $B$: The emission probability matrix. This is the chance of a hidden state generating a specific observation;
 * $q_{0}$: The starting state, which does not emit any observation.
 
-### 📑 6.1.2 Key Assumptions
+### 📑 4.1.2 Key Assumptions
 
 To make the math simple, HMMs rely on two strict rules:
 * **Markov Assumption**: The probability of the next state depends only on the current state, ignoring all older history. The formula is $P(q_{i}|q_{1},...,q_{i-1})=P(q_{i}|q_{i-1})$.
@@ -37,7 +37,7 @@ To make the math simple, HMMs rely on two strict rules:
 
 ---
 
-## 📖 6.2 The Three Canonical Problems of HMMs
+## 📖 4.2 The Three Canonical Problems of HMMs
 
 When working with HMMs, there are three main mathematical tasks:
 * **Problem 1 - Evaluation**: We want to know how well a specific HMM matches a given sequence of observations. This uses the Forward algorithm;
@@ -46,13 +46,13 @@ When working with HMMs, there are three main mathematical tasks:
 
 ---
 
-## 📖 6.3 Core Algorithms
+## 📖 4.3 Core Algorithms
 
 Both the Forward and Viterbi algorithms use dynamic programming. They process events in a sequence step-by-step.
 * **Forward Algorithm**: Calculates the overall probability that a sequence of observations could happen at all. It does this by adding up the probabilities of every possible path through the hidden states;
 * **Viterbi Algorithm**: Finds the single best path of hidden states. Instead of adding probabilities, it looks for the maximum probability at each step and uses a "backpointer" to remember the winning path;
 
-## 📖 6.3.1 Weather Problem Example
+## 📖 4.3.1 Weather Problem Example
 If Alice only observes Bob's activities (Walk, Shop, Clean), she can use the Viterbi algorithm to guess the hidden weather (Rainy, Sunny) that caused those activities.
 
 * HMM - finite state automaton
@@ -81,7 +81,7 @@ The **emission probability matrix** B:
 
 > ##### Image: HMM State Machine
 
-## 📖 6.3.2 Forward Algorithm on Weather Problem Example
+## 📖 4.3.2 Forward Algorithm on Weather Problem Example
 
 Forward Algorithm calculations over the probability of a sequence of observations:
 
@@ -95,7 +95,7 @@ Forward Algorithm calculations over the probability of a sequence of observation
 
 > ##### Image: Forward Algorithm State Machine
 
-## 📖 6.3.3 Viterbi Algorithm on Weather Problem Example
+## 📖 4.3.3 Viterbi Algorithm on Weather Problem Example
 
 | Time:     | Day 1 (t=1)           | Day 2 (t=2)                                                        | Day 3 (t=3)                                                            |
 |-----------|-----------------------|--------------------------------------------------------------------|------------------------------------------------------------------------|
@@ -115,7 +115,7 @@ Forward Algorithm calculations over the probability of a sequence of observation
 
 ---
 
-## 📖 6.4 Application: Part-of-Speech (POS) Tagging
+## 📖 4.4 Application: Part-of-Speech (POS) Tagging
 
 **POS Tagging is the process of labeling each word in a text with its grammatical class**, **like noun or verb**.
 It helps computers process text for searches, information extraction and correct pronunciation.
@@ -126,7 +126,7 @@ It helps computers process text for searches, information extraction and correct
 * **Transition Probability** $P(t2|t1)$: The chance of one tag following another (e.g., a noun following an adjective);
 * **Emission Probability** $P(w|t)$: The chance of a specific tag emitting a specific word (e.g., the tag "Verb" emitting the word "race").
 
-### 📑 6.4.1 Penn Treebank POS Tags
+### 📑 4.4.1 Penn Treebank POS Tags
 
 | Tag    | Description             | Example      |
 |--------|-------------------------|--------------|
@@ -166,7 +166,7 @@ It helps computers process text for searches, information extraction and correct
 
 
 
-### 📑 6.4.2 Example of a HMM used for POS Tagging
+### 📑 4.4.2 Example of a HMM used for POS Tagging
 
 Assign POS-Tags for the words of the sentence "I want to race".
 To decode a sentence, the system runs the Viterbi algorithm to find the sequence of POS-Tags with the highest final probability.
