@@ -96,7 +96,36 @@ first noun or repeating often) and **impeding indicators** (subtracts points for
 Modern systems often use **Machine Learning** (_ML_).
 A well-known system by Wee Meng Soon uses annotated training documents:
 * **Extract Markables**: A pipeline identifies all potential noun phrases and names, called "markables";
+
+<img width="739" height="276" alt="image" src="https://github.com/user-attachments/assets/bbad64e5-c9ee-417b-aecc-6f4e8adc372e" />
+
+> ##### Image: Usage of NLP pipeline modules for markables
+
 * **Generate Features**: The system creates a feature vector containing 12 traits for every pair of words.
 Key features check distance, pronoun status, string matching, gender/number agreement and whether they are proper names;
 * **Train Classifier**: A decision tree learns from positive examples (adjacent pairs in a chain) and negative examples (unrelated pairs);
 * **Resolve**: For a new text, the tree tests potential antecedents in reverse document order until it finds a match.
+
+---
+
+## 📖 8.8 Extra
+
+| S.No | Name of the Tool                              | Developed By                              | Source                                                      | Language | Last Modified | Version | License                 |
+|------|-----------------------------------------------|-------------------------------------------|-------------------------------------------------------------|----------|---------------|---------|-------------------------|
+| 1    | **ARKRef**                                    | Carnegie Mellon University                | http://www.cs.cmu.edu/~ark/ARKref/                          | Java     | 2013          | none    | GPL                     |
+| 2    | **BART**                                      | Johns Hopkins University                  | http://www.sfs.uni-tuebingen.de/~versley/BART/              | Java     | 2008          | 1.0     | GPL, Apache             |
+| 3    | **Berkeley Entity Resolution System**         | University of California, Berkeley        | http://nlp.cs.berkeley.edu/projects/coref.shtml             | Scala    | 2015          | 1.1     | GPLv3                   |
+| 4    | **GATE**                                      | The University of Sheffield               | https://gate.ac.uk/sale/tao/splitch7.html                   | Java     | 2016          | 8.5.1   | GPL                     |
+| 5    | **Guitar**                                    | University of Essex                       | http://www.essex.ac.uk/research/nle/GuiTAR/                 | Java     | 2007          | 3.0.3   | GPL                     |
+| 6    | **Illinois Coreference Package**              | University of Illinois                    | https://cogcomp.cs.illinois.edu/page/software_view/Coref    | Java     | 2008          | 1.3.2   | Academic Use License    |
+| 7    | **JavaRAP**                                   | National University of Singapore          | http://aye.comp.nus.edu.sg/~qiu/nlpTools/JavaRAP.html       | Java     | 2011          | 1.13    | GPL                     |
+| 8    | **OpenNLP**                                   | Apache Software Foundation                | https://issues.apache.org/jira/browse/OPENNLP               | Java     | 2010          | 1.6.0   | Apache v2.0             |
+| 9    | **Reconcile**                                 | Cornell University                        | https://csta.cs.utah.edu/nlp/reconcile/                     | Java     | 2010          | 1.0     | GPL                     |
+| 10   | **RelaxCor**                                  | Universitat Politècnica de Catalunya      | http://nlp.lsi.upc.edu/relaxcor/                            | Perl     | 2012          | 1.1     | GPL                     |
+| 11   | **Stanford Deterministic Coreference System** | Stanford University                       | http://nlp.stanford.edu/software/dcoref.shtml               | Java     | 2016          | 3.9.2   | GPL v3                  |
+| 12   | **SpaCy**                                     | Explosion AI                              | https://spacy.io/                                           | Python   | 2017          | 2.1.3   | MIT                     |
+| 13   | **CorefGraph**                                | Rodrigo Agerri, University of Deusto      | https://pypi.org/project/corefgraph                         | Python   | 2017          | 1.2.3   | Apache Software License |
+| 14   | **SpaCy CoreferenceResolver**                 | Explosion AI                              | https://spacy.io/api/coref                                  | Python   | N/A           | N/A     | MIT                     |
+| 15   | **NeuralCoref**                               | Hugging Face                              | https://github.com/huggingface/neuralcoref                  | Python   | N/A           | 2       | MIT                     |
+
+> ##### Table: List of open source Coreferencce tools and libraries
