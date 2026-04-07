@@ -49,7 +49,7 @@ To fully process opinions in text, a system must complete six steps:
 
 ## 📖 7.6 Approaches
 
-### 📑 7.6.1 Lexicon-Based Classification (Approach 1)
+### 📑 7.6.1 Lexicon-Based Classification
 
 **A Lexicon is a specialized dictionary that lists words and their pre-calculated positive or negative scores**.
 This approach calculates the overall sentiment score of a text by adding up the scores of the individual words inside it.
@@ -63,7 +63,7 @@ There are four math formulas to calculate the final text score:
 * **Emphasized** (gives more weight to important words like verbs and adjectives);
 * **Emphasized - Normalized**.
 
-### 📑 7.6.2 Supervised Learning Classification (Approach 2)
+### 📑 7.6.2 Supervised Learning Classification
 
 **This method treats sentiment analysis like a standard text sorting problem**.
 Algorithms (like _Naïve Bayes_ or _Support Vector Machines_ (_SVM_)) are trained using data that already has known ratings, such as 1-star to 5-star product reviews.
