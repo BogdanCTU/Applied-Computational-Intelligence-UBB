@@ -11,7 +11,7 @@ class ManagerAgent(Agent):
     """
 
     class MatchRunner(OneShotBehaviour):
-        def __init__(self, rounds, T, R, P, S, player1_jid, player2_jid, csv_filename="results.csv"):
+        def __init__(self, rounds, T, R, P, S, player1_jid, player2_jid, results_list, result_callback):
             super().__init__()
             self.rounds = rounds
             self.T = T
@@ -20,21 +20,10 @@ class ManagerAgent(Agent):
             self.S = S
             self.player1_jid = player1_jid
             self.player2_jid = player2_jid
-            self.csv_filename = csv_filename
+            self.results_list = results_list
+            self.result_callback = result_callback
 
         async def run(self):
-            # CSV header
-            with open(self.csv_filename, mode='w', newline='') as file:
-                writer = csv.writer(file)
-                writer.writerow([
-                    "Round",
-                    "Player1_Action",
-                    "Player1_Payoff",
-                    "Player1_ActualPoints",
-                    "Player2_Action",
-                    "Player2_Payoff",
-                    "Player2_ActualPoints"
-                ])
 
             # Initialize cumulative scores
             p1_cumulative = 0
@@ -65,18 +54,19 @@ class ManagerAgent(Agent):
                     p1_cumulative += payoff1
                     p2_cumulative += payoff2
 
-                    # Append row to CSV
-                    with open(self.csv_filename, mode='a', newline='') as file:
-                        writer = csv.writer(file)
-                        writer.writerow([
-                            round_idx,
-                            action1,
-                            payoff1,
-                            p1_cumulative,
-                            action2,
-                            payoff2,
-                            p2_cumulative
-                        ])
+                    # Store result as a dictionary
+                    result_entry = {
+                        "Round": round_idx,
+                        "Player1_Action": action1,
+                        "Player1_Payoff": payoff1,
+                        "Player1_ActualPoints": p1_cumulative,
+                        "Player2_Action": action2,
+                        "Player2_Payoff": payoff2,
+                        "Player2_ActualPoints": p2_cumulative
+                    }
+                    self.results_list.append(result_entry)
+                    if self.result_callback:
+                        self.result_callback(result_entry)
 
                     # Send results back to players
                     res_msg1 = Message(to=self.player1_jid)
@@ -102,7 +92,6 @@ class ManagerAgent(Agent):
             print(f"Total Rounds: {self.rounds}")
             print(f"Player 1 ({self.player1_jid}) Total Score: {p1_cumulative}")
             print(f"Player 2 ({self.player2_jid}) Total Score: {p2_cumulative}")
-            print(f"Results stored in '{self.csv_filename}'.")
 
         def evaluate(self, action1, action2):
             """Evaluates choices based on T > R > P > S"""
@@ -124,6 +113,6 @@ class ManagerAgent(Agent):
         # Setup is empty; match will be added dynamically
         pass
 
-    def start_match(self, rounds, T, R, P, S, p1_jid, p2_jid, csv_filename="results.csv"):
-        self.match_behaviour = self.MatchRunner(rounds, T, R, P, S, p1_jid, p2_jid, csv_filename)
+    def start_match(self, rounds, T, R, P, S, p1_jid, p2_jid, results_list, result_callback):
+        self.match_behaviour = self.MatchRunner(rounds, T, R, P, S, p1_jid, p2_jid, results_list, result_callback)
         self.add_behaviour(self.match_behaviour)
