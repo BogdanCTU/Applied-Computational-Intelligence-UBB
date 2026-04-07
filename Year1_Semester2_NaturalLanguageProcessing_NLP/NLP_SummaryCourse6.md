@@ -1,10 +1,10 @@
 <!-- --------------------------------------------------------------- -->
-<!-- --------------------- COURSE 3 CLUSTERING --------------------- -->
+<!-- --------------------- COURSE 6 CLUSTERING --------------------- -->
 <!-- --------------------------------------------------------------- -->
 
-# 🔖 **Course 3 - Clustering**
+# 🔖 **Course 6 - Clustering**
 
-## 📖 3.1 Definition of Clustering
+## 📖 6.1 Definition of Clustering
 
 🔴 **Clustering is the task of dividing data points into groups**, which are called **clusters**:
 * **Data points in the same cluster are highly similar to each other**;
@@ -14,7 +14,7 @@
 
 ---
 
-## 📖 3.2 Types of Clustering
+## 📖 6.2 Types of Clustering
 * **Hard Clustering**: A data point completely belongs to one specific cluster, or it does not.
 Example: A store places a customer exactly into group A;
 * **Soft Clustering**: A data point is given a probability or chance, of belonging to different clusters.
@@ -22,7 +22,7 @@ Example: A customer has a 70% chance of being in group A and a 30% chance of bei
 
 ---
 
-## 📖 3.3 Distance Metrics
+## 📖 6.3 Distance Metrics
 🔴 **Distance metrics are math formulas used to measure how similar two objects are**.
 We treat the objects as vectors, $g_{1}$ and $g_{2}$.
 * **Euclidean distance**: The straight-line distance between two points.
@@ -34,9 +34,9 @@ Formula: $d(g_{1},g_{2})=\sqrt[m]{\sum_{i=1}^{n}(x_{i}-y_{i})^{m}}$.
 
 ---
 
-## 📖 3.4 Clustering Models
+## 📖 6.4 Clustering Models
 
-### 📑 3.4.1 Hierarchical Clustering (Connectivity Model)
+### 📑 6.4.1 Hierarchical Clustering (Connectivity Model)
 
 🔴 **Connectivity models group points based on the idea that closer points in space are more similar**.
 
@@ -47,7 +47,7 @@ Similarity Measures:
 * **Single-link**: Measures distance by looking only at the two closest (most similar) points between two clusters;
 * **Complete-link**: Measures distance by looking at the two farthest (most dissimilar) points between two clusters.
 
-### 📑 3.4.2 K-Means Clustering (Centroid Model)
+### 📑 6.4.2 K-Means Clustering (Centroid Model)
 
 🔴 **Centroid models group points based on how close they are to a central point**, **known as the centroid**.
 
@@ -67,10 +67,10 @@ Algorithm Steps:
 
 ---
 
-## 📖 3.5 Evaluation Metrics
+## 📖 6.5 Evaluation Metrics
 Metrics are used to score how good the resulting clusters are.
 
-### 📑 3.5.1 Internal Metrics
+### 📑 6.5.1 Internal Metrics
 Used when you do not know the true groups. They check for compactness (points are packed tightly) and separation (clusters are far apart);
 * **Silhouette Coefficient**: Measures if a point is close to its own cluster but far from others. Scores range from -1 to 1, and closer to 1 is better;
 * **Dunn Index**: The ratio of the shortest distance between clusters to the largest cluster size. Higher scores mean tighter, better-separated clusters;
@@ -78,7 +78,7 @@ Used when you do not know the true groups. They check for compactness (points ar
 * **Davies-Bouldin Index** (_DBI_): Calculates the ratio of distances inside a cluster compared to distances between clusters. A lower score is better;
 * **Calinski-Harabasz Index**: Measures how spread apart the clusters are compared to how spread apart the points inside a cluster are. A higher score is better.
 
-### 📑 3.5.2 External Metrics
+### 📑 6.5.2 External Metrics
 Used when you already know the true, correct groups (ground truth labels) to compare against.
 * **Adjusted Rand Index** (_ARI_): Looks at pairs of points to see if the algorithm grouped them correctly. It adjusts for random guessing. A score of 1.0 is perfect, while 0.0 is random;
 * **Rand Index** (_RI_): Measures the percentage of correctly grouped pairs, but does not adjust for random guessing;
