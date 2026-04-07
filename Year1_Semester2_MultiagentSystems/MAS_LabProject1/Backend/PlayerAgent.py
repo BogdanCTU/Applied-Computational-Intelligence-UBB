@@ -20,7 +20,11 @@ class PlayerAgent(Agent):
                 ontology = msg.metadata.get("ontology")
                 if ontology == "REQUEST_ACTION":
                     # Time to make a move
-                    choice = self.agent.strategy.decide(self.agent.history)
+                    choice_result = self.agent.strategy.decide(self.agent.history)
+                    if asyncio.iscoroutine(choice_result):
+                        choice = await choice_result
+                    else:
+                        choice = choice_result
                     self.agent.last_choice = choice
                     
                     reply = Message(to=str(msg.sender))

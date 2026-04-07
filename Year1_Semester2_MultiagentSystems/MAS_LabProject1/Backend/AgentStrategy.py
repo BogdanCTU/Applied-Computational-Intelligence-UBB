@@ -36,3 +36,21 @@ class TitForTat(AgentStrategy):
             return "C"  # Initial move
         # The opponent's last move is the second element of the last tuple
         return history[-1][1]
+
+class HumanStrategy(AgentStrategy):
+    """Strategy driven by human input via asyncio Queue."""
+    def __init__(self, action_queue):
+        super().__init__()
+        self.action_queue = action_queue
+
+    async def decide(self, history: list) -> str:
+        # Wait for the human to put 'C' or 'D' in the queue
+        import asyncio
+        import queue
+        while True:
+            try:
+                # non-blocking check
+                item = self.action_queue.get_nowait()
+                return item
+            except queue.Empty:
+                await asyncio.sleep(0.1)
