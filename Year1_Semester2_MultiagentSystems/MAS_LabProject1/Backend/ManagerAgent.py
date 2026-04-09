@@ -1,118 +1,115 @@
 import asyncio
-import csv
 from spade.agent import Agent
 from spade.behaviour import OneShotBehaviour
 from spade.message import Message
+from Environment import PrisonersDilemmaEnvironment
 
 class ManagerAgent(Agent):
     """
-    Manager Entity coordinating the matches, syncing execution and compiling scores.
-    Outputs per-round actions, payoffs, and cumulative points for both players.
+    Manager Agent coordinating the Prisoner's Dilemma matches.
+    Implements a Hybrid (Reactive + Deliberative) architecture with PAGE design:
+    - Perception: receives actions from agents
+    - Internal State: maintains round history and cumulative scores
+    - Action: applies environment rules, sends feedback
+    - Environment: represented via PrisonersDilemmaEnvironment instance
     """
 
     class MatchRunner(OneShotBehaviour):
         def __init__(self, rounds, T, R, P, S, player1_jid, player2_jid, results_list, result_callback):
             super().__init__()
-            self.rounds = rounds
-            self.T = T
-            self.R = R
-            self.P = P
-            self.S = S
-            self.player1_jid = player1_jid
-            self.player2_jid = player2_jid
+            # --- Environment ---
+            self.environment = PrisonersDilemmaEnvironment(T=T, R=R, P=P, S=S)
+            self.total_rounds = rounds
+
+            # --- Agent Identification ---
+            self.player1_jid = str(player1_jid).split("/")[0]  # bare JID
+            self.player2_jid = str(player2_jid).split("/")[0]  # bare JID
+
+            # --- Internal State (Deliberative Memory) ---
+            self.history = []  # stores all round outcomes
             self.results_list = results_list
             self.result_callback = result_callback
 
         async def run(self):
+            for round_idx in range(1, self.total_rounds + 1):
+                # === PERCEPTION: Request actions from players ===
+                for jid in [self.player1_jid, self.player2_jid]:
+                    req = Message(to=jid)
+                    req.set_metadata("performative", "request")
+                    req.set_metadata("ontology", "REQUEST_ACTION")
+                    await self.send(req)
 
-            # Initialize cumulative scores
-            p1_cumulative = 0
-            p2_cumulative = 0
+                # === PERCEPTION: Receive player actions ===
+                action_map = {self.player1_jid: None, self.player2_jid: None}
+                for _ in range(2):
+                    resp = await self.receive(timeout=3)
+                    if resp:
+                        sender = str(resp.sender).split("/")[0]
+                        if sender in action_map:
+                            action_map[sender] = resp.body
 
-            for round_idx in range(1, self.rounds + 1):
-                # Request moves via XMPP
-                req1 = Message(to=self.player1_jid)
-                req1.set_metadata("performative", "request")
-                req1.set_metadata("ontology", "REQUEST_ACTION")
-                await self.send(req1)
+                action1 = action_map[self.player1_jid]
+                action2 = action_map[self.player2_jid]
 
-                req2 = Message(to=self.player2_jid)
-                req2.set_metadata("performative", "request")
-                req2.set_metadata("ontology", "REQUEST_ACTION")
-                await self.send(req2)
+                if action1 and action2:
+                    # === STATE UPDATE: Deliberative component ===
+                    outcome = self.environment.apply_actions(action1, action2)
+                    self.history.append(outcome)  # memory of rounds
 
-                # Collect responses
-                resp1 = await self.receive(timeout=3)
-                resp2 = await self.receive(timeout=3)
-
-                if resp1 and resp2:
-                    action1 = resp1.body
-                    action2 = resp2.body
-                    payoff1, payoff2 = self.evaluate(action1, action2)
-
-                    # Update cumulative scores
-                    p1_cumulative += payoff1
-                    p2_cumulative += payoff2
-
-                    # Store result as a dictionary
                     result_entry = {
-                        "Round": round_idx,
-                        "Player1_Action": action1,
-                        "Player1_Payoff": payoff1,
-                        "Player1_ActualPoints": p1_cumulative,
-                        "Player2_Action": action2,
-                        "Player2_Payoff": payoff2,
-                        "Player2_ActualPoints": p2_cumulative
+                        "Round": outcome["round"],
+                        "Player1_Action": outcome["p1_action"],
+                        "Player1_Payoff": outcome["p1_payoff"],
+                        "Player1_ActualPoints": outcome["p1_cumulative"],
+                        "Player2_Action": outcome["p2_action"],
+                        "Player2_Payoff": outcome["p2_payoff"],
+                        "Player2_ActualPoints": outcome["p2_cumulative"]
                     }
-                    self.results_list.append(result_entry)
+
+                    # Update external reporting if requested
+                    if self.results_list is not None:
+                        self.results_list.append(result_entry)
                     if self.result_callback:
                         self.result_callback(result_entry)
 
-                    # Send results back to players
+                    # === ACTION: Feedback to agents ===
                     res_msg1 = Message(to=self.player1_jid)
                     res_msg1.set_metadata("performative", "inform")
                     res_msg1.set_metadata("ontology", "ROUND_RESULT")
-                    res_msg1.body = f"{action2},{payoff1},{payoff2}"
+                    res_msg1.body = f"{action2},{outcome['p1_payoff']},{outcome['p2_payoff']}"
                     await self.send(res_msg1)
 
                     res_msg2 = Message(to=self.player2_jid)
                     res_msg2.set_metadata("performative", "inform")
                     res_msg2.set_metadata("ontology", "ROUND_RESULT")
-                    res_msg2.body = f"{action1},{payoff2},{payoff1}"
+                    res_msg2.body = f"{action1},{outcome['p2_payoff']},{outcome['p1_payoff']}"
                     await self.send(res_msg2)
 
                 else:
-                    print(f"[Manager] Error: Timed out waiting for action responses on round {round_idx}")
+                    print(f"[ManagerAgent] Protocol Failure Round {round_idx}: P1={action1}, P2={action2}")
 
-                # Slight execution throttle
                 await asyncio.sleep(0.01)
 
-            # Match finished
+            # === SUMMARY OF MATCH ===
             print("=== MATCH FINISHED ===")
-            print(f"Total Rounds: {self.rounds}")
-            print(f"Player 1 ({self.player1_jid}) Total Score: {p1_cumulative}")
-            print(f"Player 2 ({self.player2_jid}) Total Score: {p2_cumulative}")
-
-        def evaluate(self, action1, action2):
-            """Evaluates choices based on T > R > P > S"""
-            if action1 == "C" and action2 == "C":
-                return (self.R, self.R)
-            elif action1 == "D" and action2 == "D":
-                return (self.P, self.P)
-            elif action1 == "C" and action2 == "D":
-                return (self.S, self.T)
-            elif action1 == "D" and action2 == "C":
-                return (self.T, self.S)
-            return (0, 0)
+            print(f"Total Rounds: {self.total_rounds}")
+            print(f"Player 1 ({self.player1_jid}) Total Score: {self.environment.total_p1_score}")
+            print(f"Player 2 ({self.player2_jid}) Total Score: {self.environment.total_p2_score}")
 
     def __init__(self, jid, password):
-        super().__init__(jid, password)
+        super().__init__(jid, password, verify_security=False)
         self.match_behaviour = None
+        # Internal hybrid state for manager-level strategic coordination
+        self.internal_state = {
+            "active_matches": [],
+            "aggregate_history": []
+        }
 
     async def setup(self):
-        # Setup is empty; match will be added dynamically
-        pass
+        print(f"[ManagerAgent] {self.jid} is ready.")
 
     def start_match(self, rounds, T, R, P, S, p1_jid, p2_jid, results_list, result_callback):
         self.match_behaviour = self.MatchRunner(rounds, T, R, P, S, p1_jid, p2_jid, results_list, result_callback)
         self.add_behaviour(self.match_behaviour)
+        # Record active match internally
+        self.internal_state["active_matches"].append((p1_jid, p2_jid))

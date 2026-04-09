@@ -42,13 +42,23 @@ class TwoPlayerTab(ttk.Frame):
         self.s_var = tk.IntVar(value=0)
         ttk.Entry(control_frame, textvariable=self.s_var, width=10).grid(row=1, column=3, padx=5, pady=5)
 
+        strats = [
+            "TitForTat", "RandomStrategy", "AlwaysCooperate", "AlwaysDefect",
+            "GrimTrigger", "TitForTwoTats", "Pavlov", "RandomCooperate",
+            "Alternator", "SoftMajority", "HardMajority", "SuspiciousTitForTat",
+            "TwoTitsForTat", "Prober", "ForgivingTitForTat", "Adaptive",
+            "Spiteful", "GenerousTitForTat", "TitForTatWithNoise",
+            "WinStayLoseShift", "TitForTatWithMemory", "Detective",
+            "TitForTatWithDelay", "ContriteTitForTat"
+        ]
+
         ttk.Label(control_frame, text="P1 Strategy:").grid(row=2, column=0, padx=5, pady=5, sticky=tk.W)
         self.p1_strat_var = tk.StringVar(value="TitForTat")
-        ttk.Combobox(control_frame, textvariable=self.p1_strat_var, values=["TitForTat", "RandomStrategy", "AlwaysCooperate", "AlwaysDefect"], state="readonly", width=15).grid(row=2, column=1, padx=5, pady=5)
+        ttk.Combobox(control_frame, textvariable=self.p1_strat_var, values=strats, state="readonly", width=15).grid(row=2, column=1, padx=5, pady=5)
 
         ttk.Label(control_frame, text="P2 Strategy:").grid(row=2, column=2, padx=5, pady=5, sticky=tk.W)
         self.p2_strat_var = tk.StringVar(value="RandomStrategy")
-        ttk.Combobox(control_frame, textvariable=self.p2_strat_var, values=["TitForTat", "RandomStrategy", "AlwaysCooperate", "AlwaysDefect"], state="readonly", width=15).grid(row=2, column=3, padx=5, pady=5)
+        ttk.Combobox(control_frame, textvariable=self.p2_strat_var, values=strats, state="readonly", width=15).grid(row=2, column=3, padx=5, pady=5)
 
         btn_frame = ttk.Frame(control_frame)
         btn_frame.grid(row=0, column=6, rowspan=3, padx=20, pady=5)

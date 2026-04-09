@@ -51,18 +51,35 @@ class TournamentTab(ttk.Frame):
         ttk.Entry(control_frame, textvariable=self.s_var, width=10).grid(row=2, column=1, padx=5, pady=5)
 
         ttk.Label(control_frame, text="StrategiesPool:").grid(row=2, column=2, padx=5, pady=5, sticky=tk.W)
-        # We will randomly assign strategies from the checked list
-        self.strat_tt = tk.BooleanVar(value=True)
-        self.strat_rnd = tk.BooleanVar(value=True)
-        self.strat_ac = tk.BooleanVar(value=True)
-        self.strat_ad = tk.BooleanVar(value=True)
         
         pool_frame = ttk.Frame(control_frame)
-        pool_frame.grid(row=2, column=3, columnspan=3, sticky=tk.W)
-        ttk.Checkbutton(pool_frame, text="TitForTat", variable=self.strat_tt).pack(side=tk.LEFT)
-        ttk.Checkbutton(pool_frame, text="Random", variable=self.strat_rnd).pack(side=tk.LEFT)
-        ttk.Checkbutton(pool_frame, text="Cooperate", variable=self.strat_ac).pack(side=tk.LEFT)
-        ttk.Checkbutton(pool_frame, text="Defect", variable=self.strat_ad).pack(side=tk.LEFT)
+        pool_frame.grid(row=2, column=3, columnspan=3, sticky=tk.NSEW)
+        
+        scrollbar = ttk.Scrollbar(pool_frame, orient=tk.VERTICAL)
+        self.strat_listbox = tk.Listbox(pool_frame, selectmode=tk.MULTIPLE, yscrollcommand=scrollbar.set, height=4, exportselection=False)
+        scrollbar.config(command=self.strat_listbox.yview)
+        
+        self.all_strats = [
+            "TitForTat", "RandomStrategy", "AlwaysCooperate", "AlwaysDefect",
+            "GrimTrigger", "TitForTwoTats", "Pavlov", "RandomCooperate",
+            "Alternator", "SoftMajority", "HardMajority", "SuspiciousTitForTat",
+            "TwoTitsForTat", "Prober", "ForgivingTitForTat", "Adaptive",
+            "Spiteful", "GenerousTitForTat", "TitForTatWithNoise",
+            "WinStayLoseShift", "TitForTatWithMemory", "Detective",
+            "TitForTatWithDelay", "ContriteTitForTat"
+        ]
+        
+        for strat in self.all_strats:
+            self.strat_listbox.insert(tk.END, strat)
+            
+        # Select first 4 by default to keep previous behavior
+        self.strat_listbox.selection_set(0)
+        self.strat_listbox.selection_set(1)
+        self.strat_listbox.selection_set(2)
+        self.strat_listbox.selection_set(3)
+        
+        self.strat_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         btn_frame = ttk.Frame(control_frame)
         btn_frame.grid(row=0, column=6, rowspan=3, padx=20, pady=5)
@@ -112,11 +129,8 @@ class TournamentTab(ttk.Frame):
             messagebox.showerror("Error", "Please enter valid integers.")
             return
 
-        strats = []
-        if self.strat_tt.get(): strats.append("TitForTat")
-        if self.strat_rnd.get(): strats.append("RandomStrategy")
-        if self.strat_ac.get(): strats.append("AlwaysCooperate")
-        if self.strat_ad.get(): strats.append("AlwaysDefect")
+        selected_indices = self.strat_listbox.curselection()
+        strats = [self.strat_listbox.get(i) for i in selected_indices]
 
         if not strats:
             messagebox.showerror("Error", "Select at least one strategy for the pool.")

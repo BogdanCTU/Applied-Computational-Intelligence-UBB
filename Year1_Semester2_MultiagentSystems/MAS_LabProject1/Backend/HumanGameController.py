@@ -2,7 +2,16 @@ import asyncio
 import threading
 from ManagerAgent import ManagerAgent
 from PlayerAgent import PlayerAgent
-from AgentStrategy import RandomStrategy, TitForTat, AlwaysCooperate, AlwaysDefect, HumanStrategy
+from server_config import XMPP_SERVER, PASSWORD
+from AgentStrategy import (
+    RandomStrategy, TitForTat, AlwaysCooperate, AlwaysDefect, HumanStrategy,
+    GrimTrigger, TitForTwoTats, Pavlov, RandomCooperate,
+    Alternator, SoftMajority, HardMajority, SuspiciousTitForTat,
+    TwoTitsForTat, Prober, ForgivingTitForTat, Adaptive,
+    Spiteful, GenerousTitForTat, TitForTatWithNoise,
+    WinStayLoseShift, TitForTatWithMemory, Detective,
+    TitForTatWithDelay, ContriteTitForTat
+)
 
 class HumanGameController:
     def __init__(self, action_queue, update_callback=None, completion_callback=None):
@@ -57,18 +66,40 @@ class HumanGameController:
         if self.manager: await self.manager.stop()
         
     async def _async_simulation(self, rounds, T, R, P, S, bot_strat):
-        xmpp_server = "bogdanpc" 
-        password = "admin"
+        import uuid
+        uid = str(uuid.uuid4())[:8]
+        xmpp_server = XMPP_SERVER 
+        password = PASSWORD
 
-        h_jid = f"human@{xmpp_server}"
-        b_jid = f"bot@{xmpp_server}"
-        gm_jid = f"manager_human@{xmpp_server}"
+        h_jid = f"human_{uid}@{xmpp_server}"
+        b_jid = f"bot_{uid}@{xmpp_server}"
+        gm_jid = f"manager_human_{uid}@{xmpp_server}"
 
         strategy_map = {
             "TitForTat": TitForTat,
             "RandomStrategy": RandomStrategy,
             "AlwaysCooperate": AlwaysCooperate,
-            "AlwaysDefect": AlwaysDefect
+            "AlwaysDefect": AlwaysDefect,
+            "GrimTrigger": GrimTrigger,
+            "TitForTwoTats": TitForTwoTats,
+            "Pavlov": Pavlov,
+            "RandomCooperate": RandomCooperate,
+            "Alternator": Alternator,
+            "SoftMajority": SoftMajority,
+            "HardMajority": HardMajority,
+            "SuspiciousTitForTat": SuspiciousTitForTat,
+            "TwoTitsForTat": TwoTitsForTat,
+            "Prober": Prober,
+            "ForgivingTitForTat": ForgivingTitForTat,
+            "Adaptive": Adaptive,
+            "Spiteful": Spiteful,
+            "GenerousTitForTat": GenerousTitForTat,
+            "TitForTatWithNoise": TitForTatWithNoise,
+            "WinStayLoseShift": WinStayLoseShift,
+            "TitForTatWithMemory": TitForTatWithMemory,
+            "Detective": Detective,
+            "TitForTatWithDelay": TitForTatWithDelay,
+            "ContriteTitForTat": ContriteTitForTat
         }
 
         self.human_agent = PlayerAgent(h_jid, password, strategy=HumanStrategy(self.action_queue))
@@ -80,7 +111,6 @@ class HumanGameController:
             await self.bot_agent.start(auto_register=True)
             await self.manager.start(auto_register=True)
         except Exception as e:
-            print(f"Agent Start Failed: {e}")
             self.is_running = False
             return
             
@@ -96,7 +126,6 @@ class HumanGameController:
             try:
                 while not self.manager.match_behaviour.is_killed and self.is_running:
                     await asyncio.sleep(0.1)
-                
                 if self.is_running:
                      await self.manager.match_behaviour.join()
             except Exception as e:
