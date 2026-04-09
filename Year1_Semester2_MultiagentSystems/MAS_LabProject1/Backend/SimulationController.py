@@ -3,6 +3,7 @@ import threading
 from ManagerAgent import ManagerAgent
 from PlayerAgent import PlayerAgent
 from AgentStrategy import RandomStrategy, TitForTat, AlwaysCooperate, AlwaysDefect
+from server_config import XMPP_SERVER, PASSWORD
 
 class SimulationController:
     def __init__(self, update_callback=None, completion_callback=None):
@@ -55,8 +56,8 @@ class SimulationController:
         if self.manager: await self.manager.stop()
         
     async def _async_simulation(self, rounds, T, R, P, S, p1_strat, p2_strat):
-        xmpp_server = "bogdanpc" 
-        password = "admin"
+        xmpp_server = XMPP_SERVER 
+        password = PASSWORD
 
         p1_jid = f"player1@{xmpp_server}"
         p2_jid = f"player2@{xmpp_server}"
