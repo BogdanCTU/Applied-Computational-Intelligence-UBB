@@ -20,7 +20,7 @@
 | Dog | | | × | × |
 | Salmon | | | | |
 
-> ### Table: Sample 
+> ### 📄 Table: Sample 
 
 ---
 
@@ -47,7 +47,7 @@ Cross Table Formal Context Sample:
 | C++ | × | | × | | × |
 | Haskell | | × | × | × | × |
 
-> ### Table: Cross Table for Software Features
+> ### 📄 Table: Cross Table for Software Features
 
 ---
 
@@ -94,7 +94,7 @@ When a closed group of objects and a closed group of attributes perfectly point 
 
 <img width="586" height="320" alt="image" src="https://github.com/user-attachments/assets/d634f991-a88a-49df-8120-f0c32e3f6a43" />
 
-> Image: Visualising the Galois Connection
+> ### 🖌️ Image: Visualising the Galois Connection
 
 ---
 
@@ -138,7 +138,7 @@ Terminology:
 
 <img width="662" height="389" alt="image" src="https://github.com/user-attachments/assets/3f33c263-955f-4be9-a809-bf2057ad9e5c" />
 
-> ### Image: Hasse Diagram
+> ### 🖌️ Image: Hasse Diagram
 
 **Reading the Lattice**:
 * Moving down the diagram increases specificity (fewer objects, more attributes);
@@ -230,10 +230,24 @@ c1 ⋖ c2, c1 ⋖ c3, c2 ⋖ c4, c3 ⋖ c5, c4 ⋖ c5, c5 ⋖ c6
 
 <img width="383" height="391" alt="image" src="https://github.com/user-attachments/assets/72a9a371-28c8-4270-96f2-552603ca0c0b" />
 
-
 ### 📑 2.8.2 Concepts
 
 **Reduced Labelling**: A technique to prevent diagrams from becoming unreadable by eliminating repetitive information. Instead of listing every object and attribute at every node, items are labeled exactly once.
+
+| Node | Objects | Attributes |
+| :--- | :--- | :--- |
+| c6 | Salmon | — |
+| c5 | — | warm |
+| c4 | Penguin | wings |
+| c3 | Dog | fur |
+| c2 | Eagle | fly |
+| c1 | Bat | — |
+
+> ### 📄 Table: Label Assignment Table
+
+<img width="348" height="345" alt="image" src="https://github.com/user-attachments/assets/47c56601-87e9-4247-8672-cc5a06a568c6" />
+
+> ### 🖌️ Image: Label Assignment Diagram
 
 **Object Concept** $\gamma(g)$: The smallest (lowest) concept containing an object $g$ in its extent. Formula: $(\{g\}^{\prime\prime}, \{g\}^{\prime})$. Object labels go here.
 
@@ -250,6 +264,12 @@ c1 ⋖ c2, c1 ⋖ c3, c2 ⋖ c4, c3 ⋖ c5, c4 ⋖ c5, c5 ⋖ c6
 ## 📖 2.9 Elegant Concept Lattice Drawing
 
 **Non-Negotiable Rules**: The top concept must be at the highest point, and the bottom concept at the lowest point. Edges must point strictly upward. Only draw direct cover edges (never draw transitive shortcuts). Write object labels below their nodes and attribute labels above.
+
+_Sample_: Problems of the diagram are crossings, uneven levels, no symmetry, confusing positions, inconsistent edge slopes.
+
+<img width="187" height="182" alt="image" src="https://github.com/user-attachments/assets/df4b6443-1a04-4bfa-b74d-2b431f6bd855" />
+
+> ### 🖌️ Image: Poor Layou Diagram
 
 **Rank Assignment**: A concept's rank is calculated by the length of the longest chain of steps connecting it to the bottom node. Concepts sharing the same rank should be placed on the exact same horizontal level.
 
@@ -271,6 +291,9 @@ A holistic environment combining concept lattices with a navigational infrastruc
 
 **TOSCANA**: An early software system built for exploring these landscapes. It visually combined different conceptual scales using nested line diagrams, drawing an inner scale lattice completely inside the node of an outer lattice.
 
+<img width="208" height="354" alt="image" src="https://github.com/user-attachments/assets/61ab214f-0c1e-42e6-b53b-9ae051e9a79c" />
+
+> ### 🖌️ Image: TOSCANA Architecture
 
 ---
 
