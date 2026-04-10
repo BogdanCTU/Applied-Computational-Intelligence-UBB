@@ -124,58 +124,55 @@ Terminology:
 
 ## 📖 2.6 Concept Lattices
 
-Basic Theorem of FCA (Wille, 1982): When all formal concepts of a context are ordered by the subconcept relation ($\leq$), they form a mathematical structure called a Complete Lattice, denoted as $\mathfrak{B}(\mathbb{K})$.
+🔴 **Basic Theorem of FCA** (Wille, 1982): **When all formal concepts of a context are ordered by the subconcept relation** ($\leq$), **they form a mathematical structure called a Complete Lattice**, denoted as $\mathfrak{B}(\mathbb{K})$.
 
-Meet (Infimum / $\bigwedge$): Represents the greatest common subconcept. It is calculated by intersecting the extents and taking the closure of the united intents: $(\bigcap_{t}A_{t},(\bigcup_{t}B_{t})^{\prime\prime})$.
+* **Meet** (Infimum / $\bigwedge$): Represents the greatest common subconcept. It is calculated by intersecting the extents and taking the closure of the united intents: $(\bigcap_{t}A_{t},(\bigcup_{t}B_{t})^{\prime\prime})$.
 
-Join (Supremum / $\bigvee$): Represents the least common superconcept. It is calculated by taking the closure of united extents and intersecting the intents: $((\bigcup_{t}A_{t})^{\prime\prime},\bigcap_{t}B_{t})$.
+* **Join** (Supremum / $\bigvee$): Represents the least common superconcept. It is calculated by taking the closure of united extents and intersecting the intents: $((\bigcup_{t}A_{t})^{\prime\prime},\bigcap_{t}B_{t})$.
 
-Hasse Diagram Rules (Visualizing the Lattice):
+**Hasse Diagram Rules** (**Visualizing the Lattice**):
+* Each node is a formal concept;
+* Upward edges indicate a direct superconcept relationship;
+* Objects are labeled at their "introducing concept" (the lowest possible node containing them);
+* Attributes are labeled at their highest possible node.
 
-Each node is a formal concept.
+<img width="662" height="389" alt="image" src="https://github.com/user-attachments/assets/3f33c263-955f-4be9-a809-bf2057ad9e5c" />
 
-Upward edges indicate a direct superconcept relationship.
+> ### Image: Hasse Diagram
 
-Objects are labeled at their "introducing concept" (the lowest possible node containing them).
+**Reading the Lattice**:
+* Moving down the diagram increases specificity (fewer objects, more attributes);
+* Moving up increases generality (more objects, fewer attributes);
+* A concept's extent contains all objects found at or below its node;
+* A concept's intent contains all attributes found at or above its node.
 
-Attributes are labeled at their highest possible node.
-
-Reading the Lattice:
-
-Moving down the diagram increases specificity (fewer objects, more attributes).
-
-Moving up increases generality (more objects, fewer attributes).
-
-A concept's extent contains all objects found at or below its node.
-
-A concept's intent contains all attributes found at or above its node.
-
-Lattice Complexity: The number of concepts can grow exponentially relative to the data size, bounded by an upper limit of $\min(2^{n},2^{k})$. Because of this, algorithms computing lattices must be highly efficient.
+**Lattice Complexity**: The number of concepts can grow exponentially relative to the data size, bounded by an upper limit of $\min(2^{n},2^{k})$. Because of this, algorithms computing lattices must be highly efficient.
 
 ---
 
 ## 📖 2.7 Subconcept - Superconcept Relationship in Depth
 
-Subconcept Definition ($\leq$): A concept $(A_1, B_1)$ is a subconcept of $(A_2, B_2)$ if its extent is smaller ($A_1 \subseteq A_2$). Because of the Galois connection, a smaller extent automatically mathematically guarantees a larger intent ($B_2 \subseteq B_1$).
+🔴 **Subconcept Definition** ($\leq$): A concept $(A_1, B_1)$ is a subconcept of $(A_2, B_2)$ if its extent is smaller ($A_1 \subseteq A_2$). Because of the Galois connection, a smaller extent automatically mathematically guarantees a larger intent ($B_2 \subseteq B_1$).
 
-Port-Royal Law: FCA formalizes the philosophical rule that the extension (general objects) and comprehension (specific attributes) of an idea exist in an inverse ratio.
+**Port-Royal Law**: FCA formalizes the philosophical rule that the extension (general objects) and comprehension (specific attributes) of an idea exist in an inverse ratio.
 
-Partial Order: The subconcept relation creates a partial order, meaning it is reflexive, antisymmetric, and transitive.
+**Partial Order**: The subconcept relation creates a partial order, meaning it is reflexive, antisymmetric, and transitive.
 
-Incomparable Concepts: Concepts that are not subconcepts or superconcepts of one another represent horizontal diversity (e.g., distinct features like "winged" vs. "furred" that share a common domain but don't strictly overlap).
+**Incomparable Concepts**: Concepts that are not subconcepts or superconcepts of one another represent horizontal diversity (e.g., distinct features like "winged" vs. "furred" that share a common domain but don't strictly overlap).
 
-Cover Relation (Direct Steps): An edge in the lattice diagram represents a "cover" ($<$), meaning one concept is directly below another with no steps strictly between them.
+**Cover Relation** (**Direct Steps**): An edge in the lattice diagram represents a "cover" ($<$), meaning one concept is directly below another with no steps strictly between them.
+* Direct Superconcepts are found by adding a minimal new object to an extent: $((A\cup\{g\})^{\prime\prime}, (A\cup\{g\})^{\prime})$;
+* Direct Subconcepts are found by adding a minimal new attribute to an intent: $((B\cup\{m\})^{\prime}, (B\cup\{m\})^{\prime\prime})$.
 
-Direct Superconcepts are found by adding a minimal new object to an extent: $((A\cup\{g\})^{\prime\prime}, (A\cup\{g\})^{\prime})$.
-
-Direct Subconcepts are found by adding a minimal new attribute to an intent: $((B\cup\{m\})^{\prime}, (B\cup\{m\})^{\prime\prime})$.
-
-Lattice Dimensions:
-
-Chains (Height): Totally ordered vertical paths representing deep hierarchies (e.g., biological taxonomies).
-
-Antichains (Width): Sets of mutually incomparable concepts representing horizontal feature diversity.
+**Lattice Dimensions**:
+* **Chains** (**Height**): Totally ordered vertical paths representing deep hierarchies (e.g., biological taxonomies);
+* **Antichains** (**Width**): Sets of mutually incomparable concepts representing horizontal feature diversity.
 
 Attribute Inheritance: An object in a subconcept naturally inherits all attributes from every superconcept above it in the chain. This guarantees that all attributes are available to subconcepts without requiring redundant data storage.
 
 Topological Properties: Any interval between two concepts ($[c, d]$) forms its own self-contained complete lattice.
+
+---
+
+## 📖 2.8 
+
