@@ -63,12 +63,12 @@ Cross Table Formal Context Sample:
 * **Idempotent**: Applying the prime operator three times gives the exact same result as applying it just once. Mathematically: A''' = A'
 
 Let 𝕂 = (G, M, I), A, A₁, A₂ ⊆ G, B, B₁, B₂ ⊆ M. Then:
-- P1  A₁ ⊆ A₂ ⇒ A₂' ⊆ A₁' ⇒ (anti-monotone)
-- P2  B₁ ⊆ B₂ ⇒ B₂' ⊆ B₁' ⇒ (anti-monotone)
-- P3  A ⊆ A'' ⇒ (extensive)
-- P4  B ⊆ B'' ⇒ (extensive)
-- P5  A''' = A' ⇒ (idempotent under double prime)
-- P6  B''' = B' ⇒ (idempotent under double prime)
+- P1  A₁ ⊆ A₂ ⇒ A₂' ⊆ A₁' ⇒ (_anti-monotone_)
+- P2  B₁ ⊆ B₂ ⇒ B₂' ⊆ B₁' ⇒ (_anti-monotone_)
+- P3  A ⊆ A'' ⇒ (_extensive_)
+- P4  B ⊆ B'' ⇒ (_extensive_)
+- P5  A''' = A' ⇒ (_idempotent under double prime_)
+- P6  B''' = B' ⇒ (_idempotent under double prime_)
 - P7  (A₁ ∪ A₂)' = A₁' ∩ A₂'
 - P8  (B₁ ∪ B₂)' = B₁' ∩ B₂'
 
@@ -83,11 +83,15 @@ These closed sets are critical because they represent the final groupings (exten
 * **Poset** (**Partially Ordered Set**): A collection of items organized by a specific ranking rule, such as "is a subset of";
 * **Lattice**: A special type of poset where any two items have a unique overlapping point (a "meet") and a unique combined point (a "join"). A Complete Lattice guarantees these points exist for groups of any size;
 * **Galois Connection**: A mathematical mirror relationship that links two different posets together using two reversing functions;
-* **The FCA Connection**: The derivation operators (_'_) create an exact Galois connection between the subsets of objects and the subsets of attributes. * Why it Matters: This connection acts as a bridge, proving that every closed group of objects pairs perfectly with a closed group of attributes.
+  - G1) A1 ⊆ A2 ⇒ A′2 ⊆ A′1 (_antitone_)
+  - G2) B1 ⊆ B2 ⇒ B′2 ⊆ B′1 (_antitone_)
+  - G3) A ⊆ A′′, B ⊆ B′′ (_extensive_)
+  - G4) A′′′ = A′, B′′′ = B′ (_idempotent_)
+  - G5) (Si Ai )′ = Ti A′i , (Si Bi )′ = Ti B′i
+* **The FCA Connection**: The derivation operators (_'_) create an exact Galois connection between the subsets of objects and the subsets of attributes. This connection acts as a bridge, proving that every closed group of objects pairs perfectly with a closed group of attributes.
 
 When a closed group of objects and a closed group of attributes perfectly point to one another (A'= B and B'= A), they form a complete formal concept.
 
 <img width="586" height="320" alt="image" src="https://github.com/user-attachments/assets/d634f991-a88a-49df-8120-f0c32e3f6a43" />
 
 > Image: Visualising the Galois Connection
-
