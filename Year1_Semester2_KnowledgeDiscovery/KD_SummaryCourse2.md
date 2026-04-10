@@ -176,50 +176,102 @@ Topological Properties: Any interval between two concepts ($[c, d]$) forms its o
 
 ## 📖 2.8 Building the Concept Lattice: Construction and Labelling
 
-🔴 **5-Step Construction Algorithm**:
+### 📑 2.8.1 5-Step Construction Algorithm
 
 1. **Enumerate**: Find all formal concepts by applying the closure operator ($B^{\prime\prime}$) to subset;
 2. **Order**: Establish the partial order by checking which extents are subsets of others;
 3. **Cover** Relations: Remove transitive edges to find direct cover relations;
 4. **Label**: Assign reduced labels to the concepts;
-5. **Draw**: Create the Hasse diagram.
+5. **Draw**: Create the Hasse Diagram.
 
-Reduced Labelling: A technique to prevent diagrams from becoming unreadable by eliminating repetitive information. Instead of listing every object and attribute at every node, items are labeled exactly once.
+**Sample execution**:
 
-Object Concept $\gamma(g)$: The smallest (lowest) concept containing an object $g$ in its extent. Formula: $(\{g\}^{\prime\prime}, \{g\}^{\prime})$. Object labels go here.
+1. **Step 1**: _Enumerate_
 
-Attribute Concept $\mu(m)$: The largest (highest) concept containing an attribute $m$ in its intent. Formula: $(\{m\}^{\prime}, \{m\}^{\prime\prime})$. Attribute labels go here.
+| B | B' = A (extent) | A' = B'' (is B closed?) |
+| :--- | :--- | :--- |
+| ∅ | G = {E, B, P, D, S} | G' = ∅ ✓ → c6 = (G, ∅) |
+| {wrm} | {E, B, P, D} | {E, B, P, D}' = {wrm} ✓ → c5 |
+| {wng, wrm} | {E, B, P} | {E, B, P}' = {wng, wrm} ✓ → c4 |
+| {fur, wrm} | {B, D} | {B, D}' = {fur, wrm} ✓ → c3 |
+| {wng, fly, wrm} | {E, B} | {E, B}' = {wng, fly, wrm} ✓ → c2 |
+| {wng, fly, fur, wrm} | {B} | {B}' = {wng, fly, fur, wrm} ✓ → c1 |
 
-Mathematical Equivalence: The reduced diagram is a mathematically lossless representation of the original data table. An object has an attribute ($g|m$) if and only if $\gamma(g) \le \mu(m)$.
+2. **Step 2 and 3**: _Order and Cover Computation_
 
-Reading Rules:
+| ≤ | c1 | c2 | c3 | c4 | c5 | c6 |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| c1 | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| c2 | | ✓ | | ✓ | ✓ | ✓ |
+| c3 | | | ✓ | | ✓ | ✓ |
+| c4 | | | | ✓ | ✓ | ✓ |
+| c5 | | | | | ✓ | ✓ |
+| c6 | | | | | | ✓ |
 
-Extent: To find all objects belonging to a concept, collect all object labels found by moving downward from that node.
+**Transitive Reduction**
+* Remove all pairs (ci, cj) where a path of length ≥ 2 exists:
+* Remove: c1 < c4 (via c2); c1 < c5 (via c3); c1 < c6; c2 < c5; c2 < c6; c3 < c6; c4 < c6.
 
-Intent: To find all attributes belonging to a concept, collect all attribute labels found by moving upward from that node.
+**Cover edges remaining:**
+c1 ⋖ c2, c1 ⋖ c3, c2 ⋖ c4, c3 ⋖ c5, c4 ⋖ c5, c5 ⋖ c6
+
+4. **Step 4**: _Building the Lattice_
+
+| K2 | pr | ev | d3 | d4 |
+| :--- | :---: | :---: | :---: | :---: |
+| 2 | × | × | | |
+| 3 | × | | × | |
+| 4 | | × | | × |
+| 6 | | × | × | |
+| 8 | | × | | × |
+| 12 | | × | × | × |
+
+5. **Step 5**: _Hasse Diagram_
+
+<img width="383" height="391" alt="image" src="https://github.com/user-attachments/assets/72a9a371-28c8-4270-96f2-552603ca0c0b" />
+
+
+### 📑 2.8.2 Concepts
+
+**Reduced Labelling**: A technique to prevent diagrams from becoming unreadable by eliminating repetitive information. Instead of listing every object and attribute at every node, items are labeled exactly once.
+
+**Object Concept** $\gamma(g)$: The smallest (lowest) concept containing an object $g$ in its extent. Formula: $(\{g\}^{\prime\prime}, \{g\}^{\prime})$. Object labels go here.
+
+**Attribute Concept** $\mu(m)$: The largest (highest) concept containing an attribute $m$ in its intent. Formula: $(\{m\}^{\prime}, \{m\}^{\prime\prime})$. Attribute labels go here.
+
+**Mathematical Equivalence**: The reduced diagram is a mathematically lossless representation of the original data table. An object has an attribute ($g|m$) if and only if $\gamma(g) \le \mu(m)$.
+
+**Reading Rules**:
+* **Extent**: To find all objects belonging to a concept, collect all object labels found by moving downward from that node;
+* **Intent**: To find all attributes belonging to a concept, collect all attribute labels found by moving upward from that node.
 
 ---
 
 ## 📖 2.9 Elegant Concept Lattice Drawing
 
-Non-Negotiable Rules: The top concept must be at the highest point, and the bottom concept at the lowest point. Edges must point strictly upward. Only draw direct cover edges (never draw transitive shortcuts). Write object labels below their nodes and attribute labels above.
+**Non-Negotiable Rules**: The top concept must be at the highest point, and the bottom concept at the lowest point. Edges must point strictly upward. Only draw direct cover edges (never draw transitive shortcuts). Write object labels below their nodes and attribute labels above.
 
-Rank Assignment: A concept's rank is calculated by the length of the longest chain of steps connecting it to the bottom node. Concepts sharing the same rank should be placed on the exact same horizontal level.
+**Rank Assignment**: A concept's rank is calculated by the length of the longest chain of steps connecting it to the bottom node. Concepts sharing the same rank should be placed on the exact same horizontal level.
 
-Additive Line Diagrams: A specific drawing style where the physical slope of an edge indicates which attribute is being introduced. The final position of any concept node is the vector sum of its attributes' directional slopes. * Advanced Layouts: For complex data, diagrams can use visual aids like scaling node sizes based on object count, color-coding patterns, edge bundling to reduce clutter, or force-directed physics to balance spacing.
+**Additive Line Diagrams**: A specific drawing style where the physical slope of an edge indicates which attribute is being introduced. The final position of any concept node is the vector sum of its attributes' directional slopes. * Advanced Layouts: For complex data, diagrams can use visual aids like scaling node sizes based on object count, color-coding patterns, edge bundling to reduce clutter, or force-directed physics to balance spacing.
 
 ---
 
 ## 📖 2.10 Conceptual Landscapes
 
-Definition: A holistic environment combining concept lattices with a navigational infrastructure, logical implications, visual maps, and linked contexts.
+A holistic environment combining concept lattices with a navigational infrastructure, logical implications, visual maps and linked contexts forms a **Conceptual Landscapes**.
 
-The Paradigm: Proposed by Rudolf Wille as a cognitive tool for human thinking. It operates like a terrain: "peaks" represent broad, generalized overviews, while "valleys" represent highly detailed, specific clusters.
+**The Paradigm**: Proposed by Rudolf Wille as a cognitive tool for human thinking. It operates like a terrain: "peaks" represent broad, generalized overviews, while "valleys" represent highly detailed, specific clusters.
 
-Multi-Context Spaces: Complex domains require multiple linked contexts (e.g., mapping patients to symptoms, and symptoms to diagnoses) to form a complete Concept Information System.
+**Multi-Context Spaces**: Complex domains require multiple linked contexts (e.g., mapping patients to symptoms, and symptoms to diagnoses) to form a complete Concept Information System.
 
-Navigation Actions: Users can specialize (zoom in to subconcepts), generalize (zoom out to superconcepts), move laterally to incomparable concepts, or query specific attribute/object nodes directly.
+**Navigation Actions**: Users can specialize (zoom in to subconcepts), generalize (zoom out to superconcepts), move laterally to incomparable concepts, or query specific attribute/object nodes directly.
 
-Conceptual Scales: Real-world data often uses specific values (like "hot" or "cold") instead of simple binary "yes/no" markers. Conceptual scaling translates these multi-valued attributes into binary formal contexts using predefined logical frameworks like Nominal (unordered) or Ordinal (ranked) scales.
+**Conceptual Scales**: Real-world data often uses specific values (like "hot" or "cold") instead of simple binary "yes/no" markers. Conceptual scaling translates these multi-valued attributes into binary formal contexts using predefined logical frameworks like Nominal (unordered) or Ordinal (ranked) scales.
 
-TOSCANA: An early software system built for exploring these landscapes. It visually combined different conceptual scales using nested line diagrams, drawing an inner scale lattice completely inside the node of an outer lattice.
+**TOSCANA**: An early software system built for exploring these landscapes. It visually combined different conceptual scales using nested line diagrams, drawing an inner scale lattice completely inside the node of an outer lattice.
+
+
+---
+
+## 📖 2.11 
