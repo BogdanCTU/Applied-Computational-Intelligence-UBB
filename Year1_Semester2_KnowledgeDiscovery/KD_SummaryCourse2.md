@@ -294,7 +294,3 @@ A holistic environment combining concept lattices with a navigational infrastruc
 <img width="208" height="354" alt="image" src="https://github.com/user-attachments/assets/61ab214f-0c1e-42e6-b53b-9ae051e9a79c" />
 
 > ### 🖌️ Image: TOSCANA Architecture
-
----
-
-## 📖 2.11 
