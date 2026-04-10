@@ -6,7 +6,7 @@
 
 ---
 
-## 📖 1 - Introduction
+## 📖 1.1 - Introduction
 
 🔴 **Knowledge Discovery** (_KD_) **is the process of figuring out what remains true beyond just looking at single**, **isolated pieces of data**.
 Storing data is not the same as understanding data. True knowledge requires structure, generalization, invariance (things that do not change) and logical relations.
@@ -18,7 +18,7 @@ Human thinking operates using concepts, categories and hierarchies, rather than 
 
 ---
 
-## 📖 2 - Introduction to Formal Concept Analysis (FCA)
+## 📖 1.2 - Introduction to Formal Concept Analysis (FCA)
 
 🔴 **Formal Concept Analysis** (_FCA_) **is a mathematical model used to discover concepts and map out the exact dependencies within data**.
 **In the standard Knowledge Discovery pipeline, FCA is primarily used for pattern extraction and knowledge representation. It transforms raw data patterns into a clear structure**.
@@ -38,7 +38,7 @@ FCA bridges the gap between logic and data by focusing on two types of knowledge
 
 ---
 
-## 📖 3 - The Mathematical Core of Formal Concept Analysis (FCA)
+## 📖 1.3 - The Mathematical Core of Formal Concept Analysis (FCA)
 
 **FCA is built on rigorous math**, including set theory and lattice theory, giving it algorithmic clarity and logical completeness.
 🔴 A **Concept Lattice** **is a complete taxonomy** (**classification tree**) **created automatically from data**:
@@ -64,7 +64,7 @@ FCA can go beyond simple "yes/no" binary data. It can generalize rules for struc
 
 ---
 
-## 📖 4 - Triadic Formal Concept Analysis (FCA): Adding Context
+## 📖 1.4 - Triadic Formal Concept Analysis (FCA): Adding Context
 
 **Triadic Formal Concept Analysis** (_FCA_) **expands traditional FCA by adding a third dimension known as** "**conditions**".
 Instead of just looking at Objects and Attributes, **Triadic FCA looks at Objects**, **Attributes and Conditions** (_like time, location or user session_).
@@ -76,7 +76,7 @@ Example: The rule "Buying sunscreen implies buying sunglasses" might hold true u
 * **Condition implications**: Finding which contexts entail other contexts given a specific topic;
 * **Object implications**: Finding which objects dominate other objects in a specific context.
 
-### 📑 4.1 - Triadic Formal Concept Analysis (FCA) on Cities, Climate and Seasons Sample 
+### 📑 1.4.1 - Triadic Formal Concept Analysis (FCA) on Cities, Climate and Seasons Sample 
 
 **Components**
 * **G (objects)**: 5 cities
@@ -115,7 +115,7 @@ Example: The rule "Buying sunscreen implies buying sunglasses" might hold true u
 
 **Reading triconcept (A, B, C):** Every city in A has every feature in B during every season in C — and the triple is maximal.
 
-### 📑 4.2 - Triadic Formal Concept Analysis (FCA) Concept Lattices per Season Sample 
+### 📑 1.4.2 - Triadic Formal Concept Analysis (FCA) Concept Lattices per Season Sample 
 
 **Cross season triconcepts**, modus = { Winter, Summer }:
 * T10: { London } | { Rainy }
