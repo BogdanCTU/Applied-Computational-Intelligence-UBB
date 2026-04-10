@@ -76,11 +76,53 @@ Example: The rule "Buying sunscreen implies buying sunglasses" might hold true u
 * **Condition implications**: Finding which contexts entail other contexts given a specific topic;
 * **Object implications**: Finding which objects dominate other objects in a specific context.
 
----
+### 📑 4.1 - Triadic Formal Concept Analysis (FCA) on Cities, Climate and Seasons Sample 
 
-## 📖 5 - Conclusion: Why FCA in 2026?
+**Components**
+* **G (objects)**: 5 cities
+* **M (attributes)**: { _Hot_, _Rainy_, _Dry_, _Cold_ }
+* **B (conditions)**: { _Winter_, _Summer_ }
 
-In an era dominated by "black-box" Artificial Intelligence and large language models (LLMs), there is a strong need for systems that humans can actually interpret.
-**Formal Concept Analysis provides transparent structure**, **auditable dependencies and minimal knowledge bases**.
-Ultimately, knowledge discovery is not just about making predictions, it is about revealing structural relationships and constructing logical theories.
-FCA provides a mathematical language for this kind of conceptual thinking.
+**Triadic concept (A, B, C):**
+* A × B × C ⊆ I, maximal:
+* B = { m | ∀g ∈ A, b ∈ C : (g, m, b) ∈ I }
+* A = { g | ∀m ∈ B, b ∈ C : (g, m, b) ∈ I }
+* C = { b | ∀g ∈ A, m ∈ B : (g, m, b) ∈ I }
+
+**Selected triconcepts:**
+
+| Extent | Intent | Modus |
+| :--- | :--- | :--- |
+| Cai,Lon,Osl,Syd | Cold | Win |
+| Bgk,Cai,Syd | Hot | Sum |
+| Bgk,Lon,Osl | Rainy | Sum |
+| Bgk,Cai,Osl | Dry | Win |
+| Lon,Syd | Cold,Rainy | Win |
+| Cai,Syd | Dry,Hot | Sum |
+| Bangkok | Hot | W+S |
+
+**Triadic cross-table (g, m, b) ∈ I shown as x**
+
+| City | Winter Ho | Winter Ra | Winter Dr | Winter Co | Summer Ho | Summer Ra | Summer Dr | Summer Co |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| London | . | x | . | x | . | x | . | . |
+| Cairo | . | . | x | x | x | . | x | . |
+| Bangkok | x | . | x | . | x | x | . | . |
+| Oslo | . | . | x | x | . | x | . | x |
+| Sydney | . | x | . | x | x | . | x | . |
+
+*Ho=Hot, Ra=Rainy, Dr=Dry, Co=Cold*
+
+**Reading triconcept (A, B, C):** Every city in A has every feature in B during every season in C — and the triple is maximal.
+
+### 📑 4.2 - Triadic Formal Concept Analysis (FCA) Concept Lattices per Season Sample 
+
+**Cross season triconcepts**, modus = { Winter, Summer }:
+* T10: { London } | { Rainy }
+* T11: { Cairo } | { Dry }
+* T12: { Bangkok } | { Hot }
+* T13: { Oslo } | { Cold }
+
+<img width="817" height="299" alt="image" src="https://github.com/user-attachments/assets/3122fccf-b819-4f12-9ef1-6ddf8cbd226d" />
+
+> ### Image: Concept Lattices per Season
