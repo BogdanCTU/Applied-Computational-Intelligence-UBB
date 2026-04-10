@@ -94,7 +94,7 @@ When a closed group of objects and a closed group of attributes perfectly point 
 
 <img width="586" height="320" alt="image" src="https://github.com/user-attachments/assets/d634f991-a88a-49df-8120-f0c32e3f6a43" />
 
-> ### 🖌️ Image: Visualising the Galois Connection
+> ### 🖼️ Image: Visualising the Galois Connection
 
 ---
 
@@ -138,7 +138,7 @@ Terminology:
 
 <img width="662" height="389" alt="image" src="https://github.com/user-attachments/assets/3f33c263-955f-4be9-a809-bf2057ad9e5c" />
 
-> ### 🖌️ Image: Hasse Diagram
+> ### 🖼️ Image: Hasse Diagram
 
 **Reading the Lattice**:
 * Moving down the diagram increases specificity (fewer objects, more attributes);
@@ -247,7 +247,7 @@ c1 ⋖ c2, c1 ⋖ c3, c2 ⋖ c4, c3 ⋖ c5, c4 ⋖ c5, c5 ⋖ c6
 
 <img width="348" height="345" alt="image" src="https://github.com/user-attachments/assets/47c56601-87e9-4247-8672-cc5a06a568c6" />
 
-> ### 🖌️ Image: Label Assignment Diagram
+> ### 🖼️ Image: Label Assignment Diagram
 
 **Object Concept** $\gamma(g)$: The smallest (lowest) concept containing an object $g$ in its extent. Formula: $(\{g\}^{\prime\prime}, \{g\}^{\prime})$. Object labels go here.
 
@@ -269,7 +269,7 @@ _Sample_: Problems of the diagram are crossings, uneven levels, no symmetry, con
 
 <img width="187" height="182" alt="image" src="https://github.com/user-attachments/assets/df4b6443-1a04-4bfa-b74d-2b431f6bd855" />
 
-> ### 🖌️ Image: Poor Layou Diagram
+> ### 🖼️ Image: Poor Layou Diagram
 
 **Rank Assignment**: A concept's rank is calculated by the length of the longest chain of steps connecting it to the bottom node. Concepts sharing the same rank should be placed on the exact same horizontal level.
 
@@ -293,4 +293,61 @@ A holistic environment combining concept lattices with a navigational infrastruc
 
 <img width="208" height="354" alt="image" src="https://github.com/user-attachments/assets/61ab214f-0c1e-42e6-b53b-9ae051e9a79c" />
 
-> ### 🖌️ Image: TOSCANA Architecture
+---
+
+## 📖 2.11 FCA in the Data Mining Process
+
+🔴 **Knowledge Discovery in Databases** (_KDD_) **is a multi-step process for finding useful patterns in data**. FCA helps throughout this process by transforming data, discovering rules and creating a final structure.
+Unlike methods that hide how they work (like neural networks), **FCA creates a clear hierarchy that humans can easily read and justify**.
+A database of transactions can be seen as a formal context, where transactions are objects and items are attributes. A frequent closed itemset is a group of items that appear together often. In FCA, this frequent itemset acts as the intent of a formal concept.
+
+---
+
+## 📖 2.12 Advanced Applications
+
+**An ontology organizes information into classes and relationships**. FCA builds ontologies automatically by using data to map formal concepts into class hierarchies. This data-driven approach ensures no categories are missed and remains easy to update.
+**Classical Clustering** groups items using math distances, which creates rigid boundaries and makes results hard to interpret.
+**FCA Clustering allows groups to naturally overlap based on shared features without needing complex parameters**. Biclustering perfectly matches a set of objects with a set of features, which is exactly what a formal concept does natively.
+
+<img width="578" height="273" alt="image" src="https://github.com/user-attachments/assets/8b7e0a02-fb9e-4b4d-b775-ecc9e53aec3c" />
+
+> ### 🖼️ Image: FCA Advanced Applications
+
+### 📑 2.12.1 Formal Concept Learning (FCL)
+
+**Formal Concept Learning** (**FCL**) **uses FCA to predict labels for new data**.
+It creates clear classification rules, such as predicting a label if an object has a specific set of features.
+This makes the system highly useful for Explainable AI (XAI), meaning humans can understand exactly which features triggered the prediction.
+
+---
+
+## 📖 2.13 Mathematical Foundations
+
+The **Representation Theorem** proves that every complete lattice structure can be perfectly recreated by a formal context. This guarantees FCA is mathematically complete and works for all possible lattice shapes. A formal context can be simplified into a reduced context by keeping only the essential, non-repeating elements.
+This reduction saves storage space and speeds up computer calculations without losing any lattice structure.
+
+---
+
+## 📖 2.14 Attribute Implications and Algorithms
+
+**An attribute implication** ($P \rightarrow Q$) **is a strict rule**: if an object has attribute group $P$, it must also have attribute group $Q$.
+Mathematically, this means the shared objects of $P$ are a subset of the shared objects of $Q$ ($P^{\prime} \subseteq Q^{\prime}$).
+The Duquenne-Guigues Basis (or Canonical Basis) is the absolute smallest list of non-repeating rules needed to describe all implications in a dataset.
+Checking every possible combination of objects to find concepts takes too long for computers.
+**NextClosure** is a fast, standard algorithm used to find concepts efficiently.
+It works by organizing attributes in a specific alphabetical order and mathematically calculating the next valid concept step-by-step.
+
+---
+
+## 📖 2.15 Extensions and Core Theory Summary
+
+**Many-valued contexts**: Handle data with different specific values instead of just binary "yes/no" markers.
+**Fuzzy FCA**: Allows objects to have partial membership, represented by a number between $0$ and $1$.
+**Pattern structures**: Organizes complex data shapes, like graphs or mathematical intervals.
+**Triadic FCA**: Connects three dimensions at once, such as objects, attributes, and specific conditions.
+
+🔴 **FCA is built entirely on four logical pillars**:
+* **Formal context**: The starting data grid mapping objects to attributes;
+* **Derivation operators**: The mathematical rules used to translate between object groups and attribute groups;
+* **Galois connection**: The mathematical mirror linking these translations;
+* **Concept lattice**: The final structured hierarchy linking everything together.
