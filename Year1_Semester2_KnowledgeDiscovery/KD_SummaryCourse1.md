@@ -27,6 +27,15 @@ FCA bridges the gap between logic and data by focusing on two types of knowledge
 * **Conceptual Knowledge**: This groups objects and their features together into a hierarchical structure called a lattice. _Example: Grouping "Mammals" or "Flying animals" based on shared traits_;
 * **Implicational Knowledge**: This focuses on logical rules and dependencies between features. _Example: A rule stating that all animals with fur are mammals_.
 
+| Animal | Mammal | CanFly | Aquatic | HasFur |
+|--------|--------|--------|---------|--------|
+| Bat    | X      | X      |         | X      |
+| Whale  | X      |        | X       |        |
+| Dog    | X      |        |         | X      |
+| Eagle  |        | X      |         |        |
+
+> ### Table: Sample of knowledge representation
+
 ---
 
 ## 📖 3 - The Mathematical Core of Formal Concept Analysis (FCA)
@@ -37,9 +46,21 @@ FCA bridges the gap between logic and data by focusing on two types of knowledge
 * The **Extent represents the objects** (_e.g., specific patients or cities_);
 * The **Intent represents the attributes those objects share** (_e.g., specific symptoms or climate features_).
 
+<img width="452" height="394" alt="image" src="https://github.com/user-attachments/assets/50fe0a82-42d1-4249-8e49-09a6e3f29f2e" />
+
+> ### Image: Concept Lattice with Intent (attrs) and Extent (objects)
+
+<img width="806" height="379" alt="image" src="https://github.com/user-attachments/assets/19e1af36-e19d-4a59-80cc-aad2c46c0709" />
+
+> ### Image: Concept Lattice for Programming Languages and Features
+
 **Because raw data can generate thousands of redundant rules**, **FCA uses Canonical Bases**.
 A canonical base is the smallest complete set of rules that contains no redundancy but keeps its full logical power. This acts as knowledge compression.
 FCA can go beyond simple "yes/no" binary data. It can generalize rules for structured descriptions like number intervals (_e.g., temperature ranges_), sets or complex graphs, recognized as **Pattern Structures**.
+
+<img width="817" height="394" alt="image" src="https://github.com/user-attachments/assets/6ce02c74-0fbc-4c7b-b1ae-0f45110b274c" />
+
+> ### Image: Pattern Structure Lattice for Cities and Climate
 
 ---
 
