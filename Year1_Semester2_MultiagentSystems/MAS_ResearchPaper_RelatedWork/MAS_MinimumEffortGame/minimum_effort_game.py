@@ -103,6 +103,15 @@ class PlayerAgent(Agent):
     Maintains internal state regarding past rounds and executes a designated decision-making strategy.
     """
     def __init__(self, jid, password, player_id, strategy):
+        """
+        Initializes the agent with identification details, starting parameters, and a specific behavioral strategy.
+        
+        Args:
+            jid (str): The Jabber ID for XMPP communication.
+            password (str): The password for the XMPP server.
+            player_id (int): The unique numerical identifier for the player.
+            strategy (str): The name of the decision-making logic the agent will use.
+        """
         super().__init__(jid, password)
         self.player_id = player_id
         self.strategy = strategy
@@ -292,6 +301,9 @@ class PlayerAgent(Agent):
         self.current_effort = max(1, min(M, int(next_effort)))
 
     async def setup(self):
+        """
+        Configures the communication client properties and adds the core cyclical communication behavior.
+        """
         self.client.host = XMPP_HOST
         self.client.port = XMPP_PORT
         self.client.force_starttls = False
@@ -301,6 +313,9 @@ class PlayerAgent(Agent):
 
     class PlayBehaviour(CyclicBehaviour):
         async def run(self):
+            """
+            Executes the continuous loop for receiving messages, replying with current effort, and processing round results.
+            """
             msg = await self.receive(timeout=5)
 
             if not msg:
@@ -327,10 +342,21 @@ class PlayerAgent(Agent):
 
 # ================= CONTROLLER =================
 class ControllerAgent(Agent):
-    def __init__(self, jid, password, player_jids, num_agents):
+    def __init__(self, jid, password, player_jids, num_agents, player_strategies):
+        """
+        Initializes the simulation manager with player connections, tracking variables, and strategy records.
+        
+        Args:
+            jid (str): The Jabber ID for XMPP communication.
+            password (str): The password for the XMPP server.
+            player_jids (list[str]): A list of connection addresses for all active player agents.
+            num_agents (int): The total count of active player agents.
+            player_strategies (dict): A mapping of player identifiers to their assigned strategy names.
+        """
         super().__init__(jid, password)
         self.player_jids = player_jids
         self.num_agents = num_agents
+        self.player_strategies = player_strategies
 
         self.current_round = 1
         self.history = []
@@ -340,6 +366,9 @@ class ControllerAgent(Agent):
         self.scores = {i: 0 for i in range(1, num_agents + 1)}
 
     async def setup(self):
+        """
+        Configures the communication client properties and adds the main game loop control behavior.
+        """
         self.client.host = XMPP_HOST
         self.client.port = XMPP_PORT
         self.client.force_starttls = False
@@ -350,7 +379,9 @@ class ControllerAgent(Agent):
 
     class GameManagerBehaviour(CyclicBehaviour):
         async def run(self):
-
+            """
+            Executes the main simulation loop, requesting efforts, calculating payoffs, and recording data to history.
+            """
             if self.agent.current_round > H:
                 logger.info(f"Simulation finished (N={self.agent.num_agents})")
                 self.agent.finished = True
@@ -404,6 +435,7 @@ class ControllerAgent(Agent):
             }
 
             for pid in range(1, self.agent.num_agents + 1):
+                row[f"P{pid}_Strategy"] = self.agent.player_strategies[pid]
                 row[f"P{pid}_Effort"] = efforts.get(pid, 0)
                 row[f"P{pid}_Payoff"] = payoffs.get(pid, 0)
 
@@ -425,6 +457,12 @@ class ControllerAgent(Agent):
 
 # ================= SIMULATION =================
 async def run_simulation(num_agents):
+    """
+    Instantiates the agents, distributes unique strategies, manages the simulation runtime, and exports the final data.
+    
+    Args:
+        num_agents (int): The total number of agents to instantiate for the current simulation run.
+    """
     logger.info(f"Starting simulation N={num_agents}")
 
     uid = uuid.uuid4().hex[:6]
@@ -435,6 +473,7 @@ async def run_simulation(num_agents):
     ]
 
     players = []
+    player_strategies = {}
     
     # Retrieve strategies and ensure assignment is unique
     available_strategies = StrategySelector.get_selected_strategies()
@@ -442,20 +481,25 @@ async def run_simulation(num_agents):
     assigned_strategies = available_strategies[:num_agents]
 
     for i in range(num_agents):
+        strategy_name = assigned_strategies[i]
+        player_id = i + 1
+        player_strategies[player_id] = strategy_name
+        
         p = PlayerAgent(
             jid=player_jids[i], 
             password=PASSWORD, 
-            player_id=i + 1, 
-            strategy=assigned_strategies[i]
+            player_id=player_id, 
+            strategy=strategy_name
         )
         await p.start(auto_register=True)
         players.append(p)
 
     controller = ControllerAgent(
-        f"manager@{XMPP_DOMAIN}/{uid}_mgr",
-        PASSWORD,
-        player_jids,
-        num_agents
+        jid=f"manager@{XMPP_DOMAIN}/{uid}_mgr",
+        password=PASSWORD,
+        player_jids=player_jids,
+        num_agents=num_agents,
+        player_strategies=player_strategies
     )
 
     await controller.start(auto_register=True)
@@ -471,6 +515,7 @@ async def run_simulation(num_agents):
     }
 
     for pid in range(1, num_agents + 1):
+        final_row[f"P{pid}_Strategy"] = player_strategies[pid]
         final_row[f"P{pid}_Effort"] = ""
         final_row[f"P{pid}_Payoff"] = controller.scores[pid]
 
@@ -500,10 +545,17 @@ async def run_simulation(num_agents):
 
 # ================= MAIN =================
 async def main():
+    """
+    Configures the asynchronous execution environment and sequentially triggers simulations across varying group sizes.
+    """
     if platform.system() == "Windows":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     #for n in range(2, 10):
+    #    print(f"Running N={n}")
+    #    await run_simulation(n)
+    #    await asyncio.sleep(2)
+
         print(f"Running N={20}")
         await run_simulation(20)
         await asyncio.sleep(2)
