@@ -215,3 +215,4 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 Year1_Semester2_MultiagentSystems/MAS_LabProject1/Backend/__pycache__/
+Year1_Semester2_MultiagentSystems/MAS_ResearchPaper_RelatedWork/MAS_MinimumEffortGame/*.txt
