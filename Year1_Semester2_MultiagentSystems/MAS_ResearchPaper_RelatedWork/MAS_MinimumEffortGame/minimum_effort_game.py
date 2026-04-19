@@ -63,34 +63,34 @@ class StrategySelector:
         """
         selected_strategies = [
             # ================= CORE HEURISTICS =================
-            "always_low",
-            "always_high",
-            "random",
-            "imitate_min",
-            "gradual_up",
-            "gradual_down",
-            "win_stay",
-            "lose_shift",
+            "always_low",      # Chooses the lowest effort. This acts as the safest choice and a stable baseline.
+            "always_high",     # Chooses the highest effort. This aims for the maximum reward but carries high risk.
+            "random",          # Chooses an effort without a pattern. This introduces noise into the simulation.
+            "imitate_min",     # Copies the lowest effort from the previous round. This directly reacts to the weakest link rule.
+            "gradual_up",      # Slowly increases effort step-by-step. This models an attempt to build group trust.
+            "gradual_down",    # Slowly decreases effort step-by-step. This models a reaction to poor group coordination.
+            "win_stay",        # Keeps the current effort level if the previous round resulted in a high reward.
+            "lose_shift",      # Changes the effort level if the previous round resulted in a low reward.
 
             # ================= MEMORY & PREDICTIVE =================
-            "predict_min",
-            "trend_following",
-            "memory_3_step",
+            "predict_min",     # Analyzes past data to guess the lowest effort for the next round.
+            "trend_following", # Moves effort in the same direction as the group's recent historical changes.
+            "memory_3_step",   # Relies strictly on the outcomes of the last three rounds to determine the next action.
 
             # ================= GAME-THEORETIC =================
-            "best_response",
-            "fictitious_play",
-            "risk_dominant",
-            "regret_minimization",
-            "stochastic_best_response",
+            "best_response",   # Calculates the optimal mathematical move assuming opponents repeat their last action.
+            "fictitious_play", # Builds a long-term probability model of opponent actions and responds to the distribution.
+            "risk_dominant",   # Chooses the effort that minimizes potential loss rather than maximizing potential gain.
+            "regret_minimization", # Evaluates past rounds to select the effort that would have yielded the best historical outcome.
+            "stochastic_best_response", # Calculates the best response but applies a small probability of random error.
 
             # ================= LEARNING & SOCIAL =================
-            "bandit_ucb",
-            "q_learning_low",
-            "consensus_seek",
+            "bandit_ucb",      # Uses a statistical formula to balance exploring new efforts and exploiting known successful efforts.
+            "q_learning_low",  # Applies a reinforcement learning algorithm to discover the best long-term policy.
+            "consensus_seek",  # Identifies the most common effort in the group and attempts to match it.
 
             # ================= META =================
-            "strategy_switcher"
+            "strategy_switcher" # Monitors internal performance and swaps to a different logic model if rewards drop below a threshold.
         ]
         
         return selected_strategies
