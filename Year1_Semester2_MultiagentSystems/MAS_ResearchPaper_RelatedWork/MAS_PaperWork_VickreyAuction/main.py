@@ -2,8 +2,8 @@ import asyncio
 import json
 import random
 import logging
-import sys
 import statistics
+import sys
 import pandas as pd
 import platform
 import uuid
@@ -27,11 +27,42 @@ logging.getLogger("slixmpp").setLevel(logging.WARNING)
 logging.getLogger("asyncio").setLevel(logging.WARNING)
 
 # ================= PARAMETERS =================
-ROUNDS = 100
 XMPP_DOMAIN = "localhost"
 XMPP_HOST = "127.0.0.1"
 XMPP_PORT = 5222
 PASSWORD = "admin"
+
+# Maps round numbers (1-26) to the array of player true values (v1 to v5)
+GAME_DATA = {
+    1: [135, 950, 275, 500, 675],   # A
+    2: [825, 785, 100, 295, 455],   # B
+    3: [505, 655, 245, 805, 255],   # C
+    4: [445, 835, 655, 645, 115],   # D
+    5: [455, 995, 655, 105, 255],   # E
+    6: [1000, 800, 500, 400, 200],  # F
+    7: [200, 400, 600, 700, 950],   # G
+    8: [275, 455, 990, 655, 245],   # H
+    9: [105, 255, 455, 1000, 655],  # I
+    10: [800, 650, 1000, 250, 450], # J
+    11: [235, 435, 635, 735, 935],  # K
+    12: [795, 100, 256, 545, 995],  # L
+    13: [245, 795, 1000, 255, 500], # M
+    14: [900, 800, 600, 400, 200],  # N
+    15: [575, 785, 995, 250, 450],  # O
+    16: [100, 250, 450, 750, 963],  # P
+    17: [250, 150, 550, 950, 650],  # Q
+    18: [880, 420, 575, 715, 185],  # R
+    19: [935, 215, 550, 750, 325],  # S
+    20: [175, 875, 530, 720, 445],  # T
+    21: [255, 650, 805, 795, 100],  # U
+    22: [995, 655, 455, 255, 245],  # V
+    23: [795, 805, 105, 645, 445],  # W
+    24: [245, 255, 945, 795, 500],  # X
+    25: [645, 825, 100, 800, 445],  # Y
+    26: [500, 800, 400, 1000, 250]  # Z
+}
+
+ROUNDS = len(GAME_DATA)
 
 class StrategySelector:
     """
@@ -41,32 +72,18 @@ class StrategySelector:
     @staticmethod
     def get_selected_strategies() -> list[str]:
         """
-        Returns a list of exactly twenty specific strategy identifiers.
+        Returns a list of exactly five specific strategy identifiers.
         
         Returns:
             list[str]: A list of strategy names formatted for the simulation environment.
         """
         return [
-            "truthful",              # Bids exact true valuation. (Dominant strategy)
-            "random",                # Bids a random amount between 0 and 200.
-            "always_zero",           # Always bids 0.
-            "always_max",            # Always bids maximum possible value (200).
-            "underbid_10_percent",   # Bids 90% of true valuation.
-            "overbid_10_percent",    # Bids 110% of true valuation.
-            "underbid_fixed_10",     # Bids exactly 10 units below true valuation.
-            "overbid_fixed_10",      # Bids exactly 10 units above true valuation.
-            "imitate_last_winner",   # Copies the winning bid from the previous round.
-            "average_past_winners",  # Calculates the average of all past winning bids.
-            "adaptive_increase",     # Increases bid by 20% if the previous round was lost.
-            "adaptive_decrease",     # Decreases bid by 20% if the previous round was won.
-            "spiteful",              # Bids 150% of true valuation to force others to pay more.
-            "timid",                 # Bids 50% of true valuation to avoid overpaying.
-            "epsilon_greedy",        # Bids truthfully 90% of the time, and randomly 10% of the time.
-            "trend_follower",        # Adjusts bid based on the difference between the last two winning bids.
-            "memory_3_avg",          # Averages the agent's own last three bids.
-            "competitor_aware",      # Adds 5 units to the true valuation if another agent won last time.
-            "win_stay_lose_shift",   # Bids truthfully if winning, but bids randomly if losing.
-            "strategy_switcher"      # Switches from truthful to overbidding if the win rate drops too low.
+            "truthful",                     # Bids exact true valuation (Dominant strategy).
+            "random_reasonable",            # Random bid within a realistic range around the true value.
+            "underbid_bayesian",            # Bids under of true valuation (avoid winner’s curse / overpayment risk perception).
+            "overbid",                      # Bids 115% of true valuation (utility-weighted preference for winning over surplus).
+            "noisy_bounded_rationality",    # Cognitive noise + miscalibration.
+            #"adaptive_learning"             # Adaptive best-response learner.
         ]
 
 # ================= PLAYER AGENT =================
@@ -110,98 +127,26 @@ class BidderAgent(Agent):
         if self.strategy == "truthful":
             bid = true_val
 
-        elif self.strategy == "random":
-            bid = random.uniform(0, 200)
+        elif self.strategy == "random_reasonable":
+            lower = max(0.0, true_val * 0.85)
+            upper = true_val * 1.15
+            bid = random.uniform(lower, upper)
 
-        elif self.strategy == "always_zero":
-            bid = 0.0
+        elif self.strategy == "underbid_bayesian":
+            bid = true_val * random.uniform(0.85, 1)
 
-        elif self.strategy == "always_max":
-            bid = 200.0
+        elif self.strategy == "overbid":
+            bid = true_val * random.uniform(1.00, 1.15)
 
-        elif self.strategy == "underbid_10_percent":
-            bid = true_val * 0.90
+        elif self.strategy == "noisy_bounded_rationality":
+            noise = random.gauss(0, true_val * 0.10)
+            bid = true_val + noise
+            bid = max(0.0, bid)
 
-        elif self.strategy == "overbid_10_percent":
-            bid = true_val * 1.10
-
-        elif self.strategy == "underbid_fixed_10":
-            bid = max(0.0, true_val - 10.0)
-
-        elif self.strategy == "overbid_fixed_10":
-            bid = true_val + 10.0
-
-        elif self.strategy == "imitate_last_winner":
+        elif self.strategy == "adaptive_learning":
             if self.history_winning_bids:
-                bid = self.history_winning_bids[-1]
-            else:
-                bid = true_val
-
-        elif self.strategy == "average_past_winners":
-            if self.history_winning_bids:
-                bid = sum(self.history_winning_bids) / len(self.history_winning_bids)
-            else:
-                bid = true_val
-
-        elif self.strategy == "adaptive_increase":
-            if self.round_count > 0 and not self.won_last_round:
-                bid = true_val * 1.20
-            else:
-                bid = true_val
-
-        elif self.strategy == "adaptive_decrease":
-            if self.round_count > 0 and self.won_last_round:
-                bid = true_val * 0.80
-            else:
-                bid = true_val
-
-        elif self.strategy == "spiteful":
-            bid = true_val * 1.50
-
-        elif self.strategy == "timid":
-            bid = true_val * 0.50
-
-        elif self.strategy == "epsilon_greedy":
-            if random.random() < 0.10:
-                bid = random.uniform(0, 200)
-            else:
-                bid = true_val
-
-        elif self.strategy == "trend_follower":
-            if len(self.history_winning_bids) >= 2:
-                trend = self.history_winning_bids[-1] - self.history_winning_bids[-2]
-                bid = max(0.0, true_val + trend)
-            else:
-                bid = true_val
-
-        elif self.strategy == "memory_3_avg":
-            if len(self.history_my_bids) >= 3:
-                bid = sum(self.history_my_bids[-3:]) / 3.0
-            else:
-                bid = true_val
-
-        elif self.strategy == "competitor_aware":
-            if self.round_count > 0 and not self.won_last_round:
-                bid = true_val + 5.0
-            else:
-                bid = true_val
-
-        elif self.strategy == "win_stay_lose_shift":
-            if self.round_count > 0:
-                if self.won_last_round:
-                    bid = true_val
-                else:
-                    bid = random.uniform(0, 200)
-            else:
-                bid = true_val
-
-        elif self.strategy == "strategy_switcher":
-            if self.round_count >= 10:
-                win_rate = self.win_count / self.round_count
-                if win_rate < 0.10:
-                    bid = true_val * 1.20 
-                else:
-                    bid = true_val
+                expected_threshold = statistics.mean(self.history_winning_bids)
+                bid = expected_threshold * random.uniform(0.95, 1.05)
             else:
                 bid = true_val
 
@@ -221,7 +166,8 @@ class BidderAgent(Agent):
     class BidBehaviour(CyclicBehaviour):
         async def run(self):
             """
-            Listens for requests from the auctioneer, generates bids, and processes round results.
+            Listens for requests from the auctioneer, generates bids based on provided true values, 
+            and processes round results.
             """
             msg = await self.receive(timeout=5)
             if not msg:
@@ -231,7 +177,7 @@ class BidderAgent(Agent):
             content = json.loads(msg.body)
 
             if content["performative"] == "cfp":
-                true_val = random.uniform(50.0, 150.0)
+                true_val = content["true_val"]
                 my_bid = self.agent.calculate_bid(true_val)
                 
                 reply = Message(to=str(msg.sender))
@@ -260,7 +206,8 @@ class BidderAgent(Agent):
 # ================= AUCTIONEER AGENT =================
 class AuctioneerAgent(Agent):
     """
-    Manages the auction process, evaluates bids, applies Vickrey rules, and logs outcomes.
+    Manages the auction process, distributes table values, evaluates bids, 
+    applies Vickrey rules, and logs outcomes.
     """
     def __init__(self, jid, password, player_jids, player_strategies):
         """
@@ -296,7 +243,8 @@ class AuctioneerAgent(Agent):
     class AuctionManagerBehaviour(CyclicBehaviour):
         async def run(self):
             """
-            Executes the core round sequence: calls for proposals, processes responses, determines pricing, and logs data.
+            Executes the core round sequence: distributes values from the lookup table, 
+            calls for proposals, processes responses, determines pricing, and logs data.
             """
             if self.agent.current_round > ROUNDS:
                 logger.info("Simulation finished.")
@@ -304,17 +252,20 @@ class AuctioneerAgent(Agent):
                 self.kill()
                 return
 
-            # Request Bids
-            for p_jid in self.agent.player_jids:
+            current_values = GAME_DATA[self.agent.current_round]
+
+            for index, p_jid in enumerate(self.agent.player_jids):
                 msg = Message(to=p_jid)
-                msg.body = json.dumps({"performative": "cfp"})
+                msg.body = json.dumps({
+                    "performative": "cfp",
+                    "true_val": current_values[index]
+                })
                 await self.send(msg)
 
             bids_received = {}
             true_vals = {}
             start = asyncio.get_event_loop().time()
 
-            # Collect Bids
             while len(bids_received) < len(self.agent.player_jids):
                 if asyncio.get_event_loop().time() - start > 10:
                     logger.warning("Round timeout - missing bids.")
@@ -332,20 +283,17 @@ class AuctioneerAgent(Agent):
                 self.agent.current_round += 1
                 return
 
-            # Determine Winner and Price
             sorted_bids = sorted(bids_received.items(), key=lambda item: item[1], reverse=True)
             winner_id = sorted_bids[0][0]
             winning_bid = sorted_bids[0][1]
             second_price = sorted_bids[1][1] if len(sorted_bids) > 1 else winning_bid
 
-            # Calculate Profit
             round_profits = {pid: 0.0 for pid in bids_received.keys()}
             winner_true_val = true_vals[winner_id]
             profit = winner_true_val - second_price
             round_profits[winner_id] = profit
             self.agent.total_profits[winner_id] += profit
 
-            # Log History
             row = {
                 "Round": self.agent.current_round,
                 "Winner_ID": winner_id,
@@ -362,7 +310,6 @@ class AuctioneerAgent(Agent):
 
             self.agent.history.append(row)
 
-            # Broadcast Results
             for p_jid in self.agent.player_jids:
                 msg = Message(to=p_jid)
                 msg.body = json.dumps({
