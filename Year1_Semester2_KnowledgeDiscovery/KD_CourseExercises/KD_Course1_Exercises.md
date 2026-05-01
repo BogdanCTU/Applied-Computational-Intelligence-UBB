@@ -78,6 +78,28 @@ We will add a new object ("Dog") and a new attribute ("has fur").
 
 ---
 
+## Exercise 2
+
+Consider the formal contexts from Lecture 1. Use **ConExp** and **FCA Tools Bundle** to determine the set of concepts and to draw the concept lattices.
+
+Course 1.2 - Introduction to Formal Concept Analysis (FCA)
+
+| Animal | Mammal | CanFly | Aquatic | HasFur |
+|--------|--------|--------|---------|--------|
+| Bat    | X      | X      |         | X      |
+| Whale  | X      |        | X       |        |
+| Dog    | X      |        |         | X      |
+| Eagle  |        | X      |         |        |
+
+<img width="952" height="532" alt="image" src="https://github.com/user-attachments/assets/e033d1af-082c-45b8-bf53-dfba553deb8f" />
+
+> ### Image: ConExp usage
+
+
+
+
+---
+
 ## Exercise 3
 
 ### a) Definition of the Derivation Operator $(\cdot)'$
