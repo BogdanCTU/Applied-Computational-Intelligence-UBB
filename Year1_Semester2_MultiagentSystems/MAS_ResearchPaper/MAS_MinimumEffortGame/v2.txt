@@ -1,0 +1,391 @@
+import asyncio
+import json
+import random
+import logging
+import sys
+import pandas as pd
+from spade.agent import Agent
+from spade.behaviour import CyclicBehaviour
+from spade.message import Message
+import platform
+import uuid
+from collections import deque, defaultdict, Counter
+
+# ================= LOGGING =================
+logger = logging.getLogger("simulation")
+logger.setLevel(logging.INFO)
+
+formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")
+
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setFormatter(formatter)
+
+file_handler = logging.FileHandler("simulation_log.txt", mode="w")
+file_handler.setFormatter(formatter)
+
+logger.addHandler(console_handler)
+logger.addHandler(file_handler)
+
+logging.getLogger().setLevel(logging.WARNING)
+logging.getLogger("spade").setLevel(logging.WARNING)
+logging.getLogger("slixmpp").setLevel(logging.WARNING)
+logging.getLogger("asyncio").setLevel(logging.WARNING)
+
+# ================= PARAMETERS =================
+M = 7
+H = 100
+
+B = 1.0
+A = 2.0 * B
+C = 10.0
+
+XMPP_DOMAIN = "localhost"
+XMPP_HOST = "127.0.0.1"
+XMPP_PORT = 5222
+PASSWORD = "admin"
+
+
+# ================= STRATEGY SELECTOR =================
+class StrategySelector:
+    @staticmethod
+    def get_selected_strategies():
+        return [
+            # ================= CORE HEURISTICS =================
+            "always_low",      # Chooses the lowest effort. This acts as the safest choice and a stable baseline.
+            "always_high",     # Chooses the highest effort. This aims for the maximum reward but carries high risk.
+            "random",          # Chooses an effort without a pattern. This introduces noise into the simulation.
+            "imitate_min",     # Copies the lowest effort from the previous round. This directly reacts to the weakest link rule.
+            "gradual_up",      # Slowly increases effort step-by-step. This models an attempt to build group trust.
+            "gradual_down",    # Slowly decreases effort step-by-step. This models a reaction to poor group coordination.
+            "win_stay",        # Keeps the current effort level if the previous round resulted in a high reward.
+            "lose_shift",      # Changes the effort level if the previous round resulted in a low reward.
+
+            # ================= MEMORY & PREDICTIVE =================
+            "predict_min",     # Analyzes past data to guess the lowest effort for the next round.
+            "trend_following", # Moves effort in the same direction as the group's recent historical changes.
+            "memory_3_step",   # Relies strictly on the outcomes of the last three rounds to determine the next action.
+
+            # ================= GAME-THEORETIC =================
+            "best_response",   # Calculates the optimal mathematical move assuming opponents repeat their last action.
+            "fictitious_play", # Builds a long-term probability model of opponent actions and responds to the distribution.
+            "risk_dominant",   # Chooses the effort that minimizes potential loss rather than maximizing potential gain.
+            "regret_minimization", # Evaluates past rounds to select the effort that would have yielded the best historical outcome.
+            "stochastic_best_response", # Calculates the best response but applies a small probability of random error.
+
+            # ================= LEARNING & SOCIAL =================
+            "bandit_ucb",      # Uses a statistical formula to balance exploring new efforts and exploiting known successful efforts.
+            "q_learning_low",  # Applies a reinforcement learning algorithm to discover the best long-term policy.
+            "consensus_seek",  # Identifies the most common effort in the group and attempts to match it.
+
+            # ================= META =================
+            "strategy_switcher" # Monitors internal performance and swaps to a different logic model if rewards drop below a threshold.
+        ]
+
+
+# ================= PLAYER =================
+class PlayerAgent(Agent):
+    def __init__(self, jid, password, player_id, strategy):
+        super().__init__(jid, password)
+
+        self.player_id = player_id
+        self.strategy = strategy
+
+        self.current_effort = random.randint(1, M)
+
+        # memory
+        self.history_efforts = deque(maxlen=10)
+        self.history_payoffs = deque(maxlen=10)
+        self.history_min = deque(maxlen=10)
+
+        # bandit / Q-learning
+        self.q = defaultdict(float)
+        self.n = defaultdict(int)
+
+        # last state cache
+        self.last_payoff = 0
+
+    async def setup(self):
+        self.client.host = XMPP_HOST
+        self.client.port = XMPP_PORT
+        self.add_behaviour(self.PlayBehaviour())
+
+    # ================= STRATEGY ENGINE =================
+    def decide(self, context):
+
+        s = self.strategy
+
+        min_effort = context.get("min_effort")
+        efforts = context.get("efforts", {})
+        round_no = context.get("round", 0)
+
+        def clamp(x): return max(1, min(M, x))
+
+        # ---------- CORE ----------
+        if s == "always_low":
+            return 1
+
+        if s == "always_high":
+            return M
+
+        if s == "random":
+            return random.randint(1, M)
+
+        if s == "imitate_min":
+            return min_effort or 1
+
+        if s == "gradual_up":
+            return clamp(self.current_effort + 1)
+
+        if s == "gradual_down":
+            return clamp(self.current_effort - 1)
+
+        if s == "win_stay":
+            return self.current_effort if self.last_payoff >= 0 else clamp(self.current_effort + random.choice([-1, 1]))
+
+        if s == "lose_shift":
+            return self.current_effort if self.last_payoff > 0 else random.randint(1, M)
+
+        # ---------- MEMORY ----------
+        if s == "predict_min":
+            return int(sum(self.history_min) / len(self.history_min)) if self.history_min else 1
+
+        if s == "trend_following":
+            if len(self.history_min) < 2:
+                return self.current_effort
+            return clamp(self.history_min[-1] + (self.history_min[-1] - self.history_min[-2]))
+
+        if s == "memory_3_step":
+            if not self.history_min:
+                return random.randint(1, M)
+            return Counter(list(self.history_min)[-3:]).most_common(1)[0][0]
+
+        # ---------- GAME THEORY ----------
+        if s == "best_response":
+            return min_effort if min_effort else 1
+
+        if s == "fictitious_play":
+            return Counter(self.history_min).most_common(1)[0][0] if self.history_min else 1
+
+        if s == "risk_dominant":
+            return 1
+
+        if s == "regret_minimization":
+            best_a, best_val = 1, -1e9
+            for a in range(1, M + 1):
+                val = 0
+                for m in self.history_min:
+                    val += (A * m - B * a + C)
+                if val > best_val:
+                    best_val, best_a = val, a
+            return best_a
+
+        if s == "stochastic_best_response":
+            return min_effort if random.random() > 0.2 else random.randint(1, M)
+
+        # ---------- LEARNING ----------
+        if s == "bandit_ucb":
+            total = sum(self.n.values()) + 1
+            best_a = 1
+            best_val = -1e9
+            for a in range(1, M + 1):
+                if self.n[a] == 0:
+                    return a
+                ucb = self.q[a] + (2 * (total / self.n[a]) ** 0.5)
+                if ucb > best_val:
+                    best_val, best_a = ucb, a
+            return best_a
+
+        if s == "q_learning_low":
+            return min(self.q.items(), key=lambda x: x[1])[0] if self.q else random.randint(1, M)
+
+        if s == "consensus_seek":
+            return Counter(efforts.values()).most_common(1)[0][0] if efforts else 1
+
+        # ---------- META ----------
+        if s == "strategy_switcher":
+            if self.last_payoff < 0:
+                self.strategy = random.choice(
+                    StrategySelector.get_selected_strategies()[:-1]
+                )
+            s = self.strategy
+
+        return self.current_effort
+
+
+    # ================= BEHAVIOUR =================
+    class PlayBehaviour(CyclicBehaviour):
+        async def run(self):
+            msg = await self.receive(timeout=5)
+
+            if not msg:
+                await asyncio.sleep(0.05)
+                return
+
+            content = json.loads(msg.body)
+
+            # ================= REQUEST =================
+            if content["performative"] == "request_effort":
+                effort = self.agent.decide({})
+
+                self.agent.current_effort = effort
+
+                reply = Message(to=str(msg.sender))
+                reply.body = json.dumps({
+                    "player_id": self.agent.player_id,
+                    "effort": effort
+                })
+                await self.send(reply)
+
+            # ================= ROUND UPDATE =================
+            elif content["performative"] == "round_result":
+
+                min_effort = content["min_effort"]
+                efforts = content["efforts"]
+                payoffs = content["payoffs"]
+
+                self.agent.history_min.append(min_effort)
+                self.agent.history_efforts.append(self.agent.current_effort)
+
+                self.agent.last_payoff = payoffs.get(str(self.agent.player_id), 0)
+
+                # bandit update
+                a = self.agent.current_effort
+                self.agent.n[a] += 1
+                self.agent.q[a] += (self.agent.last_payoff - self.agent.q[a]) / self.agent.n[a]
+
+
+# ================= CONTROLLER =================
+class ControllerAgent(Agent):
+    def __init__(self, jid, password, player_jids, num_agents):
+        super().__init__(jid, password)
+
+        self.player_jids = player_jids
+        self.num_agents = num_agents
+
+        self.current_round = 1
+        self.history = []
+        self.finished = False
+
+        self.scores = {i: 0 for i in range(1, num_agents + 1)}
+
+    async def setup(self):
+        await asyncio.sleep(2)
+        self.add_behaviour(self.GameManagerBehaviour())
+
+    class GameManagerBehaviour(CyclicBehaviour):
+        async def run(self):
+
+            if self.agent.current_round > H:
+                self.agent.finished = True
+                self.kill()
+                return
+
+            # ================= REQUEST =================
+            for p_jid in self.agent.player_jids:
+                msg = Message(to=p_jid)
+                msg.body = json.dumps({"performative": "request_effort"})
+                await self.send(msg)
+
+            efforts = {}
+            start = asyncio.get_event_loop().time()
+
+            while len(efforts) < len(self.agent.player_jids):
+                if asyncio.get_event_loop().time() - start > 10:
+                    break
+
+                msg = await self.receive(timeout=2)
+                if msg:
+                    c = json.loads(msg.body)
+                    efforts[c["player_id"]] = c["effort"]
+
+            if len(efforts) != len(self.agent.player_jids):
+                self.agent.current_round += 1
+                return
+
+            # ================= PAYOFF =================
+            min_effort = min(efforts.values())
+
+            payoffs = {
+                pid: A * min_effort - B * eff + C
+                for pid, eff in efforts.items()
+            }
+
+            for pid, p in payoffs.items():
+                self.agent.scores[int(pid)] += p
+
+            # ================= BROADCAST =================
+            for p_jid in self.agent.player_jids:
+                msg = Message(to=p_jid)
+                msg.body = json.dumps({
+                    "performative": "round_result",
+                    "min_effort": min_effort,
+                    "efforts": efforts,
+                    "payoffs": payoffs,
+                    "round": self.agent.current_round
+                })
+                await self.send(msg)
+
+            self.agent.current_round += 1
+
+
+# ================= SIMULATION =================
+async def run_simulation(num_agents):
+
+    uid = uuid.uuid4().hex[:6]
+
+    strategies = StrategySelector.get_selected_strategies()
+    random.shuffle(strategies)
+
+    player_jids = [
+        f"player{i}@{XMPP_DOMAIN}/{uid}_{i}"
+        for i in range(1, num_agents + 1)
+    ]
+
+    players = []
+
+    for i in range(num_agents):
+        p = PlayerAgent(
+            player_jids[i],
+            PASSWORD,
+            i + 1,
+            strategies[i]
+        )
+        await p.start(auto_register=True)
+        players.append(p)
+
+    controller = ControllerAgent(
+        f"manager@{XMPP_DOMAIN}/{uid}_mgr",
+        PASSWORD,
+        player_jids,
+        num_agents
+    )
+
+    await controller.start(auto_register=True)
+
+    while not controller.finished:
+        await asyncio.sleep(0.2)
+
+    df = pd.DataFrame(controller.history)
+    df.to_csv(f"results_N{num_agents}.csv", index=False)
+
+    for p in players:
+        await p.stop()
+
+    await controller.stop()
+
+
+# ================= MAIN =================
+async def main():
+
+    if platform.system() == "Windows":
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+    #for n in range(20, 21):
+        await run_simulation(20)
+        await asyncio.sleep(2)
+
+    print("Completed.")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
