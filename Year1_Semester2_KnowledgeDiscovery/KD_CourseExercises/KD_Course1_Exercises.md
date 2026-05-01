@@ -82,7 +82,11 @@ We will add a new object ("Dog") and a new attribute ("has fur").
 
 Consider the formal contexts from Lecture 1. Use **ConExp** and **FCA Tools Bundle** to determine the set of concepts and to draw the concept lattices.
 
-Course 1.2 - Introduction to Formal Concept Analysis (FCA)
+* "**ConExp**": [Download ConExp](https://conexp.sourceforge.net/)
+
+* "**FCA Tools Bundle**": [Online access](https://fca-tools-bundle.com/)
+
+* Sample from "_Course 1.2 - Introduction to Formal Concept Analysis (FCA)_"
 
 | Animal | Mammal | CanFly | Aquatic | HasFur |
 |--------|--------|--------|---------|--------|
@@ -93,10 +97,11 @@ Course 1.2 - Introduction to Formal Concept Analysis (FCA)
 
 <img width="952" height="532" alt="image" src="https://github.com/user-attachments/assets/e033d1af-082c-45b8-bf53-dfba553deb8f" />
 
-> ### Image: ConExp usage
+> ### Image: ConExp usage for Exercise 2
 
+<img width="958" height="890" alt="image" src="https://github.com/user-attachments/assets/35d98a82-7bc0-4740-9ae9-4b36d47b3603" />
 
-
+> ### Image: FCA Tools Bundle usage for Exercise 2
 
 ---
 
