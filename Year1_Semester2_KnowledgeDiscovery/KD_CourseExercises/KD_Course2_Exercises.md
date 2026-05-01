@@ -47,29 +47,62 @@ The set of all integers (whole numbers) ordered by size is a standard example. W
 
 ### **Exercise (G 3) Formal Concepts**
 
-To find all formal concepts, we first extract the formal context (the cross table) from Figure 2. A formal concept is defined as a perfect pairing between a subset of objects (the extent) and a subset of attributes (the intent). 
+To find all formal concepts, we first extract the formal context (the cross table) from Table 2. A formal concept is defined as a perfect pairing between a subset of objects (the extent) and a subset of attributes (the intent).
 
-**Objects ($G$)**: Tick, Trick, Track, Donald, Daisy, Gustav, Dagobert, Annette, Primus v. Quack.
-**Attributes ($M$)**: older, middle, younger, male, female, rich, carefree, indebted.
+| Name | generation: older | generation: middle | generation: younger | sex: male | sex: female | financial status: rich | financial status: carefree | financial status: indebted |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Tick** | | | x | x | | | x | |
+| **Trick** | | | x | x | | | x | |
+| **Track** | | | x | x | | | x | |
+| **Donald** | | x | | x | | | | x |
+| **Daisy** | | x | | | x | | x | |
+| **Gustav** | | x | | x | | | x | |
+| **Dagobert** | x | | | x | | x | | |
+| **Annette** | x | | | | x | | x | |
+| **Primus v. Quack** | x | | | x | | | x | |
+
+> ### Table: Grobian Gans: Die Ducks. Psychogramm einer Sippe. Rowohlt, Reinbek bei Hamburg 1972, ISBN 3-499-11481-X
+
+* **Objects ($G$)**: Tick, Trick, Track, Donald, Daisy, Gustav, Dagobert, Annette, Primus v. Quack.
+* **Attributes ($M$)**: older, middle, younger, male, female, rich, carefree, indebted.
 
 By checking every possible subset and mathematically finding the shared traits, we compute the following 19 formal concepts:
 
-1.  **Extent**: $\{$Tick, Trick, Track, Donald, Daisy, Gustav, Dagobert, Annette, Primus$\}$ | **Intent**: $\emptyset$ *(Top Concept)*
-2.  **Extent**: $\{$Dagobert, Annette, Primus$\}$ | **Intent**: $\{$older$\}$
-3.  **Extent**: $\{$Donald, Daisy, Gustav$\}$ | **Intent**: $\{$middle$\}$
-4.  **Extent**: $\{$Tick, Trick, Track, Donald, Gustav, Dagobert, Primus$\}$ | **Intent**: $\{$male$\}$
-5.  **Extent**: $\{$Tick, Trick, Track, Daisy, Gustav, Annette$\}$ | **Intent**: $\{$carefree$\}$
-6.  **Extent**: $\{$Daisy, Annette$\}$ | **Intent**: $\{$female, carefree$\}$
-7.  **Extent**: $\{$Donald, Primus$\}$ | **Intent**: $\{$male, indebted$\}$
-8.  **Extent**: $\{$Dagobert, Primus$\}$ | **Intent**: $\{$older, male$\}$
-9.  **Extent**: $\{$Donald, Gustav$\}$ | **Intent**: $\{$middle, male$\}$
-10. **Extent**: $\{$Daisy, Gustav$\}$ | **Intent**: $\{$middle, carefree$\}$
-11. **Extent**: $\{$Tick, Trick, Track, Gustav$\}$ | **Intent**: $\{$male, carefree$\}$
-12. **Extent**: $\{$Tick, Trick, Track$\}$ | **Intent**: $\{$younger, male, carefree$\}$
-13. **Extent**: $\{$Dagobert$\}$ | **Intent**: $\{$older, male, rich$\}$
-14. **Extent**: $\{$Annette$\}$ | **Intent**: $\{$older, female, carefree$\}$
-15. **Extent**: $\{$Primus$\}$ | **Intent**: $\{$older, male, indebted$\}$
-16. **Extent**: $\{$Daisy$\}$ | **Intent**: $\{$middle, female, carefree$\}$
-17. **Extent**: $\{$Donald$\}$ | **Intent**: $\{$middle, male, indebted$\}$
-18. **Extent**: $\{$Gustav$\}$ | **Intent**: $\{$middle, male, carefree$\}$
-19. **Extent**: $\emptyset$ | **Intent**: $\{$older, middle, younger, male, female, rich, carefree, indebted$\}$ *(Bottom Concept)*
+1. **Extent**: {Tick, Trick, Track, Donald, Daisy, Gustav, Dagobert, Annette, Primus}  
+   **Intent**: ∅ *(Top Concept)*
+2. **Extent**: {Dagobert, Annette, Primus}  
+   **Intent**: {older}
+3. **Extent**: {Donald, Daisy, Gustav}  
+   **Intent**: {middle}
+4. **Extent**: {Tick, Trick, Track, Donald, Gustav, Dagobert, Primus}  
+   **Intent**: {male}
+5. **Extent**: {Tick, Trick, Track, Daisy, Gustav, Annette}  
+   **Intent**: {carefree}
+6. **Extent**: {Daisy, Annette}  
+   **Intent**: {female, carefree}
+7. **Extent**: {Donald, Primus}  
+   **Intent**: {male, indebted}
+8. **Extent**: {Dagobert, Primus}  
+   **Intent**: {older, male}
+9. **Extent**: {Donald, Gustav}  
+   **Intent**: {middle, male}
+10. **Extent**: {Daisy, Gustav}  
+    **Intent**: {middle, carefree}
+11. **Extent**: {Tick, Trick, Track, Gustav}  
+    **Intent**: {male, carefree}
+12. **Extent**: {Tick, Trick, Track}  
+    **Intent**: {younger, male, carefree}
+13. **Extent**: {Dagobert}  
+    **Intent**: {older, male, rich}
+14. **Extent**: {Annette}  
+    **Intent**: {older, female, carefree}
+15. **Extent**: {Primus}  
+    **Intent**: {older, male, indebted}
+16. **Extent**: {Daisy}  
+    **Intent**: {middle, female, carefree}
+17. **Extent**: {Donald}  
+    **Intent**: {middle, male, indebted}
+18. **Extent**: {Gustav}  
+    **Intent**: {middle, male, carefree}   
+20. **Extent**: ∅  
+    **Intent**: {older, middle, younger, male, female, rich, carefree, indebted} *(Bottom Concept)*
