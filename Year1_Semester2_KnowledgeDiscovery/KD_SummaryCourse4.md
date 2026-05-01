@@ -2,7 +2,7 @@
 <!-- ---------------------- COURSE 4 ToscanaJ ---------------------- -->
 <!-- --------------------------------------------------------------- -->
 
-# 🔖 **Course 4 - Many-Valued Contexts, Conceptual Scaling, and ToscanaJ — Optimized Revision Summary
+# 🔖 Course 4 - Many-Valued Contexts, Conceptual Scaling, and ToscanaJ
 
 ---
 
