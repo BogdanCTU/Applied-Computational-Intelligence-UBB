@@ -1,192 +1,116 @@
-# ✔️ Exercise Solutions — Formal Concept Analysis (FCA)
+## 📖 Exercise 1
+
+Regard the following formal context K, given as a cross table:
+
+| Object | needs water to live | lives in water | lives on land | needs chlorophyll to produce food | two seed leaves | one seed leaf | can move around | has limbs | suckles its offspring |
+|---|---|---|---|---|---|---|---|---|---|
+| Leech | x | x | | | | | x | | |
+| Bream | x | x | | | | | x | x | |
+| Frog | x | x | x | | | | x | x | x |
+| Spike-Weed | x | x | | x | | x | | | |
+| Reed | x | x | x | x | | x | | | |
+| Bean | x | | x | x | x | | | | |
+| Maize | x | | x | x | | x | | | |
+
+a) Specify the following sets:
+
+  1. {Bean}′
+  2. {lives on land}′
+  3. {two seed leaves}′′
+  4. {F rog, M aize}′
+  5. {needs chlorophyll to producef ood, can move around}′
+  6. {lives in water, lives on land}′
+  7. {needs chlorophyll to producef ood, can move around}′
+  
+b) Extend K with both an object and an attribute.
 
 ---
 
-# 🔷 Exercise 1
+### a) Derivations from the Table
 
-## 📌 Given formal context K
+To find the derivation of a set of objects, list all attributes that every object in that set shares.
+To find the derivation of a set of attributes, list all objects that possess every attribute in that set.
 
-Objects:
-G = {Leech, Bream, Frog, Spike-Weed, Reed, Bean, Maize}
+**1. $\{Bean\}'$**
+Look at the row for "Bean". List all columns with an "x".
+*   **Result:** $\{needs\ water\ to\ live,\ lives\ on\ land,\ needs\ chlorophyll\ to\ produce\ food,\ two\ seed\ leaves\}$
 
-Attributes abbreviated:
+**2. $\{lives\ on\ land\}'$**
+Look at the column for "lives on land". List all rows with an "x".
+*   **Result:** $\{Frog,\ Reed,\ Bean,\ Maize\}$
 
-- W = needs water to live  
-- W_in = lives in water  
-- L = lives on land  
-- C = needs chlorophyll  
-- 2L = two seed leaves  
-- 1L = one seed leaf  
-- M = can move around  
-- Lim = has limbs  
-- S = suckles offspring  
+**3. $\{two\ seed\ leaves\}''**
+First, find $\{two\ seed\ leaves\}'$. Only the "Bean" has this attribute. So, $\{two\ seed\ leaves\}' = \{Bean\}$. 
+Next, find $\{Bean\}'$. We already solved this in Step 1.
+*   **Result:** $\{needs\ water\ to\ live,\ lives\ on\ land,\ needs\ chlorophyll\ to\ produce\ food,\ two\ seed\ leaves\}$
 
----
+**4. $\{Frog,\ Maize\}'$**
+Find the attributes that *both* the Frog and the Maize share. The Frog has many attributes. The Maize has several.
+The only ones they both have are "needs water to live" and "lives on land".
+*   **Result:** $\{needs\ water\ to\ live,\ lives\ on\ land\}$
 
-## 📍 1) {Bean}′
+**5. $\{needs\ chlorophyll\ to\ produce\ food,\ can\ move\ around\}'$**
+Find the objects that do *both* of these things. Plants have chlorophyll. Animals move around. No single object in this table does both.
+*   **Result:** $\emptyset$ (The empty set)
 
-Bean has:
-- W, L, C, 2L
+**6. $\{lives\ in\ water,\ lives\ on\ land\}'$**
+Find the objects that have an "x" in both the "lives in water" and "lives on land" columns. 
+*   **Result:** $\{Frog,\ Reed\}$
 
-✔️ Result:
-{Bean}′ = {needs water to live, lives on land, needs chlorophyll, two seed leaves}
+**7. $\{needs\ chlorophyll\ to\ produce\ food,\ can\ move\ around\}'$**
+This is a duplicate of question 5. 
+*   **Result:** $\emptyset$
 
----
+### b) Extend the Context
 
-## 📍 2) {lives on land}′
+We will add a new object ("Dog") and a new attribute ("has fur"). 
 
-Objects with L:
-Frog, Reed, Bean, Maize
-
-Common attributes:
-
-✔️ Result:
-{lives on land}′ = {needs water to live, lives on land}
-
----
-
-## 📍 3) {two seed leaves}′′
-
-Step 1:
-{two seed leaves}′ = {Bean}
-
-Step 2:
-{Bean}′ = {W, L, C, 2L}
-
-✔️ Result:
-{two seed leaves}′′ = {needs water to live, lives on land, needs chlorophyll to produce food, two seed leaves}
+| Object | needs water to live | lives in water | lives on land | needs chlorophyll to produce food | two seed leaves | one seed leaf | can move around | has limbs | suckles its offspring | **has fur** |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Leech | x | x |  |  |  |  | x |  |  | |
+| Bream | x | x |  |  |  |  | x | x |  | |
+| Frog | x | x | x |  |  |  | x | x | x | |
+| Spike-Weed | x | x |  | x |  | x |  |  |  | |
+| Reed | x | x | x | x |  | x |  |  |  | |
+| Bean | x |  | x | x | x |  |  |  |  | |
+| Maize | x |  | x | x |  | x |  |  |  | |
+| **Dog** | **x** | | **x** | | | | **x** | **x** | **x** | **x** |
 
 ---
 
-## 📍 4) {Frog, Maize}′
+## Exercise 3
 
-Frog ∩ Maize attributes:
+### a) Definition of the Derivation Operator $(\cdot)'$
 
-✔️ Result:
-{Frog, Maize}′ = {needs water to live, lives on land}
+The derivation operator finds the connections between objects and attributes in a context $K = (G, M, I)$, where $G$ is a set of objects, $M$ is a set of attributes and $I$ is the relation between them.
 
----
+1.  **For a set of objects $A \subseteq G$:** 
+    $A'$ is the set of all attributes shared by *every* object in $A$. 
+    Formula: $A' = \{m \in M \mid \forall g \in A: (g, m) \in I\}$
+2.  **For a set of attributes $B \subseteq M$:** 
+    $B'$ is the set of all objects that possess *every* attribute in $B$.
+    Formula: $B' = \{g \in G \mid \forall m \in B: (g, m) \in I\}$
 
-## 📍 5) {needs chlorophyll, can move around}′
+### b) Proofs
 
-Check objects having BOTH C and M:
+Let $K = (G, M, I)$ be a formal context. Let $A$ and $B$ be sets of objects ($A, B \subseteq G$). 
 
-- Spike-Weed (C only)
-- Reed (C only)
-- Bean (C only)
-- Maize (C only)
-- Leech/Bream/Frog (M only)
+**1. Prove: $A \subseteq B$ implies $B' \subseteq A'$**
+*   **Proof:** Let $m$ be an attribute in $B'$. This means every object in $B$ has the attribute $m$. We are told that $A$ is a subset of $B$ ($A \subseteq B$). Therefore, every object in $A$ is also inside $B$. Because all objects in $B$ have attribute $m$, all objects in $A$ must also have attribute $m$. Thus, $m$ belongs to $A'$. This proves $B' \subseteq A'$.
 
-No intersection.
+**2. Prove: $A \subseteq A''$**
+*   **Proof:** Let $g$ be a specific object in set $A$. The set $A'$ contains all the attributes that are shared by *every* object in $A$. Therefore, object $g$ must possess all the attributes found in $A'$. The set $A''$ (which is $(A')'$) is defined as the set of all objects that possess all the attributes in $A'$. Since object $g$ possesses all attributes in $A'$, object $g$ must be in $A''$. This proves $A \subseteq A''$.
 
-✔️ Result:
-{needs chlorophyll to produce food, can move around}′ = ∅
+**3. Prove: $A' = A'''$**
+*   **Proof:** We prove this in two steps by showing they are subsets of each other.
+    *   *Step 1:* Replace $A$ with $A'$ in the rule we proved in part 2. This gives us $A' \subseteq (A')''$, which is $A' \subseteq A'''$.
+    *   *Step 2:* We know from part 2 that $A \subseteq A''$. Apply the rule from part 1 to this statement. Reversing the order and adding a prime gives us $(A'')' \subseteq A'$, which is $A''' \subseteq A'$.
+    *   *Conclusion:* Since $A'$ is a subset of $A'''$, and $A'''$ is a subset of $A'$, they must be exactly equal. Thus, $A' = A'''$.
 
----
-
-## 📍 6) {lives in water, lives on land}′
-
-Objects satisfying BOTH:
-Frog, Reed
-
-Common attributes:
-
-✔️ Result:
-{lives in water, lives on land}′ = {needs water to live, lives in water, lives on land}
-
----
-
-## 📍 7) Repeated set
-
-Same as (5)
-
-✔️ Result:
-∅
-
----
-
-## 📌 1b) Extend K with one object + one attribute
-
-Example extension:
-
-- New object: Duck  
-- New attribute: can swim and fly  
-
-Extended assignments:
-- Duck: W, W_in, L, M, Lim (partial overlap depending on modeling choice)
-- New attribute links: Duck, Frog, Bream
-
-✔️ Purpose: increases lattice granularity and introduces hybrid mobility concept
-
----
-
-# 🔷 Exercise 2
-
-## 📍 a) Derivation operator definition
-
-Let K = (G, M, I)
-
-For A ⊆ G:
-A′ = { m ∈ M | ∀ g ∈ A : (g, m) ∈ I }
-
-For B ⊆ M:
-B′ = { g ∈ G | ∀ m ∈ B : (g, m) ∈ I }
-
----
-
-## 📍 b1) A ⊆ B ⇒ B′ ⊆ A′
-
-If A ⊆ B, then B has fewer constraints than A.
-
-Any attribute shared by all objects in B is necessarily shared by all objects in A.
-
-✔️ Therefore:
-B′ ⊆ A′
-
----
-
-## 📍 b2) A ⊆ A′′
-
-A′ = attributes common to A  
-A′′ = objects sharing all those attributes
-
-Every object in A satisfies its own derived intent.
-
-✔️ Therefore:
-A ⊆ A′′ (extensivity property)
-
----
-
-## 📍 b3) A′ = A′′′
-
-Using Galois connection:
-
-- A → A′ (objects → attributes)
-- A′ → A′′ (closure back to objects)
-- A′′ → A′′′ (back to attributes again)
-
-Closure stabilizes after 3 applications.
-
-✔️ Therefore:
-A′ = A′′′
-
----
-
-## 📍 b4) Characterization of formal concepts
-
-A pair (C, D) is a formal concept iff:
-
-- C = E′′
-- D = E′
-for some E ⊆ G
-
-✔️ Interpretation:
-
-- E′ generates shared attributes
-- E′′ restores maximal object set consistent with those attributes
-
-✔️ Therefore:
-(C, D) is a formal concept ⇔ ∃E ⊆ G such that:
-C = E′′ and D = E′
-
----
+**4. Prove: For $C \subseteq G$ and $D \subseteq M$, $(C, D)$ is a formal concept if and only if there is some $E \subseteq G$ such that $C = E''$ and $D = E'$.**
+*   **Proof:** A pair $(C, D)$ is defined as a "formal concept" if the objects exactly map to the attributes ($C' = D$) and the attributes exactly map back to the objects ($D' = C$).
+    *   *Forward Direction ($\Rightarrow$):* Assume $(C, D)$ is a formal concept. This means $C' = D$ and $D' = C$. Let the set $E$ be equal to $C$. Then $E' = C' = D$. And $E'' = (E')' = D' = C$. We have found our $E$.
+    *   *Backward Direction ($\Leftarrow$):* Assume there is a set $E$ where $C = E''$ and $D = E'$. We need to prove $C' = D$ and $D' = C$.
+        *   Test $C'$: $C' = (E'')' = E'''$. We proved in part 3 that $E''' = E'$. Since $E' = D$, then $C' = D$.
+        *   Test $D'$: $D' = (E')' = E''$. We were given that $E'' = C$. So, $D' = C$.
+    *   *Conclusion:* Both sides match the definition. The statement is proven.
