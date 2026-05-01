@@ -24,7 +24,7 @@ For reppresentation, `(g, m) ∈ I` means **object g has attribute m**
 For:
 - `A ⊆ G`
 - `B ⊆ M`
-- 
+
 Definitions:
 - A′ = {m ∈ M | ∀g ∈ A : gIm} , meaning `A′` = attributes common to all objects in A
 - B′ = {g ∈ G | ∀m ∈ B : gIm} , meaning `B′` = objects having all attributes in B
