@@ -104,5 +104,5 @@ By checking every possible subset and mathematically finding the shared traits, 
     **Intent**: {middle, male, indebted}
 18. **Extent**: {Gustav}  
     **Intent**: {middle, male, carefree}   
-20. **Extent**: ∅  
+19. **Extent**: ∅  
     **Intent**: {older, middle, younger, male, female, rich, carefree, indebted} *(Bottom Concept)*
