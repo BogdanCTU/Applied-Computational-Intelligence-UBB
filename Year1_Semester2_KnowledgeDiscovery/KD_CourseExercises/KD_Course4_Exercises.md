@@ -17,16 +17,14 @@
 
 The incidence relation \(I\) maps each table cell to a triple consisting of an object, an attribute, and its value:
 
-\[
+$$
 I = \{
-\begin{aligned}
-&(Vienna, Population, large), (Vienna, Coastal?, no), (Vienna, Climate, continental), \\
-&(Barcelona, Population, large), (Barcelona, Coastal?, yes), (Barcelona, Climate, mediterranean), \\
-&(Lisbon, Population, medium), (Lisbon, Coastal?, yes), (Lisbon, Climate, mediterranean), \\
-&(Bern, Population, small), (Bern, Coastal?, no), (Bern, Climate, alpine)
-\end{aligned}
+(Vienna, Population, large), (Vienna, Coastal?, no), (Vienna, Climate, continental), \\
+(Barcelona, Population, large), (Barcelona, Coastal?, yes), (Barcelona, Climate, mediterranean), \\
+(Lisbon, Population, medium), (Lisbon, Coastal?, yes), (Lisbon, Climate, mediterranean), \\
+(Bern, Population, small), (Bern, Coastal?, no), (Bern, Climate, alpine)
 \}
-\]
+$$
 
 ---
 
