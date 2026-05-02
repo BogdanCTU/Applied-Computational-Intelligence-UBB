@@ -6,24 +6,22 @@ satisfying the functionality condition: if `(g, m, w1) ∈ I` and `(g, m, w2) �
 
 The table below is a many-valued context describing four European cities:
 
-City (G) | Population | Coastal? | Climate
-Vienna | large | no | continental
-Barcelona | large | yes | mediterranean
-Lisbon | medium | yes | mediterranean
-Bern | small | no | alpine
+| City (G)  | Population | Coastal? | Climate        |
+|-----------|-----------|----------|----------------|
+| Vienna    | large     | no       | continental    |
+| Barcelona | large     | yes      | mediterranean  |
+| Lisbon    | medium    | yes      | mediterranean  |
+| Bern      | small     | no       | alpine         |
 
 1. Identify the sets `G`, `M`, and `W` explicitly.
 2. Write `I` as a set of triples `(g, m, w)`.
 3. Verify that the functionality condition holds for all attributes. Which well-known property of ordinary functions does this condition correspond to?
 4. Explain, in one sentence, why a standard (one-valued) formal context (`G`, `M`, `I`) cannot directly represent the information in this table.
 
-#### 1. Identify the sets \(G\), \(M\), and \(W\) explicitly.
-- **\(G\) (Objects):** The items being described  
-  \(G = \{\text{Vienna, Barcelona, Lisbon, Bern}\}\)
-- **\(M\) (Attributes):** The categories or features evaluated for each object  
-  \(M = \{\text{Population, Coastal?, Climate}\}\)
-- **\(W\) (Attribute values):** All unique values appearing in the table  
-  \(W = \{\text{large, medium, small, yes, no, continental, mediterranean, alpine}\}\)
+#### 1. Identify the sets G, M, and W explicitly
+- **G (Objects):** The items being described: G = {Vienna, Barcelona, Lisbon, Bern}
+- **M (Attributes):** The categories or features evaluated for each object: M = {Population, Coastal?, Climate}
+- **W (Attribute values):** All unique values appearing in the table: W = {large, medium, small, yes, no, continental, mediterranean, alpine}
 
 #### 2. Write \(I\) as a set of triples \((g, m, w)\)
 The incidence relation \(I\) maps each table cell to a triple consisting of an object, an attribute, and its value:
@@ -57,11 +55,12 @@ A standard formal context encodes only binary relations (presence/absence), so i
 Conceptual scaling transforms a many-valued context into a one-valued context by replacing each many-valued attribute m ∈ M with a scale S_m = (Gm, Mm, Im) whose objects are the possible values of m. The derived one-valued context K′ = (G, S_m∈M M_m, I′) is defined by: (g, n) ∈ I′ ⇐⇒ ∃ w ∈ W : (g, m, w) ∈ I and (w, n) ∈ Im, for each scale attribute n ∈ M_m.
 
 Use the cities context from following table:
-City (G) | Population | Coastal? | Climate
-Vienna | large | no | continental
-Barcelona | large | yes | mediterranean
-Lisbon | medium | yes | mediterranean
-Bern | small | no | alpine
+| City (G)  | Population | Coastal? | Climate        |
+|-----------|-----------|----------|----------------|
+| Vienna    | large     | no       | continental    |
+| Barcelona | large     | yes      | mediterranean  |
+| Lisbon    | medium    | yes      | mediterranean  |
+| Bern      | small     | no       | alpine         |
 
 Solve:
 1. Nominal scale for "Coastal?". Construct the nominal scale S_coastal = ({yes,no), {costal, inland}, I_costal), where value "yes" maps to attribute "coastal" and value "no" maps to attribute "inland". Write out "I_Coastal" as a cross-table.
@@ -74,11 +73,7 @@ Solve:
 ### 1) Nominal scale for `Coastal?`
 
 The nominal scale is:
-
-$$\[
-S_{coastal} = (\{yes, no\}, \{coastal, inland\}, I_{coastal})
-\]$$
-
+$$\[S_{coastal} = (\{yes, no\}, \{coastal, inland\}, I_{coastal})\]$$
 - `yes` maps to `coastal`
 - `no` maps to `inland`
 
