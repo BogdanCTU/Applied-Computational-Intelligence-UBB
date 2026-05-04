@@ -11,12 +11,10 @@ Consider a library database modelled as a many-valued context with M = {Year, Su
 - Subject: {Mathematics, Computer Science, Physics, Biology};
 - Length: short (< 150 pp.), medium (150-400 pp.), long (> 400 pp.)
 
-### a) 
-Define an appropriate scale for each attribute.
-For Year, propose an interordinal scale distinguishing the decades (1980s, 1990s, 2000s, 2010s, and 2020s) and draw its
-cross-table.
+## a) 
+**Request**: Define an appropriate scale for each attribute. For Year, propose an interordinal scale distinguishing the decades (1980s, 1990s, 2000s, 2010s, and 2020s) and draw its cross-table.
 
-# Solution
+### Solution
 
 We define one conceptual scale for each attribute:
  1. **Scale for Subject**: Since **Subject** is an _unordered categorical attribute_, the appropriate scale is a **nominal scale**. Each subject becomes one binary attribute.
@@ -77,4 +75,13 @@ The derived binary context replaces the original many-valued attributes with sca
 
 ---
 
-b) Describe step by step how you would set up this CIS in ToscanaJ: which file formats are used for the context and the scale definitions and how scales are assigned to attributes in the .csx project file.
+## b)
+Describe step by step how you would set up this CIS in ToscanaJ: which file formats are used for the context and the scale definitions and how scales are assigned to attributes in the .csx project file.
+
+### Solution
+
+First, start by following the ToscanaJ instructions profivded from UBB Faculty at [UBB-ToscanaJ]([/guides/content/editing-an-existing-page](https://math.ubbcluj.ro/~csacarea/wordpress/wp-content/uploads/aboutToscanaJ.pdf)).
+
+
+
+
