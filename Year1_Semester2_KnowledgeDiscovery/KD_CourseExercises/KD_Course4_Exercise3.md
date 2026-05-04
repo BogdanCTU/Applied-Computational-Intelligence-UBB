@@ -2,14 +2,14 @@
 
 ## Introduction
 
-ToscanaJ is an open-source Java tool for building and navigating Conceptual Information Systems (CIS). A CIS consists of a many-valued context together with a set of pre-dened scales and a nested-line-diagram view. Users can interactively zoom into subscales and query the object set associated with any concept node.
+ToscanaJ is an open-source Java tool for building and navigating Conceptual Information Systems (CIS). A CIS consists of a many-valued context together with a set of pre-defined scales and a nested-line-diagram view. Users can interactively zoom into subscales and query the object set associated with any concept node.
 
 ## Context
 
 Consider a library database modelled as a many-valued context with M = {Year, Subject, Length (pages)} and the following value ranges:
 - Year: 1980 to 2024 (numeric);
 - Subject: {Mathematics, Computer Science, Physics, Biology};
-- Length: short (< 150 pp.), medium (150400 pp.), long (> 400 pp.)
+- Length: short (< 150 pp.), medium (150-400 pp.), long (> 400 pp.)
 
 ### a) 
 Define an appropriate scale for each attribute.
@@ -46,9 +46,6 @@ We define one conceptual scale for each attribute:
 | 2010s |  |  |  | X | X | X | X | X | X |  |
 | 2020s |  |  |  |  | X | X | X | X | X | X |
 
----
-
-## Final Derived Context Attribute Set
 
 The derived binary context replaces the original many-valued attributes with scaled binary attributes:
 
@@ -78,4 +75,6 @@ The derived binary context replaces the original many-valued attributes with sca
 - Year ≥ 2010s
 - Year ≥ 2020s
 
-This derived binary context can now be processed using ordinary Formal Concept Analysis.
+---
+
+b) Describe step by step how you would set up this CIS in ToscanaJ: which file formats are used for the context and the scale definitions and how scales are assigned to attributes in the .csx project file.
