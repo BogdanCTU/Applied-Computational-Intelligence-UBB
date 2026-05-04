@@ -1,3 +1,5 @@
+---
+
 # Course 4 Exercise 3
 
 ## Introduction
@@ -80,7 +82,41 @@ Describe step by step how you would set up this CIS in ToscanaJ: which file form
 
 ### Solution
 
-First, start by following the ToscanaJ instructions profivded from UBB Faculty at [UBB-ToscanaJ]([/guides/content/editing-an-existing-page](https://math.ubbcluj.ro/~csacarea/wordpress/wp-content/uploads/aboutToscanaJ.pdf)).
+First, start by following the ToscanaJ instructions profivded from UBB Faculty at [UBB-ToscanaJ](https://math.ubbcluj.ro/~csacarea/wordpress/wp-content/uploads/aboutToscanaJ.pdf)).
+
+Second, since the online tool provided on the previous instructions for creating a SQL file doe not work due to restricted access (tool [UBB-SQL-TOOL](https://math.ubbcluj.ro/~csacarea/wordpress/wp-content/uploads/aboutToscanaJ.pdf)), create a SQL file locally and manually insert the needed table and values:
+
+```sql
+CREATE TABLE Books (
+	name varchar,
+	subject varchar,
+	length integer,
+	year integer
+);
+INSERT INTO Books VALUES ('B1','Mathematics',123,1989);
+INSERT INTO Books VALUES ('B2','Mathematics',456,1999);
+INSERT INTO Books VALUES ('B2','Computer Science',100,2003);
+INSERT INTO Books VALUES ('B3','Biology',500,1989);
+INSERT INTO Books VALUES ('B4','Physics',250,2024);
+INSERT INTO Books VALUES ('B5','Physics',340,2011);
+```
+
+Open Elba by running the appropriate `.bat` file on windows connect to the local database file (as described on the online guide):
+<img width="506" height="363" alt="image" src="https://github.com/user-attachments/assets/9f904317-c8f1-46c8-95a7-87ca527b95f6" />
+<img width="392" height="402" alt="image" src="https://github.com/user-attachments/assets/fa354f29-6937-4e90-9dba-9dd30228d410" />
+
+Now:
+1. Create a **Nomianl Scale** for **Books**;
+<img width="639" height="380" alt="image" src="https://github.com/user-attachments/assets/379eae7a-c160-4afe-a1e8-3ff7ff3d588e" />
+<img width="957" height="509" alt="image" src="https://github.com/user-attachments/assets/fca2dbf8-051e-45b6-92c6-a2558fac1bc8" />
+
+2. Create an **Ordinal Scale** for **Length**;
+<img width="480" height="595" alt="image" src="https://github.com/user-attachments/assets/74a684a3-c62a-46f2-8c6f-822fec391f5f" />
+<img width="956" height="509" alt="image" src="https://github.com/user-attachments/assets/7e5ee926-dc2f-4036-ae53-62b0a9735613" />
+
+3. sasaas
+
+
 
 
 
