@@ -115,12 +115,24 @@ Now:
 <img width="956" height="509" alt="image" src="https://github.com/user-attachments/assets/7e5ee926-dc2f-4036-ae53-62b0a9735613" />
 <img width="689" height="495" alt="image" src="https://github.com/user-attachments/assets/fd03ece5-4551-49c6-af8b-a3204c211546" />
 <img width="958" height="513" alt="image" src="https://github.com/user-attachments/assets/e1358011-c110-47d0-8505-3be350dac435" />
+<img width="953" height="1029" alt="image" src="https://github.com/user-attachments/assets/22bdf314-0748-4db4-855f-9e05c494bf64" />
 
 3. Create an **Interordinal Scale** for **Year**
 <img width="479" height="595" alt="image" src="https://github.com/user-attachments/assets/2a933ac1-89dd-4efb-94f8-2d119f4b08d9" />
 <img width="957" height="513" alt="image" src="https://github.com/user-attachments/assets/01d9b4bd-9782-4153-920e-0b12af7c7c0a" />
 
+Than go to "_File_" ➡️ "Save As" ➡️ Give the file a name and select "_.csx_" format.
+<img width="533" height="409" alt="image" src="https://github.com/user-attachments/assets/ff2a0b64-0b02-43a4-b9e9-79b3a80af0b1" />
 
+Run "**ToscanaJ**" by executing the appropriate `.bat` file on Windows system. Go to "_File_" ➡️ "Open" ➡️ select te previously created "_.csx_" file.
+<img width="528" height="457" alt="image" src="https://github.com/user-attachments/assets/c9954724-dc58-4470-a452-37126579ad6b" />
+
+---
+
+## c)
+A user navigates to the concept node labelled "Computer Science /\ long":
+i. What does the _extent_ of this node represent in terms of the library database?
+ii. Explain what happens in ToscanaJ when the user performs a zoom into theYear subscale at this node.
 
 
 
