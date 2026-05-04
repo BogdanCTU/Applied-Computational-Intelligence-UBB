@@ -110,14 +110,18 @@ Now:
 <img width="639" height="380" alt="image" src="https://github.com/user-attachments/assets/379eae7a-c160-4afe-a1e8-3ff7ff3d588e" />
 <img width="957" height="509" alt="image" src="https://github.com/user-attachments/assets/fca2dbf8-051e-45b6-92c6-a2558fac1bc8" />
 
-2. Create an **Ordinal Scale** for **Length**;
+2. Create a **Nominal Scale** for **Subjects**;
+<img width="634" height="378" alt="image" src="https://github.com/user-attachments/assets/dae24a52-70e7-47e0-a71f-ac0fef805db7" />
+<img width="957" height="518" alt="image" src="https://github.com/user-attachments/assets/c834a3f0-c987-49e5-afd8-f7dd22cf38b1" />
+
+3. Create an **Ordinal Scale** for **Length**;
 <img width="480" height="595" alt="image" src="https://github.com/user-attachments/assets/74a684a3-c62a-46f2-8c6f-822fec391f5f" />
 <img width="956" height="509" alt="image" src="https://github.com/user-attachments/assets/7e5ee926-dc2f-4036-ae53-62b0a9735613" />
 <img width="689" height="495" alt="image" src="https://github.com/user-attachments/assets/fd03ece5-4551-49c6-af8b-a3204c211546" />
 <img width="958" height="513" alt="image" src="https://github.com/user-attachments/assets/e1358011-c110-47d0-8505-3be350dac435" />
 <img width="953" height="1029" alt="image" src="https://github.com/user-attachments/assets/22bdf314-0748-4db4-855f-9e05c494bf64" />
 
-3. Create an **Interordinal Scale** for **Year**
+4. Create an **Interordinal Scale** for **Year**;
 <img width="479" height="595" alt="image" src="https://github.com/user-attachments/assets/2a933ac1-89dd-4efb-94f8-2d119f4b08d9" />
 <img width="957" height="513" alt="image" src="https://github.com/user-attachments/assets/01d9b4bd-9782-4153-920e-0b12af7c7c0a" />
 
@@ -132,11 +136,16 @@ Run "**ToscanaJ**" by executing the appropriate `.bat` file on Windows system. G
 ## c)
 A user navigates to the concept node labelled "Computer Science /\ long":
 i. What does the _extent_ of this node represent in terms of the library database?
+It reppresents a SQL Query like:
+```sql
+SELECT FROM BOOKS
+WHERE SUBJECT LIKE 'ComputerScience'
+AND LENGTH > 400
+```
 ii. Explain what happens in ToscanaJ when the user performs a zoom into theYear subscale at this node.
 
+<img width="956" height="517" alt="image" src="https://github.com/user-attachments/assets/83fd0080-452d-4cda-aac3-1b6fb71aaa42" />
+<img width="958" height="515" alt="image" src="https://github.com/user-attachments/assets/0250ae6e-8e2b-44b3-b26f-79964ce21664" />
 
-
-
-
-
-
+Since I dont have "Computer Science" records with Length>400 I have no resolts for the query and can not zoom in more.
+<img width="957" height="514" alt="image" src="https://github.com/user-attachments/assets/aebdd789-7047-4abe-8245-e94d30996b39" />
