@@ -113,8 +113,15 @@ Now:
 2. Create an **Ordinal Scale** for **Length**;
 <img width="480" height="595" alt="image" src="https://github.com/user-attachments/assets/74a684a3-c62a-46f2-8c6f-822fec391f5f" />
 <img width="956" height="509" alt="image" src="https://github.com/user-attachments/assets/7e5ee926-dc2f-4036-ae53-62b0a9735613" />
+<img width="689" height="495" alt="image" src="https://github.com/user-attachments/assets/fd03ece5-4551-49c6-af8b-a3204c211546" />
+<img width="958" height="513" alt="image" src="https://github.com/user-attachments/assets/e1358011-c110-47d0-8505-3be350dac435" />
 
-3. sasaas
+3. Create an **Interordinal Scale** for **Year**
+<img width="479" height="595" alt="image" src="https://github.com/user-attachments/assets/2a933ac1-89dd-4efb-94f8-2d119f4b08d9" />
+<img width="957" height="513" alt="image" src="https://github.com/user-attachments/assets/01d9b4bd-9782-4153-920e-0b12af7c7c0a" />
+
+
+
 
 
 
