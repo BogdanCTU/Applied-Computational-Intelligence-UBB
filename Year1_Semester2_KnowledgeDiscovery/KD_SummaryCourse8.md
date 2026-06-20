@@ -1,411 +1,362 @@
-# Knowledge Discovery — Temporal Concept Analysis (TCA) Integrated Summary
+# Temporal Concept Analysis (TCA) — Integrated Course Summary
 
-## 0. Prerequisites (Formal Concept Analysis Baseline)
+## 0. Preliminaries: Formal Concept Analysis (FCA)
 
-### Formal Concept Analysis (FCA)
-Formal Concept Analysis is a mathematical framework for analyzing data via the relationship between objects and attributes.
+### Formal Context
+A **formal context** is a triple:
+$$K = (G, M, I)$$
+where:
+- $G$ = set of objects
+- $M$ = set of attributes
+- $I \subseteq G \times M$ is an incidence relation
 
-- **Formal Context**:  
-  \( K = (G, M, I) \) where:
-  - \( G \): set of objects
-  - \( M \): set of attributes
-  - \( I \subseteq G \times M \): incidence relation (g has m)
+### Derivation Operators
+For $A \subseteq G$, $B \subseteq M$:
+- $A' = \{ m \in M \mid \forall g \in A: (g,m)\in I \}$
+- $B' = \{ g \in G \mid \forall m \in B: (g,m)\in I \}$
 
-- **Derivation Operators**:
-  - \( A' \): attributes common to all objects in \( A \subseteq G \)
-  - \( B' \): objects sharing all attributes in \( B \subseteq M \)
+A **formal concept** is a pair:
+$$ (A, B) \text{ such that } A' = B \text{ and } B' = A $$
 
-- **Formal Concept**:
-  \( (A, B) \) where \( A' = B \) and \( B' = A \)
-
-- **Concept Lattice**:
-  \( \mathcal{B}(K) \): all formal concepts ordered by extent inclusion (dually intent reverse inclusion)
+The set of all concepts forms a **concept lattice**:
+$$\mathcal{B}(K)$$
 
 ---
 
 ## 1. Motivation for Temporal Concept Analysis
 
-Classical FCA is inherently static: it represents a single snapshot of structured data.
+Classical FCA is **static**: it describes a single state of knowledge.
 
-Many real-world systems evolve:
-- medical patient states
-- industrial processes
-- ecological systems
-- user behavior logs
+Many real systems are dynamic:
+- patients evolve clinically
+- industrial systems change state over time
+- user behavior unfolds sequentially
 
-### Core limitation of FCA
-FCA cannot directly represent:
-- change over time
-- state transitions
-- trajectories of objects across conceptual space
+**Key limitation of FCA:**
+It cannot directly represent **conceptual evolution over time**.
 
-### TCA objective
-Temporal Concept Analysis extends FCA to model:
-
-> structured evolution of formal concepts indexed by time
+### Goal of TCA
+Temporal Concept Analysis introduces a framework to represent:
+- conceptual states over time
+- transitions between states
+- structured trajectories of objects through concept space
 
 ---
 
-## 2. Temporal Representation of Data
+## 2. Time Representation: Granules and Ordering
 
-A temporal observation is decomposed into:
+### Time Granules
+Time is modeled as a set of discrete or structured units:
+$$G_T = \{g_1, g_2, \dots\}$$
 
-### 2.1 Time Component
-- A set of **time granules** \( G \)
-- Granules may be:
-  - discrete steps (visits, days)
-  - intervals (hours, sessions)
-  - hierarchical or partially ordered units
+A **time granule** represents an observation unit:
+- timestamp
+- interval
+- event index
+- calendar unit
 
-A time structure induces a successor relation:
-\[
-g \prec g'
-\]
+Granules may form:
+- chains (linear time)
+- partial orders
+- trees (branching time)
 
-### 2.2 Event Component
-A classical formal context:
-\[
-T_e = (G, M, I)
-\]
-
-- Same granules act as “objects” in the event context
-- Attributes describe observed properties at each granule
+A successor relation is often assumed:
+$$ g \prec g' $$
 
 ---
 
 ## 3. Conceptual Time System (CTS)
 
-A **Conceptual Time System** is:
+A **Conceptual Time System** separates time and observations.
 
-\[
-T = (T_t, T_e)
-\]
+### Definition (structural form)
+A CTS consists of:
+- a time structure over granules $G_T$
+- an event context describing attributes over those granules
+
+Event context:
+$$K_e = (G_T, M_e, I_e)$$
+
+Time structure:
+- typically an order or scale on $G_T$
+- may be represented as a separate context or relational structure
+
+> Interpretation: time is a structured index; events are attribute observations indexed by time.
+
+---
+
+## 4. States: Conceptual Representation of Time Points
+
+For each granule $g \in G_T$, we derive a **state** from the event context.
+
+### State Definition
+A state is a formal concept induced by a granule:
+$$
+\sigma(g) = ( \{g\}'', \{g\}' ) \in \mathcal{B}(K_e)
+$$
 
 where:
-- \( T_t \): structure over time granules (ordering / granularity)
-- \( T_e \): formal context describing events over granules
+- $\{g\}'$ = attributes observed at $g$
+- $\{g\}''$ = reconstructed extent of equivalent granules
 
-### Interpretation
-- Time defines *when*
-- Event context defines *what*
-- Both are coupled via shared granule set
+### State Space
+The set of all reachable states:
+$$
+\Sigma = \{ \sigma(g) \mid g \in G_T \} \subseteq \mathcal{B}(K_e)
+$$
 
----
-
-## 4. States and Concept Formation
-
-### 4.1 State Definition
-
-Each time granule \( g \in G \) induces a formal concept:
-
-\[
-\sigma(g) = (\{g\}'', \{g\}')
-\in \mathcal{B}(T_e)
-\]
-
-- Extent: granules sharing identical attribute profile with \( g \)
-- Intent: attributes valid at \( g \)
-
-### 4.2 State Space
-
-\[
-\Sigma(T) = \{ \sigma(g) \mid g \in G \} \subseteq \mathcal{B}(T_e)
-\]
-
-- States are embedded in the concept lattice
-- Not necessarily a sublattice, but a subset with induced order
+The state space is partially ordered by the inherited order of the concept lattice, but is not necessarily a sublattice.
 
 ---
 
-## 5. Transitions and Temporal Dynamics
+## 5. Transitions and State Dynamics
 
-### 5.1 Transition Relation
+### Transition Relation
+Given a successor relation on time:
+$$ g \prec g' $$
 
-Given successor relation \( g \prec g' \):
-
-\[
-\sigma(g) \rightarrow \sigma(g')
-\]
+we define a transition:
+$$ \sigma(g) \to \sigma(g') $$
 
 This induces a **state-transition graph**:
-- nodes: states (formal concepts)
-- edges: temporal adjacency mapping
+$$ S = (\Sigma, \to) $$
 
-### Key property
-Transitions are **not lattice order relations**.
-They are induced by time, not by concept hierarchy.
-
----
-
-## 6. Objects and Life-Tracks
-
-### 6.1 Extended Structure (CTS with Objects)
-
-A CTSOT introduces explicit objects:
-
-\[
-(P, G, \rho, T_t, T_e)
-\]
-
-- \( P \): set of objects
-- \( \rho \subseteq P \times G \): observation relation
-
-### 6.2 Life-Track
-
-For object \( p \in P \):
-
-\[
-\text{life}_p : G_p \to \mathcal{B}(T_e), \quad g \mapsto \sigma_p(g)
-\]
-
-- Maps time to states
-- Forms a trajectory in concept space
-
-### 6.3 Trajectories
-
-A trajectory is:
-- a sequence (discrete time)
-- a path in a directed state graph
-- optionally a branching structure
-
-Key analytical notions:
-- reachability
-- cycles / recurrence
-- state persistence (sojourn time)
+### Key properties
+- transitions depend on time ordering, not lattice order
+- multiple granules may map to the same state
+- cycles and recurrent states may occur
 
 ---
 
-## 7. Granularity and Scaling
+## 6. Objects and CTS with Observation Structure (CTSOT)
 
-Time structure is not fixed; it can be refined or coarsened.
+To model multiple entities:
 
-### Effects of granularity:
-- changes resolution of observed states
-- alters transition structure
-- may merge or split trajectories
+### CTSOT Structure
+A CTSOT is:
+$$ (P, G_T, \rho, K_e) $$
 
-### Principle:
-> granularity is a modeling parameter, not an intrinsic property of the system
+where:
+- $P$ = set of objects (patients, machines, users)
+- $G_T$ = time granules
+- $\rho \subseteq P \times G_T$ = observation relation
+- $K_e$ = event context
 
----
+### Life-track
+For each object $p \in P$, its **life-track** is:
+$$
+\text{life}_p : G_p \to \mathcal{B}(K_e)
+$$
+where:
+$$G_p = \{ g \in G_T \mid (p,g) \in \rho \}$$
 
-## 8. Conceptual Semantic Systems (CSS)
-
-A **Conceptual Semantic System** generalizes CTS:
-
-- multiple contextual dimensions:
-  - temporal
-  - spatial
-  - social
-  - causal
-
-Each dimension is a formal context over shared granules.
-
-### Resulting structure
-- multi-lattice representation via product constructions
-- coupled or independent dynamics across dimensions
+A life-track is a sequence (or partial sequence) of states:
+$$
+\sigma_p(g_1), \sigma_p(g_2), \dots
+$$
 
 ---
 
-## 9. Temporal Patterns and Process Mining
+## 7. Trajectories and Behavioral Analysis
 
-TCA supports extraction of:
+A **trajectory** is the temporal evolution of a life-track:
+- linear sequence (totally ordered time)
+- branching structure (partial order)
+- piecewise-constant segments
 
-### 9.1 Structural patterns
-- implications in event context:
-  - attribute dependencies
+### Analytical structures
+- **Reachability:** states accessible from a given state
+- **Cycles:** recurrent behavioral loops
+- **Sojourn time:** time spent in a state
+- **Persistence:** stability of state occupancy
 
-### 9.2 Temporal patterns
-- transition constraints:
-  - allowed / forbidden state transitions
+---
 
-### 9.3 Path-level constraints
-- long-range dependencies across trajectories
+## 8. Granularity and Scaling
 
-### Relation to temporal logic
-- transitions correspond to “next” modality
-- reachability corresponds to “eventually”
-- invariance corresponds to stable basins
+Granularity defines observational resolution:
+- seconds → minutes → hours
+- events → sessions → phases
+
+### Refinement and Coarsening
+Changing granularity modifies:
+- number of states
+- transition density
+- conceptual abstraction level
+
+This is a **scaling operation on the time structure**, not a change in semantics.
+
+---
+
+## 9. Conceptual Semantic Systems (CSS)
+
+A **CSS** generalizes CTS by introducing multiple contextual dimensions.
+
+Each dimension is a formal context over shared granules:
+- temporal context
+- spatial context
+- social context
+- causal context
+
+### Structural idea
+A CSS is a family:
+$$ (K_i)_{i \in I} $$
+
+Each object evolves in a **product space of concept lattices**:
+$$ \mathcal{B}(K_1) \times \cdots \times \mathcal{B}(K_n) $$
+
+Dependencies between dimensions appear as constraints on joint transitions.
+
+---
+
+## 10. Patterns, Implications, and Process Mining
+
+### Types of temporal structure
+
+- **State implications:** structural constraints in event context
+- **Transition constraints:** restrictions on successor states
+- **Path patterns:** temporal rules over sequences
 
 ### Process mining interpretation
-- event logs become CTSOTs
-- state graph approximates process structure
-- yields interpretable workflow abstraction
+CTSOT data corresponds to event logs:
+- cases = objects
+- timestamps = granules
+- activities = attributes
+
+TCA yields:
+- state-transition abstractions of workflows
+- interpretable process structure
+- deviation detection via forbidden transitions
 
 ---
 
-## 10. Triadic and Multi-Relational Extensions (Advanced View)
+## 11. Relation to Temporal Logics
 
-### 10.1 Triadic FCA (baseline definition)
-A triadic context:
+Temporal patterns correspond to logical operators:
 
-\[
-K = (G, M, B, Y)
-\]
+- $X\varphi$ (next state): direct transition
+- $F\varphi$ (eventually): reachability
+- $G\varphi$ (always): invariance over trajectories
+- $\varphi U \psi$ (until): constrained paths
 
-- G: objects
-- M: attributes
-- B: conditions (contextual dimension)
-- Y ⊆ G × M × B
-
-### 10.2 Temporal 3FCA (integration with TCA)
-
-Event structure becomes triadic:
-
-\[
-T_e^{(3)} = (G, M, B, Y)
-\]
-
-with time still represented by granules \( G \).
-
-### Interpretation
-At each time granule:
-- we observe a structured (attribute × condition) matrix
-
-### 10.3 Conceptual consequence
-- states become richer multi-dimensional concepts
-- trajectories extend over more structured state spaces
-
-### 10.4 Caution
-- polyadic extensions are not part of standard TCA
-- they represent a modeling generalization, not core theory
+TCA provides a **constructive, lattice-based semantics** for temporal reasoning.
 
 ---
 
-## 11. Distributed, Fuzzy, and Pattern Extensions
+## 12. Extensions Beyond Dyadic TCA
 
-### Distributed TCA
-- multiple interacting CTS systems
-- shared or synchronized granules
-- joint state space formed via compatibility constraints
+### 12.1 Triadic FCA Integration
 
-### Fuzzy TCA
-- incidence becomes graded:
-  \[
-  I : G \times M \to [0,1]
-  \]
-- states become fuzzy concepts
-- supports uncertainty modeling
+A **triadic context**:
+$$K_3 = (G, M, B, Y)$$
+where:
+- $G$ = objects
+- $M$ = attributes
+- $B$ = conditions
+- $Y \subseteq G \times M \times B$
 
-### Pattern structures
-- replace attribute sets with structured descriptions
-- enables application to:
-  - sequences
-  - graphs
-  - complex structured objects
+### Temporal Triadic Extension (3FCA + TCA)
+
+Event structure becomes:
+$$T_e^{(3)} = (G_T, M_e, B, Y_e)$$
+
+This enables modeling:
+- observer-dependent measurements
+- contextual variability of attributes
+- multi-perspective temporal states
+
+### Important correction
+- Triadic extensions are **not part of core TCA**
+- they are **orthogonal generalizations combining FCA frameworks**
 
 ---
 
-## 12. Algorithms and Computational Considerations
+## 13. Computational Aspects
 
-### Core operations
-- concept derivation per granule
-- state identification (hashing intents)
-- transition construction from temporal adjacency
-
-### Complexity characteristics
-- concept enumeration may be exponential in worst case
-- practical performance depends on:
-  - attribute density
-  - granularity selection
-  - incremental computation strategy
+### Complexity considerations
+- Concept enumeration is generally **exponential in worst case**
+- State construction requires closure computation per granule
+- Transition construction is linear in observed transitions
 
 ### Key algorithms
-- Next Closure (canonical enumeration)
-- incremental FCA updates for streaming data
+- Next-closure algorithm (Ganter)
+- Incremental FCA updates
+- Streaming adaptations for temporal data
+
+### Practical constraint
+Scalability depends primarily on:
+- attribute set size
+- density of incidence relation
+- granule count
 
 ---
 
-## 13. Software Ecosystem (Representative Tools)
-
-- FCA and concept lattice analysis:
-  - ConExp / ConExp-NG
-  - ToscanaJ
-  - FCA4J
-  - fcaR (R ecosystem)
-  - fcapsy (Python ecosystem)
-
-Capabilities typically include:
-- context scaling
-- lattice visualization
-- incremental updates
-- basic temporal analysis extensions
-
----
-
-## 14. Application Domains
+## 14. Applications
 
 ### Healthcare
-- patient evolution tracking
-- symptom progression modeling
-- treatment response trajectories
+- patient state evolution
+- disease progression patterns
+- treatment pathway analysis
 
 ### Industrial systems
-- fault progression analysis
+- fault detection via forbidden transitions
+- process monitoring
 - predictive maintenance
-- process supervision
 
-### Behavioral systems
+### Behavioral analytics
 - user session modeling
-- recommendation dynamics
-- activity evolution
+- recommendation systems
+- activity segmentation
 
-### Ecology
-- movement patterns
-- seasonal behavioral cycles
-
-### Information systems
-- workflow mining
-- system event logs
-- behavior segmentation
+### Biology and ecology
+- migration patterns
+- behavioral cycles
+- environmental adaptation trajectories
 
 ---
 
-## 15. Key Conceptual Insights
+## 15. Key Theoretical Insights
 
-### Core principle 1: dual structure
-Time and events form orthogonal but coupled structures.
+### Fundamental principles
 
-### Core principle 2: state emergence
-States are not predefined; they are induced formal concepts.
+1. **States are concepts**
+   - each time point maps to a formal concept
 
-### Core principle 3: dynamics via ordering
-Temporal structure induces transitions independent of lattice order.
+2. **Time induces dynamics**
+   - transitions arise from ordering of granules
 
-### Core principle 4: granularity dependency
-All observed structure depends on resolution choice.
+3. **Life-tracks are conceptual paths**
+   - objects evolve through the concept lattice
 
-### Core principle 5: trajectories as semantics
-Meaning emerges from paths through conceptual space, not isolated states.
+4. **Granularity defines abstraction**
+   - resolution controls state structure
+
+5. **TCA separates structure from dynamics**
+   - lattice = structure, time = evolution driver
 
 ---
 
-## 16. Consolidated Definitions
+## 16. Summary Definition Set
 
 | Term | Definition |
-|------|------------|
-| Formal context | \( (G, M, I) \) incidence structure |
-| Concept lattice | ordered set of formal concepts |
-| Time granule | atomic unit of temporal observation |
-| CTS | pair \( (T_t, T_e) \) coupling time and event contexts |
-| State | formal concept induced by a granule |
-| Transition | state change induced by temporal successor relation |
-| Life-track | mapping from time to concept lattice |
-| Trajectory | realized path of a life-track |
-| CTSOT | CTS extended with object observations |
-| CSS | multi-dimensional generalization of CTS |
+|------|-----------|
+| Formal Context | $K=(G,M,I)$ incidence structure |
+| Concept | $(A,B)$ with Galois connection closure |
+| Concept Lattice | $\mathcal{B}(K)$ ordered by inclusion |
+| Time Granule | atomic unit of observation in time |
+| CTS | combination of time structure + event context |
+| State | $\sigma(g) \in \mathcal{B}(K_e)$ |
+| Transition | $\sigma(g) \to \sigma(g')$ if $g \prec g'$ |
+| Life-track | mapping from granules to states |
+| CTSOT | CTS extended with object set and observation relation |
+| CSS | multi-context generalization of CTS |
 
 ---
 
-## 17. Final Synthesis
+## 17. Closing Perspective
 
-Temporal Concept Analysis provides a principled framework for transforming static conceptual structures into dynamic systems:
+Temporal Concept Analysis provides a structured mechanism to transform static concept lattices into dynamic systems by embedding them in time-indexed observation frameworks.
 
-- FCA provides the **semantic state space**
-- time provides the **ordering mechanism**
-- CTS couples both into a unified model
-- trajectories operationalize semantic dynamics
-- extensions (triadic, fuzzy, distributed) expand representational power
+The core abstraction is:
 
-> The central abstraction:  
-> **concept lattices become state spaces; time becomes the control signal that traverses them.**
+> **Concepts become states, and time becomes the ordering principle that generates motion through the concept lattice.**
