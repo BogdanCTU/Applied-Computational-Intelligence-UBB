@@ -1,0 +1,31 @@
+Morning_Shift
+SELECT COUNT(*)  FROM PreProcessedDataset  WHERE EXTRACT(HOUR FROM datetime_combined) BETWEEN 6 AND 13;
+
+Afternoon_Shift
+SELECT COUNT(*)  FROM PreProcessedDataset  WHERE EXTRACT(HOUR FROM datetime_combined) BETWEEN 14 AND 21;
+
+Night_Shift
+SELECT COUNT(*)  FROM PreProcessedDataset  WHERE EXTRACT(HOUR FROM datetime_combined) >= 22     OR EXTRACT(HOUR FROM datetime_combined) < 6;
+
+
+RUL_Class_Critical
+SELECT COUNT(*)  FROM PreProcessedDataset  WHERE rul_class = 'Critical'
+
+RUL_Class_Low
+SELECT COUNT(*)  FROM PreProcessedDataset  WHERE rul_class = 'Low'
+
+RUL_Class_Medium
+SELECT COUNT(*)  FROM PreProcessedDataset  WHERE rul_class = 'Medium'
+
+RUL_Class_Healty
+SELECT COUNT(*)  FROM PreProcessedDataset  WHERE rul_class = 'Healty'
+
+
+ThermalStress_High
+SELECT COUNT(*)  FROM PreProcessedDataset  WHERE water_temperature_delta_celsius_deg_bin = 'High';
+
+CoolingIntensity_High
+SELECT COUNT(*)  FROM PreProcessedDataset  WHERE water_consumption_liter_minute_bin = 'High';
+
+Resistance_High
+SELECT COUNT(*)  FROM PreProcessedDataset  WHERE resistance_tonn_bin = 'High';
