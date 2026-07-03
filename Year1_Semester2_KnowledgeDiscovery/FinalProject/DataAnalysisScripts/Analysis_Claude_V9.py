@@ -52,9 +52,6 @@ import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import matplotlib.colors as mcolors
-from matplotlib.patches import Patch
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 from sklearn.model_selection import train_test_split
 from sklearn.compose import ColumnTransformer

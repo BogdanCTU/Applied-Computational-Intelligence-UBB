@@ -1,0 +1,22 @@
+
+--------------------------------------------------------
+
+Task Requirements:
+
+1. Many-valued contexts: besides defining scales, browsing scenarios in order to perform real KD.
+   Please define more complex scales than just nominal and ordinal;
+2. Attribute exploration should be done properly, see the Bernhards Ganter video;
+3. 3FCA: define de tricontext and start analyzing it. Use local navigation to enhance KD;
+4. TCA: describe life tracks in a concept lattice. 
+
+
+--------------------------------------------------------
+
+De facut:
+1. FCA scalelor complexe și a scenariilor de navigare
+2. Explorare Atributionala
+3. 3FCA lipsește complet partea de navigare locală
+4. TCA
+
+
+--------------------------------------------------------
