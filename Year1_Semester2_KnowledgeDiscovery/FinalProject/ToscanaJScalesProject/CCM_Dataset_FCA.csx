@@ -7962,7 +7962,7 @@
     </diagram>
     <diagram title="Equipment Health All Combinations">
         <node id="0">
-            <position x="-147.0" y="170.0" />
+            <position x="-176.07275390625003" y="251.0033315022785" />
             <attributeLabelStyle>
                 <offset x="0.0" y="0.0" />
                 <backgroundColor>#ffffffff</backgroundColor>
@@ -7991,7 +7991,7 @@
             </ndimVector>
         </node>
         <node id="1">
-            <position x="-66.5" y="252.5" />
+            <position x="44.90861956278451" y="408.2155125935877" />
             <attributeLabelStyle>
                 <offset x="0.0" y="0.0" />
                 <backgroundColor>#ffffffff</backgroundColor>
@@ -8018,7 +8018,7 @@
             </ndimVector>
         </node>
         <node id="2">
-            <position x="-164.0" y="230.0" />
+            <position x="-213.15566253662098" y="444.4117113749189" />
             <attributeLabelStyle>
                 <offset x="0.0" y="0.0" />
                 <backgroundColor>#ffffffff</backgroundColor>
@@ -8045,7 +8045,7 @@
             </ndimVector>
         </node>
         <node id="3">
-            <position x="113.5" y="132.5" />
+            <position x="294.5274295806883" y="292.4590123494464" />
             <attributeLabelStyle>
                 <offset x="0.0" y="0.0" />
                 <backgroundColor>#ffffffff</backgroundColor>
@@ -8072,7 +8072,7 @@
             </ndimVector>
         </node>
         <node id="4">
-            <position x="-50.5" y="362.5" />
+            <position x="81.37176704406758" y="736.8707237243635" />
             <attributeLabelStyle>
                 <offset x="0.0" y="0.0" />
                 <backgroundColor>#ffffffff</backgroundColor>
@@ -8099,7 +8099,7 @@
             </ndimVector>
         </node>
         <node id="5">
-            <position x="96.5" y="192.5" />
+            <position x="257.4445209503173" y="485.8673922220871" />
             <attributeLabelStyle>
                 <offset x="0.0" y="0.0" />
                 <backgroundColor>#ffffffff</backgroundColor>
@@ -8126,7 +8126,7 @@
             </ndimVector>
         </node>
         <node id="6">
-            <position x="63.5" y="142.5" />
+            <position x="183.89846483866387" y="350.6205609639488" />
             <attributeLabelStyle>
                 <offset x="0.0" y="0.0" />
                 <backgroundColor>#ffffffff</backgroundColor>
@@ -8153,7 +8153,7 @@
             </ndimVector>
         </node>
         <node id="7">
-            <position x="16.0" y="110.0" />
+            <position x="36.46314748128255" y="328.6552111307782" />
             <attributeLabelStyle>
                 <offset x="0.0" y="0.0" />
                 <backgroundColor>#ffffffff</backgroundColor>
@@ -8180,7 +8180,7 @@
             </ndimVector>
         </node>
         <node id="8">
-            <position x="33.0" y="50.0" />
+            <position x="73.54605611165366" y="135.24683125813806" />
             <attributeLabelStyle>
                 <offset x="0.0" y="0.0" />
                 <backgroundColor>#ffffffff</backgroundColor>
@@ -8209,7 +8209,7 @@
             </ndimVector>
         </node>
         <node id="9">
-            <position x="-17.0" y="60.0" />
+            <position x="-37.08290863037108" y="193.40837987263996" />
             <attributeLabelStyle>
                 <offset x="0.0" y="0.0" />
                 <backgroundColor>#ffffffff</backgroundColor>
@@ -8238,7 +8238,7 @@
             </ndimVector>
         </node>
         <node id="10">
-            <position x="80.5" y="82.5" />
+            <position x="220.9813734690349" y="157.2121810913086" />
             <attributeLabelStyle>
                 <offset x="0.0" y="0.0" />
                 <backgroundColor>#ffffffff</backgroundColor>
@@ -8267,7 +8267,7 @@
             </ndimVector>
         </node>
         <node id="11">
-            <position x="-83.5" y="312.5" />
+            <position x="7.825710932413983" y="601.6238924662268" />
             <attributeLabelStyle>
                 <offset x="0.0" y="0.0" />
                 <backgroundColor>#ffffffff</backgroundColor>
@@ -8294,7 +8294,7 @@
             </ndimVector>
         </node>
         <node id="12">
-            <position x="-114.0" y="220.0" />
+            <position x="-102.5266977945962" y="386.25016276041686" />
             <attributeLabelStyle>
                 <offset x="0.0" y="0.0" />
                 <backgroundColor>#ffffffff</backgroundColor>
@@ -8348,7 +8348,7 @@
             </ndimVector>
         </node>
         <node id="14">
-            <position x="-131.0" y="280.0" />
+            <position x="-139.60960642496747" y="579.6585426330569" />
             <attributeLabelStyle>
                 <offset x="0.0" y="0.0" />
                 <backgroundColor>#ffffffff</backgroundColor>
@@ -8375,7 +8375,7 @@
             </ndimVector>
         </node>
         <node id="15">
-            <position x="-33.5" y="302.5" />
+            <position x="118.45467567443885" y="543.462343851726" />
             <attributeLabelStyle>
                 <offset x="0.0" y="0.0" />
                 <backgroundColor>#ffffffff</backgroundColor>
@@ -8433,6 +8433,486 @@
         <edge from="1" to="15" />
         <edge from="12" to="15" />
         <edge from="3" to="15" />
+        <projectionBase>
+            <vector x="80.5" y="82.5" />
+            <vector x="33.0" y="50.0" />
+            <vector x="-17.0" y="60.0" />
+            <vector x="-147.0" y="170.0" />
+        </projectionBase>
+    </diagram>
+    <diagram title="Steel Types">
+        <node id="0">
+            <position x="-314.2984043757129" y="362.88332366943365" />
+            <attributeLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </attributeLabelStyle>
+            <objectLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </objectLabelStyle>
+            <concept>
+                <objectContingent>
+                    <object> NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='Arm500') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='YP') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='St3sp') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='1015')</object>
+                </objectContingent>
+                <attributeContingent />
+            </concept>
+            <ndimVector>
+                <coordinate>0.0</coordinate>
+                <coordinate>1.0</coordinate>
+                <coordinate>0.0</coordinate>
+                <coordinate>1.0</coordinate>
+            </ndimVector>
+        </node>
+        <node id="1">
+            <position x="192.3918402989703" y="595.9620590209956" />
+            <attributeLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </attributeLabelStyle>
+            <objectLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </objectLabelStyle>
+            <concept>
+                <objectContingent>
+                    <object>(SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='Arm500') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='YP') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='St3sp') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='1015')</object>
+                </objectContingent>
+                <attributeContingent />
+            </concept>
+            <ndimVector>
+                <coordinate>1.0</coordinate>
+                <coordinate>1.0</coordinate>
+                <coordinate>1.0</coordinate>
+                <coordinate>0.0</coordinate>
+            </ndimVector>
+        </node>
+        <node id="2">
+            <position x="16.04858843485509" y="282.51942952473985" />
+            <attributeLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </attributeLabelStyle>
+            <objectLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </objectLabelStyle>
+            <concept>
+                <objectContingent>
+                    <object> NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='Arm500') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='YP') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='St3sp') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='1015')</object>
+                </objectContingent>
+                <attributeContingent>
+                    <attribute>St3sp</attribute>
+                </attributeContingent>
+            </concept>
+            <ndimVector>
+                <coordinate>0.0</coordinate>
+                <coordinate>0.0</coordinate>
+                <coordinate>1.0</coordinate>
+                <coordinate>0.0</coordinate>
+            </ndimVector>
+        </node>
+        <node id="3">
+            <position x="15.808367411294824" y="358.94794718424566" />
+            <attributeLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </attributeLabelStyle>
+            <objectLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </objectLabelStyle>
+            <concept>
+                <objectContingent>
+                    <object>(SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='Arm500') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='YP') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='St3sp') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='1015')</object>
+                </objectContingent>
+                <attributeContingent />
+            </concept>
+            <ndimVector>
+                <coordinate>1.0</coordinate>
+                <coordinate>0.0</coordinate>
+                <coordinate>0.0</coordinate>
+                <coordinate>1.0</coordinate>
+            </ndimVector>
+        </node>
+        <node id="4">
+            <position x="253.22501182556144" y="154.75362650553356" />
+            <attributeLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </attributeLabelStyle>
+            <objectLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </objectLabelStyle>
+            <concept>
+                <objectContingent>
+                    <object>(SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='Arm500') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='YP') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='St3sp') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='1015')</object>
+                </objectContingent>
+                <attributeContingent>
+                    <attribute>Arm500</attribute>
+                </attributeContingent>
+            </concept>
+            <ndimVector>
+                <coordinate>1.0</coordinate>
+                <coordinate>0.0</coordinate>
+                <coordinate>0.0</coordinate>
+                <coordinate>0.0</coordinate>
+            </ndimVector>
+        </node>
+        <node id="5">
+            <position x="-221.36805597941185" y="486.7137502034512" />
+            <attributeLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </attributeLabelStyle>
+            <objectLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </objectLabelStyle>
+            <concept>
+                <objectContingent>
+                    <object> NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='Arm500') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='YP') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='St3sp') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='1015')</object>
+                </objectContingent>
+                <attributeContingent />
+            </concept>
+            <ndimVector>
+                <coordinate>0.0</coordinate>
+                <coordinate>0.0</coordinate>
+                <coordinate>1.0</coordinate>
+                <coordinate>1.0</coordinate>
+            </ndimVector>
+        </node>
+        <node id="6">
+            <position x="0.0" y="0.0" />
+            <attributeLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </attributeLabelStyle>
+            <objectLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </objectLabelStyle>
+            <concept>
+                <objectContingent>
+                    <object> NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='Arm500') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='YP') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='St3sp') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='1015')</object>
+                </objectContingent>
+                <attributeContingent />
+            </concept>
+            <ndimVector>
+                <coordinate>0.0</coordinate>
+                <coordinate>0.0</coordinate>
+                <coordinate>0.0</coordinate>
+                <coordinate>0.0</coordinate>
+            </ndimVector>
+        </node>
+        <node id="7">
+            <position x="-298.24981594085824" y="645.4027531941731" />
+            <attributeLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </attributeLabelStyle>
+            <objectLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </objectLabelStyle>
+            <concept>
+                <objectContingent>
+                    <object> NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='Arm500') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='YP') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='St3sp') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='1015')</object>
+                </objectContingent>
+                <attributeContingent />
+            </concept>
+            <ndimVector>
+                <coordinate>0.0</coordinate>
+                <coordinate>1.0</coordinate>
+                <coordinate>1.0</coordinate>
+                <coordinate>1.0</coordinate>
+            </ndimVector>
+        </node>
+        <node id="8">
+            <position x="-237.41664441426647" y="204.1943206787108" />
+            <attributeLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </attributeLabelStyle>
+            <objectLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </objectLabelStyle>
+            <concept>
+                <objectContingent>
+                    <object> NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='Arm500') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='YP') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='St3sp') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='1015')</object>
+                </objectContingent>
+                <attributeContingent>
+                    <attribute>1015</attribute>
+                </attributeContingent>
+            </concept>
+            <ndimVector>
+                <coordinate>0.0</coordinate>
+                <coordinate>0.0</coordinate>
+                <coordinate>0.0</coordinate>
+                <coordinate>1.0</coordinate>
+            </ndimVector>
+        </node>
+        <node id="9">
+            <position x="176.3432518641154" y="313.4426294962567" />
+            <attributeLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </attributeLabelStyle>
+            <objectLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </objectLabelStyle>
+            <concept>
+                <objectContingent>
+                    <object>(SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='Arm500') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='YP') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='St3sp') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='1015')</object>
+                </objectContingent>
+                <attributeContingent />
+            </concept>
+            <ndimVector>
+                <coordinate>1.0</coordinate>
+                <coordinate>1.0</coordinate>
+                <coordinate>0.0</coordinate>
+                <coordinate>0.0</coordinate>
+            </ndimVector>
+        </node>
+        <node id="10">
+            <position x="-76.88175996144602" y="158.68900299072263" />
+            <attributeLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </attributeLabelStyle>
+            <objectLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </objectLabelStyle>
+            <concept>
+                <objectContingent>
+                    <object> NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='Arm500') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='YP') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='St3sp') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='1015')</object>
+                </objectContingent>
+                <attributeContingent>
+                    <attribute>YP</attribute>
+                </attributeContingent>
+            </concept>
+            <ndimVector>
+                <coordinate>0.0</coordinate>
+                <coordinate>1.0</coordinate>
+                <coordinate>0.0</coordinate>
+                <coordinate>0.0</coordinate>
+            </ndimVector>
+        </node>
+        <node id="11">
+            <position x="31.856955846149717" y="641.4673767089827" />
+            <attributeLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </attributeLabelStyle>
+            <objectLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </objectLabelStyle>
+            <concept>
+                <objectContingent>
+                    <object>(SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='Arm500') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='YP') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='St3sp') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='1015')</object>
+                </objectContingent>
+                <attributeContingent />
+            </concept>
+            <ndimVector>
+                <coordinate>1.0</coordinate>
+                <coordinate>0.0</coordinate>
+                <coordinate>1.0</coordinate>
+                <coordinate>1.0</coordinate>
+            </ndimVector>
+        </node>
+        <node id="12">
+            <position x="-60.833171526590945" y="441.20843251546245" />
+            <attributeLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </attributeLabelStyle>
+            <objectLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </objectLabelStyle>
+            <concept>
+                <objectContingent>
+                    <object> NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='Arm500') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='YP') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='St3sp') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='1015')</object>
+                </objectContingent>
+                <attributeContingent />
+            </concept>
+            <ndimVector>
+                <coordinate>0.0</coordinate>
+                <coordinate>1.0</coordinate>
+                <coordinate>1.0</coordinate>
+                <coordinate>0.0</coordinate>
+            </ndimVector>
+        </node>
+        <node id="13">
+            <position x="269.27360026041674" y="437.2730560302744" />
+            <attributeLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </attributeLabelStyle>
+            <objectLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </objectLabelStyle>
+            <concept>
+                <objectContingent>
+                    <object>(SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='Arm500') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='YP') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='St3sp') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='1015')</object>
+                </objectContingent>
+                <attributeContingent />
+            </concept>
+            <ndimVector>
+                <coordinate>1.0</coordinate>
+                <coordinate>0.0</coordinate>
+                <coordinate>1.0</coordinate>
+                <coordinate>0.0</coordinate>
+            </ndimVector>
+        </node>
+        <node id="14">
+            <position x="-61.07339255015192" y="517.6369501749671" />
+            <attributeLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </attributeLabelStyle>
+            <objectLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </objectLabelStyle>
+            <concept>
+                <objectContingent>
+                    <object>(SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='Arm500') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='YP') AND  NOT (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='St3sp') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='1015')</object>
+                </objectContingent>
+                <attributeContingent />
+            </concept>
+            <ndimVector>
+                <coordinate>1.0</coordinate>
+                <coordinate>1.0</coordinate>
+                <coordinate>0.0</coordinate>
+                <coordinate>1.0</coordinate>
+            </ndimVector>
+        </node>
+        <node id="15">
+            <position x="-45.02480411529735" y="800.1563796997053" />
+            <attributeLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </attributeLabelStyle>
+            <objectLabelStyle>
+                <offset x="0.0" y="0.0" />
+                <backgroundColor>#ffffffff</backgroundColor>
+                <textColor>#ff000000</textColor>
+                <textAlignment>left</textAlignment>
+            </objectLabelStyle>
+            <concept>
+                <objectContingent>
+                    <object>(SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='Arm500') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='YP') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='St3sp') AND (SELECT datetime_combined FROM PreProcessedDataset WHERE steel_type='1015')</object>
+                </objectContingent>
+                <attributeContingent />
+            </concept>
+            <ndimVector>
+                <coordinate>1.0</coordinate>
+                <coordinate>1.0</coordinate>
+                <coordinate>1.0</coordinate>
+                <coordinate>1.0</coordinate>
+            </ndimVector>
+        </node>
+        <edge from="8" to="0" />
+        <edge from="10" to="0" />
+        <edge from="9" to="1" />
+        <edge from="12" to="1" />
+        <edge from="13" to="1" />
+        <edge from="6" to="2" />
+        <edge from="8" to="3" />
+        <edge from="4" to="3" />
+        <edge from="6" to="4" />
+        <edge from="2" to="5" />
+        <edge from="8" to="5" />
+        <edge from="0" to="7" />
+        <edge from="5" to="7" />
+        <edge from="12" to="7" />
+        <edge from="6" to="8" />
+        <edge from="10" to="9" />
+        <edge from="4" to="9" />
+        <edge from="6" to="10" />
+        <edge from="5" to="11" />
+        <edge from="13" to="11" />
+        <edge from="3" to="11" />
+        <edge from="2" to="12" />
+        <edge from="10" to="12" />
+        <edge from="2" to="13" />
+        <edge from="4" to="13" />
+        <edge from="0" to="14" />
+        <edge from="9" to="14" />
+        <edge from="3" to="14" />
+        <edge from="1" to="15" />
+        <edge from="7" to="15" />
+        <edge from="11" to="15" />
+        <edge from="14" to="15" />
         <projectionBase>
             <vector x="80.5" y="82.5" />
             <vector x="33.0" y="50.0" />
