@@ -1,0 +1,65 @@
+cast_in_row
+    Low    : 0.000000 - 20.333333
+    Medium : 20.333333 - 40.666667
+    High   : 40.666667 - 61.000000
+
+steel_weight, tonn
+    Low    : 110.835000 - 136.856667
+    Medium : 136.856667 - 162.878333
+    High   : 162.878333 - 188.900000
+
+steel_temperature_grab1, Celsius deg.
+    Low    : 567.000000 - 933.666667
+    Medium : 933.666667 - 1300.333333
+    High   : 1300.333333 - 1667.000000
+
+resistance, tonn
+    Low    : 24.000000 - 2824394.333333
+    Medium : 2824394.333333 - 5648764.666667
+    High   : 5648764.666667 - 8473135.000000
+
+swing_frequency, amount/minute
+    Low    : 150.000000 - 173.333333
+    Medium : 173.333333 - 196.666667
+    High   : 196.666667 - 220.000000
+
+crystallizer_movement, mm
+    Low    : 5.000000 - 7.666667
+    Medium : 7.666667 - 10.333333
+    High   : 10.333333 - 13.000000
+
+alloy_speed, meter/minute
+    Low    : 1.000000 - 1.666667
+    Medium : 1.666667 - 2.333333
+    High   : 2.333333 - 3.000000
+
+water_consumption, liter/minute
+    Low    : 1255.000000 - 1555.000000
+    Medium : 1555.000000 - 1855.000000
+    High   : 1855.000000 - 2155.000000
+
+water_temperature_delta, Celsius deg.
+    Low    : 6.000000 - 7.000000
+    Medium : 7.000000 - 8.000000
+    High   : 8.000000 - 9.000000
+
+temperature_measurement1, Celsius deg.
+    Low    : 1522.000000 - 1661.000000
+    Medium : 1661.000000 - 1800.000000
+    High   : 1800.000000 - 1939.000000
+
+temperature_measurement2, Celsius deg.
+    Low    : 1518.000000 - 1658.000000
+    Medium : 1658.000000 - 1798.000000
+    High   : 1798.000000 - 1938.000000
+
+num_crystallizer
+    Low    : 1.000000 - 8.666667
+    Medium : 8.666667 - 16.333333
+    High   : 16.333333 - 24.000000
+
+num_stream
+    Low    : 1.000000 - 2.666667
+    Medium : 2.666667 - 4.333333
+    High   : 4.333333 - 6.000000
+
