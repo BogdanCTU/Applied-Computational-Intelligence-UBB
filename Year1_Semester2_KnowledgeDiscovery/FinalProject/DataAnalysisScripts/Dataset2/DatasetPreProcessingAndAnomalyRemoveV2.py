@@ -144,14 +144,11 @@ class IndustrialDataProcessor:
             "FCA_ENCODED",
         ]
 
-        # Stores the numeric ranges used for each feature
-        feature_bin_ranges = {}
-
         for col in df.columns:
 
             if (
-                    col not in exclude
-                    and pd.api.types.is_numeric_dtype(df[col])
+                col not in exclude
+                and pd.api.types.is_numeric_dtype(df[col])
             ):
 
                 if df[col].isna().all():
@@ -161,21 +158,9 @@ class IndustrialDataProcessor:
 
                 if df[col].nunique() > 1:
 
-                    # Calculate equal-width bin edges
-                    min_val = df[col].min()
-                    max_val = df[col].max()
-                    bin_edges = np.linspace(min_val, max_val, 4)
-
-                    feature_bin_ranges[col] = {
-                        "Low": (bin_edges[0], bin_edges[1]),
-                        "Medium": (bin_edges[1], bin_edges[2]),
-                        "High": (bin_edges[2], bin_edges[3]),
-                    }
-
                     df[f"{col}_BIN"] = pd.cut(
                         df[col],
-                        bins=bin_edges,
-                        include_lowest=True,
+                        bins=3,
                         labels=["Low", "Medium", "High"],
                     )
 
@@ -185,14 +170,6 @@ class IndustrialDataProcessor:
                     )
 
                 else:
-
-                    value = df[col].iloc[0]
-
-                    feature_bin_ranges[col] = {
-                        "Low": (value, value),
-                        "Medium": (value, value),
-                        "High": (value, value),
-                    }
 
                     df[f"{col}_BIN"] = "Low"
                     df[f"{col}_ENCODED"] = 0
@@ -223,26 +200,6 @@ class IndustrialDataProcessor:
         # Save final cleaned dataset
         # ---------------------------------------------------------------------
         df.to_csv(output_csv_path, index=False)
-
-        # ---------------------------------------------------------------------
-        # Print and export feature bin ranges
-        # ---------------------------------------------------------------------
-        txt_file = "Feature_Bin_Ranges.txt"
-
-        with open(txt_file, "w", encoding="utf-8") as f:
-
-            for feature, ranges in feature_bin_ranges.items():
-                text = (
-                    f"{feature}\n"
-                    f"    Low    : {ranges['Low'][0]:.6f} - {ranges['Low'][1]:.6f}\n"
-                    f"    Medium : {ranges['Medium'][0]:.6f} - {ranges['Medium'][1]:.6f}\n"
-                    f"    High   : {ranges['High'][0]:.6f} - {ranges['High'][1]:.6f}\n"
-                )
-
-                print(text)
-                f.write(text + "\n")
-
-        print(f"Feature bin ranges saved to '{txt_file}'")
 
         print(f"Processed dataset saved to '{output_csv_path}'")
 
