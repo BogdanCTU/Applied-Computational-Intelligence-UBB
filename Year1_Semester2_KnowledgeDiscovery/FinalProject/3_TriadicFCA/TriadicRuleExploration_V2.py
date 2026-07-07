@@ -4,33 +4,25 @@ import pandas as pd
 
 def calculate_support(lhs, rhs, conditions, relations, objects):
     """
-    Calculates support of
-    (lhs U rhs) under given conditions.
+    Calculates the count of objects that meet the given criteria.
+    Returns an integer representing the raw count.
     """
-
     required = set(lhs) | set(rhs)
-
     count = 0
 
     for obj in objects:
-
         valid = True
-
         for cond in conditions:
-
             for attr in required:
-
                 if (obj, attr, cond) not in relations:
                     valid = False
                     break
-
             if not valid:
                 break
-
         if valid:
             count += 1
 
-    return count / len(objects)
+    return count
 
 
 # --------------------------------------------------------
@@ -43,19 +35,21 @@ def mine_rules(objects,
                relations,
                min_support,
                min_confidence):
-
+    """
+    Generates association rules that meet minimum support and confidence thresholds.
+    Formats the support metric as a fraction string.
+    """
     rules = []
+    total_objects = len(objects)
 
     for condition in conditions:
-
         for antecedent in attributes:
-
             for consequent in attributes:
 
                 if antecedent == consequent:
                     continue
 
-                supp_A = calculate_support(
+                count_A = calculate_support(
                     [antecedent],
                     [],
                     [condition],
@@ -63,10 +57,10 @@ def mine_rules(objects,
                     objects
                 )
 
-                if supp_A == 0:
+                if count_A == 0:
                     continue
 
-                supp_AB = calculate_support(
+                count_AB = calculate_support(
                     [antecedent],
                     [consequent],
                     [condition],
@@ -74,21 +68,14 @@ def mine_rules(objects,
                     objects
                 )
 
-                confidence = supp_AB / supp_A
+                support_ratio = count_AB / total_objects
+                confidence = count_AB / count_A
 
-                if supp_AB >= min_support and confidence >= min_confidence:
-
+                if support_ratio >= min_support and confidence >= min_confidence:
                     rules.append({
-
-                        "Rule":
-                        f"{{{antecedent}}} -> {{{consequent}}} | {{{condition}}}",
-
-                        "Support":
-                        round(supp_AB, 4),
-
-                        "Confidence":
-                        round(confidence, 4)
-
+                        "Rule": f"{{{antecedent}}} -> {{{consequent}}} | {{{condition}}}",
+                        "Support": f"{count_AB}/{total_objects}",
+                        "Confidence": round(confidence, 4)
                     })
 
     return rules
@@ -99,20 +86,23 @@ def mine_rules(objects,
 # --------------------------------------------------------
 
 def main():
-
+    """
+    Parses command line arguments, loads data, and executes rule mining.
+    Sorts the rules and exports the final list to a CSV file.
+    """
     parser = argparse.ArgumentParser(
         description="Mine Triadic Association Rules"
     )
 
     parser.add_argument(
         "--input",
-        default="Final_Processed_Steel_Data_Clean_V2_Triadic_Reduced_5_Sleeves.csv",
+        default="Final_Processed_Steel_Data_Clean_V2_Triadic_Reduced_5_Sleeves_V2.csv",
         help="Triadic context CSV"
     )
 
     parser.add_argument(
         "--output",
-        default="Final_Processed_Steel_Data_Clean_V2_Triadic_Reduced_5_Sleeves_Rules.csv",
+        default="Final_Processed_Steel_Data_Clean_V2_Triadic_Reduced_5_Sleeves_V2_Rules.csv",
         help="Output CSV"
     )
 
@@ -125,7 +115,7 @@ def main():
     parser.add_argument(
         "--min-confidence",
         type=float,
-        default=0.80
+        default=0.50
     )
 
     args = parser.parse_args()
@@ -135,7 +125,6 @@ def main():
         return
 
     df = pd.read_csv(args.input)
-
     df.columns = ["Object", "Attribute", "Condition"]
 
     relations = set(
@@ -144,9 +133,7 @@ def main():
     )
 
     objects = sorted(df["Object"].unique())
-
     attributes = sorted(df["Attribute"].unique())
-
     conditions = sorted(df["Condition"].unique())
 
     print("=" * 60)
@@ -167,14 +154,17 @@ def main():
         args.min_confidence
     )
 
+    # Convert the string fraction back to a float for correct mathematical sorting
     rules = sorted(
         rules,
-        key=lambda x: (x["Confidence"], x["Support"]),
+        key=lambda x: (
+            x["Confidence"],
+            float(x["Support"].split('/')[0]) / float(x["Support"].split('/')[1])
+        ),
         reverse=True
     )
 
     result = pd.DataFrame(rules)
-
     result.to_csv(args.output, index=False)
 
     print()
@@ -182,7 +172,6 @@ def main():
     print()
 
     if len(result):
-
         print(result.to_string(index=False))
 
     print()
