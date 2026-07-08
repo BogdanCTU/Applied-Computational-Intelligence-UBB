@@ -1,0 +1,188 @@
+FIRST-LAYER KNOWLEDGE DISCOVERY REPORT  (V9 schema)
+======================================================================
+
+Dataset size: 16236 rows, 48 columns
+
+V9 Analysis Notes
+----------------------------------------------------------------------
+All _BIN and _ENCODED columns are excluded from numeric analysis, PCA, clustering, anomaly detection, and correlation plots.
+All numeric features are scaled with StandardScaler before distance-based or linear-algebraic analyses (PCA, K-Means, DBSCAN, Isolation Forest, Decision Tree).
+Association rule mining intentionally uses _BIN columns — that is their purpose.
+
+RUL LEAKAGE FIX (applied to all supervised tasks)
+----------------------------------------------------------------------
+Every column whose name contains 'rul' (case-insensitive) is a direct transformation of either supervised target and is therefore removed from all supervised feature matrices and EDA correlation analyses.
+  Regression  (task='regression')  : all *rul* cols dropped except calculated_RUL_tons
+  Classification (task='classification'): all *rul* cols dropped except RUL_Class
+  EDA correlation / unsupervised    : all *rul* cols excluded from _get_analysis_cols()
+  RUL-related columns found in this dataset (5): sleeve, calculated_RUL_tons, RUL_Percentage, RUL_Class, RUL_Class_ENCODED
+
+Raw sensor/process columns used in analysis (13):
+  cast_in_row, steel_weight, tonn, steel_temperature_grab1, Celsius deg., resistance, tonn, swing_frequency, amount/minute, crystallizer_movement, mm, alloy_speed, meter/minute, water_consumption, liter/minute, water_temperature_delta, Celsius deg., temperature_measurement1, Celsius deg., temperature_measurement2, Celsius deg., num_crystallizer, num_stream
+
+Calculated RUL (tons) Summary
+----------------------------------------------------------------------
+count    16236.000000
+mean     24054.952205
+std      19076.937629
+min          0.000000
+25%       8542.000000
+50%      19094.500000
+75%      36183.750000
+max      80051.000000
+Name: calculated_RUL_tons, dtype: float64
+
+RUL_FCA_BIN Distribution
+----------------------------------------------------------------------
+RUL_Class
+Critical    4206
+Low         4163
+Medium      4007
+Healthy     3860
+Name: count, dtype: int64
+
+Average RUL by Workpiece Geometry
+----------------------------------------------------------------------
+                          count          mean   median  min    max
+workpiece_slice_geometry                                          
+150x150                    2045  24369.106112  19122.0    0  79946
+180x180                   14191  24009.680925  19080.0    0  80051
+
+Average RUL by Steel Type
+----------------------------------------------------------------------
+            count          mean   median    min    max
+steel_type                                            
+1008           27  11958.111111  12926.0   1794  34206
+1010           96  66222.354167  72455.0  46300  78635
+1015          462  19634.504329   7909.0      0  76525
+1018          190  30501.326316  28025.5    339  63985
+20             22  17646.409091  23910.0   1490  24701
+25G2S         396  29611.361111  27884.5      0  78246
+Arm240         85  12720.882353   4959.0   2632  28504
+Arm500      12966  24130.573191  19161.5      0  80051
+St3sp         665  21398.978947  17481.0      0  79636
+St4sp        1258  22543.900636  19596.0      0  79946
+V500V          24   1323.000000   1326.0   1156   1487
+YP             45   6993.088889   8640.0   3049   9121
+
+Average RUL by Alloy Type
+----------------------------------------------------------------------
+            count          mean   median   min    max
+alloy_type                                           
+close         159  46517.553459  50712.0  1490  78635
+open        16077  23832.799216  18953.0     0  80051
+
+Sleeve-Level RUL Summary
+----------------------------------------------------------------------
+          count          mean  min    max
+sleeve                                   
+30013347     16   1235.437500    0   2612
+30012088     17   1307.647059    0   2627
+30013346     24   1880.875000    0   3775
+30012261     26   2039.807692    0   4069
+30013350     26   2039.807692    0   4069
+30013352     31   2456.032258    0   4910
+30012907     31   2477.677419    0   4975
+30013358     32   2530.562500    0   5035
+30013356     32   2530.562500    0   5035
+30013363     37   2917.594595    0   5830
+30013351     36   2944.722222    0   5988
+30014079     67   5394.238806    0  10726
+30014080     67   5394.238806    0  10726
+30012910     69   5521.739130    0  11121
+30013867     78   6344.717949    0  12667
+30013349     85   6841.058824    0  13744
+30011705     86   6879.767442    0  13806
+30014083     86   6895.883721    0  13898
+30014082     86   6895.883721    0  13898
+30014085     86   6895.883721    0  13898
+30014084     86   6895.883721    0  13898
+30014077     86   6895.883721    0  13898
+30013353     88   7085.159091    0  14232
+30012912     97   7855.742268    0  15840
+30011717     98   7914.377551    0  15858
+30013864    101   8184.524752    0  16401
+30014139    114   9257.666667    0  18488
+30013872    115   9399.452174    0  18825
+30013870    126  10199.039683    0  20446
+30013868    126  10199.039683    0  20446
+
+Average RUL by Stream
+----------------------------------------------------------------------
+            count          mean   median  min    max
+num_stream                                          
+1            2509  23441.950179  17608.0    0  77835
+2            2708  20182.109675  15194.0    0  71205
+3            2848  27596.675211  25859.5    0  79946
+4            2711  25945.220583  21548.0    0  79780
+5            2850  23758.457895  18810.5    0  77387
+6            2610  23158.149042  19042.5    0  80051
+
+Average RUL by Crystallizer
+----------------------------------------------------------------------
+                  count          mean   median  min    max
+num_crystallizer                                          
+1                   297  10367.986532   9424.0    0  27225
+2                   341   8379.457478   7830.0    0  21808
+3                   233   8305.257511   6978.0    0  22145
+4                   362  15315.149171  12208.5    0  39907
+5                   290   9949.248276   9605.5    0  21808
+6                   404  17221.440594  16551.0    0  39907
+7                  1241  32552.599517  27083.0    0  77835
+8                  1072  27560.333022  24361.5    0  77387
+9                   551  33992.339383  32146.0    0  77340
+10                 1080  27388.956481  22400.0    0  79636
+11                  927  35048.029126  35267.0    0  79946
+12                 1626  26106.774293  22435.0    0  80051
+13                  931  30025.707841  27669.0    0  71472
+14                  988  22731.711538  18851.5    0  59453
+15                  825  27260.061818  25251.0    0  66114
+16                  726  28735.553719  26639.5    0  71205
+17                 1025  24063.911220  21018.0    0  62559
+18                 1142  22071.327496  18649.5    0  60132
+19                  323   7794.647059   6709.0    0  21808
+20                   85   6841.058824   6794.0    0  13744
+21                  398  14617.658291  10754.0    0  39907
+22                  566  17100.733216  14006.5    0  47069
+23                  539  16776.395176  14977.0    0  39907
+24                  264  10728.208333  10656.0    0  21808
+
+Top Numerical Correlations with RUL (tons)  [raw sensor/process columns only — no _BIN/_ENCODED, no RUL-derived]
+----------------------------------------------------------------------
+resistance, tonn                         -0.147056
+water_temperature_delta, Celsius deg.    -0.096406
+steel_weight, tonn                        0.077177
+num_crystallizer                         -0.056007
+crystallizer_movement, mm                 0.053078
+temperature_measurement1, Celsius deg.    0.039375
+temperature_measurement2, Celsius deg.    0.028549
+num_stream                                0.019161
+alloy_speed, meter/minute                -0.008597
+steel_temperature_grab1, Celsius deg.    -0.008051
+cast_in_row                               0.005806
+swing_frequency, amount/minute           -0.003788
+water_consumption, liter/minute          -0.003383
+Name: calculated_RUL_tons, dtype: float64
+
+Interpretable First-Layer Knowledge  (V9)
+----------------------------------------------------------------------
+1.  calculated_RUL_tons can be modeled as a supervised regression target.
+2.  RUL_Class can be modeled as a supervised classification target (ordinal health bins).
+3.  Cooling-circuit variables (water_consumption, water_temperature_delta) are key degradation indicators.
+4.  Steel chemistry (steel_type, alloy_type) and processing parameters (alloy_speed, swing_frequency) provide degradation context.
+5.  Sleeve, crystallizer, and stream identifiers support equipment-specific degradation analysis.
+6.  _BIN columns enable association rule mining and formal concept-style knowledge extraction.
+7.  Clustering can reveal process regimes with distinct average RUL values.
+8.  Isolation Forest can detect abnormal casts linked to accelerated sleeve degradation.
+9.  PCA exposes global separation between Healthy, Critical and transitional states.
+10. Feature-importance and decision-tree rules convert predictive models into interpretable industrial knowledge.
+11. (V9) All _BIN and _ENCODED columns are excluded from numeric analysis to avoid inflating correlations and PCA axes with derived/redundant signals.
+12. (V9) StandardScaler is applied to all numeric features before distance-based analyses to give equal weight to each sensor dimension.
+13. (V9 RUL leakage fix) Every column whose name contains 'rul' (case-insensitive) is excluded from supervised feature matrices and EDA correlation analyses.  This catches RUL_Class_ENCODED, RUL_percentage, and any future RUL-named columns added to the dataset.
+
+Leakage Warning
+----------------------------------------------------------------------
+RUL is derived from cumulative resistance.  Resistance-related columns (resistance, tonn; resistance, tonn_BIN; resistance, tonn_ENCODED) may dominate prediction and should be removed for a clean prognostic experiment (STRICT_NO_RESISTANCE = True).
+RUL_Class_ENCODED and RUL_percentage are always removed as leakage because they are direct transforms of the regression and classification targets.
+All *_BIN and *_ENCODED columns are removed from supervised model feature matrices in V9 to prevent indirect leakage through encoded targets.
+ALL columns containing 'rul' (case-insensitive) are removed from supervised feature matrices (RUL leakage fix).  Only the specific target column for the current task is retained.

@@ -1,0 +1,46 @@
+|--- resistance, tonn <= 0.13
+|   |--- swing_frequency, amount/minute <= -0.52
+|   |   |--- crystallizer_movement, mm <= 0.53
+|   |   |   |--- water_temperature_delta, Celsius deg. <= -8.78
+|   |   |   |   |--- class: Healthy
+|   |   |   |--- water_temperature_delta, Celsius deg. >  -8.78
+|   |   |   |   |--- class: Healthy
+|   |   |--- crystallizer_movement, mm >  0.53
+|   |   |   |--- swing_frequency, amount/minute <= -0.94
+|   |   |   |   |--- class: Healthy
+|   |   |   |--- swing_frequency, amount/minute >  -0.94
+|   |   |   |   |--- class: Healthy
+|   |--- swing_frequency, amount/minute >  -0.52
+|   |   |--- resistance, tonn <= -0.61
+|   |   |   |--- resistance, tonn <= -1.58
+|   |   |   |   |--- class: Critical
+|   |   |   |--- resistance, tonn >  -1.58
+|   |   |   |   |--- class: Healthy
+|   |   |--- resistance, tonn >  -0.61
+|   |   |   |--- num_crystallizer <= 0.52
+|   |   |   |   |--- class: Medium
+|   |   |   |--- num_crystallizer >  0.52
+|   |   |   |   |--- class: Critical
+|--- resistance, tonn >  0.13
+|   |--- resistance, tonn <= 1.43
+|   |   |--- num_crystallizer <= -0.20
+|   |   |   |--- water_consumption, liter/minute <= 0.34
+|   |   |   |   |--- class: Low
+|   |   |   |--- water_consumption, liter/minute >  0.34
+|   |   |   |   |--- class: Low
+|   |   |--- num_crystallizer >  -0.20
+|   |   |   |--- num_stream <= -0.01
+|   |   |   |   |--- class: Critical
+|   |   |   |--- num_stream >  -0.01
+|   |   |   |   |--- class: Low
+|   |--- resistance, tonn >  1.43
+|   |   |--- num_stream <= 0.58
+|   |   |   |--- num_stream <= -0.61
+|   |   |   |   |--- class: Critical
+|   |   |   |--- num_stream >  -0.61
+|   |   |   |   |--- class: Low
+|   |   |--- num_stream >  0.58
+|   |   |   |--- resistance, tonn <= 3.17
+|   |   |   |   |--- class: Critical
+|   |   |   |--- resistance, tonn >  3.17
+|   |   |   |   |--- class: Medium
