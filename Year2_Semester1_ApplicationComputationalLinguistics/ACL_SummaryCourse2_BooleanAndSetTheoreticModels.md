@@ -315,6 +315,4 @@ $$sim(q_{and}, d_i) = 1 - \left( \frac{(1 - x_1)^p + (1 - x_2)^p + \dots + (1 - 
 | **Term Correlation** | No | No | No | Yes (Connection Matrix) | No |
 | **Core Math** | Logic gates | Set cardinality | $\min$ / $\max$ | Algebraic product | Geometric $p$-norm distance |
 
-```
-
-```
+---
