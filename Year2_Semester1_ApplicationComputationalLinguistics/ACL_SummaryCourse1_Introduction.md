@@ -1,10 +1,14 @@
 # Course 1 - Data vs. Information — Concepts & Ontology
 
+---
+
 ## 1.1 Concepts & Cognitive Maps
+
+---
 
 ### Core Definitions
 * **Concept**: A mental representation and building block of thought that helps humans understand the world. Concepts represent perceived regularities in events;
-* **Abstraction**: The process by which concepts generalize from specific examples. *Example: The concept of "dog" includes all breeds, sizes, and colors;*
+* **Abstraction**: The process by which concepts generalize from specific examples. *Example: The concept of "dog" includes all breeds, sizes, and colors*;
 * **Reasoning Support**: Concepts allow humans to group things together (categorization) and draw inferences (guessing a new animal is an animal based on prior knowledge);
 * **Proposition**: A unit of knowledge formed by linking concepts together with linking words;
 * **Cognitive Map**: The umbrella term for all visual representations of mental models, including mind maps and concept maps.
@@ -58,14 +62,14 @@ Concepts act as the glue between raw data and intelligent behavior.
 
 ### Unified Medical Language System (UMLS)
 * **Overview**: A unified resource developed by the U.S. National Library of Medicine (NLM) for machine interpretation of medical language;
-* **Problem Solved**: Medical text has many synonyms, abbreviations, and spelling variations. *Example: "Heart Attack", "Myocardial Infarction", and "MI" are different terms for the exact same concept;*
+* **Problem Solved**: Medical text has many synonyms, abbreviations, and spelling variations. *Example: "Heart Attack", "Myocardial Infarction", and "MI" are different terms for the exact same concept*;
 * **Scope**: Integrates 168 source vocabularies across subdomains like clinical repositories (SNOMED CT), genetics (OMIM), literature (MeSH), model organisms (NCBI Taxonomy), anatomy (FMA), and genome annotations (GO).
 
 #### UMLS Identifiers (Bottom-Up Hierarchy)
-1. **AUI (Atom Unique Identifier)**: Identifies a specific term entry from a specific source vocabulary. *Example: `A2882187` = "Headache" from SNOMED; `A0066000` = "Headache" from MeSH;*
-2. **SUI (String Unique Identifier)**: Groups identical text strings (case-sensitive/spelling-specific) across sources. *Example: `S0046854` = "Headache"; `S1459113` = "headaches";*
-3. **LUI (Lexical Unique Identifier)**: Groups strings that are lexical variants (e.g., singular and plural) of the same base term. *Example: `L0018681` links "Headache" and "headaches";*
-4. **CUI (Concept Unique Identifier)**: Groups different lexical terms (synonyms) that share the same meaning. *Example: `C0018681` links "headache" (`L0018681`) and "cranial pain" (`L1406212`).*
+1. **AUI (Atom Unique Identifier)**: Identifies a specific term entry from a specific source vocabulary. *Example: `A2882187` = "Headache" from SNOMED; `A0066000` = "Headache" from MeSH*;
+2. **SUI (String Unique Identifier)**: Groups identical text strings (case-sensitive/spelling-specific) across sources. *Example: `S0046854` = "Headache"; `S1459113` = "headaches"*;
+3. **LUI (Lexical Unique Identifier)**: Groups strings that are lexical variants (e.g., singular and plural) of the same base term. *Example: `L0018681` links "Headache" and "headaches"*;
+4. **CUI (Concept Unique Identifier)**: Groups different lexical terms (synonyms) that share the same meaning. *Example: `C0018681` links "headache" (`L0018681`) and "cranial pain" (`L1406212`)*.
 
 ```mermaid
 graph TD
@@ -81,6 +85,7 @@ graph TD
     L1 --> C1["CUI: C0018681<br/>Headache"]
     L2 --> C1
 ```
+
 *(Diagram representation of UMLS Identifier hierarchy)*
 
 #### Three Core Components of UMLS
@@ -126,6 +131,7 @@ graph LR
     G --> H[8. Add<br/>instances]
     H --> A
 ```
+
 *(Diagram representation of Valentina Tamma's Ontology Design Cycle)*
 
 ---
@@ -133,8 +139,8 @@ graph LR
 ## 1.6 OWL (Web Ontology Language) & Protégé
 
 ### Tools & Languages
-* **Protégé**: A popular Integrated Development Environment (IDE) for building ontologies, supporting visualization (OntoGraf, OWLViz), DL Queries, and automated Reasoners.
-* **OWL (Web Ontology Language)**: A family of formal knowledge representation languages based on **Description Logics (DL)** semantics.
+* **Protégé**: A popular Integrated Development Environment (IDE) for building ontologies, supporting visualization (OntoGraf, OWLViz), DL Queries, and automated Reasoners;
+* **OWL (Web Ontology Language)**: A family of formal knowledge representation languages based on **Description Logics (DL)** semantics;
 * **OWL Syntaxes**: OWL ontologies can be written in multiple syntaxes:
   * **Manchester Syntax** (human-friendly, used in Protégé UI):
     ```text
@@ -149,30 +155,30 @@ graph LR
     Declaration(NamedIndividual(:Ion))
     ClassAssertion(:Person :Ion)
     ```
-   
+    
   * **RDF/XML** (machine-oriented XML serialization).
 
 ### Core Elements of OWL
-1. **Individuals (Instances)**: Specific concrete objects in the domain (e.g., `Ion`, `Maria`, `Stefan_cel_Mare`).
-2. **Classes**: Sets of individuals sharing common characteristics.
+1. **Individuals (Instances)**: Specific concrete objects in the domain (e.g., `Ion`, `Maria`, `Stefan_cel_Mare`);
+2. **Classes**: Sets of individuals sharing common characteristics:
    * **Special Classes**: `owl:Thing` (universal root class containing all individuals) and `owl:Nothing` (empty class);
    * **Class Set Relations**: Subset (`SubClassOf`) and Disjointness (`DisjointWith` — classes that cannot share any individuals);
    * **Class Operations**: Union (`or` / $\sqcup$), Intersection (`and` / $\sqcap$), Complement/Negation (`not` / $\neg$);
    * **Defining Classes**:
      * *Intensional*: Defined by necessary and sufficient properties/conditions;
      * *Extensional*: Defined by explicitly listing its member individuals.
-3. **Properties**: Binary relations linking elements.
+3. **Properties**: Binary relations linking elements:
    * **Object Properties**: Link an individual to another individual (e.g., `hasParent`, `hasChild`). Top property is `owl:topObjectProperty`;
    * **Data Properties**: Link an individual to a literal datatype value (e.g., strings, numbers);
    * **Annotation Properties**: Add metadata/comments to ontology elements.
 
 ### Property Mechanics & Characteristics
-* **Domain**: The class of the subject (starting point) of a property. *Example: Domain of `hasParent` is `Child`;*
-* **Range**: The class of the object (target) of a property. *Example: Range of `hasParent` is `Parent`;*
-* **Sub-properties & Chains**: Properties can form hierarchies. *Example: `hasParent` is a `SubPropertyOf` `hasAncestor`;*
+* **Domain**: The class of the subject (starting point) of a property. *Example: Domain of `hasParent` is `Child`*;
+* **Range**: The class of the object (target) of a property. *Example: Range of `hasParent` is `Parent`*;
+* **Sub-properties & Chains**: Properties can form hierarchies. *Example: `hasParent` is a `SubPropertyOf` `hasAncestor`*;
 * **Logical Characteristics**:
   * **Inverse Of**: If $A$ `hasParent` $B$, then $B$ `hasChild` $A$. Similarly, `hasAncestor` is the inverse of `isAncestorOf`;
-  * **Transitive**: If $A$ relates to $B$, and $B$ relates to $C$, then $A$ automatically relates to $C$. *Example: `hasAncestor` is transitive. Because `hasParent` is a sub-property of `hasAncestor`, a reasoner infers multi-generational ancestors automatically via DL Queries;*
+  * **Transitive**: If $A$ relates to $B$, and $B$ relates to $C$, then $A$ automatically relates to $C$. *Example: `hasAncestor` is transitive. Because `hasParent` is a sub-property of `hasAncestor`, a reasoner infers multi-generational ancestors automatically via DL Queries*;
   * **Symmetric**: If $A$ relates to $B$, then $B$ relates to $A$ (e.g., `hasSibling`);
   * **Asymmetric**: If $A$ relates to $B$, $B$ cannot relate to $A$;
   * **Functional**: An individual can relate to **at most one** (0 or 1) distinct value in the range;
@@ -201,7 +207,6 @@ graph LR
   (talksLike some Duck) and (walksLike some Duck) SubClassOf Duck
   ```
  
-
 #### II. Asserted vs. Inferred Hierarchies (The Pizza Ontology)
 A **Reasoner** computes logical consequences to build an **Inferred Class Hierarchy** from an **Asserted Class Hierarchy**:
 
@@ -240,7 +245,6 @@ A **Reasoner** computes logical consequences to build an **Inferred Class Hierar
       and (hasTopping exactly 2 Thing)
   ```
  
-
 ---
 
 ## 1.8 Open World vs. Closed World Assumption
@@ -254,24 +258,24 @@ A **Reasoner** computes logical consequences to build an **Inferred Class Hierar
 | **Typical Environment** | Traditional databases, Prolog. | OWL Ontologies, Semantic Web. |
 
 ### Case Study 1: OWA & Unique Name Assumption (The "Boot" Example)
-* **Axiom**: "An invention satisfies **exactly 1** need" (`Invention SubClassOf satisfy exactly 1 Need`).
+* **Axiom**: "An invention satisfies **exactly 1** need" (`Invention SubClassOf satisfy exactly 1 Need`);
 * **Facts Asserted**:
   * `boot Type Invention`
   * `boot satisfy move` (`move Type Need`)
   * `boot satisfy eat` (`eat Type Need`)
 * **Scenario A (No Disjointness between `move` and `eat`)**:
-  * **Result**: The ontology is **consistent** (Everything is OK!).
+  * **Result**: The ontology is **consistent** (Everything is OK!);
   * **Why**: Under OWA (and without a Unique Name Assumption), the reasoner does not assume `move` and `eat` are different just because they have different names. To satisfy the `exactly 1` rule, the reasoner infers that `move` is the **`Same Individual As`** `eat` (`move = eat`).
 * **Scenario B (Asserting `eat DifferentFrom move`)**:
-  * **Result**: The ontology becomes **inconsistent** (`owl:Thing SubClassOf owl:Nothing`), and the reasoner halts.
+  * **Result**: The ontology becomes **inconsistent** (`owl:Thing SubClassOf owl:Nothing`), and the reasoner halts;
   * **Why**: `boot` is linked to 2 explicitly distinct `Need` individuals, directly contradicting the `satisfy exactly 1 Need` constraint.
 
 ### Case Study 2: CWA & Missing Specifications (Einstein's Riddle in Prolog)
 * **The Riddle**:
-  * There are three houses (each painted a different color, with inhabitants of different nationalities owning different pets).
-  * Fact 1: In the green house there is a snake.
-  * Fact 2: The American owns the dog.
-  * Fact 3: The Englishman lives in the red house.
+  * There are three houses (each painted a different color, with inhabitants of different nationalities owning different pets);
+  * Fact 1: In the green house there is a snake;
+  * Fact 2: The American owns the dog;
+  * Fact 3: The Englishman lives in the red house;
   * Unknowns to place: `Japanese`, `horse`, `blue`.
 * **Flawed Prolog Implementation**:
   ```prolog
@@ -283,3 +287,5 @@ A **Reasoner** computes logical consequences to build an **Inferred Class Hierar
 * **Why it Fails**:
   * Prolog only knows the 3 clauses explicitly written; it is missing the explicit specification that there are *only* three houses and that the three clauses must unify/merge into those three distinct houses;
   * Using the anonymous variable `_` allows Prolog to match any query (`house(X, _, blue)` returns `X = american`, and `house(japanese, X, _)` returns `X = snake`) by binding free variables independently rather than solving the global constraints of the 3 houses.
+
+---
