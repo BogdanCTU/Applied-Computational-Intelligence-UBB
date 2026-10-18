@@ -1,0 +1,46 @@
+Nodes: 16   Edges: 30
+
+Edges (parent -> child):
+  age -> education
+  age -> job
+  balance -> default
+  contact -> age
+  contact -> day
+  contact -> housing
+  contact -> marital
+  contact -> month
+  contact -> pdays
+  day -> campaign
+  day -> housing
+  day -> month
+  housing -> age
+  housing -> job
+  housing -> loan
+  housing -> poutcome
+  job -> education
+  loan -> balance
+  loan -> default
+  marital -> age
+  month -> balance
+  month -> campaign
+  month -> housing
+  month -> loan
+  month -> pdays
+  month -> y
+  pdays -> poutcome
+  pdays -> previous
+  poutcome -> y
+  y -> marital
+
+Markov blanket of 'y' (variables that matter for the prediction once the others are known): ['contact', 'marital', 'month', 'poutcome']
+
+CPT of the target node 'y':
++----------+---------------------+-----+---------------------+
+| month    | month(apr)          | ... | month(sep)          |
++----------+---------------------+-----+---------------------+
+| poutcome | poutcome(failure)   | ... | poutcome(unknown)   |
++----------+---------------------+-----+---------------------+
+| y(no)    | 0.9005931648101527  | ... | 0.6196597907908886  |
++----------+---------------------+-----+---------------------+
+| y(yes)   | 0.09940683518984722 | ... | 0.38034020920911127 |
++----------+---------------------+-----+---------------------+

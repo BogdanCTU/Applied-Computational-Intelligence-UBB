@@ -1,0 +1,45 @@
+Records: 45211
+Columns: 17 (16 input attributes + target 'y')
+Duplicate rows: 0
+
+Attributes, data types, missing values (NaN) and distinct values:
+  age        dtype=int64    NaN=0   distinct=77
+  job        dtype=str      NaN=0   distinct=12
+  marital    dtype=str      NaN=0   distinct=3
+  education  dtype=str      NaN=0   distinct=4
+  default    dtype=str      NaN=0   distinct=2
+  balance    dtype=int64    NaN=0   distinct=7168
+  housing    dtype=str      NaN=0   distinct=2
+  loan       dtype=str      NaN=0   distinct=2
+  contact    dtype=str      NaN=0   distinct=3
+  day        dtype=int64    NaN=0   distinct=31
+  month      dtype=str      NaN=0   distinct=12
+  duration   dtype=int64    NaN=0   distinct=1573
+  campaign   dtype=int64    NaN=0   distinct=48
+  pdays      dtype=int64    NaN=0   distinct=559
+  previous   dtype=int64    NaN=0   distinct=41
+  poutcome   dtype=str      NaN=0   distinct=4
+  y          dtype=str      NaN=0   distinct=2
+
+Categories spelled 'unknown' (the dataset's own missing-value marker):
+  job        288 (0.6%)
+  education  1857 (4.1%)
+  contact    13020 (28.8%)
+  poutcome   36959 (81.7%)
+
+Numeric attribute summary:
+           age   balance      day  campaign    pdays  previous  duration
+count  45211.0   45211.0  45211.0   45211.0  45211.0   45211.0   45211.0
+mean      40.9    1362.3     15.8       2.8     40.2       0.6     258.2
+std       10.6    3044.8      8.3       3.1    100.1       2.3     257.5
+min       18.0   -8019.0      1.0       1.0     -1.0       0.0       0.0
+25%       33.0      72.0      8.0       1.0     -1.0       0.0     103.0
+50%       39.0     448.0     16.0       2.0     -1.0       0.0     180.0
+75%       48.0    1428.0     21.0       3.0     -1.0       0.0     319.0
+max       95.0  102127.0     31.0      63.0    871.0     275.0    4918.0
+
+Unusual values: pdays == -1 (client never previously contacted): 36954 (81.7%); negative balances: 3766
+
+Target class distribution:
+  no    39922 (88.3%)
+  yes    5289 (11.7%)

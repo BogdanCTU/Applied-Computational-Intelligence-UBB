@@ -1,0 +1,195 @@
+/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project1/.venv/lib/python3.11/site-packages/pgmpy/estimators/__init__.py:4: FutureWarning: `pgmpy.estimators.StructureScore` is deprecated and will be removed in v1.3.0. Use `pgmpy.structure_score` instead.
+  from .StructureScore import (
+/Users/stefanapopa/.matplotlib is not a writable directory
+Matplotlib created a temporary cache directory at /var/folders/_6/77sm1mld6lvg9y0phrj3vr480000gn/T/matplotlib-qrl7imi6 because there was an issue with the default path (/Users/stefanapopa/.matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+Matplotlib is building the font cache; this may take a moment.
+====================================================================== 
+DATASET INSPECTION
+======================================================================
+Records: 45211
+Columns: 17 (16 input attributes + target 'y')
+Duplicate rows: 0
+
+Attributes, data types, missing values (NaN) and distinct values:
+  age        dtype=int64    NaN=0   distinct=77
+  job        dtype=str      NaN=0   distinct=12
+  marital    dtype=str      NaN=0   distinct=3
+  education  dtype=str      NaN=0   distinct=4
+  default    dtype=str      NaN=0   distinct=2
+  balance    dtype=int64    NaN=0   distinct=7168
+  housing    dtype=str      NaN=0   distinct=2
+  loan       dtype=str      NaN=0   distinct=2
+  contact    dtype=str      NaN=0   distinct=3
+  day        dtype=int64    NaN=0   distinct=31
+  month      dtype=str      NaN=0   distinct=12
+  duration   dtype=int64    NaN=0   distinct=1573
+  campaign   dtype=int64    NaN=0   distinct=48
+  pdays      dtype=int64    NaN=0   distinct=559
+  previous   dtype=int64    NaN=0   distinct=41
+  poutcome   dtype=str      NaN=0   distinct=4
+  y          dtype=str      NaN=0   distinct=2
+
+Categories spelled 'unknown' (the dataset's own missing-value marker):
+  job        288 (0.6%)
+  education  1857 (4.1%)
+  contact    13020 (28.8%)
+  poutcome   36959 (81.7%)
+
+Numeric attribute summary:
+           age   balance      day  campaign    pdays  previous  duration
+count  45211.0   45211.0  45211.0   45211.0  45211.0   45211.0   45211.0
+mean      40.9    1362.3     15.8       2.8     40.2       0.6     258.2
+std       10.6    3044.8      8.3       3.1    100.1       2.3     257.5
+min       18.0   -8019.0      1.0       1.0     -1.0       0.0       0.0
+25%       33.0      72.0      8.0       1.0     -1.0       0.0     103.0
+50%       39.0     448.0     16.0       2.0     -1.0       0.0     180.0
+75%       48.0    1428.0     21.0       3.0     -1.0       0.0     319.0
+max       95.0  102127.0     31.0      63.0    871.0     275.0    4918.0
+
+Unusual values: pdays == -1 (client never previously contacted): 36954 (81.7%); negative balances: 3766
+
+Target class distribution:
+  no    39922 (88.3%)
+  yes    5289 (11.7%)
+
+======================================================================
+Features used by BOTH classifiers (15): ['job', 'marital', 'education', 'default', 'housing', 'loan', 'contact', 'month', 'poutcome', 'age', 'balance', 'day', 'campaign', 'pdays', 'previous']
+Excluded: ['duration'] (known only after the call -> leakage)
+Train: 36168 rows, test: 9043 rows, seed=42
+'yes' rate: train 11.7%, test 11.7%
+
+TRAINING yes-rate by poutcome:
+           mean   size
+poutcome              
+success   0.646   1205
+other     0.165   1485
+failure   0.123   3889
+unknown   0.092  29589
+
+TRAINING yes-rate by month:
+        mean   size
+month              
+mar    0.509    391
+dec    0.472    178
+sep    0.452    451
+oct    0.438    592
+apr    0.195   2394
+feb    0.168   2078
+aug    0.109   4986
+jun    0.104   4237
+jan    0.102   1119
+nov    0.101   3143
+jul    0.093   5537
+may    0.067  11062
+
+Unseen categories replaced in test data: 0
+Discretisation (bin states per numeric feature):
+  age       ['<=33', '(33,39]', '(39,48]', '>48']
+  balance   ['<=74', '(74,451]', '(451,1430.25]', '>1430.25']
+  day       ['<=11', '(11,20]', '>20']
+  campaign  ['<=1', '(1,3]', '>3']
+  pdays     ['never_contacted', '<=171', '(171,285]', '>285']
+  previous  ['<=0', '>0']
+
+======================================================================
+PART A: BAYESIAN NETWORK
+======================================================================
+Nodes: 16   Edges: 30
+
+Edges (parent -> child):
+  age -> education
+  age -> job
+  balance -> default
+  contact -> age
+  contact -> day
+  contact -> housing
+  contact -> marital
+  contact -> month
+  contact -> pdays
+  day -> campaign
+  day -> housing
+  day -> month
+  housing -> age
+  housing -> job
+  housing -> loan
+  housing -> poutcome
+  job -> education
+  loan -> balance
+  loan -> default
+  marital -> age
+  month -> balance
+  month -> campaign
+  month -> housing
+  month -> loan
+  month -> pdays
+  month -> y
+  pdays -> poutcome
+  pdays -> previous
+  poutcome -> y
+  y -> marital
+
+Markov blanket of 'y' (variables that matter for the prediction once the others are known): ['contact', 'marital', 'month', 'poutcome']
+
+CPT of the target node 'y':
++----------+---------------------+-----+---------------------+
+| month    | month(apr)          | ... | month(sep)          |
++----------+---------------------+-----+---------------------+
+| poutcome | poutcome(failure)   | ... | poutcome(unknown)   |
++----------+---------------------+-----+---------------------+
+| y(no)    | 0.9005931648101527  | ... | 0.6196597907908886  |
++----------+---------------------+-----+---------------------+
+| y(yes)   | 0.09940683518984722 | ... | 0.38034020920911127 |
++----------+---------------------+-----+---------------------+
+
+======================================================================
+PART B: RULE-BASED CLASSIFIER
+======================================================================
+  attributes_used: ['month', 'poutcome']
+  n_attributes_used: 2
+  allowed_branches: 2
+  branching_statements: 2
+  return_statements_(rules): 3
+  compliant: True
+
+======================================================================
+RESULTS ON THE HELD-OUT TEST SET (positive class = 'yes')
+======================================================================
+                               accuracy  precision  recall      f1      TN     FP      FN     TP
+Bayesian Network                 0.8924     0.6300  0.1947  0.2975  7864.0  121.0   852.0  206.0
+Rule-based                       0.8882     0.5374  0.3195  0.4007  7694.0  291.0   720.0  338.0
+Majority baseline (reference)    0.8830     0.0000  0.0000  0.0000  7985.0    0.0  1058.0    0.0
+
+Classification report - Bayesian Network
+              precision    recall  f1-score   support
+
+          no       0.90      0.98      0.94      7985
+         yes       0.63      0.19      0.30      1058
+
+    accuracy                           0.89      9043
+   macro avg       0.77      0.59      0.62      9043
+weighted avg       0.87      0.89      0.87      9043
+
+
+Classification report - Rule-based
+              precision    recall  f1-score   support
+
+          no       0.91      0.96      0.94      7985
+         yes       0.54      0.32      0.40      1058
+
+    accuracy                           0.89      9043
+   macro avg       0.73      0.64      0.67      9043
+weighted avg       0.87      0.89      0.88      9043
+
+
+Classification report - Majority baseline (reference)
+              precision    recall  f1-score   support
+
+          no       0.88      1.00      0.94      7985
+         yes       0.00      0.00      0.00      1058
+
+    accuracy                           0.88      9043
+   macro avg       0.44      0.50      0.47      9043
+weighted avg       0.78      0.88      0.83      9043
+
+
+Saved metrics, plots and predictions to /Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project1/results
