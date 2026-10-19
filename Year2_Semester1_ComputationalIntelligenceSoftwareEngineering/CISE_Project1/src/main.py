@@ -102,7 +102,32 @@ def main() -> None:
     pd.DataFrame({"actual": y_test, "bayesian_network": bn_pred,
                   "bn_proba_yes": bn_output["proba_yes"], "rule_based": rule_pred}
                  ).to_csv(config.RESULTS_DIR / "test_predictions.csv", index_label="row_id")
-    print(f"\nSaved metrics, plots and predictions to {config.RESULTS_DIR}")
+
+    # 7. Additional Scientific Investigation: Threshold Calibration Analysis
+    # Tune cutoff strictly on validation split of training data, then evaluate on test set
+    from sklearn.model_selection import train_test_split
+    from src.evaluation import find_optimal_threshold, threshold_sweep_table
+
+    _, X_val_sub, _, y_val_sub = train_test_split(
+        X_train, y_train, test_size=0.20, random_state=config.RANDOM_SEED, stratify=y_train
+    )
+    P_val_sub = preprocessor.transform(X_val_sub)
+    val_out = bayesian_network.predict(model, P_val_sub)
+    opt_tau, val_f1 = find_optimal_threshold(y_val_sub, val_out["proba_yes"])
+
+    sweep_thresholds = [0.15, 0.20, round(opt_tau, 2), 0.30, 0.40, 0.50]
+    sweep_df = threshold_sweep_table(y_test, bn_output["proba_yes"], sorted(set(sweep_thresholds)))
+    save_results(sweep_df, config.RESULTS_DIR / "threshold_analysis.csv")
+
+    print("\n" + "=" * 70)
+    print("SCIENTIFIC THRESHOLD INVESTIGATION (Validation-tuned, test-evaluated)")
+    print("=" * 70)
+    print(f"Optimal threshold chosen on train-validation: tau* = {opt_tau:.2f} (Validation F1 = {val_f1:.4f})")
+    tau_key = round(opt_tau, 2)
+    print(f"Calibrated Test F1: {sweep_df.loc[tau_key, 'f1']:.4f} (Recall: {sweep_df.loc[tau_key, 'recall']:.4f}, Precision: {sweep_df.loc[tau_key, 'precision']:.4f})")
+    print(f"vs. Default Cutoff (tau=0.50): F1 = {sweep_df.loc[0.50, 'f1']:.4f} (Recall: {sweep_df.loc[0.50, 'recall']:.4f}, Precision: {sweep_df.loc[0.50, 'precision']:.4f})")
+    print(f"vs. Rule-Based Classifier:    F1 = {table.loc['Rule-based', 'f1']:.4f} (Recall: {table.loc['Rule-based', 'recall']:.4f}, Precision: {table.loc['Rule-based', 'precision']:.4f})")
+    print(f"\nSaved metrics, plots, predictions, and threshold analysis to {config.RESULTS_DIR}")
 
 
 def ensure_fixed_hash_seed() -> None:

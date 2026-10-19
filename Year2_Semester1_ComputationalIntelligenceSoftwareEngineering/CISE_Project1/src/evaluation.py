@@ -63,3 +63,33 @@ def plot_confusion_matrix(y_true, y_pred, title: str, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(path, dpi=150)
     plt.close(fig)
+
+
+def find_optimal_threshold(
+    y_val, proba_val: pd.Series, thresholds: list[float] | None = None
+) -> tuple[float, float]:
+    """Find the threshold tau that maximizes F1-score on validation data (strictly no test leakage)."""
+    import numpy as np
+
+    if thresholds is None:
+        thresholds = list(np.linspace(0.10, 0.50, 41))
+    best_t = 0.50
+    best_f1 = -1.0
+    for t in thresholds:
+        pred = (proba_val >= t).map(lambda x: config.POSITIVE_LABEL if x else config.NEGATIVE_LABEL)
+        f1 = f1_score(y_val, pred, pos_label=config.POSITIVE_LABEL, zero_division=0)
+        if f1 > best_f1:
+            best_f1 = f1
+            best_t = round(float(t), 4)
+    return best_t, best_f1
+
+
+def threshold_sweep_table(y_true, probas: pd.Series, thresholds: list[float]) -> pd.DataFrame:
+    """Compute performance metrics across a range of classification thresholds."""
+    rows = []
+    for t in thresholds:
+        pred = (probas >= t).map(lambda x: config.POSITIVE_LABEL if x else config.NEGATIVE_LABEL)
+        m = compute_metrics(y_true, pred)
+        m["threshold"] = round(float(t), 2)
+        rows.append(m)
+    return pd.DataFrame(rows).set_index("threshold")

@@ -58,3 +58,19 @@ def test_comparison_table_and_csv(tmp_path):
     save_results(table, tmp_path / "out" / "m.csv")
     loaded = pd.read_csv(tmp_path / "out" / "m.csv", index_col="classifier")
     assert loaded.loc["A", "precision"] == pytest.approx(0.6)
+
+
+def test_threshold_optimization():
+    from src.evaluation import find_optimal_threshold, threshold_sweep_table
+    y = pd.Series(["yes", "yes", "no", "no"])
+    probas = pd.Series([0.45, 0.25, 0.35, 0.10])
+    # At tau=0.40: pred=[yes, no, no, no] -> TP=1, FP=0, FN=1 -> F1=2*1/(1+2)=0.667
+    # At tau=0.20: pred=[yes, yes, yes, no] -> TP=2, FP=1, FN=0 -> F1=4/5 = 0.80
+    best_t, best_f1 = find_optimal_threshold(y, probas, thresholds=[0.20, 0.40])
+    assert best_t == 0.20
+    assert best_f1 == pytest.approx(0.80)
+
+    sweep = threshold_sweep_table(y, probas, thresholds=[0.20, 0.40])
+    assert len(sweep) == 2
+    assert "f1" in sweep.columns
+
