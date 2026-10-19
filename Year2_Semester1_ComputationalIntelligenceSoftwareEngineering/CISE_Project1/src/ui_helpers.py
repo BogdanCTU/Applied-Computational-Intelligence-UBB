@@ -124,7 +124,7 @@ def render_sidebar_info() -> None:
     with st.sidebar:
         st.markdown("### 🎓 CISE Project")
         st.markdown("**Bayesian Networks vs. Rule-Based Classification**")
-        st.caption("UCI Bank Marketing Classification (Python 3.11)")
+        st.caption("UCI Bank Marketing Classification (Python 3.13)")
         
         st.divider()
         st.markdown("#### 📂 Dataset Summary")

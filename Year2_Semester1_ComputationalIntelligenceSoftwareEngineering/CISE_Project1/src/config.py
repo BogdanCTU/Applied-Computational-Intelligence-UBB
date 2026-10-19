@@ -7,12 +7,33 @@ rule-based classifier are always run with exactly the same settings.
 import sys
 from pathlib import Path
 
-# --- Paths (relative to the project root, NOT to the current working directory)
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DATA_DIR = PROJECT_ROOT / "1_Dataset"                       # dataset + data_loader.py
-BN_DIR = PROJECT_ROOT / "2_BayesianNetworkClassification"   # Part A code
-RULES_DIR = PROJECT_ROOT / "3_RuleBasedClassification"      # Part B code
-RESULTS_DIR = PROJECT_ROOT / "results"
+# --- Paths
+if getattr(sys, "frozen", False):
+    # Running inside a PyInstaller bundle
+    BUNDLE_ROOT = Path(sys._MEIPASS).resolve()
+    EXE_ROOT = Path(sys.executable).resolve().parent
+    PROJECT_ROOT = BUNDLE_ROOT
+
+    # Priority for DATA_DIR:
+    # 1. External dataset next to the .exe
+    # 2. Bundled dataset inside the bundle
+    # 3. Fallback to external path so auto-download creates it next to .exe
+    if (EXE_ROOT / "1_Dataset" / "bank-full.csv").exists():
+        DATA_DIR = EXE_ROOT / "1_Dataset"
+    elif (BUNDLE_ROOT / "1_Dataset" / "bank-full.csv").exists():
+        DATA_DIR = BUNDLE_ROOT / "1_Dataset"
+    else:
+        DATA_DIR = EXE_ROOT / "1_Dataset"
+
+    BN_DIR = BUNDLE_ROOT / "2_BayesianNetworkClassification"
+    RULES_DIR = BUNDLE_ROOT / "3_RuleBasedClassification"
+    RESULTS_DIR = EXE_ROOT / "results"
+else:
+    PROJECT_ROOT = Path(__file__).resolve().parents[1]
+    DATA_DIR = PROJECT_ROOT / "1_Dataset"                       # dataset + data_loader.py
+    BN_DIR = PROJECT_ROOT / "2_BayesianNetworkClassification"   # Part A code
+    RULES_DIR = PROJECT_ROOT / "3_RuleBasedClassification"      # Part B code
+    RESULTS_DIR = PROJECT_ROOT / "results"
 
 # Folder names that start with a digit cannot be imported as Python packages, so we
 # add the three part-folders to the import path. Their modules (data_loader,

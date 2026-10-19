@@ -1,11 +1,11 @@
 # Bayesian Network vs. Rule-Based Classification — UCI Bank Marketing
 
-A complete, beginner-friendly, and educational Python 3.11 machine learning project comparing a
+A complete, beginner-friendly, and educational Python 3.13 machine learning project comparing a
 probabilistic **Bayesian Network** against a transparent **Rule-Based Classifier** operating under
 strict branching-statement constraints on the UCI Bank Marketing dataset.
 
 Includes both a **Command-Line Interface (CLI)** and an interactive **Graphical User Interface (GUI)**
-built with **Streamlit**.
+built with **Streamlit**, with native support for standalone **Windows Executable (.exe)** packaging.
 
 ---
 
@@ -59,7 +59,7 @@ classification performance:
 ```
 CISE_Project1/
 ├── app.py                           # Main Streamlit GUI entry point
-├── requirements.txt                 # Pinned dependencies for Python 3.11
+├── requirements.txt                 # Pinned dependencies for Python 3.13
 ├── README.md                        # Comprehensive educational documentation
 ├── .gitignore                       # Excludes dataset, results, cache, and virtual environment
 ├── 1_Dataset/
@@ -103,12 +103,12 @@ CISE_Project1/
 
 ---
 
-## 4. Setup and Installation (Python 3.11)
+## 4. Setup and Installation (Python 3.13)
 
 ### macOS / Linux
 ```bash
-# 1. Create a Python 3.11 virtual environment
-python3.11 -m venv .venv
+# 1. Create a Python 3.13 virtual environment
+python3.13 -m venv .venv
 
 # 2. Activate the virtual environment
 source .venv/bin/activate
@@ -120,8 +120,8 @@ pip install -r requirements.txt
 
 ### Windows PowerShell
 ```powershell
-# 1. Create a Python 3.11 virtual environment
-py -3.11 -m venv .venv
+# 1. Create a Python 3.13 virtual environment
+py -3.13 -m venv .venv
 
 # 2. Activate the virtual environment
 .venv\Scripts\Activate.ps1
@@ -135,16 +135,28 @@ pip install -r requirements.txt
 
 ## 5. Execution Commands
 
-### Launch the Graphical User Interface (GUI)
-Run the Streamlit application locally with:
-```bash
+### Launch the Native Windows Desktop Application (GUI)
+Run the pure native desktop GUI (Tkinter/ttk window, no web browser required):
+```powershell
+python desktop_app.py
+# or via the unified runner:
+python run_app.py
+```
+This opens a standalone desktop application window with tabs for model comparison, Bayesian network training/inference, rule-based execution tracing, and dataset inspection.
+
+### Launch the Web Browser Dashboard (Streamlit - Optional)
+If you prefer the web dashboard inside your web browser:
+```powershell
+python run_app.py --web
+# or
 python -m streamlit run app.py
 ```
-This opens the interactive dashboard in your default browser at `http://localhost:8501`.
 
 ### Run the Command-Line Experiment (CLI)
 To run the full end-to-end experiment directly in the terminal:
-```bash
+```powershell
+python run_app.py --cli
+# or
 python -m src.main
 ```
 This command loads the data, fits preprocessing, trains the Bayesian Network, evaluates both models,
@@ -152,9 +164,47 @@ prints comparison tables to the console, and saves all metrics, logs, and plots 
 
 ### Run Automated Tests
 Execute all 31 unit tests without requiring the full dataset download:
-```bash
+```powershell
 pytest
 ```
+
+---
+
+## 5.1 Building the Standalone Windows Executable (.exe)
+
+The project includes automated PyInstaller packaging to build a **standalone native Windows desktop application** (`BankMarketingClassifier.exe`) that runs directly as a desktop window without opening any browser or web server.
+
+### Compile Executable with PyInstaller
+Run the automated build script:
+```powershell
+python build_exe.py
+```
+This cleans prior artifacts and invokes PyInstaller using `BankMarketingClassifier.spec`.
+
+### Output Location
+Upon completion, the portable application bundle is located at:
+```
+dist/BankMarketingClassifier/
+├── BankMarketingClassifier.exe   # Main Native Desktop Windows Executable
+├── _internal/                    # Bundled Python 3.13 runtime, Tcl/Tk, DLLs, and dependencies
+├── 1_Dataset/                    # Embedded UCI Bank Marketing dataset (bank-full.csv)
+├── 2_BayesianNetworkClassification/
+├── 3_RuleBasedClassification/
+└── src/                          # Core model services and preprocessing
+```
+
+### Running the Windows Executable
+- **Launch Native Desktop GUI (Default):**
+  Simply double-click `BankMarketingClassifier.exe` or execute:
+  ```powershell
+  .\dist\BankMarketingClassifier\BankMarketingClassifier.exe
+  ```
+  Opens a native Windows desktop GUI window (no web browser, no local web server, no console pop-up).
+- **Run CLI Pipeline from Terminal:**
+  ```powershell
+  .\dist\BankMarketingClassifier\BankMarketingClassifier.exe --cli
+  ```
+  Executes the end-to-end training and evaluation pipeline in your terminal, writing outputs to `results/`.
 
 ---
 

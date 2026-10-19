@@ -7,3 +7,4 @@ seaborn==0.13.2
 networkx==3.6.1
 pytest==9.1.1
 streamlit==1.66.0
+pyinstaller>=6.22.0

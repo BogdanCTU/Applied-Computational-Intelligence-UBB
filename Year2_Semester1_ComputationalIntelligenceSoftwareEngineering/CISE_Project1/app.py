@@ -104,7 +104,7 @@ with c2:
         st.warning("⚠️ Active Model: Not yet trained in this session.")
 
 with c3:
-    st.info("💡 Use Python 3.11 with: `python -m streamlit run app.py`")
+    st.info("💡 Run via Python 3.13: `python run_app.py` or `python -m streamlit run app.py`")
 
 st.write("")
 st.markdown("""
