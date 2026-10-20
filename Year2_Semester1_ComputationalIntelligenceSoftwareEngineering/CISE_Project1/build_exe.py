@@ -34,7 +34,7 @@ def build():
         sys.exit(1)
 
     # Clean previous build directories if needed
-    for folder_name in ["build", "dist"]:
+    for folder_name in ["build", "dist", ".pyinstaller_cache"]:
         folder = PROJECT_ROOT / folder_name
         if folder.exists():
             print(f"Cleaning previous {folder_name}/ folder...")
@@ -42,6 +42,11 @@ def build():
                 shutil.rmtree(folder)
             except Exception as e:
                 print(f"Warning: Could not fully remove {folder}: {e}")
+
+    # Set local cache dir
+    cache_dir = PROJECT_ROOT / ".pyinstaller_cache"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    os.environ["PYINSTALLER_CONFIG_DIR"] = str(cache_dir)
 
     cmd = [
         sys.executable,

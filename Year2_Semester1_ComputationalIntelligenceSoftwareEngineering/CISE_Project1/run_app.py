@@ -22,6 +22,17 @@ if getattr(sys, "frozen", False):
                 sys.stderr = open("CONOUT$", "w", encoding="utf-8")
         except Exception:
             pass
+    # Guard against None streams in macOS .app windowed mode while preserving terminal output
+    if sys.stdout is None:
+        try:
+            sys.stdout = open("/dev/stdout", "w", encoding="utf-8")
+        except Exception:
+            sys.stdout = open(os.devnull, "w", encoding="utf-8")
+    if sys.stderr is None:
+        try:
+            sys.stderr = open("/dev/stderr", "w", encoding="utf-8")
+        except Exception:
+            sys.stderr = open(os.devnull, "w", encoding="utf-8")
 else:
     ROOT_DIR = Path(__file__).resolve().parent
 
@@ -37,8 +48,16 @@ for folder in [
 
 
 def run_native_gui():
-    import desktop_app
-    desktop_app.main()
+    try:
+        import desktop_app
+        desktop_app.main()
+    except (ImportError, ModuleNotFoundError) as e:
+        if "tkinter" in str(e).lower() or "_tkinter" in str(e).lower():
+            print("\n[Notice] Tkinter is not available in the current environment.")
+            print("Launching the interactive Streamlit Web GUI instead...\n")
+            run_streamlit()
+        else:
+            raise
 
 
 def run_cli():

@@ -170,41 +170,44 @@ pytest
 
 ---
 
-## 5.1 Building the Standalone Windows Executable (.exe)
+## 5.1 Standalone Application Builders (Windows & macOS)
 
-The project includes automated PyInstaller packaging to build a **standalone native Windows desktop application** (`BankMarketingClassifier.exe`) that runs directly as a desktop window without opening any browser or web server.
+The project provides dedicated, automated PyInstaller packaging scripts for both operating systems so users can build the application for their native machine.
 
-### Compile Executable with PyInstaller
-Run the automated build script:
+### A. Windows Executable Build (.exe)
+Run the automated Windows build script:
 ```powershell
 python build_exe.py
 ```
-This cleans prior artifacts and invokes PyInstaller using `BankMarketingClassifier.spec`.
+This invokes PyInstaller using `BankMarketingClassifier.spec` and outputs to `dist/BankMarketingClassifier/`:
+- **Native Desktop GUI:** Double-click `dist\BankMarketingClassifier\BankMarketingClassifier.exe`
+- **CLI Pipeline:** `.\dist\BankMarketingClassifier\BankMarketingClassifier.exe --cli`
+- **Web Dashboard:** `.\dist\BankMarketingClassifier\BankMarketingClassifier.exe --web`
 
-### Output Location
-Upon completion, the portable application bundle is located at:
+### B. macOS Application Build (.app & Unix Binary)
+Run the automated macOS build script on your MacBook:
+```bash
+python build_mac.py
 ```
-dist/BankMarketingClassifier/
-├── BankMarketingClassifier.exe   # Main Native Desktop Windows Executable
-├── _internal/                    # Bundled Python 3.13 runtime, Tcl/Tk, DLLs, and dependencies
-├── 1_Dataset/                    # Embedded UCI Bank Marketing dataset (bank-full.csv)
-├── 2_BayesianNetworkClassification/
-├── 3_RuleBasedClassification/
-└── src/                          # Core model services and preprocessing
-```
+This invokes PyInstaller using `BankMarketingClassifier_mac.spec` and outputs:
+- **Native macOS Application Bundle (`.app`):** `dist/BankMarketingClassifier.app`
+  - Double-click `BankMarketingClassifier.app` in Finder, or run:
+    ```bash
+    open dist/BankMarketingClassifier.app
+    ```
+- **Standalone Terminal Binary:** `dist/BankMarketingClassifier/BankMarketingClassifier`
+  - CLI Experiment Pipeline:
+    ```bash
+    ./dist/BankMarketingClassifier/BankMarketingClassifier --cli
+    ```
+  - Interactive Web GUI:
+    ```bash
+    ./dist/BankMarketingClassifier/BankMarketingClassifier --web
+    ```
 
-### Running the Windows Executable
-- **Launch Native Desktop GUI (Default):**
-  Simply double-click `BankMarketingClassifier.exe` or execute:
-  ```powershell
-  .\dist\BankMarketingClassifier\BankMarketingClassifier.exe
-  ```
-  Opens a native Windows desktop GUI window (no web browser, no local web server, no console pop-up).
-- **Run CLI Pipeline from Terminal:**
-  ```powershell
-  .\dist\BankMarketingClassifier\BankMarketingClassifier.exe --cli
-  ```
-  Executes the end-to-end training and evaluation pipeline in your terminal, writing outputs to `results/`.
+> [!NOTE]
+> When transferring `BankMarketingClassifier.app` to another Mac without an Apple Developer ID signature, macOS Gatekeeper may display a prompt. Clear the quarantine flag with:
+> `xattr -cr dist/BankMarketingClassifier.app`
 
 ---
 

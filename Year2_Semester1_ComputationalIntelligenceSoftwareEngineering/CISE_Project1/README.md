@@ -100,6 +100,20 @@ Launch the web GUI:
 python -m streamlit run app.py
 ```
 
+Build standalone executables:
+
+- **Windows Build (.exe):**
+  ```powershell
+  python build_exe.py
+  ```
+  Executable generated at: `dist/BankMarketingClassifier/BankMarketingClassifier.exe`
+
+- **macOS Build (.app & Unix binary):**
+  ```bash
+  python build_mac.py
+  ```
+  Native Application Bundle generated at: `dist/BankMarketingClassifier.app`
+
 ## Conclusion
 
 The experiment demonstrates that a highly constrained, interpretable rule-based classifier can outperform a default Bayesian Network in F1-score. However, optimizing the Bayesian Network's classification threshold improves its F1-score further. This highlights the importance of selecting evaluation metrics appropriate to the problem and distinguishing probabilistic modeling from the decision threshold used to convert probabilities into classifications.

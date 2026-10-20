@@ -97,9 +97,10 @@ class BankClassifierApp(tk.Tk):
             pass
 
         # Configure modern fonts and colors
-        base_font = ("Segoe UI", 10)
-        heading_font = ("Segoe UI", 11, "bold")
-        title_font = ("Segoe UI", 14, "bold")
+        font_family = "Helvetica Neue" if sys.platform == "darwin" else "Segoe UI"
+        base_font = (font_family, 10)
+        heading_font = (font_family, 11, "bold")
+        title_font = (font_family, 14, "bold")
 
         style.configure(".", font=base_font)
         style.configure("TLabel", font=base_font)
@@ -124,11 +125,12 @@ class BankClassifierApp(tk.Tk):
         )
         title.pack(anchor=tk.W)
 
+        font_family = "Helvetica Neue" if sys.platform == "darwin" else "Segoe UI"
         subtitle = ttk.Label(
             header_frame,
-            text="Empirical Comparison on the UCI Bank Marketing Dataset | Native Windows Desktop Application",
+            text="Empirical Comparison on the UCI Bank Marketing Dataset | Desktop Application",
             foreground="#64748b",
-            font=("Segoe UI", 9),
+            font=(font_family, 9),
         )
         subtitle.pack(anchor=tk.W, pady=(2, 0))
 
