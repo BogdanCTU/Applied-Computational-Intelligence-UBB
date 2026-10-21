@@ -12,36 +12,29 @@
 
 This university machine learning investigation compares a probabilistic generative model (**Bayesian Network**) against an explainable, deterministic heuristic (**Rule-Based Classifier**) operating under a strict **branching-statement constraint** ($\le n$ branches for $n$ input attributes). 
 
-Both models were trained, tuned, and evaluated on the official UCI Bank Marketing dataset ($N = 45,211$) across two complementary evaluation frameworks:
-1. **Stratified 5-Fold Cross-Validation:** Full dataset out-of-fold evaluation ($N = 45,211$, $5$ folds, zero data leakage) reporting **Mean** and **Standard Deviation** across all folds.
-2. **Held-Out Test Set Split:** Fixed 80/20 stratified split ($N_{\text{train}} = 36,168$, $N_{\text{test}} = 9,043$).
+Following the project's rigorous evaluation protocol:
+1. **Rule-Based Classification:** Evaluated directly on the **full dataset** ($N = 45,211$). Because it is deterministic, uses static decision rules derived from domain analysis, and has zero tunable continuous parameters requiring split-to-split fitting, **no K-Fold cross-validation is applied**.
+2. **Bayesian Network Classification:** Evaluated using **Stratified 5-Fold Cross-Validation** ($N = 45,211$, $5$ folds, zero data leakage) reporting **Mean and Standard Deviation** across folds for both the default MAP threshold **$\tau = 0.50$** and the calibrated best threshold **$\tau = 0.20$**.
+3. **Majority Baseline:** Evaluated on the full dataset ($N = 45,211$) as a non-learning benchmark.
 
 ### Key Verified Empirical Findings
 
-#### Comprehensive Evaluation Table: Cross Validation vs. Held-Out Test Set
+#### Master Evaluation Table: Full Dataset Rule-Based vs. Bayesian Network 5-Fold Cross-Validation
 
-| Classifier | Evaluation Framework | Accuracy | Precision | Recall | F1-Score | True Neg (TN) | False Pos (FP) | False Neg (FN) | True Pos (TP) |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Rule-Based Classifier** (2 branches) | **Stratified 5-Fold Cross Validation (Mean ± Standard Deviation)** | 88.60% ± 0.14% | 52.17% ± 0.96% | **31.03% ± 1.39%** | **38.90% ± 1.30%** | 38,418 | 1,504 | **3,648** | **1,641** |
-| | **Cross Validation Pooled (Out-of-Fold, N = 45,211)** | 88.60% | 52.18% | **31.03%** | **0.3891** | 38,418 | 1,504 | **3,648** | **1,641** |
-| | Held-Out Test Split (80/20, $N_{\text{test}} = 9,043$) | 88.82% | 53.74% | 31.95% | 0.4007 | 7,694 | 291 | 720 | 338 |
-| **Bayesian Network** ($\tau = 0.50$) | **Stratified 5-Fold Cross Validation (Mean ± Standard Deviation)** | **89.24% ± 0.19%** | **62.00% ± 1.56%** | 20.63% ± 2.47% | 30.91% ± 3.00% | 39,256 | **666** | 4,198 | 1,091 |
-| | **Cross Validation Pooled (Out-of-Fold, N = 45,211)** | **89.24%** | **62.09%** | 20.63% | 0.3097 | 39,256 | **666** | 4,198 | 1,091 |
-| | Held-Out Test Split (80/20, $N_{\text{test}} = 9,043$) | 89.24% | 63.00% | 19.47% | 0.2975 | 7,864 | 121 | 852 | 206 |
-| **Bayesian Network** (Tuned $\tau^* = 0.21$) | Held-Out Test Split (Validation-tuned, test-evaluated) | 87.47% | 45.91% | 39.79% | 0.4263 | 7,489 | 496 | 637 | 421 |
-| **Majority Baseline** (Always `"no"`) | **Stratified 5-Fold Cross Validation (Mean ± Standard Deviation)** | 88.30% ± 0.00% | 0.00% ± 0.00% | 0.00% ± 0.00% | 0.00% ± 0.00% | **39,922** | **0** | 5,289 | 0 |
-| | **Cross Validation Pooled (Out-of-Fold, N = 45,211)** | 88.30% | 0.00% | 0.00% | 0.0000 | **39,922** | **0** | 5,289 | 0 |
-| | Held-Out Test Split (80/20, $N_{\text{test}} = 9,043$) | 88.30% | 0.00% | 0.00% | 0.0000 | 7,985 | 0 | 1,058 | 0 |
+| Classifier | Evaluation Framework / Threshold | Accuracy | Precision | Recall | F1-Score | Total TP | Total FP | Total FN | Total TN | Mean and Standard Deviation (for K-Fold on Bayesian Network Classification) |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Rule-Based Classifier** (2 branches) | **Full Dataset Evaluation** ($N = 45,211$) | **88.60%** | **52.18%** | **31.03%** | **0.3891** *(38.91%)* | **1,641** | 1,504 | 3,648 | 38,418 | *N/A (Deterministic full dataset evaluation, no K-Fold)* |
+| **Bayesian Network** (Default $\tau = 0.50$) | **Stratified 5-Fold Cross-Validation** (Fold Mean ± Std) | **89.24%** | **62.00%** | 20.63% | 30.91% *(0.3091)* | 1,091 | **666** | 4,198 | 39,256 | **Accuracy: 89.24% ± 0.19%<br>Precision: 62.00% ± 1.56%<br>Recall: 20.63% ± 2.47%<br>F1-Score: 30.91% ± 3.00% (0.3091 ± 0.0300)** |
+| | Cross-Validation Pooled (Out-of-Fold, $N = 45,211$) | 89.24% | 62.09% | 20.63% | 0.3097 *(30.97%)* | 1,091 | 666 | 4,198 | 39,256 | *Pooled Out-of-Fold Global Totals* |
+| **Bayesian Network** (Best Cutoff $\tau = 0.20$) | **Stratified 5-Fold Cross-Validation** (Fold Mean ± Std) | 86.18% | 41.37% | **42.90%** | **42.09% *(0.4209)*** | **2,269** | 3,230 | **3,020** | 36,692 | **Accuracy: 86.18% ± 0.77%<br>Precision: 41.37% ± 2.93%<br>Recall: 42.90% ± 1.57%<br>F1-Score: 42.09% ± 2.06% (0.4209 ± 0.0206)** |
+| | Cross-Validation Pooled (Out-of-Fold, $N = 45,211$) | 86.18% | 41.26% | 42.90% | 0.4207 *(42.07%)* | 2,269 | 3,230 | 3,020 | 36,692 | *Pooled Out-of-Fold Global Totals* |
+| **Majority Baseline** (Always `"no"`) | Full Dataset Evaluation ($N = 45,211$) | 88.30% | 0.00% | 0.00% | 0.0000 *(0.00%)* | 0 | 0 | 5,289 | **39,922** | *N/A (Reference baseline)* |
 
-#### Core Scientific Conclusions from Cross Validation
-1. **Model Stability Confirmed by Low Standard Deviation:** The small standard deviations across the 5 folds ($\sigma_{F1} = 0.013$ for Rule-Based, $\sigma_{F1} = 0.030$ for Bayesian Network) confirm that performance is steady across data partitions and not dependent on a fortunate split.
-2. **Distinct Optimization Targets:** 
-   - The **Rule-Based Classifier** achieves significantly higher **Recall** ($31.03\% \pm 1.39\%$ vs. $20.63\% \pm 2.47\%$) and **F1-Score** ($0.3890 \pm 0.0130$ vs. $0.3091 \pm 0.0300$), capturing **$1,641$ true positive subscribers** compared to **$1,091$**.
-   - The **Bayesian Network** achieves higher **Precision** ($62.00\% \pm 1.56\%$ vs. $52.17\% \pm 0.96\%$) and higher **Accuracy** ($89.24\% \pm 0.19\%$ vs. $88.60\% \pm 0.14\%$), producing less than half the false positive calls ($666$ vs. $1,504$ False Positives).
-3. **Branching Constraint Integrity:** The Rule-Based classifier satisfies the strict $\le n$ branching limit (exactly $2$ branching statements for $2$ attributes read: `poutcome`, `month`) verified by automated AST inspection.
-
-
----
+#### Core Scientific Conclusions
+1. **Rule-Based Classifier on Full Dataset:** With just 2 branching statements (`poutcome`, `month`), the deterministic rule achieves an F1-score of **$0.3891$** ($38.91\%$) on all $45,211$ clients, capturing **$1,641$ true subscribers** with $52.18\%$ precision.
+2. **Bayesian Network at Default Cutoff ($\tau = 0.50$):** Excels in Precision (**$62.00\% \pm 1.56\%$**) and Accuracy (**$89.24\% \pm 0.19\%$**), minimizing false alarms to only **$666$** across all folds, but achieves lower recall ($20.63\% \pm 2.47\%$, F1 = $0.3091 \pm 0.0300$).
+3. **Bayesian Network at Best Cutoff ($\tau = 0.20$):** Dramatically elevates Recall to **$42.90\% \pm 1.57\%$** and achieves the highest overall F1-Score of **$42.09\% \pm 2.06\%$** ($0.4209 \pm 0.0206$), identifying **$2,269$ true subscribers** across the population.
+4. **Model Stability Confirmed by Low Cross-Validation Standard Deviation:** The small standard deviations across folds ($\sigma < 0.03$ across all metrics) verify that the Bayesian Network's performance is highly stable across different partitions and free from data leakage.
 
 ## 1. Project Objective and Assignment Requirements
 
@@ -57,9 +50,10 @@ The assignment investigates the empirical trade-offs between probabilistic graph
    - Provide an automated compliance verification mechanism.
 3. **Rigorous & Fair Evaluation:**
    - Prevent data leakage: strictly exclude the confounding telephone call `duration` feature, and learn preprocessing parameters strictly on the training partition.
-   - Support both **Stratified 5-Fold Cross-Validation** (evaluating all $45,211$ instances) and the standard **Held-Out 80/20 Test Split** ($9,043$ instances).
-   - Compute **Accuracy**, **Precision**, **Recall**, **F1-Score** (positive class = `'yes'`), and Confusion Matrix: **True Neg (TN)**, **False Pos (FP)**, **False Neg (FN)**, **True Pos (TP)**.
-   - Report **Mean** and **Standard Deviation** across cross-validation folds.
+   - **Rule-Based Classification:** Evaluated directly on the **full dataset** ($N = 45,211$) without K-Fold cross-validation (deterministic heuristic with zero learned continuous parameters).
+   - **Bayesian Network Classification:** Evaluated using **Stratified 5-Fold Cross-Validation** ($N = 45,211$) at both the default MAP cutoff **$\tau = 0.50$** and the calibrated best cutoff **$\tau = 0.20$**, reporting **Accuracy**, **Precision**, **Recall**, **F1-Score**, **Total TP**, **Total FP**, **Total FN**, **Total TN**, and **Mean and Standard Deviation** across folds.
+   - Benchmarked against held-out 80/20 test split ($9,043$ records) for single-split verification.
+
 4. **Interactive Software Interface:**
    - Provide both a native Windows desktop GUI (Tkinter/ttk) and an interactive web dashboard (Streamlit) enabling parameter exploration, network inspection, rule execution tracing, cross-validation telemetry, and comparison metrics.
 
@@ -198,91 +192,173 @@ To ensure complete compliance, static AST analysis is implemented in [`branch_co
 
 ---
 
-## 6. Stratified 5-Fold Cross-Validation Empirical Results
+## 6. Empirical Results: Full Dataset Rule-Based vs. Bayesian Network 5-Fold Cross-Validation
 
-### 6.1 Experimental Protocol
-- **Stratified Partitioning:** `StratifiedKFold(n_splits=5, shuffle=True, random_state=42)`.
-- **Total Population:** $N = 45,211$ instances ($39,922$ `"no"` and $5,289$ `"yes"`).
-- **Partition Size:** Each validation fold contains exactly $9,042$ or $9,043$ instances ($1,057$–$1,058$ actual `"yes"` and $7,984$–$7,985$ `"no"`).
-- **Leakage Prevention:** Preprocessing, quantile binning, DAG structure learning, and CPT parameter estimation are fitted **strictly on the $4/5$ training fold**. No network structure, bin boundaries, or category dictionaries are shared across folds.
-- **Identical Evaluation:** The Rule-Based classifier and majority baseline are evaluated on the exact same records in every fold.
+### 6.1 Methodological Protocol: Full Dataset vs. Stratified 5-Fold Cross-Validation
+- **Rule-Based Classification on Full Dataset:**
+  - The Rule-Based Classifier is deterministic and governed by 2 static domain heuristics derived from training data inspection: `poutcome == 'success'` and `month in ('mar', 'sep', 'oct', 'dec')`.
+  - It contains no continuous weights, threshold parameters, or CPT tables that need fold-by-fold fitting.
+  - In accordance with the methodology requirement, **no K-Fold cross-validation is performed on the Rule-Based Classifier**; instead, it is evaluated across the entire population of $N = 45,211$ clients.
+- **Bayesian Network 5-Fold Cross-Validation:**
+  - In contrast, the Bayesian Network learns both its graph structure (DAG via `HillClimbSearch` with BIC scoring) and parameter distributions (CPTs via BDeu Dirichlet estimator) from empirical data.
+  - To rigorously evaluate its generalization capacity and strictly prevent data leakage, it undergoes **Stratified 5-Fold Cross-Validation** (`StratifiedKFold(n_splits=5, shuffle=True, random_state=42)`).
+  - Preprocessing bin edges and network parameters are learned **strictly inside each fold's $4/5$ training split**.
+- **Dual Cutoff Evaluation for Bayesian Network:**
+  - **Default MAP Cutoff ($\tau = 0.50$):** Standard maximum a posteriori decision boundary ($P(y=\text{'yes'} \mid \mathbf{e}) \ge 0.50$).
+  - **Best Calibrated Cutoff ($\tau = 0.20$):** Optimal operational threshold addressing the severe class imbalance ($11.7\%$ subscribers), prioritizing recall while maximizing F1-score.
 
 ---
 
-### 6.2 Summary Performance: Cross Validation Mean and Standard Deviation across Folds
+### 6.2 Master Empirical Results Table
 
-The table below reports the **Cross Validation Fold-Level Summary (Mean ± Sample Standard Deviation, $\text{ddof}=1$)** across the 5 validation folds (as established in `README.md`), alongside the **Total Confusion Matrix Counts** summed across all 45,211 validation records. Positive class is explicitly `"yes"`.
+The table below presents the verified empirical comparison between the **Rule-Based Classifier** evaluated on the full dataset and the **Bayesian Network** evaluated under Stratified 5-Fold Cross-Validation at both thresholds $\tau = 0.50$ and $\tau = 0.20$.
 
-| Classifier | Accuracy | Precision | Recall | F1-Score | True Neg (TN) | False Pos (FP) | False Neg (FN) | True Pos (TP) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Bayesian Network** ($\tau=0.50$) | **89.24% ± 0.19%**<br>*(0.8924 ± 0.0019)* | **62.00% ± 1.56%**<br>*(0.6200 ± 0.0156)* | 20.63% ± 2.47%<br>*(0.2063 ± 0.0247)* | 30.91% ± 3.00%<br>*(0.3091 ± 0.0300)* | 39,256 | **666** | 4,198 | 1,091 |
-| **Rule-Based Classifier** (2 branches) | 88.60% ± 0.14%<br>*(0.8860 ± 0.0014)* | 52.17% ± 0.96%<br>*(0.5217 ± 0.0096)* | **31.03% ± 1.39%**<br>*(0.3103 ± 0.0139)* | **38.90% ± 1.30%**<br>*(0.3890 ± 0.0130)* | 38,418 | 1,504 | **3,648** | **1,641** |
-| **Majority Baseline** (reference) | 88.30% ± 0.00%<br>*(0.8830 ± 0.0000)* | 0.00% ± 0.00%<br>*(0.0000 ± 0.0000)* | 0.00% ± 0.00%<br>*(0.0000 ± 0.0000)* | 0.00% ± 0.00%<br>*(0.0000 ± 0.0000)* | **39,922** | **0** | 5,289 | 0 |
+| Classifier | Evaluation Framework / Threshold | Accuracy | Precision | Recall | F1-Score | Total TP | Total FP | Total FN | Total TN | Mean and Standard Deviation (for K-Fold on Bayesian Network Classification) |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Rule-Based Classifier** (2 branches) | **Full Dataset Evaluation** ($N = 45,211$) | **88.60%**<br>*(0.8860)* | **52.18%**<br>*(0.5218)* | **31.03%**<br>*(0.3103)* | **0.3891**<br>*(38.91%)* | **1,641** | 1,504 | 3,648 | 38,418 | *N/A (Deterministic full dataset evaluation, no K-Fold)* |
+| **Bayesian Network** (Default $\tau = 0.50$) | **Stratified 5-Fold Cross-Validation** (Fold Mean ± Std) | **89.24%**<br>*(0.8924)* | **62.00%**<br>*(0.6200)* | 20.63%<br>*(0.2063)* | 30.91%<br>*(0.3091)* | 1,091 | **666** | 4,198 | 39,256 | **Accuracy: 89.24% ± 0.19%<br>Precision: 62.00% ± 1.56%<br>Recall: 20.63% ± 2.47%<br>F1-Score: 30.91% ± 3.00% (0.3091 ± 0.0300)** |
+| | Cross-Validation Pooled (Out-of-Fold, $N = 45,211$) | 89.24% | 62.09% | 20.63% | 0.3097 *(30.97%)* | 1,091 | 666 | 4,198 | 39,256 | *Pooled Out-of-Fold Global Totals* |
+| **Bayesian Network** (Best Cutoff $\tau = 0.20$) | **Stratified 5-Fold Cross-Validation** (Fold Mean ± Std) | 86.18%<br>*(0.8618)* | 41.37%<br>*(0.4137)* | **42.90%**<br>*(0.4290)* | **42.09%**<br>*(0.4209)* | **2,269** | 3,230 | **3,020** | 36,692 | **Accuracy: 86.18% ± 0.77%<br>Precision: 41.37% ± 2.93%<br>Recall: 42.90% ± 1.57%<br>F1-Score: 42.09% ± 2.06% (0.4209 ± 0.0206)** |
+| | Cross-Validation Pooled (Out-of-Fold, $N = 45,211$) | 86.18% | 41.26% | 42.90% | 0.4207 *(42.07%)* | 2,269 | 3,230 | 3,020 | 36,692 | *Pooled Out-of-Fold Global Totals* |
+| **Majority Baseline** (Always `"no"`) | Full Dataset Evaluation ($N = 45,211$) | 88.30% | 0.00% | 0.00% | 0.0000 | 0 | 0 | 5,289 | **39,922** | *N/A (Reference baseline)* |
 
 Total Cross-Validation runtime: **15.72 seconds** (~3.14s per fold).  
-*Saved in `results/cv_metrics_summary.csv`.*
-
-#### Fold-Level Confusion Matrix Means (Mean ± Standard Deviation per Fold):
-- **Bayesian Network:** True Neg (TN): $7,851.2 \pm 10.7$, False Pos (FP): $133.2 \pm 11.0$, False Neg (FN): $839.6 \pm 26.3$, True Pos (TP): $218.2 \pm 26.1$.
-- **Rule-Based Classifier:** True Neg (TN): $7,683.6 \pm 8.9$, False Pos (FP): $300.8 \pm 8.6$, False Neg (FN): $729.6 \pm 14.7$, True Pos (TP): $328.2 \pm 14.7$.
-- **Majority Baseline:** True Neg (TN): $7,984.4 \pm 0.5$, False Pos (FP): $0.0 \pm 0.0$, False Neg (FN): $1,057.8 \pm 0.4$, True Pos (TP): $0.0 \pm 0.0$.
+*Saved in `results/cv_metrics_summary.csv` and `results/cv_predictions.csv`.*
 
 ---
 
-### 6.3 Complete Fold-by-Fold Detailed Breakdown
+### 6.3 Complete Fold-by-Fold Detailed Breakdown for Bayesian Network (K-Fold)
 
-The table below documents every individual fold's execution time, classification metrics, and confusion matrix counts:
+The table below documents every individual fold's execution metrics, runtime, and confusion matrix counts for both decision thresholds:
 
-| Classifier | Fold | Accuracy | Precision | Recall | F1-Score | True Neg (TN) | False Pos (FP) | False Neg (FN) | True Pos (TP) | Duration |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Bayesian Network** | **Fold 1** | 0.8934 | 0.6243 | 0.2231 | 0.3287 | 7,843 | 142 | 822 | 236 | 2.97s |
-| **Rule-Based Classifier** | **Fold 1** | 0.8858 | 0.5200 | 0.3072 | 0.3862 | 7,685 | 300 | 733 | 325 | 2.97s |
-| **Majority Baseline** | **Fold 1** | 0.8830 | 0.0000 | 0.0000 | 0.0000 | 7,985 | 0 | 1,058 | 0 | 2.97s |
-| **Bayesian Network** | **Fold 2** | 0.8940 | 0.6313 | 0.2252 | 0.3319 | 7,846 | 139 | 819 | 238 | 3.03s |
-| **Rule-Based Classifier** | **Fold 2** | 0.8879 | 0.5345 | 0.3150 | 0.3964 | 7,695 | 290 | 724 | 333 | 3.03s |
-| **Majority Baseline** | **Fold 2** | 0.8831 | 0.0000 | 0.0000 | 0.0000 | 7,985 | 0 | 1,057 | 0 | 3.03s |
-| **Bayesian Network** | **Fold 3** | 0.8923 | 0.6141 | 0.2136 | 0.3170 | 7,842 | 142 | 832 | 226 | 3.42s |
-| **Rule-Based Classifier** | **Fold 3** | 0.8851 | 0.5154 | 0.3006 | 0.3797 | 7,685 | 299 | 740 | 318 | 3.42s |
-| **Majority Baseline** | **Fold 3** | 0.8830 | 0.0000 | 0.0000 | 0.0000 | 7,984 | 0 | 1,058 | 0 | 3.42s |
-| **Bayesian Network** | **Fold 4** | 0.8892 | 0.5959 | 0.1645 | 0.2578 | 7,866 | 118 | 884 | 174 | 3.22s |
-| **Rule-Based Classifier** | **Fold 4** | 0.8844 | 0.5106 | 0.2968 | 0.3754 | 7,683 | 301 | 744 | 314 | 3.22s |
-| **Majority Baseline** | **Fold 4** | 0.8830 | 0.0000 | 0.0000 | 0.0000 | 7,984 | 0 | 1,058 | 0 | 3.22s |
-| **Bayesian Network** | **Fold 5** | 0.8932 | 0.6345 | 0.2051 | 0.3100 | 7,859 | 125 | 841 | 217 | 3.05s |
-| **Rule-Based Classifier** | **Fold 5** | 0.8871 | 0.5278 | 0.3318 | 0.4074 | 7,670 | 314 | 707 | 351 | 3.05s |
-| **Majority Baseline** | **Fold 5** | 0.8830 | 0.0000 | 0.0000 | 0.0000 | 7,984 | 0 | 1,058 | 0 | 3.05s |
-
-*Saved in `results/cv_fold_metrics.csv`.*
+| Cutoff | Fold | Accuracy | Precision | Recall | F1-Score | Total TP | Total FP | Total FN | Total TN | Duration |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **$\tau = 0.50$** | **Fold 1** | 0.8934 | 0.6243 | 0.2231 | 0.3287 | 236 | 142 | 822 | 7,843 | 2.97s |
+| | **Fold 2** | 0.8940 | 0.6313 | 0.2252 | 0.3319 | 238 | 139 | 819 | 7,846 | 3.03s |
+| | **Fold 3** | 0.8923 | 0.6141 | 0.2136 | 0.3170 | 226 | 142 | 832 | 7,842 | 3.42s |
+| | **Fold 4** | 0.8892 | 0.5959 | 0.1645 | 0.2578 | 174 | 118 | 884 | 7,866 | 3.22s |
+| | **Fold 5** | 0.8932 | 0.6345 | 0.2051 | 0.3100 | 217 | 125 | 841 | 7,859 | 3.05s |
+| | **Mean ± Std** | **0.8924 ± 0.0019** | **0.6200 ± 0.0156** | **0.2063 ± 0.0247** | **0.3091 ± 0.0300** | **218.2 ± 26.1** | **133.2 ± 11.0** | **839.6 ± 26.3** | **7,851.2 ± 10.7** | **3.14s avg** |
+| | **Totals (Sum)** | — | — | — | — | **1,091** | **666** | **4,198** | **39,256** | **15.72s** |
+| **$\tau = 0.20$** | **Fold 1** | 0.8552 | 0.3884 | 0.4130 | 0.4004 | 437 | 688 | 621 | 7,297 | 2.97s |
+| | **Fold 2** | 0.8635 | 0.4202 | 0.4409 | 0.4303 | 466 | 643 | 591 | 7,342 | 3.03s |
+| | **Fold 3** | 0.8741 | 0.4601 | 0.4357 | 0.4476 | 461 | 541 | 597 | 7,443 | 3.42s |
+| | **Fold 4** | 0.8557 | 0.3894 | 0.4112 | 0.4000 | 435 | 682 | 623 | 7,302 | 3.22s |
+| | **Fold 5** | 0.8602 | 0.4101 | 0.4442 | 0.4265 | 470 | 676 | 588 | 7,308 | 3.05s |
+| | **Mean ± Std** | **0.8618 ± 0.0077** | **0.4137 ± 0.0293** | **0.4290 ± 0.0157** | **0.4209 ± 0.0206** | **453.8 ± 16.6** | **646.0 ± 61.2** | **604.0 ± 16.8** | **7,338.4 ± 61.1** | **3.14s avg** |
+| | **Totals (Sum)** | — | — | — | — | **2,269** | **3,230** | **3,020** | **36,692** | **15.72s** |
 
 ---
 
-### 6.4 Out-of-Fold (OOF) Pooled Metrics vs. Fold-Level Means
+### 6.4 Detailed Step-by-Step Mathematical Calculations & Explications
 
-Every client in the dataset was predicted out-of-fold. The table below presents the mathematical comparison between the **Cross Validation Fold-Level Mean (± Standard Deviation)** and the **Pooled Out-of-Fold Metrics** calculated on all $45,211$ concatenated predictions (as detailed in `README.md`):
+This section provides complete algebraic derivations and arithmetic substitutions explaining how each metric is calculated.
 
-| Classifier | Aggregation Method | Accuracy | Precision | Recall | F1-Score | True Neg (TN) | False Pos (FP) | False Neg (FN) | True Pos (TP) |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Bayesian Network** | **Fold Mean ± Std** | **89.24% ± 0.19%** | **62.00% ± 1.56%** | 20.63% ± 2.47% | 30.91% ± 3.00% | 7,851.2 ± 10.7 | 133.2 ± 11.0 | 839.6 ± 26.3 | 218.2 ± 26.1 |
-| | **Pooled Out-of-Fold** | **89.24%** | **62.09%** | 20.63% | 0.3097 *(30.97%)* | 39,256 | **666** | 4,198 | 1,091 |
-| **Rule-Based Classifier** | **Fold Mean ± Std** | 88.60% ± 0.14% | 52.17% ± 0.96% | **31.03% ± 1.39%** | **38.90% ± 1.30%** | 7,683.6 ± 8.9 | 300.8 ± 8.6 | 729.6 ± 14.7 | 328.2 ± 14.7 |
-| | **Pooled Out-of-Fold** | 88.60% | 52.18% | **31.03%** | **0.3891 *(38.91%)*** | 38,418 | 1,504 | **3,648** | **1,641** |
-| **Majority Baseline** | **Fold Mean ± Std** | 88.30% ± 0.00% | 0.00% ± 0.00% | 0.00% ± 0.00% | 0.00% ± 0.00% | 7,984.4 ± 0.5 | 0.0 ± 0.0 | 1,057.8 ± 0.4 | 0.0 ± 0.0 |
-| | **Pooled Out-of-Fold** | 88.30% | 0.00% | 0.00% | 0.0000 *(0.00%)* | **39,922** | **0** | 5,289 | 0 |
-
-*Saved in `results/cv_pooled_metrics.csv` and `results/cv_predictions.csv`.*
+#### 1. Metric Formula Definitions
+- **Accuracy:** The ratio of correct predictions to total instances:
+  $$\text{Accuracy} = \frac{\text{Total TP} + \text{Total TN}}{\text{Total TP} + \text{Total TN} + \text{Total FP} + \text{Total FN}} = \frac{\text{Correct Predictions}}{N}$$
+- **Precision:** The proportion of predicted positives that were actual subscribers:
+  $$\text{Precision} = \frac{\text{Total TP}}{\text{Total TP} + \text{Total FP}}$$
+- **Recall (Sensitivity):** The proportion of actual subscribers successfully captured:
+  $$\text{Recall} = \frac{\text{Total TP}}{\text{Total TP} + \text{Total FN}}$$
+- **F1-Score:** The harmonic mean of precision and recall:
+  $$\text{F1-Score} = \frac{2 \cdot \text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}} = \frac{2 \cdot \text{Total TP}}{2 \cdot \text{Total TP} + \text{Total FP} + \text{Total FN}}$$
+- **Sample Mean ($\mu$) across $K = 5$ Folds:**
+  $$\mu = \frac{1}{K} \sum_{k=1}^K m_k$$
+- **Sample Standard Deviation ($\sigma$, $\text{ddof}=1$) across $K = 5$ Folds:**
+  $$\sigma = \sqrt{\frac{1}{K - 1} \sum_{k=1}^K (m_k - \mu)^2}$$
 
 ---
 
-### 6.5 Aggregated Out-of-Fold Confusion Matrices ($N = 45,211$)
+#### 2. Detailed Calculations: Rule-Based Classifier on Full Dataset ($N = 45,211$)
+- **Population:** $N = 45,211$ clients (Actual `'yes'` = $5,289$, Actual `'no'` = $39,922$).
+- **Confusion Matrix:** $\text{Total TP} = 1,641$, $\text{Total FP} = 1,504$, $\text{Total FN} = 3,648$, $\text{Total TN} = 38,418$.
+- **Step-by-Step Substitutions:**
+  1. **Accuracy:**
+     $$\text{Accuracy} = \frac{1641 + 38418}{45211} = \frac{40059}{45211} = 0.886045 \longrightarrow \mathbf{88.60\%}$$
+  2. **Precision:**
+     $$\text{Precision} = \frac{1641}{1641 + 1504} = \frac{1641}{3145} = 0.521781 \longrightarrow \mathbf{52.18\%}$$
+  3. **Recall:**
+     $$\text{Recall} = \frac{1641}{1641 + 3648} = \frac{1641}{5289} = 0.310267 \longrightarrow \mathbf{31.03\%}$$
+  4. **F1-Score:**
+     $$\text{F1-Score} = \frac{2 \cdot 0.521781 \cdot 0.310267}{0.521781 + 0.310267} = \frac{2 \cdot 1641}{2 \cdot 1641 + 1504 + 3648} = \frac{3282}{8434} = \mathbf{0.389139 \longrightarrow 38.91\%}$$
+
+---
+
+#### 3. Detailed Calculations: Bayesian Network Cross-Validation at Default Cutoff ($\tau = 0.50$)
+- **Fold-Level Arithmetic Means ($\mu$):**
+  $$\mu_{\text{Accuracy}} = \frac{0.8934 + 0.8940 + 0.8923 + 0.8892 + 0.8932}{5} = \frac{4.4621}{5} = \mathbf{0.8924 \quad (89.24\%)}$$
+  $$\mu_{\text{Precision}} = \frac{0.6243 + 0.6313 + 0.6141 + 0.5959 + 0.6345}{5} = \frac{3.1002}{5} = \mathbf{0.6200 \quad (62.00\%)}$$
+  $$\mu_{\text{Recall}} = \frac{0.2231 + 0.2252 + 0.2136 + 0.1645 + 0.2051}{5} = \frac{1.0314}{5} = \mathbf{0.2063 \quad (20.63\%)}$$
+  $$\mu_{\text{F1}} = \frac{0.3287 + 0.3319 + 0.3170 + 0.2578 + 0.3100}{5} = \frac{1.5454}{5} = \mathbf{0.3091 \quad (30.91\%)}$$
+
+- **Sample Standard Deviations ($\sigma$, $\text{ddof}=1$):**
+  $$\sigma_{\text{Accuracy}} = \sqrt{\frac{(0.8934 - \mu)^2 + (0.8940 - \mu)^2 + (0.8923 - \mu)^2 + (0.8892 - \mu)^2 + (0.8932 - \mu)^2}{4}} = \mathbf{0.0019 \quad (\pm 0.19\%)}$$
+  $$\sigma_{\text{Precision}} = \sqrt{\frac{(0.6243 - \mu)^2 + (0.6313 - \mu)^2 + (0.6141 - \mu)^2 + (0.5959 - \mu)^2 + (0.6345 - \mu)^2}{4}} = \mathbf{0.0156 \quad (\pm 1.56\%)}$$
+  $$\sigma_{\text{Recall}} = \sqrt{\frac{(0.2231 - \mu)^2 + (0.2252 - \mu)^2 + (0.2136 - \mu)^2 + (0.1645 - \mu)^2 + (0.2051 - \mu)^2}{4}} = \mathbf{0.0247 \quad (\pm 2.47\%)}$$
+  $$\sigma_{\text{F1}} = \sqrt{\frac{(0.3287 - \mu)^2 + (0.3319 - \mu)^2 + (0.3170 - \mu)^2 + (0.2578 - \mu)^2 + (0.3100 - \mu)^2}{4}} = \mathbf{0.0300 \quad (\pm 3.00\%)}$$
+
+- **Total Confusion Matrix Counts across all 5 Folds ($N = 45,211$):**
+  - $\text{Total TP} = 236 + 238 + 226 + 174 + 217 = \mathbf{1,091}$ (Mean per fold: $218.2 \pm 26.1$)
+  - $\text{Total FP} = 142 + 139 + 142 + 118 + 125 = \mathbf{666}$ (Mean per fold: $133.2 \pm 11.0$)
+  - $\text{Total FN} = 822 + 819 + 832 + 884 + 841 = \mathbf{4,198}$ (Mean per fold: $839.6 \pm 26.3$)
+  - $\text{Total TN} = 7843 + 7846 + 7842 + 7866 + 7859 = \mathbf{39,256}$ (Mean per fold: $7,851.2 \pm 10.7$)
+
+- **Pooled Out-of-Fold Global Calculations:**
+  $$\text{Pooled Accuracy} = \frac{1091 + 39256}{45211} = \frac{40347}{45211} = 0.892416 \longrightarrow \mathbf{89.24\%}$$
+  $$\text{Pooled Precision} = \frac{1091}{1091 + 666} = \frac{1091}{1757} = 0.620945 \longrightarrow \mathbf{62.09\%}$$
+  $$\text{Pooled Recall} = \frac{1091}{1091 + 4198} = \frac{1091}{5289} = 0.206277 \longrightarrow \mathbf{20.63\%}$$
+  $$\text{Pooled F1-Score} = \frac{2 \cdot 1091}{2 \cdot 1091 + 666 + 4198} = \frac{2182}{7046} = \mathbf{0.309679 \longrightarrow 30.97\%}$$
+
+---
+
+#### 4. Detailed Calculations: Bayesian Network Cross-Validation at Best Cutoff ($\tau = 0.20$)
+- **Fold-Level Arithmetic Means ($\mu$):**
+  $$\mu_{\text{Accuracy}} = \frac{0.8552 + 0.8635 + 0.8741 + 0.8557 + 0.8602}{5} = \frac{4.3088}{5} = \mathbf{0.8618 \quad (86.18\%)}$$
+  $$\mu_{\text{Precision}} = \frac{0.3884 + 0.4202 + 0.4601 + 0.3894 + 0.4101}{5} = \frac{2.0683}{5} = \mathbf{0.4137 \quad (41.37\%)}$$
+  $$\mu_{\text{Recall}} = \frac{0.4130 + 0.4409 + 0.4357 + 0.4112 + 0.4442}{5} = \frac{2.1450}{5} = \mathbf{0.4290 \quad (42.90\%)}$$
+  $$\mu_{\text{F1}} = \frac{0.4004 + 0.4303 + 0.4476 + 0.4000 + 0.4265}{5} = \frac{2.1047}{5} = \mathbf{0.4209 \quad (42.09\%)}$$
+
+- **Sample Standard Deviations ($\sigma$, $\text{ddof}=1$):**
+  $$\sigma_{\text{Accuracy}} = \sqrt{\frac{(0.8552 - \mu)^2 + (0.8635 - \mu)^2 + (0.8741 - \mu)^2 + (0.8557 - \mu)^2 + (0.8602 - \mu)^2}{4}} = \mathbf{0.0077 \quad (\pm 0.77\%)}$$
+  $$\sigma_{\text{Precision}} = \sqrt{\frac{(0.3884 - \mu)^2 + (0.4202 - \mu)^2 + (0.4601 - \mu)^2 + (0.3894 - \mu)^2 + (0.4101 - \mu)^2}{4}} = \mathbf{0.0293 \quad (\pm 2.93\%)}$$
+  $$\sigma_{\text{Recall}} = \sqrt{\frac{(0.4130 - \mu)^2 + (0.4409 - \mu)^2 + (0.4357 - \mu)^2 + (0.4112 - \mu)^2 + (0.4442 - \mu)^2}{4}} = \mathbf{0.0157 \quad (\pm 1.57\%)}$$
+  $$\sigma_{\text{F1}} = \sqrt{\frac{(0.4004 - \mu)^2 + (0.4303 - \mu)^2 + (0.4476 - \mu)^2 + (0.4000 - \mu)^2 + (0.4265 - \mu)^2}{4}} = \mathbf{0.0206 \quad (\pm 2.06\%)}$$
+
+- **Total Confusion Matrix Counts across all 5 Folds ($N = 45,211$):**
+  - $\text{Total TP} = 437 + 466 + 461 + 435 + 470 = \mathbf{2,269}$ (Mean per fold: $453.8 \pm 16.6$)
+  - $\text{Total FP} = 688 + 643 + 541 + 682 + 676 = \mathbf{3,230}$ (Mean per fold: $646.0 \pm 61.2$)
+  - $\text{Total FN} = 621 + 591 + 597 + 623 + 588 = \mathbf{3,020}$ (Mean per fold: $604.0 \pm 16.8$)
+  - $\text{Total TN} = 7297 + 7342 + 7443 + 7302 + 7308 = \mathbf{36,692}$ (Mean per fold: $7,338.4 \pm 61.1$)
+
+- **Pooled Out-of-Fold Global Calculations:**
+  $$\text{Pooled Accuracy} = \frac{2269 + 36692}{45211} = \frac{38961}{45211} = 0.861759 \longrightarrow \mathbf{86.18\%}$$
+  $$\text{Pooled Precision} = \frac{2269}{2269 + 3230} = \frac{2269}{5499} = 0.412620 \longrightarrow \mathbf{41.26\%}$$
+  $$\text{Pooled Recall} = \frac{2269}{2269 + 3020} = \frac{2269}{5289} = 0.429004 \longrightarrow \mathbf{42.90\%}$$
+  $$\text{Pooled F1-Score} = \frac{2 \cdot 2269}{2 \cdot 2269 + 3230 + 3020} = \frac{4538}{10788} = \mathbf{0.420653 \longrightarrow 42.07\%}$$
+
+---
+
+### 6.5 Out-of-Fold (OOF) Pooled Metrics vs. Fold-Level Means Comparison
+
+| Classifier | Cutoff / Method | Accuracy | Precision | Recall | F1-Score | Total TP | Total FP | Total FN | Total TN | Mean ± Std (Across Folds) |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Bayesian Network** | **$\tau = 0.50$ (Fold Mean ± Std)** | **89.24%** | **62.00%** | 20.63% | 30.91% | 218.2 | 133.2 | 839.6 | 7,851.2 | **Acc: 89.24% ± 0.19%<br>Prec: 62.00% ± 1.56%<br>Rec: 20.63% ± 2.47%<br>F1: 30.91% ± 3.00%** |
+| | **$\tau = 0.50$ (Pooled OOF)** | **89.24%** | **62.09%** | 20.63% | 0.3097 | 1,091 | **666** | 4,198 | 39,256 | *Global totals on N = 45,211* |
+| **Bayesian Network** | **$\tau = 0.20$ (Fold Mean ± Std)** | 86.18% | 41.37% | **42.90%** | **42.09%** | 453.8 | 646.0 | 604.0 | 7,338.4 | **Acc: 86.18% ± 0.77%<br>Prec: 41.37% ± 2.93%<br>Rec: 42.90% ± 1.57%<br>F1: 42.09% ± 2.06%** |
+| | **$\tau = 0.20$ (Pooled OOF)** | 86.18% | 41.26% | **42.90%** | **0.4207** | **2,269** | 3,230 | **3,020** | 36,692 | *Global totals on N = 45,211* |
+
+---
+
+### 6.6 Aggregated Confusion Matrices ($N = 45,211$)
 
 ```
-Bayesian Network (Pooled OOF)             Rule-Based Classifier (Pooled OOF)
-                 Predicted                                Predicted
-                 no       yes                              no       yes
-Actual  no    [[ 39256,   666 ],          Actual  no    [[ 38418,  1504 ],
-        yes   [  4198,  1091 ]]                  yes   [  3648,  1641 ]]
+Rule-Based (Full Dataset, N=45,211)          Bayesian Network (tau=0.50, Pooled OOF)      Bayesian Network (tau=0.20, Pooled OOF)
+             Predicted                                    Predicted                                    Predicted
+             no       yes                                 no       yes                                 no       yes
+Actual  no  [[ 38418,  1504 ],           Actual  no  [[ 39256,   666 ],           Actual  no  [[ 36692,  3230 ],
+        yes [  3648,  1641 ]]                    yes [  4198,  1091 ]]                    yes [  3020,  2269 ]]
 ```
-
----
 
 ## 7. Held-Out 80/20 Test Set Verification & Threshold Calibration
 
@@ -330,10 +406,10 @@ An internal validation split ($20\%$, $N = 7,234$) partitioned strictly from tra
 ## 8. Conclusions, Limitations, and Future Improvements
 
 ### 8.1 Conclusions
-1. **Assignment Constraint Compliance:** The Rule-Based classifier satisfies the $\le n$ branching constraint (exactly $2$ branching statements for $2$ attributes) and outperforms the default Bayesian Network in F1-score (**$0.3890 \pm 0.0130$ vs. $0.3091 \pm 0.0300$**).
-2. **Cross-Validation Conclusiveness:** Stratified 5-Fold Cross-Validation verifies that the performance gap is not a fluke of a single split; standard deviations are exceptionally low ($\sigma < 0.03$).
-3. **Operational Trade-Offs:** The Bayesian Network minimizes wasted calls (Precision $62.00\%$, only $666$ total FP), whereas the Rule-Based classifier maximizes subscriber acquisition (Recall $31.03\%$, $1,641$ total TP).
-4. **Threshold Sensitivity:** Probability threshold calibration on internal validation data ($\tau^* = 0.21$) boosts the Bayesian Network's F1 to **$0.4263$**, revealing that generative modeling requires calibration when evaluated on imbalanced decision boundaries.
+1. **Assignment Constraint Compliance:** The Rule-Based classifier satisfies the strict $\le n$ branching constraint (exactly $2$ branching statements for $2$ attributes read: `poutcome`, `month`) and achieves an F1-score of **$0.3891$** ($38.91\%$) on the full dataset ($N = 45,211$), capturing **$1,641$ true subscribers**.
+2. **Bayesian Network at Default Cutoff ($\tau = 0.50$):** Under Stratified 5-Fold Cross-Validation, the default Bayesian Network achieves exceptionally high precision (**$62.00\% \pm 1.56\%$**) and accuracy (**$89.24\% \pm 0.19\%$**), yielding only **$666$ total false positives** across all $45,211$ clients.
+3. **Bayesian Network at Best Cutoff ($\tau = 0.20$):** Lowering the classification threshold to $\tau = 0.20$ substantially improves recall to **$42.90\% \pm 1.57\%$**, achieving an overall F1-score of **$42.09\% \pm 2.06\%$** ($0.4209 \pm 0.0206$) and capturing **$2,269$ subscribers**—surpassing the Rule-Based Classifier in both recall and F1-score.
+4. **Cross-Validation Conclusiveness:** The low standard deviations across the 5 folds ($\sigma < 0.03$ across all metrics) confirm that the Bayesian Network's performance is statistically steady and not an artifact of data partitioning.
 
 ### 8.2 Limitations
 - Quantile discretization discards fine continuous trends in attributes such as `balance` and `age`.
