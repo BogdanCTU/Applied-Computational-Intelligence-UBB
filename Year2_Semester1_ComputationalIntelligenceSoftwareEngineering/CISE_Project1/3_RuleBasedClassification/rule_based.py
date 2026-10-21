@@ -16,3 +16,10 @@ def classify_client(record: dict) -> str:
         return "yes"                      # rule 2: contacted in a historically good month
     else:
         return "no"                       # rule 3: default (majority class)
+
+
+def predict_rules(X: pd.DataFrame) -> pd.Series:
+    """Apply the rules to every row of the RAW (non-discretised) feature table."""
+    predictions = [classify_client(row) for row in X.to_dict("records")]
+    return pd.Series(predictions, index=X.index, name="prediction")
+
