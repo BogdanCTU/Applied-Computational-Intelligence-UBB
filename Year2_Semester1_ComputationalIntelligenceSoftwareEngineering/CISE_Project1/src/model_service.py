@@ -5,8 +5,10 @@ and configuration state for both CLI and GUI interfaces.
 from dataclasses import dataclass, field
 import hashlib
 import json
+from pathlib import Path
 import time
 from typing import Any, Callable, Dict, List, Optional, Tuple
+
 
 import pandas as pd
 import numpy as np
@@ -86,6 +88,7 @@ class ModelService:
         self.logger = logger or global_logger
         self._raw_dataset: Optional[pd.DataFrame] = None
         self._artifacts: Optional[TrainedArtifacts] = None
+        self._cv_results: Optional[Any] = None
 
     def get_raw_dataset(self, force_reload: bool = False) -> pd.DataFrame:
         """Loads and caches the raw Bank Marketing dataset."""
@@ -410,6 +413,44 @@ class ModelService:
         df.index.name = variable
         return df
 
+    def get_cv_results(self) -> Optional[Any]:
+        """Returns in-memory cross-validation results or loads them from disk if available."""
+        if self._cv_results is None:
+            from src.cross_validation import load_cv_results
+            self._cv_results = load_cv_results(config.RESULTS_DIR)
+        return self._cv_results
+
+    def run_cross_validation(
+        self,
+        cfg: Optional[ModelConfig] = None,
+        n_splits: int = 5,
+        random_state: int = config.RANDOM_SEED,
+        progress_callback: Optional[Callable[[str, float], None]] = None,
+        results_dir: Optional[Path] = None
+    ) -> Any:
+        """Executes Stratified K-Fold Cross-Validation, preventing data leakage across folds."""
+        from src.cross_validation import run_stratified_cv
+        from src.evaluation import plot_cv_comparison
+        df = self.get_raw_dataset()
+        active_cfg = cfg or ModelConfig()
+        out_dir = results_dir or config.RESULTS_DIR
+        self.logger.info("CV", f"Starting Stratified {n_splits}-Fold Cross-Validation (seed={random_state})...")
+        cv_results = run_stratified_cv(
+            df=df,
+            cfg=active_cfg,
+            n_splits=n_splits,
+            random_state=random_state,
+            progress_callback=progress_callback,
+            logger=self.logger
+        )
+        self._cv_results = cv_results
+        cv_results.save(out_dir)
+        plot_cv_comparison(cv_results.summary_df, out_dir / "cv_comparison.png")
+        self.logger.success("CV", f"Cross-validation completed in {cv_results.total_duration:.2f}s and saved to {out_dir}.")
+        return cv_results
+
+
 
 # Singleton instance for application runtime
 model_service = ModelService()
+

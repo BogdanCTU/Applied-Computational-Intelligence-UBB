@@ -300,3 +300,24 @@ with tabs[4]:
                 "Discrete State Names": str(states)
             })
         st.dataframe(pd.DataFrame(bin_records), use_container_width=True)
+
+        st.divider()
+        st.markdown("##### 🔁 Cross-Validation Consistency")
+        cv_res = service.get_cv_results()
+        if cv_res is not None:
+            bn_f1_m = float(cv_res.summary_df.loc["Bayesian Network", "f1_mean"])
+            bn_f1_s = float(cv_res.summary_df.loc["Bayesian Network", "f1_std"])
+            bn_p_m = float(cv_res.summary_df.loc["Bayesian Network", "precision_mean"])
+            bn_p_s = float(cv_res.summary_df.loc["Bayesian Network", "precision_std"])
+            st.markdown(f"""
+            <div class="edu-note">
+                <strong>Stratified 5-Fold Cross-Validation Performance:</strong><br>
+                Across 5 independent folds with leak-free structure learning and parameter estimation:<br>
+                • <strong>F1-Score:</strong> <code>{bn_f1_m:.4f} ± {bn_f1_s:.4f}</code><br>
+                • <strong>Precision:</strong> <code>{bn_p_m:.4f} ± {bn_p_s:.4f}</code><br>
+                See <a href="1_Overview" target="_self">Page 1 (Overview)</a> for comparative breakdowns against the Rule-Based classifier.
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.caption("Cross-validation has not been run yet. Execute 5-fold CV from Page 1 (Overview) or via `python -m src.main --cv`.")
+

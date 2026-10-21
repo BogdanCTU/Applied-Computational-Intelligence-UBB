@@ -165,3 +165,20 @@ def test_bayesian_network_single_prediction_with_mocked_small_model():
     assert 0.0 <= res["p_no"] <= 1.0
     assert pytest.approx(res["p_yes"] + res["p_no"]) == 1.0
     assert "disclaimer" in res
+
+
+def test_service_cross_validation_orchestration(monkeypatch, tmp_path):
+    """Verify ModelService run_cross_validation and get_cv_results."""
+    service = ModelService()
+    dummy_data = make_dummy_data(n=60, seed=42)
+    monkeypatch.setattr(service, "get_raw_dataset", lambda: dummy_data)
+    monkeypatch.setattr(config, "RESULTS_DIR", tmp_path)
+
+    cv_results = service.run_cross_validation(cfg=ModelConfig(), n_splits=5, results_dir=tmp_path)
+    assert cv_results is not None
+    assert service.get_cv_results() is cv_results
+    assert "Bayesian Network" in cv_results.summary_df.index
+    assert "Rule-based" in cv_results.summary_df.index
+    assert (tmp_path / "cv_metrics_summary.csv").exists()
+
+

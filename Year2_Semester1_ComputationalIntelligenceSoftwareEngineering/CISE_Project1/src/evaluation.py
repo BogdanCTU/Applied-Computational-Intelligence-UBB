@@ -93,3 +93,56 @@ def threshold_sweep_table(y_true, probas: pd.Series, thresholds: list[float]) ->
         m["threshold"] = round(float(t), 2)
         rows.append(m)
     return pd.DataFrame(rows).set_index("threshold")
+
+
+def aggregate_cv_metrics(fold_metrics_list: list[dict]) -> tuple[dict[str, float], dict[str, float]]:
+    """Compute mean and sample standard deviation (ddof=1) across cross-validation folds."""
+    if not fold_metrics_list:
+        raise ValueError("Cannot aggregate empty fold metrics list.")
+    keys = ["accuracy", "precision", "recall", "f1", "TN", "FP", "FN", "TP"]
+    means = {}
+    stds = {}
+    for k in keys:
+        vals = [float(m[k]) for m in fold_metrics_list]
+        means[k] = float(pd.Series(vals).mean())
+        stds[k] = float(pd.Series(vals).std(ddof=1)) if len(vals) > 1 else 0.0
+    return means, stds
+
+
+def plot_cv_comparison(summary_df: pd.DataFrame, path: Path) -> None:
+    """Save a bar chart with standard deviation error bars comparing classifiers across folds."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    metrics = ["accuracy", "precision", "recall", "f1"]
+    metric_labels = ["Accuracy", "Precision (yes)", "Recall (yes)", "F1-Score (yes)"]
+    classifiers = list(summary_df.index)
+
+    fig, ax = plt.subplots(figsize=(8.5, 4.8), facecolor="#ffffff")
+    x = np.arange(len(metrics))
+    width = 0.26
+    colors = ["#2563eb", "#16a34a", "#94a3b8"]
+
+    for i, clf in enumerate(classifiers):
+        means = [float(summary_df.loc[clf, f"{m}_mean"]) for m in metrics]
+        stds = [float(summary_df.loc[clf, f"{m}_std"]) for m in metrics]
+        offset = (i - (len(classifiers) - 1) / 2) * width
+        ax.bar(
+            x + offset, means, width, yerr=stds, capsize=4,
+            label=clf, color=colors[i % len(colors)], alpha=0.9, edgecolor="#334155"
+        )
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(metric_labels, fontweight="bold", fontsize=10)
+    ax.set_ylabel("Score", fontweight="bold", fontsize=10)
+    ax.set_ylim(0, 1.05)
+    ax.set_title("Stratified 5-Fold Cross-Validation Performance (Mean ± Std)", fontweight="bold", fontsize=12, pad=12)
+    ax.legend(loc="lower right", framealpha=0.95)
+    ax.grid(axis="y", linestyle="--", alpha=0.35)
+    fig.tight_layout()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(path, dpi=150)
+    plt.close(fig)
+

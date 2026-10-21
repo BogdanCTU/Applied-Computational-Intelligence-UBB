@@ -231,7 +231,40 @@ def plot_cm(y_true: Any, y_pred: Any, title: str) -> plt.Figure:
     return fig
 
 
+def plot_cv_barchart(summary_df: pd.DataFrame) -> plt.Figure:
+    """Renders a styled bar chart comparing cross-validation Mean ± Std across models."""
+    import numpy as np
+    metrics = ["accuracy", "precision", "recall", "f1"]
+    metric_labels = ["Accuracy", "Precision", "Recall", "F1-Score"]
+    classifiers = list(summary_df.index)
+
+    fig, ax = plt.subplots(figsize=(8, 4.2), facecolor="#ffffff")
+    x = np.arange(len(metrics))
+    width = 0.25
+    colors = ["#2563eb", "#16a34a", "#94a3b8"]
+
+    for i, clf in enumerate(classifiers):
+        means = [float(summary_df.loc[clf, f"{m}_mean"]) for m in metrics]
+        stds = [float(summary_df.loc[clf, f"{m}_std"]) for m in metrics]
+        offset = (i - (len(classifiers) - 1) / 2) * width
+        ax.bar(
+            x + offset, means, width, yerr=stds, capsize=4,
+            label=clf, color=colors[i % len(colors)], alpha=0.9, edgecolor="#334155"
+        )
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(metric_labels, fontweight="bold", fontsize=10)
+    ax.set_ylabel("Metric Score", fontweight="bold", fontsize=10)
+    ax.set_ylim(0, 1.05)
+    ax.set_title("5-Fold Cross-Validation: Mean ± Standard Deviation", fontweight="bold", fontsize=11, pad=10)
+    ax.legend(loc="lower right", framealpha=0.95, fontsize=9)
+    ax.grid(axis="y", linestyle="--", alpha=0.3)
+    plt.tight_layout()
+    return fig
+
+
 def create_record_input_form(key_prefix: str = "pred") -> Dict[str, Any]:
+
     """Provides interactive input controls with realistic default values for all 15 features."""
     c1, c2, c3 = st.columns(3)
     
