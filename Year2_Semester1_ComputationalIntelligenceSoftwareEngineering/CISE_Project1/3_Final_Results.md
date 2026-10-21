@@ -1,5 +1,18 @@
-# Initial Tests
 
+## 2. Dataset and Target Definition
+
+- **Source:** [UCI Bank Marketing Dataset](https://archive.ics.uci.edu/dataset/222/bank%2Bmarketing)
+- **File:** `bank-full.csv` (45,211 records, 16 attributes + target)
+- **Target `y`:** Binary indicator of whether the client subscribed to a term deposit:
+  - `yes`: Positive class (5,289 instances, **11.7%**)
+  - `no`: Negative class (39,922 instances, **88.3%**)
+- **15 Selected Input Features:**
+  - *Categorical (9):* `job`, `marital`, `education`, `default`, `housing`, `loan`, `contact`, `month`, `poutcome`
+  - *Numerical (6):* `age`, `balance`, `day`, `campaign`, `pdays`, `previous`
+
+---
+
+# Initial Tests
 
 ## First Test Set Results (Default $\tau = 0.50$)
 
@@ -8,7 +21,7 @@
 | **Rule-Based Classifier** | **88.82%** | **53.74%** | **31.95%** | **0.4007** | 7,694 | 291 | 720 | **338** |
 | **Bayesian Network ($\tau = 0.50$)** | **89.24%** | **63.00%** | **19.47%** | **0.2975** | **7,864** | **121** | 852 | 206 |
 
-## Metric Clculation Verification
+## Metric Calculation Verification
 
 - **Rule-Based Classifier:**
   $$\text{Accuracy} = \frac{7694 + 338}{9043} = \frac{8032}{9043} = 88.8201\%$$
@@ -30,7 +43,7 @@ Results obtained from the 5-fold cross-validation pipeline (`random_state=42`):
 
 #### 1. Fold Results (Mean ± Standard Deviation)
 
-| Classifier | Accuracy | Precision (`yes`) | Recall (`yes`) | F1-Score (`yes`) | Total TP | Total FP | Total FN | Total TN |
+| Classifier | Accuracy | Precision | Recall | F1-Score | Total TP | Total FP | Total FN | Total TN |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Bayesian Network** ($\tau=0.50$) | **89.24% ± 0.19%** | **62.00% ± 1.56%** | 20.63% ± 2.47% | 30.91% ± 3.00% | 1,091 | 666 | 4,198 | 39,256 |
-| **Rule-Based** (2 branches) | 88.60% ± 0.14% | 52.17% ± 0.96% | **31.03% ± 1.39%** | **38.90% ± 1.30%** | **1,641** | 1,504 | 3,648 | 38,418 |
+| **Rule-Based Classifier** | **88.82%** | **53.74%** | **31.95%** | **0.4007** | 206 | 291 | **338** | 7,864 |
