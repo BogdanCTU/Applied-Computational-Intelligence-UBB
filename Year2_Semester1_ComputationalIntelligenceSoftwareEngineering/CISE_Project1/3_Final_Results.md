@@ -24,7 +24,7 @@
 
 ---
 
-# Stratified 5-Fold Cross-Validation
+# 5-Fold Cross-Validation
 
 Results obtained from the 5-fold cross-validation pipeline (`random_state=42`):
 

@@ -209,22 +209,23 @@ To ensure complete compliance, static AST analysis is implemented in [`branch_co
 
 ---
 
-### 6.2 Summary Performance: Mean and Standard Deviation across Folds
+### 6.2 Summary Performance: Cross Validation Mean and Standard Deviation across Folds
 
-The table below reports the **Mean ± Sample Standard Deviation** ($\text{ddof}=1$) across the 5 validation folds, alongside the **Total Confusion Matrix Counts** summed across all folds. Positive class is explicitly `"yes"`.
+The table below reports the **Cross Validation Fold-Level Summary (Mean ± Sample Standard Deviation, $\text{ddof}=1$)** across the 5 validation folds (as established in `README.md`), alongside the **Total Confusion Matrix Counts** summed across all 45,211 validation records. Positive class is explicitly `"yes"`.
 
-| Classifier | Accuracy (Mean ± Std) | Precision (Mean ± Std) | Recall (Mean ± Std) | F1-Score (Mean ± Std) | True Neg (TN) [Total] | False Pos (FP) [Total] | False Neg (FN) [Total] | True Pos (TP) [Total] |
+| Classifier | Accuracy | Precision | Recall | F1-Score | True Neg (TN) | False Pos (FP) | False Neg (FN) | True Pos (TP) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Bayesian Network** ($\tau=0.50$) | **0.8924 ± 0.0019** | **0.6200 ± 0.0156** | 0.2063 ± 0.0247 | 0.3091 ± 0.0300 | 39,256 | **666** | 4,198 | 1,091 |
-| **Rule-Based Classifier** (2 branches) | 0.8860 ± 0.0014 | 0.5217 ± 0.0096 | **0.3103 ± 0.0139** | **0.3890 ± 0.0130** | 38,418 | 1,504 | **3,648** | **1,641** |
-| **Majority Baseline** (Always `"no"`) | 0.8830 ± 0.0000 | 0.0000 ± 0.0000 | 0.0000 ± 0.0000 | 0.0000 ± 0.0000 | **39,922** | **0** | 5,289 | 0 |
+| **Bayesian Network** ($\tau=0.50$) | **89.24% ± 0.19%**<br>*(0.8924 ± 0.0019)* | **62.00% ± 1.56%**<br>*(0.6200 ± 0.0156)* | 20.63% ± 2.47%<br>*(0.2063 ± 0.0247)* | 30.91% ± 3.00%<br>*(0.3091 ± 0.0300)* | 39,256 | **666** | 4,198 | 1,091 |
+| **Rule-Based Classifier** (2 branches) | 88.60% ± 0.14%<br>*(0.8860 ± 0.0014)* | 52.17% ± 0.96%<br>*(0.5217 ± 0.0096)* | **31.03% ± 1.39%**<br>*(0.3103 ± 0.0139)* | **38.90% ± 1.30%**<br>*(0.3890 ± 0.0130)* | 38,418 | 1,504 | **3,648** | **1,641** |
+| **Majority Baseline** (reference) | 88.30% ± 0.00%<br>*(0.8830 ± 0.0000)* | 0.00% ± 0.00%<br>*(0.0000 ± 0.0000)* | 0.00% ± 0.00%<br>*(0.0000 ± 0.0000)* | 0.00% ± 0.00%<br>*(0.0000 ± 0.0000)* | **39,922** | **0** | 5,289 | 0 |
 
+Total Cross-Validation runtime: **15.72 seconds** (~3.14s per fold).  
 *Saved in `results/cv_metrics_summary.csv`.*
 
-#### Fold-Level Confusion Matrix Means (Mean ± Std per Fold):
-- **Bayesian Network:** True Pos (TP): $218.2 \pm 26.1$, False Pos (FP): $133.2 \pm 11.0$, False Neg (FN): $839.6 \pm 26.3$, True Neg (TN): $7,851.2 \pm 10.7$.
-- **Rule-Based Classifier:** True Pos (TP): $328.2 \pm 14.7$, False Pos (FP): $300.8 \pm 8.6$, False Neg (FN): $729.6 \pm 14.7$, True Neg (TN): $7,683.6 \pm 8.9$.
-- **Majority Baseline:** True Pos (TP): $0.0 \pm 0.0$, False Pos (FP): $0.0 \pm 0.0$, False Neg (FN): $1,057.8 \pm 0.4$, True Neg (TN): $7,984.4 \pm 0.5$.
+#### Fold-Level Confusion Matrix Means (Mean ± Standard Deviation per Fold):
+- **Bayesian Network:** True Neg (TN): $7,851.2 \pm 10.7$, False Pos (FP): $133.2 \pm 11.0$, False Neg (FN): $839.6 \pm 26.3$, True Pos (TP): $218.2 \pm 26.1$.
+- **Rule-Based Classifier:** True Neg (TN): $7,683.6 \pm 8.9$, False Pos (FP): $300.8 \pm 8.6$, False Neg (FN): $729.6 \pm 14.7$, True Pos (TP): $328.2 \pm 14.7$.
+- **Majority Baseline:** True Neg (TN): $7,984.4 \pm 0.5$, False Pos (FP): $0.0 \pm 0.0$, False Neg (FN): $1,057.8 \pm 0.4$, True Pos (TP): $0.0 \pm 0.0$.
 
 ---
 
@@ -256,16 +257,16 @@ The table below documents every individual fold's execution time, classification
 
 ### 6.4 Out-of-Fold (OOF) Pooled Metrics vs. Fold-Level Means
 
-Every client in the dataset was predicted out-of-fold. The table below presents the mathematical comparison between the **Fold-Level Mean (± Standard Deviation)** and the **Pooled Out-of-Fold Metrics** calculated on all $45,211$ concatenated predictions:
+Every client in the dataset was predicted out-of-fold. The table below presents the mathematical comparison between the **Cross Validation Fold-Level Mean (± Standard Deviation)** and the **Pooled Out-of-Fold Metrics** calculated on all $45,211$ concatenated predictions (as detailed in `README.md`):
 
-| Classifier | Aggregation Method | Accuracy | Precision (`yes`) | Recall (`yes`) | F1-Score (`yes`) | True Neg (TN) | False Pos (FP) | False Neg (FN) | True Pos (TP) |
+| Classifier | Aggregation Method | Accuracy | Precision | Recall | F1-Score | True Neg (TN) | False Pos (FP) | False Neg (FN) | True Pos (TP) |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Bayesian Network** | **Fold Mean ± Std** | **0.8924 ± 0.0019** | **0.6200 ± 0.0156** | 0.2063 ± 0.0247 | 0.3091 ± 0.0300 | 7,851.2 | 133.2 | 839.6 | 218.2 |
-| | **Pooled Out-of-Fold** | **0.8924** | **0.6209** | 0.2063 | 0.3097 | 39,256 | **666** | 4,198 | 1,091 |
-| **Rule-Based Classifier** | **Fold Mean ± Std** | 0.8860 ± 0.0014 | 0.5217 ± 0.0096 | **0.3103 ± 0.0139** | **0.3890 ± 0.0130** | 7,683.6 | 300.8 | 729.6 | 328.2 |
-| | **Pooled Out-of-Fold** | 0.8860 | 0.5218 | **0.3103** | **0.3891** | 38,418 | 1,504 | **3,648** | **1,641** |
-| **Majority Baseline** | **Fold Mean ± Std** | 0.8830 ± 0.0000 | 0.0000 ± 0.0000 | 0.0000 ± 0.0000 | 0.0000 ± 0.0000 | 7,984.4 | 0.0 | 1,057.8 | 0.0 |
-| | **Pooled Out-of-Fold** | 0.8830 | 0.0000 | 0.0000 | 0.0000 | 39,922 | 0 | 5,289 | 0 |
+| **Bayesian Network** | **Fold Mean ± Std** | **89.24% ± 0.19%** | **62.00% ± 1.56%** | 20.63% ± 2.47% | 30.91% ± 3.00% | 7,851.2 ± 10.7 | 133.2 ± 11.0 | 839.6 ± 26.3 | 218.2 ± 26.1 |
+| | **Pooled Out-of-Fold** | **89.24%** | **62.09%** | 20.63% | 0.3097 *(30.97%)* | 39,256 | **666** | 4,198 | 1,091 |
+| **Rule-Based Classifier** | **Fold Mean ± Std** | 88.60% ± 0.14% | 52.17% ± 0.96% | **31.03% ± 1.39%** | **38.90% ± 1.30%** | 7,683.6 ± 8.9 | 300.8 ± 8.6 | 729.6 ± 14.7 | 328.2 ± 14.7 |
+| | **Pooled Out-of-Fold** | 88.60% | 52.18% | **31.03%** | **0.3891 *(38.91%)*** | 38,418 | 1,504 | **3,648** | **1,641** |
+| **Majority Baseline** | **Fold Mean ± Std** | 88.30% ± 0.00% | 0.00% ± 0.00% | 0.00% ± 0.00% | 0.00% ± 0.00% | 7,984.4 ± 0.5 | 0.0 ± 0.0 | 1,057.8 ± 0.4 | 0.0 ± 0.0 |
+| | **Pooled Out-of-Fold** | 88.30% | 0.00% | 0.00% | 0.0000 *(0.00%)* | **39,922** | **0** | 5,289 | 0 |
 
 *Saved in `results/cv_pooled_metrics.csv` and `results/cv_predictions.csv`.*
 

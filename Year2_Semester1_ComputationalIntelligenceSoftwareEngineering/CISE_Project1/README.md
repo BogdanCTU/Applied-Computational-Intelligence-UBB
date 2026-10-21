@@ -99,19 +99,19 @@ The following reproducible results were obtained from the leak-free 5-fold cross
 
 #### 1. Fold-Level Summary (Mean ± Standard Deviation)
 
-| Classifier | Accuracy | Precision (`yes`) | Recall (`yes`) | F1-Score (`yes`) | Total TP | Total FP | Total FN | Total TN |
+| Classifier | Accuracy | Precision (`yes`) | Recall (`yes`) | F1-Score (`yes`) | True Neg (TN) | False Pos (FP) | False Neg (FN) | True Pos (TP) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Bayesian Network** ($\tau=0.50$) | **89.24% ± 0.19%** | **62.00% ± 1.56%** | 20.63% ± 2.47% | 30.91% ± 3.00% | 1,091 | 666 | 4,198 | 39,256 |
-| **Rule-Based** (2 branches) | 88.60% ± 0.14% | 52.17% ± 0.96% | **31.03% ± 1.39%** | **38.90% ± 1.30%** | **1,641** | 1,504 | 3,648 | 38,418 |
-| **Majority Baseline** (reference) | 88.30% ± 0.00% | 0.00% ± 0.00% | 0.00% ± 0.00% | 0.00% ± 0.00% | 0 | 0 | 5,289 | 39,922 |
+| **Bayesian Network** ($\tau=0.50$) | **89.24% ± 0.19%** | **62.00% ± 1.56%** | 20.63% ± 2.47% | 30.91% ± 3.00% | 39,256 | 666 | 4,198 | 1,091 |
+| **Rule-Based** (2 branches) | 88.60% ± 0.14% | 52.17% ± 0.96% | **31.03% ± 1.39%** | **38.90% ± 1.30%** | 38,418 | 1,504 | 3,648 | **1,641** |
+| **Majority Baseline** (reference) | 88.30% ± 0.00% | 0.00% ± 0.00% | 0.00% ± 0.00% | 0.00% ± 0.00% | 39,922 | 0 | 5,289 | 0 |
 
 #### 2. Out-of-Fold Pooled Metrics (Concatenated across all 45,211 instances)
 
-| Classifier | Pooled Accuracy | Pooled Precision | Pooled Recall | Pooled F1-score |
-| :--- | :---: | :---: | :---: | :---: |
-| **Bayesian Network** | 89.24% | 62.09% | 20.63% | 0.3097 |
-| **Rule-Based** | 88.60% | 52.18% | 31.03% | 0.3891 |
-| **Majority Baseline** | 88.30% | 0.00% | 0.00% | 0.0000 |
+| Classifier | Pooled Accuracy | Pooled Precision | Pooled Recall | Pooled F1-score | True Neg (TN) | False Pos (FP) | False Neg (FN) | True Pos (TP) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Bayesian Network** | **89.24%** | **62.09%** | 20.63% | 0.3097 | 39,256 | **666** | 4,198 | 1,091 |
+| **Rule-Based** | 88.60% | 52.18% | **31.03%** | **0.3891** | 38,418 | 1,504 | **3,648** | **1,641** |
+| **Majority Baseline** | 88.30% | 0.00% | 0.00% | 0.0000 | **39,922** | **0** | 5,289 | 0 |
 
 Total Cross-Validation runtime: **15.72 seconds** (~3.14s per fold).
 
@@ -119,12 +119,12 @@ Total Cross-Validation runtime: **15.72 seconds** (~3.14s per fold).
 
 ### Regime B: Held-Out Test Set (Single 80/20 Split, 9,043 Records)
 
-| Classifier | Accuracy | Precision | Recall | F1-score |
-| :--- | :---: | :---: | :---: | :---: |
-| **Rule-Based** | 88.82% | 53.74% | 31.95% | 0.4007 |
-| **Bayesian Network** ($\tau = 0.50$) | 89.24% | 63.00% | 19.47% | 0.2975 |
-| **Bayesian Network** (calibrated $\tau^* = 0.21$) | 87.47% | 45.91% | 39.79% | 0.4263 |
-| **Majority Baseline** | 88.30% | 0.00% | 0.00% | 0.0000 |
+| Classifier | Accuracy | Precision | Recall | F1-Score | True Neg (TN) | False Pos (FP) | False Neg (FN) | True Pos (TP) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Rule-Based** | 88.82% | 53.74% | 31.95% | 0.4007 | 7,694 | 291 | 720 | **338** |
+| **Bayesian Network** ($\tau = 0.50$) | **89.24%** | **63.00%** | 19.47% | 0.2975 | **7,864** | **121** | 852 | 206 |
+| **Bayesian Network** (calibrated $\tau^* = 0.21$) | 87.47% | 45.91% | **39.79%** | **0.4263** | 7,489 | 496 | **637** | 421 |
+| **Majority Baseline** | 88.30% | 0.00% | 0.00% | 0.0000 | 7,985 | 0 | 1,058 | 0 |
 
 ---
 
