@@ -1,0 +1,133 @@
+[
+  {
+    "query_entity_id": "1-Source-Class-Acceptance",
+    "query_entity_uri": "http://cmt#Acceptance",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "2-Source-Class-Administrator",
+    "query_entity_uri": "http://cmt#Administrator",
+    "syntactic_ranking": [
+      "6-Target-Class-Administrator"
+    ],
+    "lexical_ranking": [
+      "6-Target-Class-Administrator",
+      "7-Target-Class-Assistant"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "6-Target-Class-Administrator",
+        "similarity": 1.0
+      }
+    ],
+    "lexical_scores": [
+      {
+        "entity_id": "6-Target-Class-Administrator",
+        "similarity": 0.9226107643478669
+      },
+      {
+        "entity_id": "7-Target-Class-Assistant",
+        "similarity": 0.9049692153930728
+      }
+    ],
+    "semantic_scores": [],
+    "fused_ranking": [
+      [
+        2.0,
+        [
+          "6-Target-Class-Administrator"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "7-Target-Class-Assistant"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://confOf#Administrator",
+      "http://confOf#Assistant"
+    ],
+    "top_candidate_uri": "http://confOf#Administrator"
+  },
+  {
+    "query_entity_id": "3-Source-Class-AssociatedChair",
+    "query_entity_uri": "http://cmt#AssociatedChair",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "4-Source-Class-Author",
+    "query_entity_uri": "http://cmt#Author",
+    "syntactic_ranking": [
+      "8-Target-Class-Author"
+    ],
+    "lexical_ranking": [
+      "8-Target-Class-Author"
+    ],
+    "semantic_ranking": [
+      "8-Target-Class-Author"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "8-Target-Class-Author",
+        "similarity": 1.0
+      }
+    ],
+    "lexical_scores": [
+      {
+        "entity_id": "8-Target-Class-Author",
+        "similarity": 0.9139254910283429
+      }
+    ],
+    "semantic_scores": [
+      {
+        "entity_id": "8-Target-Class-Author",
+        "similarity": 0.9068646701235975
+      }
+    ],
+    "fused_ranking": [
+      [
+        3.0,
+        [
+          "8-Target-Class-Author"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://confOf#Author"
+    ],
+    "top_candidate_uri": "http://confOf#Author"
+  }
+]

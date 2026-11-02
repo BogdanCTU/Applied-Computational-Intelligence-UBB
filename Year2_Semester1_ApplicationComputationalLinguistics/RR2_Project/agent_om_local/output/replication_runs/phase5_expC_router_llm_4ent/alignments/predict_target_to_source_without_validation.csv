@@ -1,0 +1,4 @@
+Source,Target
+http://cmt#Administrator,http://confOf#Administrator
+http://cmt#Administrator,http://confOf#Assistant
+http://cmt#Author,http://confOf#Author

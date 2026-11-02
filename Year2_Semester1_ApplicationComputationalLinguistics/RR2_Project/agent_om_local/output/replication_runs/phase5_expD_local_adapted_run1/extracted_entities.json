@@ -1,0 +1,3460 @@
+{
+  "source_summary": {
+    "duration_ms": 4.583599999023136,
+    "total_classes": 29,
+    "total_object_properties": 49,
+    "total_datatype_properties": 10,
+    "total_properties": 59,
+    "total_entities": 88,
+    "excluded_entities": {}
+  },
+  "target_summary": {
+    "duration_ms": 3.621400001065922,
+    "total_classes": 38,
+    "total_object_properties": 13,
+    "total_datatype_properties": 23,
+    "total_properties": 36,
+    "total_entities": 74,
+    "excluded_entities": {}
+  },
+  "source_entities": [
+    {
+      "uri": "http://cmt#Acceptance",
+      "local_name": "Acceptance",
+      "display_name": "Acceptance",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#Decision"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://cmt#Rejection"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Administrator",
+      "local_name": "Administrator",
+      "display_name": "Administrator",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#User"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#AssociatedChair",
+      "local_name": "AssociatedChair",
+      "display_name": "AssociatedChair",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#ConferenceMember"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://cmt#ConferenceChair"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Author",
+      "local_name": "Author",
+      "display_name": "Author",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#ConferenceMember",
+        "http://cmt#User"
+      ],
+      "sub_entities": [
+        "http://cmt#AuthorNotReviewer",
+        "http://cmt#Co-author"
+      ],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#AuthorNotReviewer",
+      "local_name": "AuthorNotReviewer",
+      "display_name": "AuthorNotReviewer",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#Author"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://cmt#ProgramCommitteeMember",
+        "http://cmt#Reviewer"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Bid",
+      "local_name": "Bid",
+      "display_name": "Bid",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://cmt#Conference",
+        "http://cmt#Decision",
+        "http://cmt#Document",
+        "http://cmt#Person",
+        "http://cmt#Preference",
+        "http://cmt#ProgramCommittee"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Chairman",
+      "local_name": "Chairman",
+      "display_name": "Chairman",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#Person"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Co-author",
+      "local_name": "Co-author",
+      "display_name": "Co-author",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#Author"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Conference",
+      "local_name": "Conference",
+      "display_name": "Conference",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://cmt#Bid",
+        "http://cmt#Decision",
+        "http://cmt#Document",
+        "http://cmt#Person",
+        "http://cmt#Preference",
+        "http://cmt#ProgramCommittee"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#ConferenceChair",
+      "local_name": "ConferenceChair",
+      "display_name": "ConferenceChair",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#ConferenceMember"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://cmt#AssociatedChair"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#ConferenceMember",
+      "local_name": "ConferenceMember",
+      "display_name": "ConferenceMember",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#Person"
+      ],
+      "sub_entities": [
+        "http://cmt#AssociatedChair",
+        "http://cmt#Author",
+        "http://cmt#ConferenceChair",
+        "http://cmt#ProgramCommitteeMember",
+        "http://cmt#Reviewer"
+      ],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Decision",
+      "local_name": "Decision",
+      "display_name": "Decision",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [],
+      "sub_entities": [
+        "http://cmt#Acceptance",
+        "http://cmt#Rejection"
+      ],
+      "disjoint_with": [
+        "http://cmt#Bid",
+        "http://cmt#Conference",
+        "http://cmt#Document",
+        "http://cmt#Person",
+        "http://cmt#Preference",
+        "http://cmt#ProgramCommittee"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Document",
+      "local_name": "Document",
+      "display_name": "Document",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [],
+      "sub_entities": [
+        "http://cmt#Paper",
+        "http://cmt#Review"
+      ],
+      "disjoint_with": [
+        "http://cmt#Bid",
+        "http://cmt#Conference",
+        "http://cmt#Decision",
+        "http://cmt#Person",
+        "http://cmt#Preference",
+        "http://cmt#ProgramCommittee"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#ExternalReviewer",
+      "local_name": "ExternalReviewer",
+      "display_name": "ExternalReviewer",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "An External Reviewer is a person that has been assigned to review a paper for another Reviewer, but is not themselves a Reviewer."
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#Person"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://cmt#Reviewer"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Meta-Review",
+      "local_name": "Meta-Review",
+      "display_name": "Meta-Review",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#Review"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Meta-Reviewer",
+      "local_name": "Meta-Reviewer",
+      "display_name": "Meta-Reviewer",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "A special type of Reviewer.  There can be any number of Reviewers for a given paper, but only one Meta-Reviewer.  The Meta-Reviewer can go over all the reviews submitted for the paper and submit their own review.  Questions for the Meta-Reviewer can be different from those for a normal Reviewer.  Their role is to ensure that the reviews are good and consistent. The decision to use Meta-Reviewers is optional, and must be set before paper assignment occurs."
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#Reviewer"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Paper",
+      "local_name": "Paper",
+      "display_name": "Paper",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#Document"
+      ],
+      "sub_entities": [
+        "http://cmt#PaperAbstract",
+        "http://cmt#PaperFullVersion"
+      ],
+      "disjoint_with": [
+        "http://cmt#Review"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#PaperAbstract",
+      "local_name": "PaperAbstract",
+      "display_name": "PaperAbstract",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#Paper"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#PaperFullVersion",
+      "local_name": "PaperFullVersion",
+      "display_name": "PaperFullVersion",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#Paper"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Person",
+      "local_name": "Person",
+      "display_name": "Person",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [],
+      "sub_entities": [
+        "http://cmt#Chairman",
+        "http://cmt#ConferenceMember",
+        "http://cmt#ExternalReviewer",
+        "http://cmt#ProgramCommitteeMember",
+        "http://cmt#User"
+      ],
+      "disjoint_with": [
+        "http://cmt#Bid",
+        "http://cmt#Conference",
+        "http://cmt#Decision",
+        "http://cmt#Document",
+        "http://cmt#Preference",
+        "http://cmt#ProgramCommittee"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Preference",
+      "local_name": "Preference",
+      "display_name": "Preference",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://cmt#Bid",
+        "http://cmt#Conference",
+        "http://cmt#Decision",
+        "http://cmt#Document",
+        "http://cmt#Person",
+        "http://cmt#ProgramCommittee"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#ProgramCommittee",
+      "local_name": "ProgramCommittee",
+      "display_name": "ProgramCommittee",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://cmt#Bid",
+        "http://cmt#Conference",
+        "http://cmt#Decision",
+        "http://cmt#Document",
+        "http://cmt#Person",
+        "http://cmt#Preference"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#ProgramCommitteeChair",
+      "local_name": "ProgramCommitteeChair",
+      "display_name": "ProgramCommitteeChair",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#ProgramCommitteeMember"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#ProgramCommitteeMember",
+      "local_name": "ProgramCommitteeMember",
+      "display_name": "ProgramCommitteeMember",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "The Program Committee consists of all members of the conference except for Authors who are not also Reviewers."
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#ConferenceMember",
+        "http://cmt#Person"
+      ],
+      "sub_entities": [
+        "http://cmt#ProgramCommitteeChair"
+      ],
+      "disjoint_with": [
+        "http://cmt#AuthorNotReviewer"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Rejection",
+      "local_name": "Rejection",
+      "display_name": "Rejection",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#Decision"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://cmt#Acceptance"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Review",
+      "local_name": "Review",
+      "display_name": "Review",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#Document"
+      ],
+      "sub_entities": [
+        "http://cmt#Meta-Review"
+      ],
+      "disjoint_with": [
+        "http://cmt#Paper"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Reviewer",
+      "local_name": "Reviewer",
+      "display_name": "Reviewer",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#ConferenceMember",
+        "http://cmt#User"
+      ],
+      "sub_entities": [
+        "http://cmt#Meta-Reviewer"
+      ],
+      "disjoint_with": [
+        "http://cmt#AuthorNotReviewer",
+        "http://cmt#ExternalReviewer"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#SubjectArea",
+      "local_name": "SubjectArea",
+      "display_name": "SubjectArea",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#User",
+      "local_name": "User",
+      "display_name": "User",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#Person"
+      ],
+      "sub_entities": [
+        "http://cmt#Administrator",
+        "http://cmt#Author",
+        "http://cmt#Reviewer"
+      ],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#acceptPaper",
+      "local_name": "acceptPaper",
+      "display_name": "acceptPaper",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Administrator"
+      ],
+      "ranges": [
+        "http://cmt#Paper"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#acceptedBy",
+      "local_name": "acceptedBy",
+      "display_name": "acceptedBy",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Paper"
+      ],
+      "ranges": [
+        "http://cmt#Administrator"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#acceptsHardcopySubmissions",
+      "local_name": "acceptsHardcopySubmissions",
+      "display_name": "acceptsHardcopySubmissions",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Conference"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#boolean"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#addProgramCommitteeMember",
+      "local_name": "addProgramCommitteeMember",
+      "display_name": "addProgramCommitteeMember",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Administrator"
+      ],
+      "ranges": [
+        "http://cmt#ProgramCommitteeMember"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#addedBy",
+      "local_name": "addedBy",
+      "display_name": "addedBy",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#ProgramCommitteeMember"
+      ],
+      "ranges": [
+        "http://cmt#Administrator"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#adjustBid",
+      "local_name": "adjustBid",
+      "display_name": "adjustBid",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Reviewer"
+      ],
+      "ranges": [
+        "http://cmt#Bid"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#adjustedBy",
+      "local_name": "adjustedBy",
+      "display_name": "adjustedBy",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Bid"
+      ],
+      "ranges": [
+        "http://cmt#Reviewer"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#assignExternalReviewer",
+      "local_name": "assignExternalReviewer",
+      "display_name": "assignExternalReviewer",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Reviewer"
+      ],
+      "ranges": [
+        "http://cmt#ExternalReviewer"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#assignReviewer",
+      "local_name": "assignReviewer",
+      "display_name": "assignReviewer",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Administrator"
+      ],
+      "ranges": [
+        "http://cmt#Reviewer"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#assignedByAdministrator",
+      "local_name": "assignedByAdministrator",
+      "display_name": "assignedByAdministrator",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Reviewer"
+      ],
+      "ranges": [
+        "http://cmt#Administrator"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#assignedByReviewer",
+      "local_name": "assignedByReviewer",
+      "display_name": "assignedByReviewer",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#ExternalReviewer"
+      ],
+      "ranges": [
+        "http://cmt#Reviewer"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#assignedTo",
+      "local_name": "assignedTo",
+      "display_name": "assignedTo",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Paper"
+      ],
+      "ranges": [
+        "http://cmt#Reviewer"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#co-writePaper",
+      "local_name": "co-writePaper",
+      "display_name": "co-writePaper",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Co-author"
+      ],
+      "ranges": [
+        "http://cmt#Paper"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#date",
+      "local_name": "date",
+      "display_name": "date",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Conference"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#date"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#detailsEnteredBy",
+      "local_name": "detailsEnteredBy",
+      "display_name": "detailsEnteredBy",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Conference"
+      ],
+      "ranges": [
+        "http://cmt#Administrator"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#email",
+      "local_name": "email",
+      "display_name": "email",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Person"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#enableVirtualMeeting",
+      "local_name": "enableVirtualMeeting",
+      "display_name": "enableVirtualMeeting",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Administrator"
+      ],
+      "ranges": [
+        "http://cmt#Conference"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#endReview",
+      "local_name": "endReview",
+      "display_name": "endReview",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#ProgramCommitteeChair"
+      ],
+      "ranges": [
+        "http://cmt#Review"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#enterConferenceDetails",
+      "local_name": "enterConferenceDetails",
+      "display_name": "enterConferenceDetails",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Administrator"
+      ],
+      "ranges": [
+        "http://cmt#Conference"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#enterReviewCriteria",
+      "local_name": "enterReviewCriteria",
+      "display_name": "enterReviewCriteria",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Administrator"
+      ],
+      "ranges": [
+        "http://cmt#Conference"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#finalizePaperAssignment",
+      "local_name": "finalizePaperAssignment",
+      "display_name": "finalizePaperAssignment",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Administrator"
+      ],
+      "ranges": [
+        "http://cmt#Conference"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#hardcopyMailingManifestsPrintedBy",
+      "local_name": "hardcopyMailingManifestsPrintedBy",
+      "display_name": "hardcopyMailingManifestsPrintedBy",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Conference"
+      ],
+      "ranges": [
+        "http://cmt#Administrator"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#hasAuthor",
+      "local_name": "hasAuthor",
+      "display_name": "hasAuthor",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Paper"
+      ],
+      "ranges": [
+        "http://cmt#Author"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#hasBeenAssigned",
+      "local_name": "hasBeenAssigned",
+      "display_name": "hasBeenAssigned",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Reviewer"
+      ],
+      "ranges": [
+        "http://cmt#Paper"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#hasBid",
+      "local_name": "hasBid",
+      "display_name": "hasBid",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Paper"
+      ],
+      "ranges": [
+        "http://cmt#Bid"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#hasCo-author",
+      "local_name": "hasCo-author",
+      "display_name": "hasCo-author",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Paper"
+      ],
+      "ranges": [
+        "http://cmt#Co-author"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#hasConferenceMember",
+      "local_name": "hasConferenceMember",
+      "display_name": "hasConferenceMember",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Conference"
+      ],
+      "ranges": [
+        "http://cmt#ConferenceMember"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#hasConflictOfInterest",
+      "local_name": "hasConflictOfInterest",
+      "display_name": "hasConflictOfInterest",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Person"
+      ],
+      "ranges": [
+        "http://cmt#Document"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#hasDecision",
+      "local_name": "hasDecision",
+      "display_name": "hasDecision",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Paper"
+      ],
+      "ranges": [
+        "http://cmt#Decision"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#hasProgramCommitteeMember",
+      "local_name": "hasProgramCommitteeMember",
+      "display_name": "hasProgramCommitteeMember",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#ProgramCommittee"
+      ],
+      "ranges": [
+        "http://cmt#ProgramCommitteeMember"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#hasSubjectArea",
+      "local_name": "hasSubjectArea",
+      "display_name": "hasSubjectArea",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Paper"
+      ],
+      "ranges": [
+        "http://cmt#SubjectArea"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#logoURL",
+      "local_name": "logoURL",
+      "display_name": "logoURL",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Conference"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#anyURI"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#markConflictOfInterest",
+      "local_name": "markConflictOfInterest",
+      "display_name": "markConflictOfInterest",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [
+        "In CMT terms, a \u2018Conflict of Interest\u2019 is an association between a specific Reviewer and a specific Paper that states there is a conflict of interest between that Reviewer and that paper. Conflicts can be marked by Authors (during paper submission) or by Reviewers (in Phase 2) or by Chairmen (in Phase 3).\n\nBased on that conflict, the reviewer will not be able to bid on the paper, be assigned to that paper (either automatically by the system or manually by a Chairman) or view review submissions for that paper."
+      ],
+      "domains": [],
+      "ranges": [
+        "http://cmt#Paper"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#maxPapers",
+      "local_name": "maxPapers",
+      "display_name": "maxPapers",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#ProgramCommitteeMember"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#int"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#memberOfConference",
+      "local_name": "memberOfConference",
+      "display_name": "memberOfConference",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#ConferenceMember"
+      ],
+      "ranges": [
+        "http://cmt#Conference"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#memberOfProgramCommittee",
+      "local_name": "memberOfProgramCommittee",
+      "display_name": "memberOfProgramCommittee",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#ProgramCommitteeMember"
+      ],
+      "ranges": [
+        "http://cmt#ProgramCommittee"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#name",
+      "local_name": "name",
+      "display_name": "name",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#paperAssignmentFinalizedBy",
+      "local_name": "paperAssignmentFinalizedBy",
+      "display_name": "paperAssignmentFinalizedBy",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Conference"
+      ],
+      "ranges": [
+        "http://cmt#Administrator"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#paperAssignmentToolsRunBy",
+      "local_name": "paperAssignmentToolsRunBy",
+      "display_name": "paperAssignmentToolsRunBy",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Conference"
+      ],
+      "ranges": [
+        "http://cmt#Administrator"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#paperID",
+      "local_name": "paperID",
+      "display_name": "paperID",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Paper"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#unsignedLong"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#printHardcopyMailingManifests",
+      "local_name": "printHardcopyMailingManifests",
+      "display_name": "printHardcopyMailingManifests",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Administrator"
+      ],
+      "ranges": [
+        "http://cmt#Conference"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#readByMeta-Reviewer",
+      "local_name": "readByMeta-Reviewer",
+      "display_name": "readByMeta-Reviewer",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Paper"
+      ],
+      "ranges": [
+        "http://cmt#Meta-Reviewer"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#readByReviewer",
+      "local_name": "readByReviewer",
+      "display_name": "readByReviewer",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Paper"
+      ],
+      "ranges": [
+        "http://cmt#Reviewer"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#readPaper",
+      "local_name": "readPaper",
+      "display_name": "readPaper",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Reviewer"
+      ],
+      "ranges": [
+        "http://cmt#Paper"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#rejectPaper",
+      "local_name": "rejectPaper",
+      "display_name": "rejectPaper",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Administrator"
+      ],
+      "ranges": [
+        "http://cmt#Paper"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#rejectedBy",
+      "local_name": "rejectedBy",
+      "display_name": "rejectedBy",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Paper"
+      ],
+      "ranges": [
+        "http://cmt#Administrator"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#reviewCriteriaEnteredBy",
+      "local_name": "reviewCriteriaEnteredBy",
+      "display_name": "reviewCriteriaEnteredBy",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Conference"
+      ],
+      "ranges": [
+        "http://cmt#Administrator"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#reviewerBiddingStartedBy",
+      "local_name": "reviewerBiddingStartedBy",
+      "display_name": "reviewerBiddingStartedBy",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Conference"
+      ],
+      "ranges": [
+        "http://cmt#Administrator"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#reviewsPerPaper",
+      "local_name": "reviewsPerPaper",
+      "display_name": "reviewsPerPaper",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Conference"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#int"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#runPaperAssignmentTools",
+      "local_name": "runPaperAssignmentTools",
+      "display_name": "runPaperAssignmentTools",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Administrator"
+      ],
+      "ranges": [
+        "http://cmt#Conference"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#setMaxPapers",
+      "local_name": "setMaxPapers",
+      "display_name": "setMaxPapers",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Administrator"
+      ],
+      "ranges": [
+        "http://cmt#ProgramCommitteeMember"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#siteURL",
+      "local_name": "siteURL",
+      "display_name": "siteURL",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Conference"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#anyURI"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#startReviewerBidding",
+      "local_name": "startReviewerBidding",
+      "display_name": "startReviewerBidding",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Administrator"
+      ],
+      "ranges": [
+        "http://cmt#Conference"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#submitPaper",
+      "local_name": "submitPaper",
+      "display_name": "submitPaper",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Author"
+      ],
+      "ranges": [
+        "http://cmt#Paper"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#title",
+      "local_name": "title",
+      "display_name": "title",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Paper"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#virtualMeetingEnabledBy",
+      "local_name": "virtualMeetingEnabledBy",
+      "display_name": "virtualMeetingEnabledBy",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Conference"
+      ],
+      "ranges": [
+        "http://cmt#Administrator"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#writePaper",
+      "local_name": "writePaper",
+      "display_name": "writePaper",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Author"
+      ],
+      "ranges": [
+        "http://cmt#Paper"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#writeReview",
+      "local_name": "writeReview",
+      "display_name": "writeReview",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Reviewer"
+      ],
+      "ranges": [
+        "http://cmt#Review"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#writtenBy",
+      "local_name": "writtenBy",
+      "display_name": "writtenBy",
+      "entity_type": "Property",
+      "source_or_target": "Source",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://cmt#Review"
+      ],
+      "ranges": [
+        "http://cmt#Reviewer"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    }
+  ],
+  "target_entities": [
+    {
+      "uri": "http://confOf#Administrative_event",
+      "local_name": "Administrative_event",
+      "display_name": "Administrative_event",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Event"
+      ],
+      "sub_entities": [
+        "http://confOf#Camera_Ready_event",
+        "http://confOf#Registration_of_participants_event",
+        "http://confOf#Reviewing_event",
+        "http://confOf#Reviewing_results_event",
+        "http://confOf#Submission_event"
+      ],
+      "disjoint_with": [
+        "http://confOf#Social_event",
+        "http://confOf#Working_event"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Administrator",
+      "local_name": "Administrator",
+      "display_name": "Administrator",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Person"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Assistant",
+      "local_name": "Assistant",
+      "display_name": "Assistant",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Person"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Author",
+      "local_name": "Author",
+      "display_name": "Author",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Person"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Banquet",
+      "local_name": "Banquet",
+      "display_name": "Banquet",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Social_event"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#Reception",
+        "http://confOf#Trip"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Camera_Ready_event",
+      "local_name": "Camera_Ready_event",
+      "display_name": "Camera_Ready_event",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "Final upload of accepted contributions",
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Administrative_event"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#Registration_of_participants_event",
+        "http://confOf#Reviewing_event",
+        "http://confOf#Reviewing_results_event",
+        "http://confOf#Submission_event"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Chair_PC",
+      "local_name": "Chair_PC",
+      "display_name": "Chair_PC",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Person"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#City",
+      "local_name": "City",
+      "display_name": "City",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#Contribution",
+        "http://confOf#Event",
+        "http://confOf#Organization",
+        "http://confOf#Person",
+        "http://confOf#Topic"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Company",
+      "local_name": "Company",
+      "display_name": "Company",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Organization"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#University"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Conference",
+      "local_name": "Conference",
+      "display_name": "Conference",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Working_event"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#Tutorial",
+        "http://confOf#Workshop"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Contribution",
+      "local_name": "Contribution",
+      "display_name": "Contribution",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [],
+      "sub_entities": [
+        "http://confOf#Paper",
+        "http://confOf#Poster",
+        "http://confOf#Short_paper"
+      ],
+      "disjoint_with": [
+        "http://confOf#City",
+        "http://confOf#Country",
+        "http://confOf#Event",
+        "http://confOf#Organization",
+        "http://confOf#Person",
+        "http://confOf#Topic"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Country",
+      "local_name": "Country",
+      "display_name": "Country",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#Contribution",
+        "http://confOf#Event",
+        "http://confOf#Organization",
+        "http://confOf#Person",
+        "http://confOf#Topic"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Event",
+      "local_name": "Event",
+      "display_name": "Event",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [],
+      "sub_entities": [
+        "http://confOf#Administrative_event",
+        "http://confOf#Social_event",
+        "http://confOf#Working_event"
+      ],
+      "disjoint_with": [
+        "http://confOf#City",
+        "http://confOf#Contribution",
+        "http://confOf#Country",
+        "http://confOf#Organization",
+        "http://confOf#Person",
+        "http://confOf#Topic"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Member",
+      "local_name": "Member",
+      "display_name": "Member",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Participant"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Member_PC",
+      "local_name": "Member_PC",
+      "display_name": "Member_PC",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "Reviewer",
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Person"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Organization",
+      "local_name": "Organization",
+      "display_name": "Organization",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [],
+      "sub_entities": [
+        "http://confOf#Company",
+        "http://confOf#University"
+      ],
+      "disjoint_with": [
+        "http://confOf#City",
+        "http://confOf#Contribution",
+        "http://confOf#Country",
+        "http://confOf#Event",
+        "http://confOf#Person",
+        "http://confOf#Topic"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Paper",
+      "local_name": "Paper",
+      "display_name": "Paper",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Contribution"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#Poster",
+        "http://confOf#Short_paper"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Participant",
+      "local_name": "Participant",
+      "display_name": "Participant",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Person"
+      ],
+      "sub_entities": [
+        "http://confOf#Member",
+        "http://confOf#Regular",
+        "http://confOf#Student"
+      ],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Person",
+      "local_name": "Person",
+      "display_name": "Person",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [],
+      "sub_entities": [
+        "http://confOf#Administrator",
+        "http://confOf#Assistant",
+        "http://confOf#Author",
+        "http://confOf#Chair_PC",
+        "http://confOf#Member_PC",
+        "http://confOf#Participant",
+        "http://confOf#Scholar",
+        "http://confOf#Science_Worker",
+        "http://confOf#Volunteer"
+      ],
+      "disjoint_with": [
+        "http://confOf#City",
+        "http://confOf#Contribution",
+        "http://confOf#Country",
+        "http://confOf#Event",
+        "http://confOf#Organization",
+        "http://confOf#Topic"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Poster",
+      "local_name": "Poster",
+      "display_name": "Poster",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Contribution"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#Paper",
+        "http://confOf#Short_paper"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Reception",
+      "local_name": "Reception",
+      "display_name": "Reception",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Social_event"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#Banquet",
+        "http://confOf#Trip"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Registration_of_participants_event",
+      "local_name": "Registration_of_participants_event",
+      "display_name": "Registration_of_participants_event",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "Registration of new ConfTool users",
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Administrative_event"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#Camera_Ready_event",
+        "http://confOf#Reviewing_event",
+        "http://confOf#Reviewing_results_event",
+        "http://confOf#Submission_event"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Regular",
+      "local_name": "Regular",
+      "display_name": "Regular",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Participant"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Reviewing_event",
+      "local_name": "Reviewing_event",
+      "display_name": "Reviewing_event",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "Reviewing procedure for submitted contributions",
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Administrative_event"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#Camera_Ready_event",
+        "http://confOf#Registration_of_participants_event",
+        "http://confOf#Reviewing_results_event",
+        "http://confOf#Submission_event"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Reviewing_results_event",
+      "local_name": "Reviewing_results_event",
+      "display_name": "Reviewing_results_event",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "Results of the reviewing procedures, accessable to authors",
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Administrative_event"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#Camera_Ready_event",
+        "http://confOf#Registration_of_participants_event",
+        "http://confOf#Reviewing_event",
+        "http://confOf#Submission_event"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Scholar",
+      "local_name": "Scholar",
+      "display_name": "Scholar",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool",
+        "price category - scholar"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Person"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Science_Worker",
+      "local_name": "Science_Worker",
+      "display_name": "Science_Worker",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool",
+        "price category - science worker"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Person"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Short_paper",
+      "local_name": "Short_paper",
+      "display_name": "Short_paper",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Contribution"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#Paper",
+        "http://confOf#Poster"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Social_event",
+      "local_name": "Social_event",
+      "display_name": "Social_event",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Event"
+      ],
+      "sub_entities": [
+        "http://confOf#Banquet",
+        "http://confOf#Reception",
+        "http://confOf#Trip"
+      ],
+      "disjoint_with": [
+        "http://confOf#Administrative_event",
+        "http://confOf#Working_event"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Student",
+      "local_name": "Student",
+      "display_name": "Student",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Participant"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Submission_event",
+      "local_name": "Submission_event",
+      "display_name": "Submission_event",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "Submission of contributions",
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Administrative_event"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#Camera_Ready_event",
+        "http://confOf#Registration_of_participants_event",
+        "http://confOf#Reviewing_event",
+        "http://confOf#Reviewing_results_event"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Topic",
+      "local_name": "Topic",
+      "display_name": "Topic",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#City",
+        "http://confOf#Contribution",
+        "http://confOf#Country",
+        "http://confOf#Event",
+        "http://confOf#Organization",
+        "http://confOf#Person"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Trip",
+      "local_name": "Trip",
+      "display_name": "Trip",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Social_event"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#Banquet",
+        "http://confOf#Reception"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Tutorial",
+      "local_name": "Tutorial",
+      "display_name": "Tutorial",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Working_event"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#Conference",
+        "http://confOf#Workshop"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#University",
+      "local_name": "University",
+      "display_name": "University",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Organization"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#Company"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Volunteer",
+      "local_name": "Volunteer",
+      "display_name": "Volunteer",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Person"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Working_event",
+      "local_name": "Working_event",
+      "display_name": "Working_event",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Event"
+      ],
+      "sub_entities": [
+        "http://confOf#Conference",
+        "http://confOf#Tutorial",
+        "http://confOf#Workshop"
+      ],
+      "disjoint_with": [
+        "http://confOf#Administrative_event",
+        "http://confOf#Social_event"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Workshop",
+      "local_name": "Workshop",
+      "display_name": "Workshop",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Working_event"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://confOf#Conference",
+        "http://confOf#Tutorial"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#abstract",
+      "local_name": "abstract",
+      "display_name": "abstract",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Contribution"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#contactEmail",
+      "local_name": "contactEmail",
+      "display_name": "contactEmail",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Contribution"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#dealsWith",
+      "local_name": "dealsWith",
+      "display_name": "dealsWith",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Contribution"
+      ],
+      "ranges": [
+        "http://confOf#Topic"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#defaultChoice",
+      "local_name": "defaultChoice",
+      "display_name": "defaultChoice",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#positiveInteger"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#earlyRegistration",
+      "local_name": "earlyRegistration",
+      "display_name": "earlyRegistration",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://confOf#Participant"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#boolean"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#employedBy",
+      "local_name": "employedBy",
+      "display_name": "employedBy",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Person"
+      ],
+      "ranges": [
+        "http://confOf#Organization"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#ends_on",
+      "local_name": "ends_on",
+      "display_name": "ends_on",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Event"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#expertOn",
+      "local_name": "expertOn",
+      "display_name": "expertOn",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Member_PC"
+      ],
+      "ranges": [
+        "http://confOf#Topic"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#follows",
+      "local_name": "follows",
+      "display_name": "follows",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://confOf#Administrative_event"
+      ],
+      "ranges": [
+        "http://confOf#Administrative_event"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#hasAdministrativeEvent",
+      "local_name": "hasAdministrativeEvent",
+      "display_name": "hasAdministrativeEvent",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://confOf#Working_event"
+      ],
+      "ranges": [
+        "http://confOf#Administrative_event"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#hasCity",
+      "local_name": "hasCity",
+      "display_name": "hasCity",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [
+        "http://confOf#City"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#hasCountry",
+      "local_name": "hasCountry",
+      "display_name": "hasCountry",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [
+        "http://confOf#Country"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#hasEmail",
+      "local_name": "hasEmail",
+      "display_name": "hasEmail",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Person"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#hasFax",
+      "local_name": "hasFax",
+      "display_name": "hasFax",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Person"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#hasFirstName",
+      "local_name": "hasFirstName",
+      "display_name": "hasFirstName",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool",
+        "involved middle name"
+      ],
+      "domains": [
+        "http://confOf#Person"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#hasHomePage",
+      "local_name": "hasHomePage",
+      "display_name": "hasHomePage",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Person"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#hasKeyword",
+      "local_name": "hasKeyword",
+      "display_name": "hasKeyword",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Contribution"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#hasPhone",
+      "local_name": "hasPhone",
+      "display_name": "hasPhone",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Person"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#hasPostalCode",
+      "local_name": "hasPostalCode",
+      "display_name": "hasPostalCode",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#hasStreet",
+      "local_name": "hasStreet",
+      "display_name": "hasStreet",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#hasSurname",
+      "local_name": "hasSurname",
+      "display_name": "hasSurname",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Person"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#hasTitle",
+      "local_name": "hasTitle",
+      "display_name": "hasTitle",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Contribution"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#hasTopic",
+      "local_name": "hasTopic",
+      "display_name": "hasTopic",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Working_event"
+      ],
+      "ranges": [
+        "http://confOf#Topic"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#hasVAT",
+      "local_name": "hasVAT",
+      "display_name": "hasVAT",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool",
+        "value added tax"
+      ],
+      "domains": [],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#has_short_title",
+      "local_name": "has_short_title",
+      "display_name": "has_short_title",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#has_title",
+      "local_name": "has_title",
+      "display_name": "has_title",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#location",
+      "local_name": "location",
+      "display_name": "location",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool",
+        "where the event is being held"
+      ],
+      "domains": [],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#maxChoice",
+      "local_name": "maxChoice",
+      "display_name": "maxChoice",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#positiveInteger"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#minChoice",
+      "local_name": "minChoice",
+      "display_name": "minChoice",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#positiveInteger"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#parallel_with",
+      "local_name": "parallel_with",
+      "display_name": "parallel_with",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://confOf#Administrative_event"
+      ],
+      "ranges": [
+        "http://confOf#Administrative_event"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#remark",
+      "local_name": "remark",
+      "display_name": "remark",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Contribution"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#reviewes",
+      "local_name": "reviewes",
+      "display_name": "reviewes",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://confOf#Member_PC"
+      ],
+      "ranges": [
+        "http://confOf#Contribution"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#starts_on",
+      "local_name": "starts_on",
+      "display_name": "starts_on",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "DatatypeProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Event"
+      ],
+      "ranges": [
+        "http://www.w3.org/2001/XMLSchema#string"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#studyAt",
+      "local_name": "studyAt",
+      "display_name": "studyAt",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [],
+      "domains": [
+        "http://confOf#Scholar"
+      ],
+      "ranges": [
+        "http://confOf#University"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#writes",
+      "local_name": "writes",
+      "display_name": "writes",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Author"
+      ],
+      "ranges": [
+        "http://confOf#Contribution"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#writtenBy",
+      "local_name": "writtenBy",
+      "display_name": "writtenBy",
+      "entity_type": "Property",
+      "source_or_target": "Target",
+      "property_kind": "ObjectProperty",
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [
+        "http://confOf#Contribution"
+      ],
+      "ranges": [
+        "http://confOf#Author"
+      ],
+      "super_entities": [],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    }
+  ]
+}
