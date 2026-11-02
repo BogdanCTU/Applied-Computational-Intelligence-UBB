@@ -1,0 +1,7 @@
+LLM,Alignment,Precision,Recall,F1
+llama3:8b,conference/cmt-confof/component/source_no_validation,14.89,43.75,22.22
+llama3:8b,conference/cmt-confof/component/source,26.92,43.75,33.33
+llama3:8b,conference/cmt-confof/component/target_no_validation,15.22,43.75,22.58
+llama3:8b,conference/cmt-confof/component/target,22.22,37.50,27.91
+llama3:8b,conference/cmt-confof/component/no_validation,28.57,37.50,32.43
+llama3:8b,conference/cmt-confof/component/llm_with_agent,41.67,31.25,35.71

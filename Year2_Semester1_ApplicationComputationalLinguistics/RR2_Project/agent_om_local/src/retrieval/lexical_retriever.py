@@ -3,15 +3,13 @@
 from __future__ import annotations
 
 import time
-from typing import Any, Dict, List, Optional, Set, Union
-import rdflib
-from rdflib import Graph, Literal, URIRef
+from typing import Any, Dict, Optional, Set, Tuple, Union
+from rdflib import Graph, URIRef
 from rdflib.namespace import RDF, RDFS, SKOS
 from langchain_core.prompts import PromptTemplate
 from langchain_core.language_models import BaseChatModel
-from langchain_ollama import ChatOllama
 
-from ..config import config
+from ..config import AppConfig, config
 from ..ontology.parser import OntologyGraph
 from ..ontology.entity_extractor import OntologyEntity
 from ..utils.text_processing import uri_to_name
@@ -36,6 +34,11 @@ class LexicalRetriever:
         SKOS.example,
     ]
 
+    PVL_V1_LEXICAL_PREDICATES = [
+        RDFS.comment,
+        RDF.value,
+    ]
+
     TEMPLATE_WITH_EXTRA = (
         "Question: What is the meaning of {entity_name}?\n"
         "Context: {context}\n"
@@ -54,10 +57,18 @@ class LexicalRetriever:
         llm: Optional[BaseChatModel] = None,
         context: str = "conference",
         ontology_is_code: bool = False,
+        predicate_scope: str = "head",
+        sort_annotations: bool = True,
+        strip_response: bool = True,
+        app_config: Optional[AppConfig] = None,
     ):
         self.llm = llm
         self.context = context
         self.ontology_is_code = ontology_is_code
+        self.predicate_scope = predicate_scope
+        self.sort_annotations = sort_annotations
+        self.strip_response = strip_response
+        self.app_config = app_config or config
         self.prompt_with_extra = PromptTemplate(
             input_variables=["entity_name", "context", "extra_information"],
             template=self.TEMPLATE_WITH_EXTRA,
@@ -68,13 +79,9 @@ class LexicalRetriever:
         )
 
     def _ensure_llm(self) -> BaseChatModel:
-        """Instantiate default ChatOllama model if not injected."""
+        """Instantiate configured local ChatOllama model if not injected."""
         if self.llm is None:
-            self.llm = ChatOllama(
-                model=config.default_llm,
-                temperature=config.temperature,
-                num_ctx=config.num_ctx,
-            )
+            self.llm = self.app_config.build_chat_llm()
         return self.llm
 
     def extract_extra_information(
@@ -83,33 +90,45 @@ class LexicalRetriever:
         ontology_graph: Graph,
     ) -> str:
         """
-        Collects all lexical annotations from the 10 predicates.
+        Collects lexical annotations from configured predicates (10 in HEAD, 2 in PVLDB v1.0.0).
         Reproduces lines 135-157 of om_ontology_to_csv.py.
         """
         uri = URIRef(str(entity_uri))
-        extra_set: Set[str] = set()
+        predicates = (
+            self.PVL_V1_LEXICAL_PREDICATES
+            if self.predicate_scope == "pvl_v1"
+            else self.LEXICAL_PREDICATES
+        )
 
-        for pred in self.LEXICAL_PREDICATES:
-            for s, p, o in ontology_graph.triples((uri, pred, None)):
-                extra_set.add(str(o))
+        if self.sort_annotations:
+            extra_set: Set[str] = set()
+            for pred in predicates:
+                for _, _, o in ontology_graph.triples((uri, pred, None)):
+                    extra_set.add(str(o))
+            return " ".join(sorted(list(extra_set)))
 
-        # Join unique non-empty comments
-        extra_info = " ".join(sorted(list(extra_set)))
-        return extra_info
+        seen: list[str] = []
+        for pred in predicates:
+            for _, _, o in ontology_graph.triples((uri, pred, None)):
+                val = str(o)
+                if val not in seen:
+                    seen.append(val)
+        return " ".join(seen)
 
     def get_entity_name(
         self,
         entity_uri: Union[str, URIRef],
         ontology_graph: Graph,
     ) -> str:
-        """Extracts display name based on ontology_is_code flag."""
+        """Extracts display name based on ontology_is_code flag deterministically."""
         uri = URIRef(str(entity_uri))
         if self.ontology_is_code:
-            # Check rdfs:label and skos:prefLabel
-            for _, _, o in ontology_graph.triples((uri, RDFS.label, None)):
-                return str(o)
-            for _, _, o in ontology_graph.triples((uri, SKOS.prefLabel, None)):
-                return str(o)
+            rdfs_labels = sorted(str(o) for _, _, o in ontology_graph.triples((uri, RDFS.label, None)) if str(o))
+            if rdfs_labels:
+                return rdfs_labels[0]
+            skos_labels = sorted(str(o) for _, _, o in ontology_graph.triples((uri, SKOS.prefLabel, None)) if str(o))
+            if skos_labels:
+                return skos_labels[0]
         return uri_to_name(uri)
 
     def build_prompt_text(
@@ -152,7 +171,12 @@ class LexicalRetriever:
         response = llm.invoke(prompt_text)
         duration_ms = (time.perf_counter() - t0) * 1000.0
 
-        content = str(response.content).strip()
+        raw_content = str(response.content)
+        content = raw_content.strip() if self.strip_response else raw_content
+        resp_meta = getattr(response, "response_metadata", {}) or {}
+        prompt_tokens = int(resp_meta.get("prompt_eval_count", 0) or 0)
+        completion_tokens = int(resp_meta.get("eval_count", 0) or 0)
+
         metadata = {
             "entity_uri": uri,
             "entity_name": entity_name,
@@ -160,8 +184,10 @@ class LexicalRetriever:
             "extra_info": extra_info,
             "prompt_text": prompt_text,
             "duration_ms": duration_ms,
-            "response_metadata": getattr(response, "response_metadata", {}),
+            "llm_calls": 1,
+            "prompt_tokens": prompt_tokens,
+            "completion_tokens": completion_tokens,
+            "response_metadata": resp_meta,
         }
 
         return content, metadata
-

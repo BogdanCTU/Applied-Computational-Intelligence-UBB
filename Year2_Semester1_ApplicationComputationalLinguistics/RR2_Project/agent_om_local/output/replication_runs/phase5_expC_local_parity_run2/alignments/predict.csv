@@ -1,0 +1,12 @@
+Source,Target
+http://cmt#Administrator,http://confOf#Administrator
+http://cmt#Author,http://confOf#Author
+http://cmt#Conference,http://confOf#Conference
+http://cmt#ConferenceMember,http://confOf#Participant
+http://cmt#Paper,http://confOf#Paper
+http://cmt#Person,http://confOf#Person
+http://cmt#ProgramCommitteeMember,http://confOf#Member_PC
+http://cmt#hasConferenceMember,http://confOf#hasPhone
+http://cmt#maxPapers,http://confOf#maxChoice
+http://cmt#title,http://confOf#hasTitle
+http://cmt#writtenBy,http://confOf#writtenBy

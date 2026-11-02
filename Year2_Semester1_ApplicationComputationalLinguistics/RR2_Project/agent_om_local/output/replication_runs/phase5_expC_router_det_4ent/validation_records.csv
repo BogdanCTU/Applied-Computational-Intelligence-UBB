@@ -1,0 +1,5 @@
+source_uri,target_uri,source_name,target_name,cleaned_source_name,cleaned_target_name,bypassed,direction,prompt,raw_response,decision,duration_ms,prompt_tokens,completion_tokens,total_tokens,error_message
+http://cmt#Administrator,http://confOf#Administrator,Administrator,Administrator,administrator,administrator,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,
+http://cmt#Author,http://confOf#Author,Author,Author,author,author,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,
+http://confOf#Administrator,http://cmt#Administrator,Administrator,Administrator,administrator,administrator,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,
+http://confOf#Author,http://cmt#Author,Author,Author,author,author,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,

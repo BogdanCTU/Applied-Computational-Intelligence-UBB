@@ -1,0 +1,222 @@
+entity_id,entity_uri,source_or_target,entity_type,syntactic_matching,lexical_matching,semantic_matching
+1-Source-Class-Acceptance,http://cmt#Acceptance,Source,Class,acceptance,"In the context of a conference, acceptance refers to the act of agreeing to participate or present at the event. This can include accepting an invitation to speak, present a paper, or lead a workshop.
+
+In a broader sense, acceptance can also refer to the willingness to acknowledge and embrace the current situation, including the challenges and opportunities that come with it. This can be particularly relevant in a conference setting, where attendees may be grappling with complex issues or exploring new ideas.
+
+In the context of a conference, acceptance can also imply a sense of commitment or responsibility. For example, an individual may accept the challenge of leading a discussion or facilitating a group activity, or they may accept the responsibility of representing their organization or community.
+
+Overall, the concept of acceptance in a conference setting emphasizes the importance of openness, willingness, and commitment to engaging with others and exploring new ideas.","Here are the triples verbalized into phrases:
+
+1. ""Acceptance"" is a subclass of ""Decision"".
+2. ""Acceptance"" is disjoint from ""Rejection"".
+3. ""Rejection"" is disjoint from ""Acceptance"".
+
+Let me know if you'd like me to help with anything else!"
+2-Source-Class-Administrator,http://cmt#Administrator,Source,Class,administrator,"Within the context of a conference, an Administrator is likely referring to a person responsible for managing and organizing the event. This individual is responsible for ensuring the smooth operation of the conference, including tasks such as:
+
+* Coordinating logistics, such as venue selection, catering, and accommodations
+* Managing the conference program, including scheduling speakers, sessions, and workshops
+* Overseeing registration and attendee management
+* Handling finances and budgeting for the event
+* Coordinating with vendors and suppliers to provide necessary services and equipment
+* Ensuring compliance with conference policies and procedures
+
+In this context, the Administrator is a key member of the conference planning team, working behind the scenes to ensure the success of the event.","Here are the verbalized triples into phrases:
+
+1. ""acceptPaper"" rdfs:domain ""Administrator"" .
+	* An administrator can accept a paper.
+
+2. ""acceptedBy"" rdfs:range ""Administrator"" .
+	* A paper is accepted by an administrator.
+
+3. ""addProgramCommitteeMember"" rdfs:domain ""Administrator"" .
+	* An administrator can add a program committee member.
+
+4. ""addedBy"" rdfs:range ""Administrator"" .
+	* A program committee member is added by an administrator.
+
+5. ""assignReviewer"" rdfs:domain ""Administrator"" .
+	* An administrator can assign a reviewer.
+
+6. ""assignedByAdministrator"" rdfs:range ""Administrator"" .
+	* A reviewer is assigned by an administrator.
+
+7. ""detailsEnteredBy"" rdfs:range ""Administrator"" .
+	* Conference details are entered by an administrator.
+
+8. ""enableVirtualMeeting"" rdfs:domain ""Administrator"" .
+	* An administrator can enable a virtual meeting.
+
+9. ""enterConferenceDetails"" rdfs:domain ""Administrator"" .
+	* An administrator can enter conference details.
+
+10. ""enterReviewCriteria"" rdfs:domain ""Administrator"" .
+	* An administrator can enter review criteria.
+
+11. ""finalizePaperAssignment"" rdfs:domain ""Administrator"" .
+	* An administrator can finalize a paper assignment.
+
+12. ""hardcopyMailingManifestsPrintedBy"" rdfs:range ""Administrator"" .
+	* Hardcopy mailing manifests are printed by an administrator.
+
+13. ""paperAssignmentFinalizedBy"" rdfs:range ""Administrator"" .
+	* A paper assignment is finalized by an administrator.
+
+14. ""paperAssignmentToolsRunBy"" rdfs:range ""Administrator"" .
+	* Paper assignment tools are run by an administrator.
+
+15. ""printHardcopyMailingManifests"" rdfs:domain ""Administrator"" .
+	* An administrator can print hardcopy mailing manifests.
+
+16. ""rejectPaper"" rdfs:domain ""Administrator"" .
+	* An administrator can reject a paper.
+
+17. ""rejectedBy"" rdfs:range ""Administrator"" .
+	* A paper is rejected by an administrator.
+
+18. ""reviewCriteriaEnteredBy"" rdfs:range ""Administrator"" .
+	* Review criteria are entered by an administrator.
+
+19. ""reviewerBiddingStartedBy"" rdfs:range ""Administrator"" .
+	* Reviewer bidding is started by an administrator.
+
+20. ""runPaperAssignmentTools"" rdfs:domain ""Administrator"" .
+	* An administrator can run paper assignment tools.
+
+21. ""setMaxPapers"" rdfs:domain ""Administrator"" .
+	* An administrator can set the maximum number of papers.
+
+22. ""startReviewerBidding"" rdfs:domain ""Administrator"" .
+	* An administrator can start reviewer bidding.
+
+23. ""virtualMeetingEnabledBy"" rdfs:range ""Administrator"" .
+	* A virtual meeting is enabled by an administrator.
+
+24. ""Administrator"" rdfs:subClassOf ""User"" .
+	* An administrator is a type of user."
+3-Source-Class-AssociatedChair,http://cmt#AssociatedChair,Source,Class,associated chair,"Within the context of a conference, I would interpret ""AssociatedChair"" as a person who is both associated with a particular organization or entity and also holds the role of a chairperson, likely in a specific session or committee at the conference.
+
+In other words, an AssociatedChair is someone who has a connection or affiliation with a particular group, company, or institution, and is also responsible for leading or facilitating a specific aspect of the conference, such as a panel discussion, workshop, or meeting.","Here are the triples verbalized into phrases:
+
+1. ""AssociatedChair"" is a subclass of ""ConferenceMember"" and has no instances in common with ""ConferenceChair"".
+2. ""ConferenceChair"" has no instances in common with ""AssociatedChair"".
+
+Let me know if you'd like me to rephrase them in a different way!Here is a natural language description of the subgraph:
+
+""A Chairman is equivalent to a Class. The Chairman is also a Program Committee Chair, and is associated with a Conference Chair. The Conference Chair is also associated with the Chairman. The Chairman is a type of Class, and is a union of an Associated Chair and the Conference Chair.""
+
+Note that this description assumes a basic understanding of the concepts and relationships involved, and may not be suitable for a general audience. Additionally, the natural language description may not capture all the nuances and details of the original subgraph."
+4-Source-Class-Author,http://cmt#Author,Source,Class,author,"Within the context of a conference, an author typically refers to a person who has written a paper, article, or book that is being presented or discussed at the conference. This person is often the one who has conducted the research, written the content, and is responsible for the ideas and findings presented in the work.
+
+In the context of a conference, an author may be:
+
+* A speaker who is presenting their research or ideas to the audience
+* A panelist who is participating in a discussion or debate
+* A presenter who is sharing their work or findings with the audience
+* A contributor who has written a chapter or section in a book or report being presented at the conference
+
+In general, the term ""author"" implies a level of expertise, credibility, and responsibility for the content being presented, and is often used to distinguish the person who has written the work from others who may be presenting or discussing it.","Here are the triples verbalized into phrases:
+
+1. ""AuthorNotReviewer"" rdfs:subClassOf ""Author"" .
+	* ""AuthorNotReviewer is a type of Author.""
+2. ""Co-author"" rdfs:subClassOf ""Author"" .
+	* ""Co-author is a type of Author.""
+3. ""hasAuthor"" rdfs:range ""Author"" .
+	* ""The range of hasAuthor is an Author.""
+4. ""submitPaper"" rdfs:domain ""Author"" .
+	* ""The domain of submitPaper is an Author.""
+5. ""writePaper"" rdfs:domain ""Author"" .
+	* ""The domain of writePaper is an Author.""
+6. ""Author"" rdfs:subClassOf ""ConferenceMember"", ""User"" .
+	* ""Author is a type of ConferenceMember and User.""
+
+Let me know if you'd like me to help with anything else!Here is a natural language description of the subgraph:
+
+""There is a person who is the Chairman. This person is also an Author, but only for the first part. There is another person who is a Reviewer and is connected to the Chairman. There is also a Class that is a union of the Reviewer and another entity. This Class has a domain that is related to a conflict of interest mark.""
+
+Note that this is just one possible way to verbalize the subgraph, and different people might choose to describe it in slightly different terms."
+5-Target-Class-Administrative_event,http://confOf#Administrative_event,Target,Class,administrative event,"Within the context of a conference, an ""Administrative_event"" likely refers to a scheduled event or activity that is focused on administrative tasks, rather than a specific conference session or presentation.
+
+Examples of administrative events at a conference might include:
+
+* Registration and check-in procedures
+* Welcome and orientation sessions for attendees
+* Keynote speeches or presentations by conference organizers or sponsors
+* Networking opportunities for attendees to connect with each other
+* Committee meetings or working sessions for conference organizers
+* Award ceremonies or recognition events
+
+In general, administrative events at a conference are designed to support the overall organization and execution of the event, rather than being focused on specific topics or presentations.","Here are the triples verbalized into phrases:
+
+1. ""Camera_Ready_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Camera_Ready_event"" is a type of ""Administrative_event"".
+
+2. ""Registration_of_participants_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Registration_of_participants_event"" is a type of ""Administrative_event"".
+
+3. ""Reviewing_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Reviewing_event"" is a type of ""Administrative_event"".
+
+4. ""Reviewing_results_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Reviewing_results_event"" is a type of ""Administrative_event"".
+
+5. ""Submission_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Submission_event"" is a type of ""Administrative_event"".
+
+6. ""follows"" rdfs:domain ""Administrative_event"" ; rdfs:range ""Administrative_event"" .
+	* One ""Administrative_event"" follows another ""Administrative_event"".
+
+7. ""hasAdministrativeEvent"" rdfs:range ""Administrative_event"" .
+	* Something has an ""Administrative_event"" as one of its events.
+
+8. ""parallel_with"" rdfs:domain ""Administrative_event"" ; rdfs:range ""Administrative_event"" .
+	* One ""Administrative_event"" is parallel with another ""Administrative_event"".
+
+9. ""Social_event"" owl:disjointWith ""Administrative_event"" .
+	* ""Social_event"" and ""Administrative_event"" are mutually exclusive.
+
+10. ""Working_event"" owl:disjointWith ""Administrative_event"" .
+	* ""Working_event"" and ""Administrative_event"" are mutually exclusive.
+
+11. ""Administrative_event"" rdfs:subClassOf ""Event"" ; owl:disjointWith ""Social_event"", ""Working_event"" .
+	* ""Administrative_event"" is a type of ""Event"", and is mutually exclusive with ""Social_event"" and ""Working_event""."
+6-Target-Class-Administrator,http://confOf#Administrator,Target,Class,administrator,"Within the context of a conference and using the extra information from confTool, an Administrator is likely a person responsible for managing and organizing the conference. This could include tasks such as:
+
+* Coordinating logistics and arrangements
+* Handling registration and payment processes
+* Managing the conference schedule and program
+* Overseeing the technical aspects of the conference, such as audio-visual equipment and internet connectivity
+* Ensuring the smooth operation of the conference and resolving any issues that may arise
+
+In the context of confTool, an Administrator may be a person who has access to the conference management system and is responsible for updating and maintaining the conference data, such as speaker information, session schedules, and attendee lists.","Here are the triples verbalized into phrases:
+
+1. ""Administrator"" rdfs:subClassOf ""Person"".
+Phrase: ""An Administrator is a type of Person."""
+7-Target-Class-Assistant,http://confOf#Assistant,Target,Class,assistant,"Within the context of a conference and using the extra information from confTool, an Assistant is likely a person who provides support and assistance to the conference organizers, speakers, or attendees. This could include tasks such as:
+
+* Coordinating logistics and arrangements
+* Managing schedules and timelines
+* Providing technical support for presentations or equipment
+* Handling administrative tasks, such as registration or communication with attendees
+* Assisting with event planning and execution
+
+In the context of a conference, an Assistant is an important role that helps ensure the smooth operation of the event and provides valuable support to the conference team.","Here are the triples verbalized into phrases:
+
+1. ""Assistant"" rdfs:subClassOf ""Person"".
+Phrase: ""An Assistant is a type of Person."""
+8-Target-Class-Author,http://confOf#Author,Target,Class,author,"Within the context of a conference, an author is typically a person who has written and submitted a paper, presentation, or abstract to be presented at the conference. In the context of confTool, an author is likely a person who has registered and submitted their work for presentation at the conference, and is listed as the creator of the submission.
+
+In confTool, authors are often associated with specific submissions, such as papers, posters, or talks, and may be responsible for ensuring that the submission meets the conference's formatting and content guidelines. The author's role may also involve revising and updating their submission in response to reviewer feedback and conference organizers' requests.","Here are the triples verbalized into phrases:
+
+1. ""writes"" rdfs:domain ""Author"" .
+	* The predicate ""writes"" is about the domain of ""Author"".
+2. ""writtenBy"" rdfs:range ""Author"" .
+	* The predicate ""writtenBy"" is about the range of ""Author"".
+3. ""Author"" rdfs:subClassOf ""Person"" .
+	* ""Author"" is a subclass of ""Person"".
+
+Let me know if you'd like me to rephrase them in a different way!Here is a natural language description of the subgraph:
+
+""An Author is a subclass of two types: one that writes a Contribution, and another that also writes a Contribution. In other words, an Author is someone who makes a Contribution through their writing.""
+
+Note that this description assumes a basic understanding of the concepts involved, such as ""Contribution"" and ""writes"". If you'd like me to elaborate on these concepts, please let me know!"

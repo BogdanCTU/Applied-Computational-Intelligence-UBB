@@ -1,0 +1,120 @@
+{
+  "reference_count": 16,
+  "strategy_pools": {
+    "syntactic": {
+      "s2t_pool_size": 2,
+      "s2t_tp_ceiling": 2,
+      "s2t_recall_pct": 12.5,
+      "t2s_pool_size": 2,
+      "t2s_tp_ceiling": 2,
+      "t2s_recall_pct": 12.5,
+      "reciprocal_pool_size": 2,
+      "reciprocal_tp_ceiling": 2,
+      "reciprocal_recall_pct": 12.5
+    },
+    "lexical": {
+      "s2t_pool_size": 2,
+      "s2t_tp_ceiling": 2,
+      "s2t_recall_pct": 12.5,
+      "t2s_pool_size": 2,
+      "t2s_tp_ceiling": 2,
+      "t2s_recall_pct": 12.5,
+      "reciprocal_pool_size": 2,
+      "reciprocal_tp_ceiling": 2,
+      "reciprocal_recall_pct": 12.5
+    },
+    "semantic": {
+      "s2t_pool_size": 1,
+      "s2t_tp_ceiling": 1,
+      "s2t_recall_pct": 6.25,
+      "t2s_pool_size": 1,
+      "t2s_tp_ceiling": 1,
+      "t2s_recall_pct": 6.25,
+      "reciprocal_pool_size": 1,
+      "reciprocal_tp_ceiling": 1,
+      "reciprocal_recall_pct": 6.25
+    }
+  },
+  "validation_total_evaluated": 4,
+  "validation_bypasses": 4,
+  "validation_llm_calls": 0,
+  "validation_accepted": 4,
+  "validation_acceptance_rate_pct": 100.0,
+  "merger_union_candidates": 2,
+  "merger_retained_count": 2,
+  "merger_retention_rate_pct": 100.0,
+  "stages": [
+    {
+      "stage": "1_reference_alignment",
+      "label": "Reference Alignment",
+      "candidate_pairs": 16,
+      "tp": 16,
+      "fp": 0,
+      "recall_ceiling_pct": 100.0
+    },
+    {
+      "stage": "2_entity_extraction",
+      "label": "Entity Extraction Coverage",
+      "candidate_pairs": 16,
+      "tp": 2,
+      "fp": 0,
+      "recall_ceiling_pct": 12.5
+    },
+    {
+      "stage": "3_rrf_pool_s2t",
+      "label": "RRF Top-k Pool (S->T)",
+      "candidate_pairs": 2,
+      "tp": 2,
+      "fp": 0,
+      "recall_ceiling_pct": 12.5
+    },
+    {
+      "stage": "4_rrf_pool_t2s",
+      "label": "RRF Top-k Pool (T->S)",
+      "candidate_pairs": 2,
+      "tp": 2,
+      "fp": 0,
+      "recall_ceiling_pct": 12.5
+    },
+    {
+      "stage": "5_rrf_reciprocal_ceiling",
+      "label": "RRF Reciprocal Pool (S->T \u2229 T->S)",
+      "candidate_pairs": 2,
+      "tp": 2,
+      "fp": 0,
+      "recall_ceiling_pct": 12.5
+    },
+    {
+      "stage": "6_rrf_top1_merged_no_val",
+      "label": "RRF Top-1 Merged (No Validation)",
+      "candidate_pairs": 2,
+      "tp": 2,
+      "fp": 0,
+      "recall_ceiling_pct": 12.5
+    },
+    {
+      "stage": "7_validated_s2t",
+      "label": "LLM Validated (S->T)",
+      "candidate_pairs": 2,
+      "tp": 2,
+      "fp": 0,
+      "recall_ceiling_pct": 12.5
+    },
+    {
+      "stage": "8_validated_t2s",
+      "label": "LLM Validated (T->S)",
+      "candidate_pairs": 2,
+      "tp": 2,
+      "fp": 0,
+      "recall_ceiling_pct": 12.5
+    },
+    {
+      "stage": "9_final_reciprocal_merged",
+      "label": "Final Reciprocal Merger",
+      "candidate_pairs": 2,
+      "tp": 2,
+      "fp": 0,
+      "recall_ceiling_pct": 12.5
+    }
+  ]
+}

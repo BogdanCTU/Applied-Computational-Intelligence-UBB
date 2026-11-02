@@ -1,0 +1,10 @@
+stage,label,candidate_pairs,tp,fp,recall_ceiling_pct
+1_reference_alignment,Reference Alignment,16,16,0,100.0
+2_entity_extraction,Entity Extraction Coverage,16,2,0,12.5
+3_rrf_pool_s2t,RRF Top-k Pool (S->T),2,2,0,12.5
+4_rrf_pool_t2s,RRF Top-k Pool (T->S),2,2,0,12.5
+5_rrf_reciprocal_ceiling,RRF Reciprocal Pool (S->T ∩ T->S),2,2,0,12.5
+6_rrf_top1_merged_no_val,RRF Top-1 Merged (No Validation),2,2,0,12.5
+7_validated_s2t,LLM Validated (S->T),2,2,0,12.5
+8_validated_t2s,LLM Validated (T->S),2,2,0,12.5
+9_final_reciprocal_merged,Final Reciprocal Merger,2,2,0,12.5

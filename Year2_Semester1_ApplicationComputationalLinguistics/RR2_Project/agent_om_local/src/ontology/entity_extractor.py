@@ -6,7 +6,6 @@ import time
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, List, Optional, Set, Tuple
-import rdflib
 from rdflib import BNode, Graph, Literal, URIRef
 from rdflib.namespace import OWL, RDF, RDFS, SKOS
 
@@ -89,19 +88,25 @@ class EntityExtractor:
         SKOS.example,
     ]
 
-    def __init__(self, exclusions: Optional[Set[str]] = None):
+    def __init__(
+        self,
+        exclusions: Optional[Set[str]] = None,
+        combine_properties_sort: bool = True,
+    ):
         self.exclusions: Set[str] = exclusions if exclusions is not None else set(self.DEFAULT_EXCLUSIONS)
+        self.combine_properties_sort: bool = combine_properties_sort
 
     def extract_entity_label(self, graph: Graph, entity_uri: URIRef) -> str:
         """
-        Extract primary label using rdfs:label or skos:prefLabel.
+        Extract primary label using rdfs:label (priority) or skos:prefLabel deterministically.
         Reproduces om_ontology_to_csv.get_entity_label().
         """
-        results_rdfs = set(graph.triples((entity_uri, RDFS.label, None)))
-        results_skos = set(graph.triples((entity_uri, SKOS.prefLabel, None)))
-        combined = results_rdfs.union(results_skos)
-        for s, p, o in combined:
-            return str(o)
+        rdfs_labels = sorted(str(o) for _, _, o in graph.triples((entity_uri, RDFS.label, None)) if str(o))
+        if rdfs_labels:
+            return rdfs_labels[0]
+        skos_labels = sorted(str(o) for _, _, o in graph.triples((entity_uri, SKOS.prefLabel, None)) if str(o))
+        if skos_labels:
+            return skos_labels[0]
         return ""
 
     def get_entity_display_name(self, graph: Graph, entity_uri: URIRef, ontology_is_code: bool) -> str:
@@ -118,6 +123,7 @@ class EntityExtractor:
         ontology: OntologyGraph,
         source_or_target: str,
         ontology_is_code: bool = False,
+        combine_properties_sort: Optional[bool] = None,
     ) -> Tuple[List[OntologyEntity], ExtractionSummary]:
         """
         Extract classes and properties with metadata from the ontology graph.
@@ -126,12 +132,20 @@ class EntityExtractor:
             ontology: The OntologyGraph wrapper.
             source_or_target: String indicator ('Source' or 'Target').
             ontology_is_code: Whether entity names should prioritize rdfs:label over URI.
+            combine_properties_sort: When True (upstream parity default), sort ObjectProperty
+                and DatatypeProperty together alphabetically by URI while preserving punning,
+                reproducing `sorted(properties)` in `om_ontology_to_csv.py:286`.
             
         Returns:
             Tuple of (list of OntologyEntity, ExtractionSummary).
         """
         start_time = time.perf_counter()
         g = ontology.graph
+        use_combined_sort = (
+            self.combine_properties_sort
+            if combine_properties_sort is None
+            else combine_properties_sort
+        )
 
         raw_classes: Set[URIRef] = set()
         raw_obj_props: Set[URIRef] = set()
@@ -200,29 +214,47 @@ class EntityExtractor:
             )
             entities.append(ent)
 
-        # Process Object Properties
-        for uri in sorted_obj_props:
-            ent = self._build_entity_metadata(
-                graph=g,
-                uri=uri,
-                entity_type=EntityType.PROPERTY,
-                property_kind="ObjectProperty",
-                source_or_target=source_or_target,
-                ontology_is_code=ontology_is_code,
+        # Process Properties (combined URI alphabetical sort matches upstream om_ontology_to_csv.py:286)
+        if use_combined_sort:
+            combined_props: List[Tuple[URIRef, str]] = [
+                (u, "ObjectProperty") for u in raw_obj_props
+            ] + [
+                (u, "DatatypeProperty") for u in raw_data_props
+            ]
+            combined_props.sort(
+                key=lambda item: (str(item[0]), 0 if item[1] == "ObjectProperty" else 1)
             )
-            entities.append(ent)
-
-        # Process Datatype Properties
-        for uri in sorted_data_props:
-            ent = self._build_entity_metadata(
-                graph=g,
-                uri=uri,
-                entity_type=EntityType.PROPERTY,
-                property_kind="DatatypeProperty",
-                source_or_target=source_or_target,
-                ontology_is_code=ontology_is_code,
-            )
-            entities.append(ent)
+            for uri, prop_kind in combined_props:
+                ent = self._build_entity_metadata(
+                    graph=g,
+                    uri=uri,
+                    entity_type=EntityType.PROPERTY,
+                    property_kind=prop_kind,
+                    source_or_target=source_or_target,
+                    ontology_is_code=ontology_is_code,
+                )
+                entities.append(ent)
+        else:
+            for uri in sorted_obj_props:
+                ent = self._build_entity_metadata(
+                    graph=g,
+                    uri=uri,
+                    entity_type=EntityType.PROPERTY,
+                    property_kind="ObjectProperty",
+                    source_or_target=source_or_target,
+                    ontology_is_code=ontology_is_code,
+                )
+                entities.append(ent)
+            for uri in sorted_data_props:
+                ent = self._build_entity_metadata(
+                    graph=g,
+                    uri=uri,
+                    entity_type=EntityType.PROPERTY,
+                    property_kind="DatatypeProperty",
+                    source_or_target=source_or_target,
+                    ontology_is_code=ontology_is_code,
+                )
+                entities.append(ent)
 
         elapsed_ms = (time.perf_counter() - start_time) * 1000.0
 
@@ -252,13 +284,14 @@ class EntityExtractor:
         local_name = OntologyGraph.uri_to_name(uri)
         display_name = self.get_entity_display_name(graph, uri, ontology_is_code)
 
-        # Labels (rdfs:label, skos:prefLabel)
+        # Labels (rdfs:label, skos:prefLabel) deterministically ordered
         labels: List[str] = []
-        for _, _, o in graph.triples((uri, RDFS.label, None)):
-            labels.append(str(o))
-        for _, _, o in graph.triples((uri, SKOS.prefLabel, None)):
-            if str(o) not in labels:
-                labels.append(str(o))
+        for s_lbl in sorted(str(o) for _, _, o in graph.triples((uri, RDFS.label, None))):
+            if s_lbl not in labels:
+                labels.append(s_lbl)
+        for s_lbl in sorted(str(o) for _, _, o in graph.triples((uri, SKOS.prefLabel, None))):
+            if s_lbl not in labels:
+                labels.append(s_lbl)
 
         # Comments & Lexical definitions
         comments_set: Set[str] = set()
@@ -320,4 +353,3 @@ class EntityExtractor:
             disjoint_with=sorted(disjoint_with),
             equivalent_entities=sorted(equivalent_entities),
         )
-

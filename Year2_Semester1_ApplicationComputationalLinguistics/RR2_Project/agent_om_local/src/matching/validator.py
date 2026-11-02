@@ -4,12 +4,11 @@ from __future__ import annotations
 
 import re
 import time
-from dataclasses import dataclass, field
-from typing import Any, Dict, Optional, Tuple, Union
+from dataclasses import dataclass
+from typing import Optional, Tuple
 from langchain_core.language_models import BaseChatModel
-from langchain_ollama import ChatOllama
 
-from ..config import config
+from ..config import AppConfig, config
 from ..utils.text_processing import cleaning, uri_to_name
 
 
@@ -49,24 +48,43 @@ class MatchingValidator:
         "Answer yes or no. Give a short explanation.\n"
     )
 
+    # Exact 28-space indentation from original_repo/om_database_matching.py:450-454
+    UPSTREAM_PROMPT_TEMPLATE = (
+        "Question: Is {a} equivalent to {b}?\n"
+        "                            Context: {context}\n"
+        "                            Answer the question within the context.\n"
+        "                            Answer yes or no. Give a short explanation.\n"
+        "                            "
+    )
+
     def __init__(
         self,
         llm: Optional[BaseChatModel] = None,
         context: str = config.context,
+        indent_prompt: bool = False,
+        strip_response: bool = True,
+        app_config: Optional[AppConfig] = None,
     ):
         self.llm = llm
         self.context = context
+        self.indent_prompt = indent_prompt
+        self.strip_response = strip_response
+        self.app_config = app_config or config
 
     def _ensure_llm(self) -> BaseChatModel:
-        """Instantiate default ChatOllama model if not injected."""
+        """Instantiate configured local ChatOllama model if not injected."""
         if self.llm is None:
-            self.llm = ChatOllama(
-                model=config.default_llm,
-                temperature=config.temperature,
-                num_ctx=config.num_ctx,
-                reasoning=False,
-            )
+            self.llm = self.app_config.build_chat_llm()
         return self.llm
+
+    def format_prompt(self, clean_a: str, clean_b: str, context: str) -> str:
+        """Format the validation prompt according to `indent_prompt` parity setting."""
+        template = (
+            self.UPSTREAM_PROMPT_TEMPLATE
+            if self.indent_prompt
+            else self.PROMPT_TEMPLATE
+        )
+        return template.format(a=clean_a, b=clean_b, context=context)
 
     @staticmethod
     def extract_yes_no(text: str) -> Optional[str]:
@@ -129,21 +147,25 @@ class MatchingValidator:
                 duration_ms=0.0,
             )
 
-        prompt_text = self.PROMPT_TEMPLATE.format(a=clean_s, b=clean_t, context=ctx)
+        prompt_text = self.format_prompt(clean_s, clean_t, ctx)
         llm = self._ensure_llm()
 
         t0 = time.perf_counter()
         try:
             response = llm.invoke(prompt_text)
             duration_ms = (time.perf_counter() - t0) * 1000.0
-            raw_text = str(response.content).strip()
+            raw_text = (
+                str(response.content).strip()
+                if self.strip_response
+                else str(response.content)
+            )
             parsed = self.extract_yes_no(raw_text)
             decision = parsed if parsed in ("yes", "no") else "no"
 
             # Extract token metadata if available from Ollama
-            meta = getattr(response, "response_metadata", {})
-            prompt_tokens = meta.get("prompt_eval_count", 0)
-            completion_tokens = meta.get("eval_count", 0)
+            meta = getattr(response, "response_metadata", {}) or {}
+            prompt_tokens = int(meta.get("prompt_eval_count", 0) or 0)
+            completion_tokens = int(meta.get("eval_count", 0) or 0)
             total_tokens = prompt_tokens + completion_tokens
 
             return ValidationRecord(

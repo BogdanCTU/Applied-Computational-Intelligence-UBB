@@ -1,0 +1,191 @@
+{
+  "source_summary": {
+    "duration_ms": 4.251199999998789,
+    "total_classes": 29,
+    "total_object_properties": 49,
+    "total_datatype_properties": 10,
+    "total_properties": 59,
+    "total_entities": 88,
+    "excluded_entities": {}
+  },
+  "target_summary": {
+    "duration_ms": 3.662699999040342,
+    "total_classes": 38,
+    "total_object_properties": 13,
+    "total_datatype_properties": 23,
+    "total_properties": 36,
+    "total_entities": 74,
+    "excluded_entities": {}
+  },
+  "source_entities": [
+    {
+      "uri": "http://cmt#Acceptance",
+      "local_name": "Acceptance",
+      "display_name": "Acceptance",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#Decision"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://cmt#Rejection"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Administrator",
+      "local_name": "Administrator",
+      "display_name": "Administrator",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#User"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#AssociatedChair",
+      "local_name": "AssociatedChair",
+      "display_name": "AssociatedChair",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#ConferenceMember"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [
+        "http://cmt#ConferenceChair"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://cmt#Author",
+      "local_name": "Author",
+      "display_name": "Author",
+      "entity_type": "Class",
+      "source_or_target": "Source",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://cmt#ConferenceMember",
+        "http://cmt#User"
+      ],
+      "sub_entities": [
+        "http://cmt#AuthorNotReviewer",
+        "http://cmt#Co-author"
+      ],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    }
+  ],
+  "target_entities": [
+    {
+      "uri": "http://confOf#Administrative_event",
+      "local_name": "Administrative_event",
+      "display_name": "Administrative_event",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Event"
+      ],
+      "sub_entities": [
+        "http://confOf#Camera_Ready_event",
+        "http://confOf#Registration_of_participants_event",
+        "http://confOf#Reviewing_event",
+        "http://confOf#Reviewing_results_event",
+        "http://confOf#Submission_event"
+      ],
+      "disjoint_with": [
+        "http://confOf#Social_event",
+        "http://confOf#Working_event"
+      ],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Administrator",
+      "local_name": "Administrator",
+      "display_name": "Administrator",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Person"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Assistant",
+      "local_name": "Assistant",
+      "display_name": "Assistant",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Person"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    },
+    {
+      "uri": "http://confOf#Author",
+      "local_name": "Author",
+      "display_name": "Author",
+      "entity_type": "Class",
+      "source_or_target": "Target",
+      "property_kind": null,
+      "labels": [],
+      "comments": [
+        "confTool"
+      ],
+      "domains": [],
+      "ranges": [],
+      "super_entities": [
+        "http://confOf#Person"
+      ],
+      "sub_entities": [],
+      "disjoint_with": [],
+      "equivalent_entities": []
+    }
+  ]
+}

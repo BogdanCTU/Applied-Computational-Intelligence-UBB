@@ -6,15 +6,17 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Set, Tuple
 
-import pandas as pd
 from langchain_core.language_models import BaseChatModel
+from langchain_core.tools import tool
 
-from ..config import config
+from ..config import AppConfig, config
 from ..db.database_manager import DatabaseManager
 from ..matching.merger import ReciprocalMerger
 from ..matching.validator import MatchingValidator, ValidationRecord
+from ..ontology.parser import OntologyGraph
 from ..retrieval.rank_fusion import reciprocal_rank_fusion
 from ..utils.text_processing import uri_to_name
+from .tool_router import LLMJsonToolRouter, ToolRouterStats
 
 
 @dataclass
@@ -25,6 +27,7 @@ class DirectionalMatchResult:
     matched_entity_count: int
     predicted_pairs: Set[Tuple[str, str]]
     validation_records: List[ValidationRecord] = field(default_factory=list)
+    unvalidated_predicted_pairs: Set[Tuple[str, str]] = field(default_factory=set)
     duration_s: float = 0.0
 
 
@@ -43,12 +46,17 @@ class PipelineResult:
     total_bypasses: int = 0
     total_prompt_tokens: int = 0
     total_completion_tokens: int = 0
+    router_calls: int = 0
+    router_prompt_tokens: int = 0
+    router_completion_tokens: int = 0
+    router_errors: int = 0
 
 
 class MatchingAgent:
     """
     Coordinates RRF ranking, matching validation, and reciprocal merging
-    with configurable ablation toggles.
+    with configurable ablation toggles, code-IRI label resolution, and optional
+    LLM JSON tool routing.
     
     Reproduces om_database_matching.py end-to-end pipeline.
     """
@@ -64,23 +72,147 @@ class MatchingAgent:
         top_k: int = config.top_k,
         num_matches: int = config.num_matches,
         rrf_k: int = 0,
+        source_ontology: Optional[OntologyGraph] = None,
+        target_ontology: Optional[OntologyGraph] = None,
+        o1_is_code: bool = False,
+        o2_is_code: bool = False,
+        tool_routing_mode: Optional[str] = None,
+        strict_tool_router: bool = False,
+        app_config: Optional[AppConfig] = None,
     ):
-        self.db = db_manager or DatabaseManager()
-        self.validator = validator or MatchingValidator(llm=llm, context=context)
+        self.app_config = app_config or config
+        self.db = db_manager or DatabaseManager(connection_string=self.app_config.connection_string)
+        self.llm = llm
+        self.validator = validator or MatchingValidator(
+            llm=llm,
+            context=context,
+            indent_prompt=self.app_config.indent_validation_prompt,
+            strip_response=self.app_config.strip_llm_responses,
+            app_config=self.app_config,
+        )
         self.merger = merger or ReciprocalMerger()
         self.context = context
         self.similarity_threshold = similarity_threshold
         self.top_k = top_k
         self.num_matches = num_matches
         self.rrf_k = rrf_k
+        self.source_ontology = source_ontology
+        self.target_ontology = target_ontology
+        self.o1_is_code = o1_is_code
+        self.o2_is_code = o2_is_code
+        self.tool_routing_mode = tool_routing_mode or self.app_config.tool_routing_mode
+        self.strict_tool_router = strict_tool_router
         self.strategies = ["syntactic_matching", "lexical_matching", "semantic_matching"]
+        self.router_stats = ToolRouterStats()
+        self._router: Optional[LLMJsonToolRouter] = None
+        self._active_validation_args: Dict[str, Any] = {}
+
+    def _ensure_router(self) -> LLMJsonToolRouter:
+        if self._router is None:
+            router_llm = self.llm or self.validator._ensure_llm()
+            agent_self = self
+
+            @tool
+            def syntactic(entity: str) -> List[str]:
+                """Syntactic matching."""
+                return agent_self.db.query_strategy(
+                    entity_id=entity,
+                    table_name="syntactic_matching",
+                    similarity_threshold=agent_self.similarity_threshold,
+                    num_matches=agent_self.num_matches,
+                    top_k=agent_self.top_k,
+                )
+
+            @tool
+            def lexical(entity: str) -> List[str]:
+                """Lexical matching."""
+                return agent_self.db.query_strategy(
+                    entity_id=entity,
+                    table_name="lexical_matching",
+                    similarity_threshold=agent_self.similarity_threshold,
+                    num_matches=agent_self.num_matches,
+                    top_k=agent_self.top_k,
+                )
+
+            @tool
+            def semantic(entity: str) -> List[str]:
+                """Semantic matching."""
+                return agent_self.db.query_strategy(
+                    entity_id=entity,
+                    table_name="semantic_matching",
+                    similarity_threshold=agent_self.similarity_threshold,
+                    num_matches=agent_self.num_matches,
+                    top_k=agent_self.top_k,
+                )
+
+            @tool
+            def validate() -> ValidationRecord:
+                """Validate matching."""
+                args = agent_self._active_validation_args
+                return agent_self.validator.validate_candidate_pair(**args)
+
+            self._router = LLMJsonToolRouter(
+                llm=router_llm,
+                tools=[syntactic, lexical, semantic, validate],
+                strict=self.strict_tool_router,
+                allow_fallback=not self.strict_tool_router,
+            )
+        return self._router
+
+    def _infer_query_side(self, query_entity_id: str, direction: Optional[str]) -> str:
+        """Determine whether `query_entity_id` belongs to 'Source' or 'Target'."""
+        if direction == "Source->Target":
+            return "Source"
+        if direction == "Target->Source":
+            return "Target"
+        if "-Source-" in query_entity_id:
+            return "Source"
+        if "-Target-" in query_entity_id:
+            return "Target"
+        return "Source"
+
+    def resolve_entity_display_name(self, uri: str, source_or_target: str) -> str:
+        """
+        Resolve entity display name symmetrically for code-IRI ontologies (`o1_is_code`, `o2_is_code`).
+        Reproduces `om_database_matching.py:297-302` (`rdfs:label` -> `skos:prefLabel` -> `uri_to_name`).
+        """
+        if not uri:
+            return ""
+        if source_or_target == "Source":
+            if self.o1_is_code and self.source_ontology is not None:
+                return self.source_ontology.resolve_entity_name(uri, ontology_is_code=True)
+            return uri_to_name(uri)
+        if self.o2_is_code and self.target_ontology is not None:
+            return self.target_ontology.resolve_entity_name(uri, ontology_is_code=True)
+        return uri_to_name(uri)
 
     def retrieve_entity_rankings(self, entity_id: str) -> List[List[str]]:
         """
         Retrieves raw top_k candidate lists from each of the three vector tables.
         Reproduces find_all_matching_candidate() in om_database_matching.py.
         """
-        rankings = []
+        rankings: List[List[str]] = []
+        null_match = self.app_config.null_value_matching
+
+        if self.tool_routing_mode == "llm_json":
+            router = self._ensure_router()
+            prompts_and_tools = [
+                (f"Syntactic matching for {entity_id}", "syntactic"),
+                (f"Lexical matching for {entity_id}", "lexical"),
+                (f"Semantic matching for {entity_id}", "semantic"),
+            ]
+            for prompt_str, tool_name in prompts_and_tools:
+                cands = router.invoke(
+                    prompt_str,
+                    expected_tool_name=tool_name,
+                    fallback_args={"entity": entity_id},
+                )
+                cand_list = list(cands) if isinstance(cands, (list, tuple)) else [str(cands)]
+                valid_cands = [c for c in cand_list if c != null_match]
+                if valid_cands:
+                    rankings.append(valid_cands)
+            return rankings
+
         for strat in self.strategies:
             cands = self.db.query_strategy(
                 entity_id=entity_id,
@@ -89,7 +221,7 @@ class MatchingAgent:
                 num_matches=self.num_matches,
                 top_k=self.top_k,
             )
-            valid_cands = [c for c in cands if c != config.null_value_matching]
+            valid_cands = [c for c in cands if c != null_match]
             if valid_cands:
                 rankings.append(valid_cands)
         return rankings
@@ -108,6 +240,7 @@ class MatchingAgent:
            - Takes all candidates in the top score group (predict_entity_list[0]).
         3. If validate == True:
            - Iterates score groups in predict_entity_list[:top_k].
+           - Resolves human-readable labels when `o1_is_code` / `o2_is_code` is True.
            - Checks exact-name bypass first.
            - Prompts validator LLM if not bypassed.
            - Breaks at the first score group yielding accepted matches.
@@ -119,7 +252,7 @@ class MatchingAgent:
         fused_scores_and_groups = reciprocal_rank_fusion(
             *rankings,
             k=self.rrf_k,
-            exclude_items=[config.null_value_matching],
+            exclude_items=[self.app_config.null_value_matching],
         )
         if not fused_scores_and_groups:
             return [], []
@@ -127,8 +260,11 @@ class MatchingAgent:
         matched_entity_ids: List[str] = []
         validation_records: List[ValidationRecord] = []
 
+        query_side = self._infer_query_side(query_entity_id, direction)
+        cand_side = "Target" if query_side == "Source" else "Source"
+
         query_uri = self.db.find_entity_uri(query_entity_id) or ""
-        query_name = uri_to_name(query_uri)
+        query_name = self.resolve_entity_display_name(query_uri, query_side)
 
         if not validate:
             # Without validation: select all entities in the first score group
@@ -141,16 +277,43 @@ class MatchingAgent:
             accepted_in_group: List[str] = []
             for cand_id in cand_ids:
                 cand_uri = self.db.find_entity_uri(cand_id) or ""
-                cand_name = uri_to_name(cand_uri)
+                cand_name = self.resolve_entity_display_name(cand_uri, cand_side)
 
-                rec = self.validator.validate_candidate_pair(
-                    source_uri=query_uri,
-                    target_uri=cand_uri,
-                    source_name=query_name,
-                    target_name=cand_name,
-                    context=self.context,
-                    direction=direction,
-                )
+                if self.tool_routing_mode == "llm_json":
+                    is_bypass, _, _ = MatchingValidator.check_name_bypass(query_name, cand_name)
+                    if not is_bypass:
+                        router = self._ensure_router()
+                        self._active_validation_args = {
+                            "source_uri": query_uri,
+                            "target_uri": cand_uri,
+                            "source_name": query_name,
+                            "target_name": cand_name,
+                            "context": self.context,
+                            "direction": direction,
+                        }
+                        rec = router.invoke(
+                            "Validate matching.",
+                            expected_tool_name="validate",
+                            fallback_args={},
+                        )
+                    else:
+                        rec = self.validator.validate_candidate_pair(
+                            source_uri=query_uri,
+                            target_uri=cand_uri,
+                            source_name=query_name,
+                            target_name=cand_name,
+                            context=self.context,
+                            direction=direction,
+                        )
+                else:
+                    rec = self.validator.validate_candidate_pair(
+                        source_uri=query_uri,
+                        target_uri=cand_uri,
+                        source_name=query_name,
+                        target_name=cand_name,
+                        context=self.context,
+                        direction=direction,
+                    )
                 validation_records.append(rec)
 
                 if rec.decision == "yes":
@@ -187,11 +350,40 @@ class MatchingAgent:
                 rows = cur.fetchall()
 
         all_pairs: Set[Tuple[str, str]] = set()
+        unvalidated_pairs: Set[Tuple[str, str]] = set()
         all_records: List[ValidationRecord] = []
         matched_queries = 0
         direction_label = "Source->Target" if source_or_target == "Source" else "Target->Source"
 
         for eid, e_uri in rows:
+            # Also compute unvalidated top-group RRF pairs from DB rankings (zero LLM cost)
+            raw_rankings = []
+            for strat in self.strategies:
+                cands = self.db.query_strategy(
+                    entity_id=eid,
+                    table_name=strat,
+                    similarity_threshold=self.similarity_threshold,
+                    num_matches=self.num_matches,
+                    top_k=self.top_k,
+                )
+                valid_c = [c for c in cands if c != self.app_config.null_value_matching]
+                if valid_c:
+                    raw_rankings.append(valid_c)
+            if raw_rankings:
+                fused_unval = reciprocal_rank_fusion(
+                    *raw_rankings,
+                    k=self.rrf_k,
+                    exclude_items=[self.app_config.null_value_matching],
+                )
+                if fused_unval:
+                    for top_cid in fused_unval[0][1]:
+                        top_curi = self.db.find_entity_uri(top_cid)
+                        if top_curi:
+                            if source_or_target == "Source":
+                                unvalidated_pairs.add((e_uri, top_curi))
+                            else:
+                                unvalidated_pairs.add((top_curi, e_uri))
+
             cand_ids, records = self.match_entity(eid, validate=validate, direction=direction_label)
             all_records.extend(records)
 
@@ -207,7 +399,6 @@ class MatchingAgent:
                             all_pairs.add((cand_uri, e_uri))
 
         duration_s = time.perf_counter() - t0
-        direction_label = "Source->Target" if source_or_target == "Source" else "Target->Source"
 
         return DirectionalMatchResult(
             direction=direction_label,
@@ -215,6 +406,7 @@ class MatchingAgent:
             matched_entity_count=matched_queries,
             predicted_pairs=all_pairs,
             validation_records=all_records,
+            unvalidated_predicted_pairs=unvalidated_pairs,
             duration_s=duration_s,
         )
 
@@ -229,6 +421,7 @@ class MatchingAgent:
         Supports ablation experiments by toggling validate and reciprocal_merger.
         """
         t_start = time.perf_counter()
+        self._router = None
 
         # 1. Source -> Target matching
         s2t_res = self.run_directional_matching(source_or_target="Source", validate=validate)
@@ -257,6 +450,14 @@ class MatchingAgent:
         p_tokens = sum(r.prompt_tokens for r in all_records)
         c_tokens = sum(r.completion_tokens for r in all_records)
 
+        r_calls = self._router.stats.total_calls if self._router else 0
+        r_ptok = self._router.stats.total_prompt_tokens if self._router else 0
+        r_ctok = self._router.stats.total_completion_tokens if self._router else 0
+        r_errs = self._router.stats.parse_or_schema_errors if self._router else 0
+
+        if self._router is not None:
+            self.router_stats = self._router.stats
+
         return PipelineResult(
             experiment_id=experiment_id,
             validation_enabled=validate,
@@ -268,6 +469,10 @@ class MatchingAgent:
             total_duration_s=total_duration,
             total_validation_calls=llm_calls,
             total_bypasses=bypasses,
-            total_prompt_tokens=p_tokens,
-            total_completion_tokens=c_tokens,
+            total_prompt_tokens=p_tokens + r_ptok,
+            total_completion_tokens=c_tokens + r_ctok,
+            router_calls=r_calls,
+            router_prompt_tokens=r_ptok,
+            router_completion_tokens=r_ctok,
+            router_errors=r_errs,
         )

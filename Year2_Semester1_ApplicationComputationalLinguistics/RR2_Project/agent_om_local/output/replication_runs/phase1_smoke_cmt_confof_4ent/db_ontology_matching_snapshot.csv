@@ -1,0 +1,155 @@
+entity_id,entity_uri,source_or_target,entity_type,syntactic_matching,lexical_matching,semantic_matching
+1-Source-Class-Acceptance,http://cmt#Acceptance,Source,Class,acceptance,"In the context of a conference, acceptance typically refers to the act of agreeing to participate or present at the event. This can include:
+
+* Accepting an invitation to speak or present a paper
+* Confirming attendance at the conference
+* Agreeing to participate in a panel discussion or workshop
+* Confirming registration for the event
+
+In a broader sense, acceptance can also refer to the willingness to acknowledge and adapt to the circumstances or decisions made at the conference. This might include accepting the outcomes of a vote, the results of a competition, or the decisions made by conference organizers.
+
+In the context of a conference, acceptance is often a crucial step in the process of planning and executing a successful event. It requires a level of commitment and cooperation from participants, organizers, and attendees alike.","Here are the triples verbalized into phrases:
+
+1. ""Acceptance"" is a subclass of ""Decision"" and has no instances in common with ""Rejection"".
+2. ""Rejection"" has no instances in common with ""Acceptance"".
+
+Let me know if you'd like me to rephrase them in a different way!"
+2-Source-Class-Administrator,http://cmt#Administrator,Source,Class,administrator,"Within the context of a conference, an Administrator is likely referring to a person responsible for managing and organizing the event. This individual is responsible for ensuring the smooth operation of the conference, including tasks such as:
+
+* Coordinating logistics, such as venue selection, catering, and accommodations
+* Managing the conference program, including scheduling speakers, sessions, and workshops
+* Overseeing registration and attendee management
+* Handling finances, including budgeting and accounting
+* Coordinating with vendors and suppliers
+* Ensuring compliance with conference policies and procedures
+
+In this context, the Administrator is the person who keeps the conference running smoothly and efficiently, allowing attendees to focus on the content and networking opportunities.","Here are the triples verbalized into phrases:
+
+1. ""acceptPaper"" rdfs:domain ""Administrator"" .
+	* An administrator can accept a paper.
+
+2. ""acceptedBy"" rdfs:range ""Administrator"" .
+	* A paper can be accepted by an administrator.
+
+3. ""addProgramCommitteeMember"" rdfs:domain ""Administrator"" .
+	* An administrator can add a program committee member.
+
+4. ""addedBy"" rdfs:range ""Administrator"" .
+	* A program committee member can be added by an administrator.
+
+5. ""assignReviewer"" rdfs:domain ""Administrator"" .
+	* An administrator can assign a reviewer.
+
+6. ""assignedByAdministrator"" rdfs:range ""Administrator"" .
+	* A reviewer can be assigned by an administrator.
+
+7. ""detailsEnteredBy"" rdfs:range ""Administrator"" .
+	* Conference details can be entered by an administrator.
+
+8. ""enableVirtualMeeting"" rdfs:domain ""Administrator"" .
+	* An administrator can enable a virtual meeting.
+
+9. ""enterConferenceDetails"" rdfs:domain ""Administrator"" .
+	* An administrator can enter conference details.
+
+10. ""enterReviewCriteria"" rdfs:domain ""Administrator"" .
+	* An administrator can enter review criteria.
+
+11. ""finalizePaperAssignment"" rdfs:domain ""Administrator"" .
+	* An administrator can finalize a paper assignment.
+
+12. ""hardcopyMailingManifestsPrintedBy"" rdfs:range ""Administrator"" .
+	* Hardcopy mailing manifests can be printed by an administrator.
+
+13. ""paperAssignmentFinalizedBy"" rdfs:range ""Administrator"" .
+	* A paper assignment can be finalized by an administrator.
+
+14. ""paperAssignmentToolsRunBy"" rdfs:range ""Administrator"" .
+	* Paper assignment tools can be run by an administrator.
+
+15. ""printHardcopyMailingManifests"" rdfs:domain ""Administrator"" .
+	* An administrator can print hardcopy mailing manifests.
+
+16. ""rejectPaper"" rdfs:domain ""Administrator"" .
+	* An administrator can reject a paper.
+
+17. ""rejectedBy"" rdfs:range ""Administrator"" .
+	* A paper can be rejected by an administrator.
+
+18. ""reviewCriteriaEnteredBy"" rdfs:range ""Administrator"" .
+	* Review criteria can be entered by an administrator.
+
+19. ""reviewerBiddingStartedBy"" rdfs:range ""Administrator"" .
+	* Reviewer bidding can be started by an administrator.
+
+20. ""runPaperAssignmentTools"" rdfs:domain ""Administrator"" .
+	* An administrator can run paper assignment tools.
+
+21. ""setMaxPapers"" rdfs:domain ""Administrator"" .
+	* An administrator can set the maximum number of papers.
+
+22. ""startReviewerBidding"" rdfs:domain ""Administrator"" .
+	* An administrator can start reviewer bidding.
+
+23. ""virtualMeetingEnabledBy"" rdfs:range ""Administrator"" .
+	* A virtual meeting can be enabled by an administrator.
+
+24. ""Administrator"" rdfs:subClassOf ""User"" .
+	* An administrator is a type of user."
+3-Target-Class-Administrative_event,http://confOf#Administrative_event,Target,Class,administrative event,"Within the context of a conference, an ""Administrative_event"" likely refers to a scheduled event or activity that is focused on administrative tasks, rather than a specific conference session or presentation.
+
+Examples of administrative events at a conference might include:
+
+* Registration and check-in procedures
+* Welcome and orientation sessions for attendees
+* Keynote speeches or presentations by conference organizers or sponsors
+* Networking opportunities for attendees to connect with each other
+* Committee meetings or working sessions for conference organizers
+* Award ceremonies or recognition events
+
+In general, administrative events at a conference are designed to support the overall organization and execution of the event, rather than being focused on specific topics or presentations.","Here are the triples verbalized into phrases:
+
+1. ""Camera_Ready_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Camera Ready"" event is a type of administrative event.
+
+2. ""Registration_of_participants_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Registration of Participants"" event is a type of administrative event.
+
+3. ""Reviewing_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Reviewing"" event is a type of administrative event.
+
+4. ""Reviewing_results_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Reviewing Results"" event is a type of administrative event.
+
+5. ""Submission_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Submission"" event is a type of administrative event.
+
+6. ""follows"" rdfs:domain ""Administrative_event"" ; rdfs:range ""Administrative_event"" .
+	* One administrative event follows another administrative event.
+
+7. ""hasAdministrativeEvent"" rdfs:range ""Administrative_event"" .
+	* Something has an administrative event.
+
+8. ""parallel_with"" rdfs:domain ""Administrative_event"" ; rdfs:range ""Administrative_event"" .
+	* One administrative event is parallel with another administrative event.
+
+9. ""Social_event"" owl:disjointWith ""Administrative_event"" .
+	* Social events are not the same as administrative events.
+
+10. ""Working_event"" owl:disjointWith ""Administrative_event"" .
+	* Working events are not the same as administrative events.
+
+11. ""Administrative_event"" rdfs:subClassOf ""Event"" ; owl:disjointWith ""Social_event"", ""Working_event"" .
+	* Administrative events are a type of event, and are not the same as social events or working events."
+4-Target-Class-Administrator,http://confOf#Administrator,Target,Class,administrator,"Within the context of a conference and using the extra information from confTool, an Administrator is likely a person responsible for managing and organizing the conference. This could include tasks such as:
+
+* Coordinating logistics and arrangements
+* Overseeing the registration and accreditation process
+* Managing the conference program and schedule
+* Ensuring the smooth operation of the conference venue
+* Providing technical support and troubleshooting
+
+In the context of confTool, an Administrator may be a user with elevated privileges who can access and manage conference data, such as speaker information, session schedules, and attendee lists. They may also be responsible for configuring and customizing the confTool platform to meet the specific needs of the conference.","Here are the triples verbalized into phrases:
+
+1. ""Administrator"" rdfs:subClassOf ""Person"".
+Phrase: ""An Administrator is a type of Person."""

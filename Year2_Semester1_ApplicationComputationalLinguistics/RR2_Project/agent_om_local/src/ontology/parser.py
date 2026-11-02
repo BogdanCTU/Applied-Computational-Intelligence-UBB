@@ -2,13 +2,10 @@
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
-from typing import Dict, Optional, Set, Tuple
-import rdflib
-from rdflib import Graph, Namespace, URIRef
+from typing import Dict, Optional
+from rdflib import Graph, URIRef
 from rdflib.namespace import RDFS, SKOS
-from rdflib.exceptions import ParserError
 
 
 class OntologyParseError(Exception):
@@ -128,15 +125,28 @@ class OntologyGraph:
 
     def get_entity_label(self, entity_uri: str | URIRef) -> str:
         """
-        Extract primary label using rdfs:label or skos:prefLabel.
+        Extract primary label using rdfs:label (priority) or skos:prefLabel deterministically.
         Reproduces om_ontology_to_csv.get_entity_label().
         """
         uri = URIRef(str(entity_uri))
-        for _, _, o in self.graph.triples((uri, RDFS.label, None)):
-            return str(o)
-        for _, _, o in self.graph.triples((uri, SKOS.prefLabel, None)):
-            return str(o)
+        rdfs_labels = sorted(str(o) for _, _, o in self.graph.triples((uri, RDFS.label, None)) if str(o))
+        if rdfs_labels:
+            return rdfs_labels[0]
+        skos_labels = sorted(str(o) for _, _, o in self.graph.triples((uri, SKOS.prefLabel, None)) if str(o))
+        if skos_labels:
+            return skos_labels[0]
         return ""
+
+    def resolve_entity_name(self, entity_uri: str | URIRef, ontology_is_code: bool = False) -> str:
+        """
+        Resolve human-readable entity name: when `ontology_is_code=True`, prefer
+        `rdfs:label` -> `skos:prefLabel` -> `uri_to_name`, else `uri_to_name`.
+        """
+        if ontology_is_code:
+            lbl = self.get_entity_label(entity_uri)
+            if lbl:
+                return lbl
+        return self.uri_to_name(entity_uri)
 
     @staticmethod
     def uri_to_name(uri: str | URIRef) -> str:
@@ -163,4 +173,3 @@ class OntologyGraph:
 def load_ontology(file_path: str | Path, format: Optional[str] = None) -> OntologyGraph:
     """Convenience helper to load an ontology file."""
     return OntologyGraph.from_file(file_path, format=format)
-

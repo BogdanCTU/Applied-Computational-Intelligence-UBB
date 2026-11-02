@@ -1,0 +1,2625 @@
+[
+  {
+    "query_entity_id": "089-Target-Class-Administrative_event",
+    "query_entity_uri": "http://confOf#Administrative_event",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "090-Target-Class-Administrator",
+    "query_entity_uri": "http://confOf#Administrator",
+    "syntactic_ranking": [
+      "002-Source-Class-Administrator"
+    ],
+    "lexical_ranking": [
+      "002-Source-Class-Administrator"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "002-Source-Class-Administrator",
+        "similarity": 1.0
+      }
+    ],
+    "lexical_scores": [
+      {
+        "entity_id": "002-Source-Class-Administrator",
+        "similarity": 0.9224048852920532
+      }
+    ],
+    "semantic_scores": [],
+    "fused_ranking": [
+      [
+        2.0,
+        [
+          "002-Source-Class-Administrator"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#Administrator"
+    ],
+    "top_candidate_uri": "http://cmt#Administrator"
+  },
+  {
+    "query_entity_id": "091-Target-Class-Assistant",
+    "query_entity_uri": "http://confOf#Assistant",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "092-Target-Class-Author",
+    "query_entity_uri": "http://confOf#Author",
+    "syntactic_ranking": [
+      "004-Source-Class-Author"
+    ],
+    "lexical_ranking": [
+      "004-Source-Class-Author"
+    ],
+    "semantic_ranking": [
+      "008-Source-Class-Co-author",
+      "004-Source-Class-Author"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "004-Source-Class-Author",
+        "similarity": 1.0
+      }
+    ],
+    "lexical_scores": [
+      {
+        "entity_id": "004-Source-Class-Author",
+        "similarity": 0.9108031285766517
+      }
+    ],
+    "semantic_scores": [
+      {
+        "entity_id": "008-Source-Class-Co-author",
+        "similarity": 0.9097109490805315
+      },
+      {
+        "entity_id": "004-Source-Class-Author",
+        "similarity": 0.9096688574355305
+      }
+    ],
+    "fused_ranking": [
+      [
+        2.5,
+        [
+          "004-Source-Class-Author"
+        ]
+      ],
+      [
+        1.0,
+        [
+          "008-Source-Class-Co-author"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#Author",
+      "http://cmt#Co-author"
+    ],
+    "top_candidate_uri": "http://cmt#Author"
+  },
+  {
+    "query_entity_id": "093-Target-Class-Banquet",
+    "query_entity_uri": "http://confOf#Banquet",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "094-Target-Class-Camera_Ready_event",
+    "query_entity_uri": "http://confOf#Camera_Ready_event",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "095-Target-Class-Chair_PC",
+    "query_entity_uri": "http://confOf#Chair_PC",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "096-Target-Class-City",
+    "query_entity_uri": "http://confOf#City",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "006-Source-Class-Bid"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "006-Source-Class-Bid",
+        "similarity": 0.9131619930267334
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "006-Source-Class-Bid"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#Bid"
+    ],
+    "top_candidate_uri": "http://cmt#Bid"
+  },
+  {
+    "query_entity_id": "097-Target-Class-Company",
+    "query_entity_uri": "http://confOf#Company",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "098-Target-Class-Conference",
+    "query_entity_uri": "http://confOf#Conference",
+    "syntactic_ranking": [
+      "009-Source-Class-Conference",
+      "011-Source-Class-ConferenceMember"
+    ],
+    "lexical_ranking": [
+      "009-Source-Class-Conference"
+    ],
+    "semantic_ranking": [
+      "010-Source-Class-ConferenceChair"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "009-Source-Class-Conference",
+        "similarity": 1.0
+      },
+      {
+        "entity_id": "011-Source-Class-ConferenceMember",
+        "similarity": 0.9188731361107165
+      }
+    ],
+    "lexical_scores": [
+      {
+        "entity_id": "009-Source-Class-Conference",
+        "similarity": 0.9999873638153076
+      }
+    ],
+    "semantic_scores": [
+      {
+        "entity_id": "010-Source-Class-ConferenceChair",
+        "similarity": 0.9086946899476849
+      }
+    ],
+    "fused_ranking": [
+      [
+        2.0,
+        [
+          "009-Source-Class-Conference"
+        ]
+      ],
+      [
+        1.0,
+        [
+          "010-Source-Class-ConferenceChair"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "011-Source-Class-ConferenceMember"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#Conference",
+      "http://cmt#ConferenceChair",
+      "http://cmt#ConferenceMember"
+    ],
+    "top_candidate_uri": "http://cmt#Conference"
+  },
+  {
+    "query_entity_id": "099-Target-Class-Contribution",
+    "query_entity_uri": "http://confOf#Contribution",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "017-Source-Class-Paper"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "017-Source-Class-Paper",
+        "similarity": 0.9073460913311925
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "017-Source-Class-Paper"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#Paper"
+    ],
+    "top_candidate_uri": "http://cmt#Paper"
+  },
+  {
+    "query_entity_id": "100-Target-Class-Country",
+    "query_entity_uri": "http://confOf#Country",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "013-Source-Class-Document",
+      "012-Source-Class-Decision"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "013-Source-Class-Document",
+        "similarity": 0.9174108231839492
+      },
+      {
+        "entity_id": "012-Source-Class-Decision",
+        "similarity": 0.9018678782143802
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "013-Source-Class-Document"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "012-Source-Class-Decision"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#Document",
+      "http://cmt#Decision"
+    ],
+    "top_candidate_uri": "http://cmt#Document"
+  },
+  {
+    "query_entity_id": "101-Target-Class-Event",
+    "query_entity_uri": "http://confOf#Event",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "102-Target-Class-Member",
+    "query_entity_uri": "http://confOf#Member",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "015-Source-Class-Meta-Review"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "015-Source-Class-Meta-Review",
+        "similarity": 0.9100652337074344
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "015-Source-Class-Meta-Review"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#Meta-Review"
+    ],
+    "top_candidate_uri": "http://cmt#Meta-Review"
+  },
+  {
+    "query_entity_id": "103-Target-Class-Member_PC",
+    "query_entity_uri": "http://confOf#Member_PC",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "024-Source-Class-ProgramCommitteeMember"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [
+      {
+        "entity_id": "024-Source-Class-ProgramCommitteeMember",
+        "similarity": 0.9046866127288261
+      }
+    ],
+    "semantic_scores": [],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "024-Source-Class-ProgramCommitteeMember"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#ProgramCommitteeMember"
+    ],
+    "top_candidate_uri": "http://cmt#ProgramCommitteeMember"
+  },
+  {
+    "query_entity_id": "104-Target-Class-Organization",
+    "query_entity_uri": "http://confOf#Organization",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "013-Source-Class-Document",
+      "020-Source-Class-Person",
+      "012-Source-Class-Decision"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "013-Source-Class-Document",
+        "similarity": 0.9234223595341207
+      },
+      {
+        "entity_id": "020-Source-Class-Person",
+        "similarity": 0.9090540950926616
+      },
+      {
+        "entity_id": "012-Source-Class-Decision",
+        "similarity": 0.90643709897995
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "013-Source-Class-Document"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "020-Source-Class-Person"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "012-Source-Class-Decision"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#Document",
+      "http://cmt#Person",
+      "http://cmt#Decision"
+    ],
+    "top_candidate_uri": "http://cmt#Document"
+  },
+  {
+    "query_entity_id": "105-Target-Class-Paper",
+    "query_entity_uri": "http://confOf#Paper",
+    "syntactic_ranking": [
+      "017-Source-Class-Paper"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "017-Source-Class-Paper",
+        "similarity": 0.9950695642704569
+      }
+    ],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "017-Source-Class-Paper"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#Paper"
+    ],
+    "top_candidate_uri": "http://cmt#Paper"
+  },
+  {
+    "query_entity_id": "106-Target-Class-Participant",
+    "query_entity_uri": "http://confOf#Participant",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "011-Source-Class-ConferenceMember"
+    ],
+    "semantic_ranking": [
+      "003-Source-Class-AssociatedChair",
+      "029-Source-Class-User"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [
+      {
+        "entity_id": "011-Source-Class-ConferenceMember",
+        "similarity": 0.9285022659002401
+      }
+    ],
+    "semantic_scores": [
+      {
+        "entity_id": "003-Source-Class-AssociatedChair",
+        "similarity": 0.9161952311091474
+      },
+      {
+        "entity_id": "029-Source-Class-User",
+        "similarity": 0.911713763185818
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "003-Source-Class-AssociatedChair",
+          "011-Source-Class-ConferenceMember"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "029-Source-Class-User"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#AssociatedChair",
+      "http://cmt#ConferenceMember",
+      "http://cmt#User"
+    ],
+    "top_candidate_uri": "http://cmt#AssociatedChair"
+  },
+  {
+    "query_entity_id": "107-Target-Class-Person",
+    "query_entity_uri": "http://confOf#Person",
+    "syntactic_ranking": [
+      "020-Source-Class-Person"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "020-Source-Class-Person",
+      "011-Source-Class-ConferenceMember"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "020-Source-Class-Person",
+        "similarity": 0.9950120455012338
+      }
+    ],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "020-Source-Class-Person",
+        "similarity": 0.963228940963752
+      },
+      {
+        "entity_id": "011-Source-Class-ConferenceMember",
+        "similarity": 0.9222653783042944
+      }
+    ],
+    "fused_ranking": [
+      [
+        2.0,
+        [
+          "020-Source-Class-Person"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "011-Source-Class-ConferenceMember"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#Person",
+      "http://cmt#ConferenceMember"
+    ],
+    "top_candidate_uri": "http://cmt#Person"
+  },
+  {
+    "query_entity_id": "108-Target-Class-Poster",
+    "query_entity_uri": "http://confOf#Poster",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "109-Target-Class-Reception",
+    "query_entity_uri": "http://confOf#Reception",
+    "syntactic_ranking": [
+      "025-Source-Class-Rejection"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "025-Source-Class-Rejection",
+        "similarity": 0.9055885728842886
+      }
+    ],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "025-Source-Class-Rejection"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#Rejection"
+    ],
+    "top_candidate_uri": "http://cmt#Rejection"
+  },
+  {
+    "query_entity_id": "110-Target-Class-Registration_of_participants_event",
+    "query_entity_uri": "http://confOf#Registration_of_participants_event",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "111-Target-Class-Regular",
+    "query_entity_uri": "http://confOf#Regular",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "015-Source-Class-Meta-Review",
+      "019-Source-Class-PaperFullVersion"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "015-Source-Class-Meta-Review",
+        "similarity": 0.9145223549293084
+      },
+      {
+        "entity_id": "019-Source-Class-PaperFullVersion",
+        "similarity": 0.9047835525999351
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "015-Source-Class-Meta-Review"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "019-Source-Class-PaperFullVersion"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#Meta-Review",
+      "http://cmt#PaperFullVersion"
+    ],
+    "top_candidate_uri": "http://cmt#Meta-Review"
+  },
+  {
+    "query_entity_id": "112-Target-Class-Reviewing_event",
+    "query_entity_uri": "http://confOf#Reviewing_event",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "113-Target-Class-Reviewing_results_event",
+    "query_entity_uri": "http://confOf#Reviewing_results_event",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "114-Target-Class-Scholar",
+    "query_entity_uri": "http://confOf#Scholar",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "115-Target-Class-Science_Worker",
+    "query_entity_uri": "http://confOf#Science_Worker",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "116-Target-Class-Short_paper",
+    "query_entity_uri": "http://confOf#Short_paper",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "117-Target-Class-Social_event",
+    "query_entity_uri": "http://confOf#Social_event",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "118-Target-Class-Student",
+    "query_entity_uri": "http://confOf#Student",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "015-Source-Class-Meta-Review",
+      "028-Source-Class-SubjectArea",
+      "019-Source-Class-PaperFullVersion"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "015-Source-Class-Meta-Review",
+        "similarity": 0.9185361217580061
+      },
+      {
+        "entity_id": "028-Source-Class-SubjectArea",
+        "similarity": 0.9048919024999228
+      },
+      {
+        "entity_id": "019-Source-Class-PaperFullVersion",
+        "similarity": 0.9018886030846146
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "015-Source-Class-Meta-Review"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "028-Source-Class-SubjectArea"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "019-Source-Class-PaperFullVersion"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#Meta-Review",
+      "http://cmt#SubjectArea",
+      "http://cmt#PaperFullVersion"
+    ],
+    "top_candidate_uri": "http://cmt#Meta-Review"
+  },
+  {
+    "query_entity_id": "119-Target-Class-Submission_event",
+    "query_entity_uri": "http://confOf#Submission_event",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "120-Target-Class-Topic",
+    "query_entity_uri": "http://confOf#Topic",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "013-Source-Class-Document",
+      "012-Source-Class-Decision",
+      "017-Source-Class-Paper"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "013-Source-Class-Document",
+        "similarity": 0.9361574294707898
+      },
+      {
+        "entity_id": "012-Source-Class-Decision",
+        "similarity": 0.908359169960022
+      },
+      {
+        "entity_id": "017-Source-Class-Paper",
+        "similarity": 0.903307074505514
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "013-Source-Class-Document"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "012-Source-Class-Decision"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "017-Source-Class-Paper"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#Document",
+      "http://cmt#Decision",
+      "http://cmt#Paper"
+    ],
+    "top_candidate_uri": "http://cmt#Document"
+  },
+  {
+    "query_entity_id": "121-Target-Class-Trip",
+    "query_entity_uri": "http://confOf#Trip",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "122-Target-Class-Tutorial",
+    "query_entity_uri": "http://confOf#Tutorial",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "010-Source-Class-ConferenceChair"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "010-Source-Class-ConferenceChair",
+        "similarity": 0.9015150666236877
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "010-Source-Class-ConferenceChair"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#ConferenceChair"
+    ],
+    "top_candidate_uri": "http://cmt#ConferenceChair"
+  },
+  {
+    "query_entity_id": "123-Target-Class-University",
+    "query_entity_uri": "http://confOf#University",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "124-Target-Class-Volunteer",
+    "query_entity_uri": "http://confOf#Volunteer",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "125-Target-Class-Working_event",
+    "query_entity_uri": "http://confOf#Working_event",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "126-Target-Class-Workshop",
+    "query_entity_uri": "http://confOf#Workshop",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "010-Source-Class-ConferenceChair"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "010-Source-Class-ConferenceChair",
+        "similarity": 0.9006291091067146
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "010-Source-Class-ConferenceChair"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#ConferenceChair"
+    ],
+    "top_candidate_uri": "http://cmt#ConferenceChair"
+  },
+  {
+    "query_entity_id": "127-Target-Property-abstract",
+    "query_entity_uri": "http://confOf#abstract",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "084-Source-Property-title",
+      "078-Source-Property-reviewsPerPaper",
+      "058-Source-Property-hasDecision"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "084-Source-Property-title",
+        "similarity": 0.9507909700510199
+      },
+      {
+        "entity_id": "078-Source-Property-reviewsPerPaper",
+        "similarity": 0.9324348568916321
+      },
+      {
+        "entity_id": "058-Source-Property-hasDecision",
+        "similarity": 0.9264665202180473
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "084-Source-Property-title"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "078-Source-Property-reviewsPerPaper"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "058-Source-Property-hasDecision"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#title",
+      "http://cmt#reviewsPerPaper",
+      "http://cmt#hasDecision"
+    ],
+    "top_candidate_uri": "http://cmt#title"
+  },
+  {
+    "query_entity_id": "128-Target-Property-contactEmail",
+    "query_entity_uri": "http://confOf#contactEmail",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "044-Source-Property-detailsEnteredBy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "044-Source-Property-detailsEnteredBy",
+        "similarity": 0.9043561277177273
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "044-Source-Property-detailsEnteredBy"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#detailsEnteredBy"
+    ],
+    "top_candidate_uri": "http://cmt#detailsEnteredBy"
+  },
+  {
+    "query_entity_id": "129-Target-Property-dealsWith",
+    "query_entity_uri": "http://confOf#dealsWith",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "058-Source-Property-hasDecision",
+      "057-Source-Property-hasConflictOfInterest",
+      "083-Source-Property-submitPaper"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "058-Source-Property-hasDecision",
+        "similarity": 0.9295383053742846
+      },
+      {
+        "entity_id": "057-Source-Property-hasConflictOfInterest",
+        "similarity": 0.9273579716682434
+      },
+      {
+        "entity_id": "083-Source-Property-submitPaper",
+        "similarity": 0.9202234745025635
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "058-Source-Property-hasDecision"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "057-Source-Property-hasConflictOfInterest"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "083-Source-Property-submitPaper"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#hasDecision",
+      "http://cmt#hasConflictOfInterest",
+      "http://cmt#submitPaper"
+    ],
+    "top_candidate_uri": "http://cmt#hasDecision"
+  },
+  {
+    "query_entity_id": "130-Target-Property-defaultChoice",
+    "query_entity_uri": "http://confOf#defaultChoice",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "131-Target-Property-earlyRegistration",
+    "query_entity_uri": "http://confOf#earlyRegistration",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "031-Source-Property-acceptedBy",
+      "064-Source-Property-memberOfConference",
+      "085-Source-Property-virtualMeetingEnabledBy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "031-Source-Property-acceptedBy",
+        "similarity": 0.9142391238977108
+      },
+      {
+        "entity_id": "064-Source-Property-memberOfConference",
+        "similarity": 0.9021710870062009
+      },
+      {
+        "entity_id": "085-Source-Property-virtualMeetingEnabledBy",
+        "similarity": 0.902030467987067
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "031-Source-Property-acceptedBy"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "064-Source-Property-memberOfConference"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "085-Source-Property-virtualMeetingEnabledBy"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#acceptedBy",
+      "http://cmt#memberOfConference",
+      "http://cmt#virtualMeetingEnabledBy"
+    ],
+    "top_candidate_uri": "http://cmt#acceptedBy"
+  },
+  {
+    "query_entity_id": "132-Target-Property-employedBy",
+    "query_entity_uri": "http://confOf#employedBy",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "057-Source-Property-hasConflictOfInterest",
+      "058-Source-Property-hasDecision",
+      "052-Source-Property-hasAuthor"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "057-Source-Property-hasConflictOfInterest",
+        "similarity": 0.9189595483493331
+      },
+      {
+        "entity_id": "058-Source-Property-hasDecision",
+        "similarity": 0.9118165216117854
+      },
+      {
+        "entity_id": "052-Source-Property-hasAuthor",
+        "similarity": 0.9053282624874492
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "057-Source-Property-hasConflictOfInterest"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "058-Source-Property-hasDecision"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "052-Source-Property-hasAuthor"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#hasConflictOfInterest",
+      "http://cmt#hasDecision",
+      "http://cmt#hasAuthor"
+    ],
+    "top_candidate_uri": "http://cmt#hasConflictOfInterest"
+  },
+  {
+    "query_entity_id": "133-Target-Property-ends_on",
+    "query_entity_uri": "http://confOf#ends_on",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "084-Source-Property-title",
+      "057-Source-Property-hasConflictOfInterest",
+      "078-Source-Property-reviewsPerPaper"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "084-Source-Property-title",
+        "similarity": 0.9526330516527016
+      },
+      {
+        "entity_id": "057-Source-Property-hasConflictOfInterest",
+        "similarity": 0.9117234349250793
+      },
+      {
+        "entity_id": "078-Source-Property-reviewsPerPaper",
+        "similarity": 0.9096863865852356
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "084-Source-Property-title"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "057-Source-Property-hasConflictOfInterest"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "078-Source-Property-reviewsPerPaper"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#title",
+      "http://cmt#hasConflictOfInterest",
+      "http://cmt#reviewsPerPaper"
+    ],
+    "top_candidate_uri": "http://cmt#title"
+  },
+  {
+    "query_entity_id": "134-Target-Property-expertOn",
+    "query_entity_uri": "http://confOf#expertOn",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "031-Source-Property-acceptedBy",
+      "041-Source-Property-assignedTo",
+      "075-Source-Property-rejectedBy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "031-Source-Property-acceptedBy",
+        "similarity": 0.9141168321932505
+      },
+      {
+        "entity_id": "041-Source-Property-assignedTo",
+        "similarity": 0.9087347604693294
+      },
+      {
+        "entity_id": "075-Source-Property-rejectedBy",
+        "similarity": 0.9023009153277536
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "031-Source-Property-acceptedBy"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "041-Source-Property-assignedTo"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "075-Source-Property-rejectedBy"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#acceptedBy",
+      "http://cmt#assignedTo",
+      "http://cmt#rejectedBy"
+    ],
+    "top_candidate_uri": "http://cmt#acceptedBy"
+  },
+  {
+    "query_entity_id": "135-Target-Property-follows",
+    "query_entity_uri": "http://confOf#follows",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "136-Target-Property-hasAdministrativeEvent",
+    "query_entity_uri": "http://confOf#hasAdministrativeEvent",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "060-Source-Property-hasSubjectArea"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "060-Source-Property-hasSubjectArea",
+        "similarity": 0.9088285240181845
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "060-Source-Property-hasSubjectArea"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#hasSubjectArea"
+    ],
+    "top_candidate_uri": "http://cmt#hasSubjectArea"
+  },
+  {
+    "query_entity_id": "137-Target-Property-hasCity",
+    "query_entity_uri": "http://confOf#hasCity",
+    "syntactic_ranking": [
+      "052-Source-Property-hasAuthor"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "052-Source-Property-hasAuthor",
+        "similarity": 0.9153551207051057
+      }
+    ],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "052-Source-Property-hasAuthor"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#hasAuthor"
+    ],
+    "top_candidate_uri": "http://cmt#hasAuthor"
+  },
+  {
+    "query_entity_id": "138-Target-Property-hasCountry",
+    "query_entity_uri": "http://confOf#hasCountry",
+    "syntactic_ranking": [
+      "052-Source-Property-hasAuthor"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "052-Source-Property-hasAuthor",
+        "similarity": 0.9033684615336078
+      }
+    ],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "052-Source-Property-hasAuthor"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#hasAuthor"
+    ],
+    "top_candidate_uri": "http://cmt#hasAuthor"
+  },
+  {
+    "query_entity_id": "139-Target-Property-hasEmail",
+    "query_entity_uri": "http://confOf#hasEmail",
+    "syntactic_ranking": [
+      "052-Source-Property-hasAuthor"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "052-Source-Property-hasAuthor",
+      "041-Source-Property-assignedTo",
+      "031-Source-Property-acceptedBy"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "052-Source-Property-hasAuthor",
+        "similarity": 0.902995926677454
+      }
+    ],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "052-Source-Property-hasAuthor",
+        "similarity": 0.9349241457766615
+      },
+      {
+        "entity_id": "041-Source-Property-assignedTo",
+        "similarity": 0.9216227116618723
+      },
+      {
+        "entity_id": "031-Source-Property-acceptedBy",
+        "similarity": 0.9193355119030661
+      }
+    ],
+    "fused_ranking": [
+      [
+        2.0,
+        [
+          "052-Source-Property-hasAuthor"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "041-Source-Property-assignedTo"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "031-Source-Property-acceptedBy"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#hasAuthor",
+      "http://cmt#assignedTo",
+      "http://cmt#acceptedBy"
+    ],
+    "top_candidate_uri": "http://cmt#hasAuthor"
+  },
+  {
+    "query_entity_id": "140-Target-Property-hasFax",
+    "query_entity_uri": "http://confOf#hasFax",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "141-Target-Property-hasFirstName",
+    "query_entity_uri": "http://confOf#hasFirstName",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "052-Source-Property-hasAuthor"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "052-Source-Property-hasAuthor",
+        "similarity": 0.9150124788284302
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "052-Source-Property-hasAuthor"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#hasAuthor"
+    ],
+    "top_candidate_uri": "http://cmt#hasAuthor"
+  },
+  {
+    "query_entity_id": "142-Target-Property-hasHomePage",
+    "query_entity_uri": "http://confOf#hasHomePage",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "052-Source-Property-hasAuthor",
+      "031-Source-Property-acceptedBy",
+      "041-Source-Property-assignedTo"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "052-Source-Property-hasAuthor",
+        "similarity": 0.9136593393290453
+      },
+      {
+        "entity_id": "031-Source-Property-acceptedBy",
+        "similarity": 0.9074813889000333
+      },
+      {
+        "entity_id": "041-Source-Property-assignedTo",
+        "similarity": 0.90497196287084
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "052-Source-Property-hasAuthor"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "031-Source-Property-acceptedBy"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "041-Source-Property-assignedTo"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#hasAuthor",
+      "http://cmt#acceptedBy",
+      "http://cmt#assignedTo"
+    ],
+    "top_candidate_uri": "http://cmt#hasAuthor"
+  },
+  {
+    "query_entity_id": "143-Target-Property-hasKeyword",
+    "query_entity_uri": "http://confOf#hasKeyword",
+    "syntactic_ranking": [
+      "052-Source-Property-hasAuthor"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "052-Source-Property-hasAuthor",
+        "similarity": 0.9275972756859459
+      }
+    ],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "052-Source-Property-hasAuthor"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#hasAuthor"
+    ],
+    "top_candidate_uri": "http://cmt#hasAuthor"
+  },
+  {
+    "query_entity_id": "144-Target-Property-hasPhone",
+    "query_entity_uri": "http://confOf#hasPhone",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "056-Source-Property-hasConferenceMember",
+      "084-Source-Property-title",
+      "057-Source-Property-hasConflictOfInterest"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "056-Source-Property-hasConferenceMember",
+        "similarity": 0.9206696105402475
+      },
+      {
+        "entity_id": "084-Source-Property-title",
+        "similarity": 0.9173722813947368
+      },
+      {
+        "entity_id": "057-Source-Property-hasConflictOfInterest",
+        "similarity": 0.9161042248041701
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "056-Source-Property-hasConferenceMember"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "084-Source-Property-title"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "057-Source-Property-hasConflictOfInterest"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#hasConferenceMember",
+      "http://cmt#title",
+      "http://cmt#hasConflictOfInterest"
+    ],
+    "top_candidate_uri": "http://cmt#hasConferenceMember"
+  },
+  {
+    "query_entity_id": "145-Target-Property-hasPostalCode",
+    "query_entity_uri": "http://confOf#hasPostalCode",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "146-Target-Property-hasStreet",
+    "query_entity_uri": "http://confOf#hasStreet",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "147-Target-Property-hasSurname",
+    "query_entity_uri": "http://confOf#hasSurname",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "052-Source-Property-hasAuthor",
+      "084-Source-Property-title",
+      "041-Source-Property-assignedTo"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "052-Source-Property-hasAuthor",
+        "similarity": 0.9191243552117836
+      },
+      {
+        "entity_id": "084-Source-Property-title",
+        "similarity": 0.9067974249716773
+      },
+      {
+        "entity_id": "041-Source-Property-assignedTo",
+        "similarity": 0.9048054700858026
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "052-Source-Property-hasAuthor"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "084-Source-Property-title"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "041-Source-Property-assignedTo"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#hasAuthor",
+      "http://cmt#title",
+      "http://cmt#assignedTo"
+    ],
+    "top_candidate_uri": "http://cmt#hasAuthor"
+  },
+  {
+    "query_entity_id": "148-Target-Property-hasTitle",
+    "query_entity_uri": "http://confOf#hasTitle",
+    "syntactic_ranking": [
+      "052-Source-Property-hasAuthor"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "084-Source-Property-title",
+      "078-Source-Property-reviewsPerPaper",
+      "058-Source-Property-hasDecision"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "052-Source-Property-hasAuthor",
+        "similarity": 0.9326505580724017
+      }
+    ],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "084-Source-Property-title",
+        "similarity": 0.9564137173767808
+      },
+      {
+        "entity_id": "078-Source-Property-reviewsPerPaper",
+        "similarity": 0.9373801387917929
+      },
+      {
+        "entity_id": "058-Source-Property-hasDecision",
+        "similarity": 0.9356789588928289
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "052-Source-Property-hasAuthor",
+          "084-Source-Property-title"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "078-Source-Property-reviewsPerPaper"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "058-Source-Property-hasDecision"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#hasAuthor",
+      "http://cmt#title",
+      "http://cmt#reviewsPerPaper",
+      "http://cmt#hasDecision"
+    ],
+    "top_candidate_uri": "http://cmt#hasAuthor"
+  },
+  {
+    "query_entity_id": "149-Target-Property-hasTopic",
+    "query_entity_uri": "http://confOf#hasTopic",
+    "syntactic_ranking": [
+      "052-Source-Property-hasAuthor"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "084-Source-Property-title",
+      "078-Source-Property-reviewsPerPaper",
+      "056-Source-Property-hasConferenceMember"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "052-Source-Property-hasAuthor",
+        "similarity": 0.9078669979334486
+      }
+    ],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "084-Source-Property-title",
+        "similarity": 0.9345055461977915
+      },
+      {
+        "entity_id": "078-Source-Property-reviewsPerPaper",
+        "similarity": 0.9300184804212158
+      },
+      {
+        "entity_id": "056-Source-Property-hasConferenceMember",
+        "similarity": 0.9265784853617987
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "052-Source-Property-hasAuthor",
+          "084-Source-Property-title"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "078-Source-Property-reviewsPerPaper"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "056-Source-Property-hasConferenceMember"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#hasAuthor",
+      "http://cmt#title",
+      "http://cmt#reviewsPerPaper",
+      "http://cmt#hasConferenceMember"
+    ],
+    "top_candidate_uri": "http://cmt#hasAuthor"
+  },
+  {
+    "query_entity_id": "150-Target-Property-hasVAT",
+    "query_entity_uri": "http://confOf#hasVAT",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "151-Target-Property-has_short_title",
+    "query_entity_uri": "http://confOf#has_short_title",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "043-Source-Property-date",
+      "058-Source-Property-hasDecision"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "043-Source-Property-date",
+        "similarity": 0.9027668564687152
+      },
+      {
+        "entity_id": "058-Source-Property-hasDecision",
+        "similarity": 0.9008223623772591
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "043-Source-Property-date"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "058-Source-Property-hasDecision"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#date",
+      "http://cmt#hasDecision"
+    ],
+    "top_candidate_uri": "http://cmt#date"
+  },
+  {
+    "query_entity_id": "152-Target-Property-has_title",
+    "query_entity_uri": "http://confOf#has_title",
+    "syntactic_ranking": [
+      "052-Source-Property-hasAuthor"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "052-Source-Property-hasAuthor",
+        "similarity": 0.9326505580724017
+      }
+    ],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "052-Source-Property-hasAuthor"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#hasAuthor"
+    ],
+    "top_candidate_uri": "http://cmt#hasAuthor"
+  },
+  {
+    "query_entity_id": "153-Target-Property-location",
+    "query_entity_uri": "http://confOf#location",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "154-Target-Property-maxChoice",
+    "query_entity_uri": "http://confOf#maxChoice",
+    "syntactic_ranking": [
+      "063-Source-Property-maxPapers"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "063-Source-Property-maxPapers",
+        "similarity": 0.9089510874064867
+      }
+    ],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "063-Source-Property-maxPapers"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#maxPapers"
+    ],
+    "top_candidate_uri": "http://cmt#maxPapers"
+  },
+  {
+    "query_entity_id": "155-Target-Property-minChoice",
+    "query_entity_uri": "http://confOf#minChoice",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "156-Target-Property-parallel_with",
+    "query_entity_uri": "http://confOf#parallel_with",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "157-Target-Property-remark",
+    "query_entity_uri": "http://confOf#remark",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "158-Target-Property-reviewes",
+    "query_entity_uri": "http://confOf#reviewes",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "159-Target-Property-starts_on",
+    "query_entity_uri": "http://confOf#starts_on",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "084-Source-Property-title",
+      "057-Source-Property-hasConflictOfInterest",
+      "078-Source-Property-reviewsPerPaper"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "084-Source-Property-title",
+        "similarity": 0.9497980728564928
+      },
+      {
+        "entity_id": "057-Source-Property-hasConflictOfInterest",
+        "similarity": 0.9106190747391643
+      },
+      {
+        "entity_id": "078-Source-Property-reviewsPerPaper",
+        "similarity": 0.906849319151005
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "084-Source-Property-title"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "057-Source-Property-hasConflictOfInterest"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "078-Source-Property-reviewsPerPaper"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#title",
+      "http://cmt#hasConflictOfInterest",
+      "http://cmt#reviewsPerPaper"
+    ],
+    "top_candidate_uri": "http://cmt#title"
+  },
+  {
+    "query_entity_id": "160-Target-Property-studyAt",
+    "query_entity_uri": "http://confOf#studyAt",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "083-Source-Property-submitPaper",
+      "057-Source-Property-hasConflictOfInterest",
+      "056-Source-Property-hasConferenceMember"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "083-Source-Property-submitPaper",
+        "similarity": 0.9177709221839905
+      },
+      {
+        "entity_id": "057-Source-Property-hasConflictOfInterest",
+        "similarity": 0.9147240519523621
+      },
+      {
+        "entity_id": "056-Source-Property-hasConferenceMember",
+        "similarity": 0.9108909043935215
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "083-Source-Property-submitPaper"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "057-Source-Property-hasConflictOfInterest"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "056-Source-Property-hasConferenceMember"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#submitPaper",
+      "http://cmt#hasConflictOfInterest",
+      "http://cmt#hasConferenceMember"
+    ],
+    "top_candidate_uri": "http://cmt#submitPaper"
+  },
+  {
+    "query_entity_id": "161-Target-Property-writes",
+    "query_entity_uri": "http://confOf#writes",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "073-Source-Property-readPaper"
+    ],
+    "semantic_ranking": [
+      "058-Source-Property-hasDecision",
+      "083-Source-Property-submitPaper",
+      "088-Source-Property-writtenBy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [
+      {
+        "entity_id": "073-Source-Property-readPaper",
+        "similarity": 0.9028769077585429
+      }
+    ],
+    "semantic_scores": [
+      {
+        "entity_id": "058-Source-Property-hasDecision",
+        "similarity": 0.9246454149061936
+      },
+      {
+        "entity_id": "083-Source-Property-submitPaper",
+        "similarity": 0.9096633142032231
+      },
+      {
+        "entity_id": "088-Source-Property-writtenBy",
+        "similarity": 0.9045624193810119
+      }
+    ],
+    "fused_ranking": [
+      [
+        1.0,
+        [
+          "058-Source-Property-hasDecision",
+          "073-Source-Property-readPaper"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "083-Source-Property-submitPaper"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "088-Source-Property-writtenBy"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#hasDecision",
+      "http://cmt#readPaper",
+      "http://cmt#submitPaper",
+      "http://cmt#writtenBy"
+    ],
+    "top_candidate_uri": "http://cmt#hasDecision"
+  },
+  {
+    "query_entity_id": "162-Target-Property-writtenBy",
+    "query_entity_uri": "http://confOf#writtenBy",
+    "syntactic_ranking": [
+      "088-Source-Property-writtenBy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "088-Source-Property-writtenBy",
+      "052-Source-Property-hasAuthor",
+      "031-Source-Property-acceptedBy"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "088-Source-Property-writtenBy",
+        "similarity": 0.9964503049850464
+      }
+    ],
+    "lexical_scores": [],
+    "semantic_scores": [
+      {
+        "entity_id": "088-Source-Property-writtenBy",
+        "similarity": 0.9592911625331101
+      },
+      {
+        "entity_id": "052-Source-Property-hasAuthor",
+        "similarity": 0.9446310367960372
+      },
+      {
+        "entity_id": "031-Source-Property-acceptedBy",
+        "similarity": 0.943799916279336
+      }
+    ],
+    "fused_ranking": [
+      [
+        2.0,
+        [
+          "088-Source-Property-writtenBy"
+        ]
+      ],
+      [
+        0.5,
+        [
+          "052-Source-Property-hasAuthor"
+        ]
+      ],
+      [
+        0.3333333333333333,
+        [
+          "031-Source-Property-acceptedBy"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#writtenBy",
+      "http://cmt#hasAuthor",
+      "http://cmt#acceptedBy"
+    ],
+    "top_candidate_uri": "http://cmt#writtenBy"
+  }
+]

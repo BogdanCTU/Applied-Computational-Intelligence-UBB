@@ -1,0 +1,937 @@
+source_uri,target_uri,source_name,target_name,cleaned_source_name,cleaned_target_name,bypassed,direction,prompt,raw_response,decision,duration_ms,prompt_tokens,completion_tokens,total_tokens,error_message
+http://cmt#Administrator,http://confOf#Administrator,Administrator,Administrator,administrator,administrator,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,
+http://cmt#AssociatedChair,http://confOf#Participant,AssociatedChair,Participant,associated chair,participant,False,Source->Target,"Question: Is associated chair equivalent to participant?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, an associated chair is typically a person who is responsible for the overall organization and logistics of the event, whereas a participant is someone who attends the conference to present or learn. While an associated chair may also be a participant in the sense that they attend the conference, the two roles are not equivalent.",no,4232.623600000807,44,69,113,
+http://cmt#Author,http://confOf#Author,Author,Author,author,author,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,
+http://cmt#Bid,http://confOf#City,Bid,City,bid,city,False,Source->Target,"Question: Is bid equivalent to city?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""bid"" refers to the process of submitting a proposal to host the event, whereas ""city"" refers to the physical location where the conference will take place. While the city may be the location where the conference is held, the bid is the formal proposal to host the event.",no,1628.2198000008066,43,66,109,
+http://cmt#Co-author,http://confOf#Author,Co-author,Author,co author,author,False,Source->Target,"Question: Is co author equivalent to author?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a co-author is someone who has contributed to the research or idea presented in the paper, but may not be the primary person responsible for the work. While a co-author may have played a significant role in the research, they are not considered the sole author. The primary author is typically the person who is most responsible for the research, writing, and presentation of the paper.",no,2036.2779999995837,44,85,129,
+http://cmt#Conference,http://confOf#Conference,Conference,Conference,conference,conference,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,
+http://cmt#ConferenceChair,http://confOf#Conference,ConferenceChair,Conference,conference chair,conference,False,Source->Target,"Question: Is conference chair equivalent to conference?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a conference chair is a person who is responsible for organizing and leading the event. It is not equivalent to the conference itself, but rather a role within the conference.",no,1093.3801000010135,44,43,87,
+http://cmt#ConferenceChair,http://confOf#Tutorial,ConferenceChair,Tutorial,conference chair,tutorial,False,Source->Target,"Question: Is conference chair equivalent to tutorial?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a conference chair is typically the person responsible for overseeing the overall organization and logistics of the event, whereas a tutorial is a specific type of session or presentation that provides in-depth instruction or training on a particular topic. While the conference chair may be involved in the planning and execution of tutorials, the two roles are distinct and not equivalent.",no,1834.2830999990838,44,76,120,
+http://cmt#ConferenceChair,http://confOf#Workshop,ConferenceChair,Workshop,conference chair,workshop,False,Source->Target,"Question: Is conference chair equivalent to workshop?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a conference chair is a person responsible for overseeing the organization and execution of the event, whereas a workshop is a specific type of session or activity held during the conference. While the conference chair may be involved in planning and facilitating workshops, the two terms refer to distinct roles and concepts.",no,1614.2891999988933,44,66,110,
+http://cmt#ConferenceMember,http://confOf#Conference,ConferenceMember,Conference,conference member,conference,False,Source->Target,"Question: Is conference member equivalent to conference?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, a conference member is essentially equivalent to a conference. A conference member is an individual or organization that participates in a conference, which is an event where people gather to share information, ideas, and experiences.",yes,1259.193800000503,44,50,94,
+http://cmt#ConferenceMember,http://confOf#Participant,ConferenceMember,Participant,conference member,participant,False,Source->Target,"Question: Is conference member equivalent to participant?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, a conference member and a participant are often used interchangeably to refer to an individual who attends and engages with the conference, whether as a speaker, presenter, attendee, or exhibitor.",yes,1175.760000000082,44,47,91,
+http://cmt#ConferenceMember,http://confOf#Person,ConferenceMember,Person,conference member,person,False,Source->Target,"Question: Is conference member equivalent to person?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a ""member"" typically refers to an individual or organization that has registered or is participating in the conference. However, not all members are people. For example, a company or institution can be a member of a conference, even though it is not a person.",no,1524.37849999842,44,62,106,
+http://cmt#Decision,http://confOf#Topic,Decision,Topic,decision,topic,False,Source->Target,"Question: Is decision equivalent to topic?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a topic refers to the main subject or theme of a presentation, such as ""Artificial Intelligence in Healthcare"" or ""Sustainable Energy Solutions"". A decision, on the other hand, is a choice or conclusion made by the conference organizers, attendees, or speakers, such as deciding on a keynote speaker or choosing a winner for a competition. While a topic and a decision may be related, they are not equivalent.",no,2222.475399999894,43,93,136,
+http://cmt#Decision,http://confOf#Organization,Decision,Organization,decision,organization,False,Source->Target,"Question: Is decision equivalent to organization?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, decision-making and organization are two distinct processes. Decision-making involves choosing a course of action or making a choice among options, whereas organization refers to the process of structuring and coordinating the conference's activities, such as scheduling, logistics, and resource allocation. While the two processes may overlap, they are not equivalent.",no,1726.8117000003258,43,72,115,
+http://cmt#Decision,http://confOf#Country,Decision,Country,decision,country,False,Source->Target,"Question: Is decision equivalent to country?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a decision is a conclusion or a choice made by the attendees or organizers, whereas a country is a geographical entity with its own government, economy, and culture. The two concepts are not equivalent, and the context of a conference does not suggest a direct connection between the two.",no,1569.7740000014164,43,65,108,
+http://cmt#Document,http://confOf#Topic,Document,Topic,document,topic,False,Source->Target,"Question: Is document equivalent to topic?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a document is a specific piece of written work, such as a paper, presentation, or report, that is submitted or presented to the conference. A topic, on the other hand, refers to the general subject or theme of the conference, which may encompass multiple documents or presentations. While a document may be related to a specific topic, they are not equivalent.",no,1985.3461000002426,43,82,125,
+http://cmt#Document,http://confOf#Organization,Document,Organization,document,organization,False,Source->Target,"Question: Is document equivalent to organization?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a document refers to a written or digital file that contains information, data, or content related to the conference, such as abstracts, proceedings, or presentations. On the other hand, an organization refers to a group of people, institutions, or entities that come together to plan, execute, and participate in the conference. While documents and organizations are related, they are not equivalent.",no,2065.2544000004127,43,86,129,
+http://cmt#Document,http://confOf#Country,Document,Country,document,country,False,Source->Target,"Question: Is document equivalent to country?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a document is a written or digital record of information, whereas a country is a sovereign nation or territory. The two concepts are not equivalent, as a document is a specific piece of written or digital content, whereas a country is a geographic and political entity.",no,1486.2704999995913,43,61,104,
+http://cmt#ExternalReviewer,http://confOf#Topic,ExternalReviewer,Topic,external reviewer,topic,False,Source->Target,"Question: Is external reviewer equivalent to topic?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, an external reviewer is a person who is not affiliated with the conference or the submitting authors, and is asked to review a submission to provide an independent evaluation of the paper's quality and relevance. This is a separate entity from the topic of the conference, which is the general area of research or theme that the conference is focused on.",no,1840.30840000014,44,76,120,
+http://cmt#Meta-Review,http://confOf#Student,Meta-Review,Student,meta review,student,False,Source->Target,"Question: Is meta review equivalent to student?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a meta-review is a review of the review process itself, often conducted by the conference organizers or a designated committee. It's a higher-level evaluation that aims to improve the quality and consistency of the review process. A student, on the other hand, is a participant in the conference, presenting their research or attending the event to learn and network. The two are distinct and unrelated.",no,2054.0144000005967,44,86,130,
+http://cmt#Meta-Review,http://confOf#Regular,Meta-Review,Regular,meta review,regular,False,Source->Target,"Question: Is meta review equivalent to regular?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a meta-review is a review of reviews, where the authors of the meta-review analyze and synthesize the findings of multiple regular reviews. While regular reviews typically evaluate the quality and relevance of individual studies, meta-reviews take a step back and examine the overall quality and consistency of the reviews themselves.",no,1671.051000001171,44,69,113,
+http://cmt#Meta-Review,http://confOf#Member,Meta-Review,Member,meta review,member,False,Source->Target,"Question: Is meta review equivalent to member?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a meta-review is a review of the review process itself, often conducted by the conference organizers or a designated committee. It's a higher-level evaluation that assesses the quality and consistency of the reviews, rather than a review of the research being presented.
+
+A member, on the other hand, is a participant or attendee at the conference, who may or may not be involved in the review process. They may be presenting a paper, attending a session, or simply observing the conference.",no,2489.37289999958,44,106,150,
+http://cmt#Paper,http://confOf#Contribution,Paper,Contribution,paper,contribution,False,Source->Target,"Question: Is paper equivalent to contribution?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""paper"" typically refers to a written document that presents research or ideas, whereas ""contribution"" implies a more general sense of adding value or making a meaningful impact. While a paper may be a valuable contribution to the conference, the two terms are not equivalent.",no,1560.0212000008469,43,63,106,
+http://cmt#Paper,http://confOf#Paper,Paper,Paper,paper,paper,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,
+http://cmt#PaperFullVersion,http://confOf#Regular,PaperFullVersion,Regular,paper full version,regular,False,Source->Target,"Question: Is paper full version equivalent to regular?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, the full version of paper is equivalent to the regular version because it is the complete and final version of the paper that has been thoroughly reviewed and accepted for presentation at the conference.",yes,1139.2847999995865,45,45,90,
+http://cmt#Person,http://confOf#Person,Person,Person,person,person,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,
+http://cmt#ProgramCommitteeMember,http://confOf#Member_PC,ProgramCommitteeMember,Member_PC,program committee member,member pc,False,Source->Target,"Question: Is program committee member equivalent to member pc?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, a Program Committee (PC) member is responsible for reviewing and evaluating submissions to the conference. This role is often equivalent to being a Member of the Program Committee (Member PC). Both terms refer to an individual who plays a crucial role in shaping the conference program by assessing the quality and relevance of submitted papers.",yes,1739.5271000004868,46,71,117,
+http://cmt#Rejection,http://confOf#Reception,Rejection,Reception,rejection,reception,False,Source->Target,"Question: Is rejection equivalent to reception?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, rejection refers to the act of declining or turning down an invitation, proposal, or offer. This can be a formal or informal process, and it typically involves a decision not to participate or engage with something. On the other hand, reception refers to the act of accepting or receiving something, such as an invitation, proposal, or offer. While the two terms may seem similar, they have distinct meanings and connotations in the context of a conference.",no,2315.2143000006618,43,99,142,
+http://cmt#SubjectArea,http://confOf#Student,SubjectArea,Student,subject area,student,False,Source->Target,"Question: Is subject area equivalent to student?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a subject area refers to a specific field of study or topic that is being presented or discussed. It is not equivalent to a student, as a student is an individual who is attending the conference to learn or present, whereas a subject area is a broader category of knowledge or research.",no,1626.9838999996864,44,66,110,
+http://cmt#User,http://confOf#Participant,User,Participant,user,participant,False,Source->Target,"Question: Is user equivalent to participant?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a user is typically someone who is using the conference's resources, such as the website, app, or registration system. A participant, on the other hand, is someone who is actively involved in the conference, such as attending sessions, presenting a paper, or leading a workshop. While there may be some overlap between the two groups, not all users of the conference's resources are necessarily participants in the conference itself.",no,2217.8377000000182,43,93,136,
+http://cmt#acceptedBy,http://confOf#writtenBy,acceptedBy,writtenBy,accepted by,written by,False,Source->Target,"Question: Is accepted by equivalent to written by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""accepted by"" is often equivalent to ""written by"". This is because the ""accepted by"" phrase typically refers to the author(s) who have written the paper or presentation that has been accepted for presentation at the conference.",yes,1370.7325000013952,45,55,100,
+http://cmt#assignedByAdministrator,http://confOf#writtenBy,assignedByAdministrator,writtenBy,assigned by administrator,written by,False,Source->Target,"Question: Is assigned by administrator equivalent to written by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""assigned by administrator"" is equivalent to ""written by"" because the administrator is likely the one who assigned the task of writing the content to the author. In this case, the author is the one who actually wrote the content, but the administrator is the one who took responsibility for assigning the task and overseeing the process.",yes,1930.4443999990326,46,74,120,
+http://cmt#assignedByReviewer,http://confOf#writtenBy,assignedByReviewer,writtenBy,assigned by reviewer,written by,False,Source->Target,"Question: Is assigned by reviewer equivalent to written by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""assigned by reviewer"" likely refers to the fact that a paper was reviewed and evaluated by a specific person, whereas ""written by"" refers to the authorship of the paper itself. While the reviewer may have played a crucial role in the paper's development, they are not the same as the author(s) who wrote the paper.",no,1864.9026000002777,46,77,123,
+http://cmt#assignedTo,http://confOf#writtenBy,assignedTo,writtenBy,assigned to,written by,False,Source->Target,"Question: Is assigned to equivalent to written by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""assigned to"" typically refers to the person or team responsible for presenting or leading a session, whereas ""written by"" refers to the authorship of a paper, abstract, or other written work. While there may be some overlap, these terms are not equivalent.",no,1536.907900001097,45,63,108,
+http://cmt#assignedTo,http://confOf#hasEmail,assignedTo,hasEmail,assigned to,has email,False,Source->Target,"Question: Is assigned to equivalent to has email?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""assigned to"" is often used to indicate the recipient of an email, similar to ""has email"". For example, ""Your abstract has been assigned to the program committee"" implies that the program committee will receive the abstract via email.",yes,1392.4035000000003,45,57,102,
+http://cmt#co-writePaper,http://confOf#writtenBy,co-writePaper,writtenBy,co writepaper,written by,False,Source->Target,"Question: Is co writepaper equivalent to written by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""co-write"" implies a collaborative effort between multiple authors, whereas ""written by"" typically implies a single author. However, in academic publishing, ""co-write"" is often used interchangeably with ""written by"" to indicate that multiple authors contributed to the writing of a paper.",yes,1571.827800000392,46,66,112,
+http://cmt#date,http://confOf#has_short_title,date,has_short_title,date,has short title,False,Source->Target,"Question: Is date equivalent to has short title?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""date"" is often used as a shorthand or abbreviation for the full title of the conference, similar to how ""has"" is used as a shorthand for ""has short title"".",yes,1165.5049000000872,45,46,91,
+http://cmt#detailsEnteredBy,http://confOf#contactEmail,detailsEnteredBy,contactEmail,details entered by,contact email,False,Source->Target,"Question: Is details entered by equivalent to contact email?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""details entered by"" is likely referring to the attendee's registration information, such as name, organization, and other relevant details. This is not equivalent to a contact email, which is a specific email address used for communication. While the attendee's email address may be included in their registration details, they are not the same thing.",no,1849.4116000001668,46,76,122,
+http://cmt#hasAuthor,http://confOf#hasTitle,hasAuthor,hasTitle,has author,has title,False,Source->Target,"Question: Is has author equivalent to has title?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""author"" refers to the person who wrote the paper or presentation being presented, whereas ""title"" refers to the name given to the paper or presentation. While there may be a correlation between the two (e.g., the author of a paper may also be the title of the paper), they are not equivalent.",no,1960.6081000001723,45,73,118,
+http://cmt#hasAuthor,http://confOf#writtenBy,hasAuthor,writtenBy,has author,written by,False,Source->Target,"Question: Is has author equivalent to written by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""Is has author"" is often used to indicate the person who wrote the paper or presentation being discussed. This is equivalent to ""written by"" in terms of conveying the authorship of the work.",yes,1226.6005000001314,45,50,95,
+http://cmt#hasBid,http://confOf#earlyRegistration,hasBid,earlyRegistration,has bid,early registration,False,Source->Target,"Question: Is has bid equivalent to early registration?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""has bid"" is equivalent to ""early registration"". Both phrases refer to the act of submitting an expression of interest or a formal application to attend the conference, usually with a deadline.",yes,1192.3406000005343,45,47,92,
+http://cmt#hasCo-author,http://confOf#writtenBy,hasCo-author,writtenBy,hasco author,written by,False,Source->Target,"Question: Is hasco author equivalent to written by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""Hasco author"" is often used to indicate the authorship of a paper or presentation, similar to ""written by"". Both phrases convey that the individual listed is the primary author or creator of the work being presented.",yes,1352.6693999992858,46,54,100,
+http://cmt#hasConferenceMember,http://confOf#hasTopic,hasConferenceMember,hasTopic,has conference member,has topic,False,Source->Target,"Question: Is has conference member equivalent to has topic?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a member is a person or organization that participates in the conference, whereas a topic is a subject or theme that is discussed or presented at the conference. While a member may present on a specific topic, the two concepts are not equivalent.",no,1411.3654000011593,46,57,103,
+http://cmt#hasConferenceMember,http://confOf#hasPhone,hasConferenceMember,hasPhone,has conference member,has phone,False,Source->Target,"Question: Is has conference member equivalent to has phone?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, a ""conference member"" is likely referring to a participant or attendee who is part of the conference. Having a conference member is equivalent to having a phone, as it implies that the member is connected to the conference and can participate in discussions, share information, and engage with others.",yes,1609.665899999527,46,66,112,
+http://cmt#hasConflictOfInterest,http://confOf#dealsWith,hasConflictOfInterest,dealsWith,has conflict of interest,deals with,False,Source->Target,"Question: Is has conflict of interest equivalent to deals with?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""deals with"" likely refers to interacting or transacting with someone, whereas ""has conflict of interest"" implies a situation where one's personal or professional interests are in opposition to the interests of others, potentially influencing one's decisions or actions. While both phrases may involve some level of interaction or involvement, they have distinct meanings and connotations.",no,1915.6440000006114,47,79,126,
+http://cmt#hasConflictOfInterest,http://confOf#hasTitle,hasConflictOfInterest,hasTitle,has conflict of interest,has title,False,Source->Target,"Question: Is has conflict of interest equivalent to has title?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, having a title does not necessarily imply a conflict of interest. A title is a designation or position held by an individual, whereas a conflict of interest refers to a situation where an individual's personal or professional interests may be compromised by their involvement in a particular activity, such as presenting or moderating a session at a conference.",no,1753.9499000013166,47,74,121,
+http://cmt#hasConflictOfInterest,http://confOf#employedBy,hasConflictOfInterest,employedBy,has conflict of interest,employed by,False,Source->Target,"Question: Is has conflict of interest equivalent to employed by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+While being employed by an organization may create a potential conflict of interest, it is not equivalent. A conflict of interest is a situation where an individual's personal or financial interests may influence their judgment or actions, regardless of their employment status. For example, a researcher who is employed by a company may have a conflict of interest if they are also a shareholder in the company, even if they are not directly involved in the research.
+
+In the context of a conference, a speaker who is employed by an organization may have a potential conflict of interest if they have a financial or personal stake in the topic or organization being discussed. However, simply being employed by an organization does not necessarily create a conflict of interest.",no,3172.7618999993865,47,143,190,
+http://cmt#hasDecision,http://confOf#hasTitle,hasDecision,hasTitle,has decision,has title,False,Source->Target,"Question: Is has decision equivalent to has title?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, having a decision equivalent to having a title. Both imply a level of commitment, responsibility, or authority. For example, a conference organizer might say, ""I have a decision to make about the keynote speaker"" or ""I have the title of Chair of the Program Committee."" In both cases, the person has a specific role or responsibility.",yes,1871.910799998659,45,78,123,
+http://cmt#hasProgramCommitteeMember,http://confOf#hasTopic,hasProgramCommitteeMember,hasTopic,has program committee member,has topic,False,Source->Target,"Question: Is has program committee member equivalent to has topic?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+As a program committee member, you are responsible for reviewing and evaluating submissions to the conference, ensuring that the accepted papers meet the conference's standards and quality. This role is distinct from having a topic, which refers to the specific area or theme that you are an expert in or have a particular interest in.
+
+While it's possible that a program committee member may have expertise in a specific topic, the two roles are not equivalent.",no,2075.2998999996635,47,88,135,
+http://cmt#hasSubjectArea,http://confOf#hasTopic,hasSubjectArea,hasTopic,has subject area,has topic,False,Source->Target,"Question: Is has subject area equivalent to has topic?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""subject area"" typically refers to a broad category or field of study that a paper or presentation falls under, such as computer science, biology, or economics. On the other hand, ""topic"" is a more specific area of focus within that subject area, such as machine learning, gene editing, or monetary policy.
+
+While there may be some overlap between subject area and topic, they are not equivalent. A paper can have a specific topic within a broader subject area, but the subject area provides the overall context and framework for the topic.",no,2688.019400000485,46,118,164,
+http://cmt#hasSubjectArea,http://confOf#writtenBy,hasSubjectArea,writtenBy,has subject area,written by,False,Source->Target,"Question: Is has subject area equivalent to written by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""has subject area"" is likely referring to the topic or field of study that a paper or presentation is about, whereas ""written by"" refers to the authorship of the paper or presentation. While there may be some overlap between the two, they are not equivalent.",no,1479.0429999993648,46,64,110,
+http://cmt#hasSubjectArea,http://confOf#hasTitle,hasSubjectArea,hasTitle,has subject area,has title,False,Source->Target,"Question: Is has subject area equivalent to has title?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""has subject area"" refers to the topic or field of study that a paper or presentation is about. For example, a paper on machine learning would have the subject area of artificial intelligence.
+
+On the other hand, ""has title"" refers to the specific name or label given to a paper or presentation. For example, ""A Novel Approach to Image Classification"" would be the title of a paper.
+
+While the subject area and title of a paper are related, they are not equivalent. A paper can have multiple titles, but it typically has only one subject area.",no,2809.2191999985516,46,123,169,
+http://cmt#maxPapers,http://confOf#maxChoice,maxPapers,maxChoice,max papers,max choice,False,Source->Target,"Question: Is max papers equivalent to max choice?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, Max Papers and Max Choice are often used interchangeably. Max Papers refers to the maximum number of papers that can be presented in a session, while Max Choice refers to the maximum number of options or choices that attendees have in a session, such as the number of parallel sessions or tracks. In both cases, the goal is to provide attendees with a range of options and to ensure that the conference is well-organized and efficient.",yes,2217.637299998387,45,95,140,
+http://cmt#memberOfConference,http://confOf#earlyRegistration,memberOfConference,earlyRegistration,member of conference,early registration,False,Source->Target,"Question: Is member of conference equivalent to early registration?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, being a member of the conference is a separate entity from early registration. Membership in the conference may require meeting certain criteria, such as being a researcher or professional in a specific field, and may provide benefits such as access to exclusive content or networking opportunities. Early registration, on the other hand, refers to the act of registering for the conference at a discounted rate before a certain deadline. While being a member of the conference may provide an advantage in terms of early registration, they are not equivalent.",no,2481.1540999999124,46,108,154,
+http://cmt#name,http://confOf#hasTitle,name,hasTitle,name,has title,False,Source->Target,"Question: Is name equivalent to has title?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, a person's name is equivalent to having a title. Just as a title like ""Dr."" or ""Professor"" is a way to identify and address someone, a person's name serves as a unique identifier and a way to refer to them.",yes,1466.1201999988407,44,59,103,
+http://cmt#paperAssignmentFinalizedBy,http://confOf#writtenBy,paperAssignmentFinalizedBy,writtenBy,paper assignment finalized by,written by,False,Source->Target,"Question: Is paper assignment finalized by equivalent to written by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""paper assignment finalized by"" is equivalent to ""written by"". This is because the phrase ""paper assignment finalized by"" refers to the authorship of the paper, indicating who is responsible for the content and ideas presented in the paper.",yes,1423.2527000003756,47,57,104,
+http://cmt#readByReviewer,http://confOf#hasTitle,readByReviewer,hasTitle,read by reviewer,has title,False,Source->Target,"Question: Is read by reviewer equivalent to has title?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""read by reviewer"" likely refers to the fact that a paper has been reviewed by a peer reviewer, indicating that the reviewer has evaluated the paper's content, quality, and relevance. This is a separate piece of information from the title of the paper, which is a brief summary of the paper's content.",no,1771.1398000010377,46,72,118,
+http://cmt#readByReviewer,http://confOf#writtenBy,readByReviewer,writtenBy,read by reviewer,written by,False,Source->Target,"Question: Is read by reviewer equivalent to written by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""read by reviewer"" refers to the process of a reviewer evaluating and providing feedback on a submitted paper or abstract. This implies that the reviewer has reviewed the content, but did not create it. On the other hand, ""written by"" implies authorship and creation of the content. While a reviewer may provide valuable insights and suggestions, they did not write the original content.",no,2011.7511999997078,46,85,131,
+http://cmt#readByReviewer,http://confOf#hasTopic,readByReviewer,hasTopic,read by reviewer,has topic,False,Source->Target,"Question: Is read by reviewer equivalent to has topic?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""read by reviewer"" implies that the reviewer has reviewed the paper, which means they have familiarized themselves with the topic. Therefore, ""read by reviewer"" is equivalent to ""has topic"" in this context.",yes,1305.3579999996145,46,53,99,
+http://cmt#readPaper,http://confOf#writes,readPaper,writes,read paper,writes,False,Source->Target,"Question: Is read paper equivalent to writes?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""read paper"" typically refers to a presentation where the author reads their paper aloud to the audience, whereas ""writes"" implies a more interactive and dynamic presentation style, where the author may use visual aids, whiteboard notes, or even code examples to convey their ideas. While both methods can be effective, they differ in terms of engagement and audience interaction.",no,1968.4144000002561,44,81,125,
+http://cmt#rejectPaper,http://confOf#dealsWith,rejectPaper,dealsWith,reject paper,deals with,False,Source->Target,"Question: Is reject paper equivalent to deals with?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""reject paper"" refers to a research paper that has been rejected from the conference proceedings, likely due to not meeting the conference's standards or being deemed not suitable for the event. On the other hand, ""deals with"" is a phrase that implies a paper is addressing or handling a specific topic or issue. While a rejected paper may not be equivalent to a paper that ""deals with"" a particular topic, it's possible that a rejected paper may have attempted to address a certain topic, but was ultimately deemed unsuitable for the conference.",no,2794.4115000009333,45,120,165,
+http://cmt#rejectedBy,http://confOf#writtenBy,rejectedBy,writtenBy,rejected by,written by,False,Source->Target,"Question: Is rejected by equivalent to written by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""rejected by"" typically implies that a submission (e.g. paper, proposal) was not accepted by the conference organizers or reviewers, whereas ""written by"" implies that someone is the author of a particular work. These two phrases have different meanings and are not equivalent.",no,1585.3776000003563,45,64,109,
+http://cmt#rejectedBy,http://confOf#hasEmail,rejectedBy,hasEmail,rejected by,has email,False,Source->Target,"Question: Is rejected by equivalent to has email?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""rejected by"" is equivalent to ""has email"" because both phrases are referring to the same thing - the contact information of the person who rejected the submission.",yes,1053.1445999986317,45,42,87,
+http://cmt#reviewCriteriaEnteredBy,http://confOf#writtenBy,reviewCriteriaEnteredBy,writtenBy,review criteria entered by,written by,False,Source->Target,"Question: Is review criteria entered by equivalent to written by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""review criteria entered by"" likely refers to the criteria that the reviewer has entered or selected from a list, whereas ""written by"" implies that the criteria were written or composed by the reviewer themselves. While the reviewer may have entered the criteria, it's possible that the criteria were actually written by someone else, such as the conference organizers or a committee.",no,1950.9385999990627,47,81,128,
+http://cmt#reviewCriteriaEnteredBy,http://confOf#hasEmail,reviewCriteriaEnteredBy,hasEmail,review criteria entered by,has email,False,Source->Target,"Question: Is review criteria entered by equivalent to has email?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""review criteria entered by"" likely refers to the specific guidelines or standards that reviewers use to evaluate submissions, such as relevance, methodology, and impact. This is different from ""has email"", which would refer to a reviewer's contact information.",no,1412.273500000083,47,58,105,
+http://cmt#reviewsPerPaper,http://confOf#hasTitle,reviewsPerPaper,hasTitle,reviews per paper,has title,False,Source->Target,"Question: Is reviews per paper equivalent to has title?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""reviews per paper"" refers to the number of reviews received by a paper, whereas ""has title"" is a metadata property indicating whether a paper has a title or not. These two concepts are distinct and not equivalent.",no,1352.1699000011722,46,54,100,
+http://cmt#reviewsPerPaper,http://confOf#abstract,reviewsPerPaper,abstract,reviews per paper,abstract,False,Source->Target,"Question: Is reviews per paper equivalent to abstract?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, reviews per paper are a summary of the feedback provided by reviewers to the authors, whereas an abstract is a brief summary of the paper's content, written by the authors themselves. While both provide an overview of the paper, they serve different purposes and are not equivalent.",no,1550.7575999999972,45,63,108,
+http://cmt#reviewsPerPaper,http://confOf#hasTopic,reviewsPerPaper,hasTopic,reviews per paper,has topic,False,Source->Target,"Question: Is reviews per paper equivalent to has topic?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""reviews per paper"" refers to the number of times a paper has been reviewed by different reviewers, which is a measure of the paper's quality and impact. On the other hand, ""has topic"" is a boolean flag indicating whether a paper is related to a specific topic or not. These two metrics are distinct and not equivalent.",no,1839.7925999997824,46,77,123,
+http://cmt#submitPaper,http://confOf#dealsWith,submitPaper,dealsWith,submit paper,deals with,False,Source->Target,"Question: Is submit paper equivalent to deals with?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""submit paper"" and ""deals with"" are equivalent in the sense that both phrases refer to the process of presenting and discussing research or ideas at the conference.",yes,1096.7688000000635,45,43,88,
+http://cmt#title,http://confOf#hasTitle,title,hasTitle,title,has title,False,Source->Target,"Question: Is title equivalent to has title?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, a title is equivalent to having a title. A title refers to the name or designation given to a conference, such as ""Annual Conference"" or ""International Symposium"". Having a title means that the conference has a name or designation that identifies it.",yes,1444.976200000383,44,59,103,
+http://cmt#virtualMeetingEnabledBy,http://confOf#earlyRegistration,virtualMeetingEnabledBy,earlyRegistration,virtual meeting enabled by,early registration,False,Source->Target,"Question: Is virtual meeting enabled by equivalent to early registration?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+Early registration typically refers to the act of registering for a conference or event at a discounted rate, often with benefits such as priority access to accommodations or a reduced fee. Virtual meeting, on the other hand, refers to the ability to participate in a meeting or event remotely, often through video conferencing or online platforms. While both may be beneficial for attendees, they are distinct concepts and not equivalent.",no,1970.313099998748,47,82,129,
+http://cmt#writeReview,http://confOf#writtenBy,writeReview,writtenBy,write review,written by,False,Source->Target,"Question: Is write review equivalent to written by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""write a review"" implies that someone is expressing their opinion or evaluation of a presentation, paper, or overall experience. It's a subjective assessment that provides feedback to the presenter, organizers, or attendees.
+
+On the other hand, ""written by"" implies authorship or attribution, indicating who is responsible for creating or producing something, such as a paper, presentation, or abstract. It's a statement of origin or credit.
+
+While both phrases involve writing, they serve different purposes and have distinct meanings in the context of a conference.",no,2704.043699999602,45,116,161,
+http://cmt#writeReview,http://confOf#dealsWith,writeReview,dealsWith,write review,deals with,False,Source->Target,"Question: Is write review equivalent to deals with?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""write review"" likely refers to the act of writing a summary or critique of a presentation, paper, or session. This is a specific task that requires a thoughtful and detailed evaluation of the content.
+
+On the other hand, ""deals with"" is a more general phrase that implies handling or managing something. While it's possible to ""deal with"" a review or a presentation, the two actions are not equivalent. Writing a review requires a level of depth and analysis that is not necessarily implied by the phrase ""deals with"".",no,2696.695599999657,45,117,162,
+http://cmt#writtenBy,http://confOf#writtenBy,writtenBy,writtenBy,written by,written by,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,
+http://confOf#Administrator,http://cmt#Administrator,Administrator,Administrator,administrator,administrator,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,
+http://confOf#Author,http://cmt#Author,Author,Author,author,author,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,
+http://confOf#City,http://cmt#Bid,City,Bid,city,bid,False,Target->Source,"Question: Is city equivalent to bid?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""city"" refers to the location where the conference is taking place, whereas ""bid"" refers to the process of submitting a proposal to host the conference. While the city may be the location where the conference is held, it is not equivalent to the bid process itself.",no,1745.9781999987172,43,64,107,
+http://confOf#Conference,http://cmt#Conference,Conference,Conference,conference,conference,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,
+http://confOf#Contribution,http://cmt#Paper,Contribution,Paper,contribution,paper,False,Target->Source,"Question: Is contribution equivalent to paper?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a contribution is a presentation, talk, or poster that an attendee submits and presents during the event. While a contribution may be presented in the form of a paper, they are not equivalent. A paper is a written document that is typically published in a journal or conference proceedings, whereas a contribution is a live presentation that is given during the conference.",no,1868.9250999996148,43,79,122,
+http://confOf#Country,http://cmt#Document,Country,Document,country,document,False,Target->Source,"Question: Is country equivalent to document?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""country"" likely refers to a nation or a geographic region, whereas ""document"" refers to a written or printed paper, such as a presentation, report, or abstract. These two terms are not equivalent.",no,1274.553899998864,43,52,95,
+http://confOf#Country,http://cmt#Decision,Country,Decision,country,decision,False,Target->Source,"Question: Is country equivalent to decision?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""country"" likely refers to a geographic location or a nation, whereas ""decision"" refers to a choice or conclusion made by an individual or group. These two terms are not equivalent, as a country is a physical entity, whereas a decision is an abstract concept.",no,1482.617499999833,43,63,106,
+http://confOf#Member,http://cmt#Meta-Review,Member,Meta-Review,member,meta review,False,Target->Source,"Question: Is member equivalent to meta review?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a member is typically a participant or attendee of the conference, whereas a meta-review is a review of the conference itself, often focusing on the overall quality, relevance, and impact of the conference. While both may provide feedback, they serve different purposes and are not equivalent.",no,1546.6236000011122,44,64,108,
+http://confOf#Member_PC,http://cmt#ProgramCommitteeMember,Member_PC,ProgramCommitteeMember,member pc,program committee member,False,Target->Source,"Question: Is member pc equivalent to program committee member?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, a ""member PC"" typically refers to a member of the program committee, which is a group of experts responsible for reviewing and evaluating submissions to the conference. The member PC is responsible for ensuring the quality and relevance of the accepted papers, and their role is often equivalent to that of a program committee member.",yes,1687.1913000013592,46,71,117,
+http://confOf#Organization,http://cmt#Document,Organization,Document,organization,document,False,Target->Source,"Question: Is organization equivalent to document?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, an organization refers to a group of people or entities that come together to achieve a common goal or purpose. It can be a company, a non-profit, a government agency, or any other type of collective entity. On the other hand, a document is a written or printed paper that contains information, data, or instructions. While an organization may create documents, the two are not equivalent.",no,2010.332700001527,43,88,131,
+http://confOf#Organization,http://cmt#Person,Organization,Person,organization,person,False,Target->Source,"Question: Is organization equivalent to person?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, an organization refers to a group of people with a shared purpose, such as a company, non-profit, or government agency. While an organization may have its own identity, goals, and values, it is not equivalent to a person. A person is a unique individual with their own thoughts, feelings, and experiences, whereas an organization is a collective entity that is made up of multiple individuals.",no,1985.6111999997665,43,88,131,
+http://confOf#Organization,http://cmt#Decision,Organization,Decision,organization,decision,False,Target->Source,"Question: Is organization equivalent to decision?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, organization refers to the process of planning, coordinating, and structuring the event, including the logistics, schedule, and overall flow. Decision, on the other hand, refers to the act of choosing or selecting something, such as a speaker, a topic, or a venue. While organization and decision-making are related, they are not equivalent.",no,1784.505600000557,43,78,121,
+http://confOf#Paper,http://cmt#Paper,Paper,Paper,paper,paper,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,
+http://confOf#Participant,http://cmt#AssociatedChair,Participant,AssociatedChair,participant,associated chair,False,Target->Source,"Question: Is participant equivalent to associated chair?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a participant is someone who attends the event, whereas an associated chair is a specific role within the conference organization. While a participant may be a chair of a session or a panel, the terms are not equivalent.",no,1282.4249000004784,44,52,96,
+http://confOf#Participant,http://cmt#ConferenceMember,Participant,ConferenceMember,participant,conference member,False,Target->Source,"Question: Is participant equivalent to conference member?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, a participant is someone who attends and engages with the conference, which is equivalent to a conference member.",yes,770.2487000005931,44,30,74,
+http://confOf#Person,http://cmt#Person,Person,Person,person,person,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,
+http://confOf#Reception,http://cmt#Rejection,Reception,Rejection,reception,rejection,False,Target->Source,"Question: Is reception equivalent to rejection?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, reception is a social event where attendees gather to mingle, network, and socialize. It is not equivalent to rejection, as it is a positive and welcoming experience.",no,1078.0266000001575,43,43,86,
+http://confOf#Regular,http://cmt#Meta-Review,Regular,Meta-Review,regular,meta review,False,Target->Source,"Question: Is regular equivalent to meta review?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a regular review is a peer-review process where experts in the field evaluate and provide feedback on a submitted paper. This is a standard process to ensure the quality and relevance of the research presented at the conference.
+
+A meta-review, on the other hand, is a higher-level review that evaluates the quality and impact of the regular reviews themselves. It's a review of the reviews, aiming to identify biases, inconsistencies, and areas for improvement in the peer-review process. Meta-reviews are less common and typically conducted by the conference organizers or a designated committee.",no,2674.349799999618,44,120,164,
+http://confOf#Regular,http://cmt#PaperFullVersion,Regular,PaperFullVersion,regular,paper full version,False,Target->Source,"Question: Is regular equivalent to paper full version?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""regular"" is often used to refer to the full version of a paper, which is the complete and final version of the paper that is presented at the conference.",yes,996.2347999990016,45,43,88,
+http://confOf#Student,http://cmt#Meta-Review,Student,Meta-Review,student,meta review,False,Target->Source,"Question: Is student equivalent to meta review?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a student is an individual who is enrolled in a educational institution and is presenting their research or work at the conference. A meta-review, on the other hand, is a review of multiple reviews or studies that have been conducted on a specific topic. It is a higher-level analysis that synthesizes the findings of multiple reviews to draw conclusions or identify patterns. While a student may present their own research at a conference, a meta-review is a distinct type of review that is not equivalent to a student.",no,2620.698700000503,44,109,153,
+http://confOf#Student,http://cmt#SubjectArea,Student,SubjectArea,student,subject area,False,Target->Source,"Question: Is student equivalent to subject area?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a student is an individual who is attending the conference, likely as part of an educational or training program. A subject area, on the other hand, refers to a specific field of study or discipline that is being presented or discussed at the conference. While a student may be interested in a particular subject area, the two terms are not equivalent.",no,1753.1889000001684,44,78,122,
+http://confOf#Student,http://cmt#PaperFullVersion,Student,PaperFullVersion,student,paper full version,False,Target->Source,"Question: Is student equivalent to paper full version?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a student is a person who is attending the conference to learn and present their research, whereas a paper is a written document that presents research findings. While a student may present a paper at the conference, the two terms are not equivalent.",no,1349.1908999985753,45,57,102,
+http://confOf#Topic,http://cmt#Document,Topic,Document,topic,document,False,Target->Source,"Question: Is topic equivalent to document?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a topic refers to a specific area of discussion or presentation, whereas a document is a written or printed work that provides information or records the proceedings of the conference. While a topic may be the subject of a document, they are not equivalent.",no,1396.5112999994744,43,58,101,
+http://confOf#Topic,http://cmt#Decision,Topic,Decision,topic,decision,False,Target->Source,"Question: Is topic equivalent to decision?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a topic refers to the subject matter or theme of a presentation, session, or track. It's a broad area of discussion or exploration. On the other hand, a decision is a specific choice or conclusion made by the conference organizers, attendees, or speakers. While a topic might influence the decisions made at the conference, they are not equivalent.",no,1839.7000999993907,43,79,122,
+http://confOf#Topic,http://cmt#Paper,Topic,Paper,topic,paper,False,Target->Source,"Question: Is topic equivalent to paper?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a ""topic"" refers to the subject or theme of a presentation, session, or track. It's a broad area of discussion or exploration.
+
+A ""paper"", on the other hand, typically refers to a written document or manuscript that presents research, ideas, or findings on a specific topic. In a conference setting, a paper is often a submission to a conference proceedings or a journal, and it's a more detailed and formal treatment of a topic.
+
+While a topic and a paper may be related, they are not equivalent. A topic is a general area of interest, whereas a paper is a specific written work that explores that topic.",no,3033.652299998721,43,138,181,
+http://confOf#Tutorial,http://cmt#ConferenceChair,Tutorial,ConferenceChair,tutorial,conference chair,False,Target->Source,"Question: Is tutorial equivalent to conference chair?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a tutorial is a type of educational session where an expert shares their knowledge and skills with attendees, often in a hands-on or interactive way. A conference chair, on the other hand, is a person who oversees the overall organization and execution of the conference, including the selection of speakers and moderators. While a conference chair may also be involved in the planning of tutorials, the two roles are distinct and not equivalent.",no,2099.1627000003064,44,92,136,
+http://confOf#Workshop,http://cmt#ConferenceChair,Workshop,ConferenceChair,workshop,conference chair,False,Target->Source,"Question: Is workshop equivalent to conference chair?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a workshop is a specific type of session that typically involves hands-on activities, discussions, and collaborations among attendees. While a conference chair is a person who leads a conference, a workshop is not equivalent to a conference chair. A conference chair is responsible for overseeing the overall conference, whereas a workshop is a distinct component of the conference that focuses on a specific topic or theme.",no,1950.0520000001416,44,84,128,
+http://confOf#abstract,http://cmt#title,abstract,title,abstract,title,False,Target->Source,"Question: Is abstract equivalent to title?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, the title is a brief summary of the presentation's content, usually 1-2 sentences. The abstract, on the other hand, is a more detailed summary of the presentation's content, usually 150-250 words. While both provide an overview of the presentation, the abstract provides a more comprehensive summary, including the methodology, results, and conclusions.",no,1874.4145999989996,43,81,124,
+http://confOf#abstract,http://cmt#reviewsPerPaper,abstract,reviewsPerPaper,abstract,reviews per paper,False,Target->Source,"Question: Is abstract equivalent to reviews per paper?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, abstracts are often equivalent to reviews per paper. This is because an abstract is a brief summary of a research paper, and reviewers typically provide a brief summary of their feedback in the form of an abstract.",yes,1215.1145999996515,45,51,96,
+http://confOf#contactEmail,http://cmt#detailsEnteredBy,contactEmail,detailsEnteredBy,contact email,details entered by,False,Target->Source,"Question: Is contact email equivalent to details entered by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, contact email is a separate piece of information that attendees provide, whereas details entered by refers to the information that the attendee has entered about themselves, such as name, title, organization, etc. While the contact email may be used to communicate with the attendee, it is not equivalent to the details they have entered.",no,1690.9749000005831,46,72,118,
+http://confOf#dealsWith,http://cmt#hasDecision,dealsWith,hasDecision,deals with,has decision,False,Target->Source,"Question: Is deals with equivalent to has decision?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""Is deals with equivalent to has decision"" suggests that the speaker is asking if the conference deals with the same topic or theme as the decision being made. In this case, the answer is yes, as the conference is likely focused on discussing and making decisions related to the same topic.",yes,1592.3623999988195,45,67,112,
+http://confOf#earlyRegistration,http://cmt#acceptedBy,earlyRegistration,acceptedBy,early registration,accepted by,False,Target->Source,"Question: Is early registration equivalent to accepted by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""early registration"" typically means that the registration process has been completed and accepted before a certain deadline. This implies that the registration has been processed and confirmed, making it equivalent to being ""accepted"" by the conference organizers.",yes,1309.1994999995222,45,54,99,
+http://confOf#employedBy,http://cmt#hasConflictOfInterest,employedBy,hasConflictOfInterest,employed by,has conflict of interest,False,Target->Source,"Question: Is employed by equivalent to has conflict of interest?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""Is employed by"" refers to the affiliation or employer of a speaker or presenter. For example, ""John Smith is employed by XYZ Corporation"" simply means that John Smith works for XYZ Corporation, and does not imply any conflict of interest.
+
+On the other hand, ""Has a conflict of interest"" implies that the speaker's personal or professional interests may be compromised by their presentation or involvement in the conference, such as having a financial stake in the topic or being a competitor in the field.",no,2487.3479999987467,47,108,155,
+http://confOf#employedBy,http://cmt#hasDecision,employedBy,hasDecision,employed by,has decision,False,Target->Source,"Question: Is employed by equivalent to has decision?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""Is employed by"" is equivalent to ""works for"" or ""is affiliated with"", whereas ""has decided"" implies a choice or a conclusion made by someone. The two phrases have different meanings and are used in different contexts.",no,1296.8657000001258,45,56,101,
+http://confOf#employedBy,http://cmt#hasAuthor,employedBy,hasAuthor,employed by,has author,False,Target->Source,"Question: Is employed by equivalent to has author?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""Is employed by"" is equivalent to ""has author"" because both phrases indicate the affiliation or institution of the presenter or author.",yes,897.4146999989898,45,36,81,
+http://confOf#ends_on,http://cmt#title,ends_on,title,ends on,title,False,Target->Source,"Question: Is ends on equivalent to title?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""ends on"" typically refers to the date or time when a presentation or session concludes, whereas ""title"" refers to the name or heading of the presentation or session. While the two terms may be related, they are not equivalent.",no,1391.5597999985039,44,57,101,
+http://confOf#ends_on,http://cmt#hasConflictOfInterest,ends_on,hasConflictOfInterest,ends on,has conflict of interest,False,Target->Source,"Question: Is ends on equivalent to has conflict of interest?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""ends on"" and ""has conflict of interest"" are equivalent concepts. ""Ends on"" refers to a situation where an individual's personal or professional goals align with their involvement in the conference, potentially influencing their decisions or actions. This can include receiving financial benefits, gaining professional recognition, or promoting personal interests. Similarly, ""has conflict of interest"" implies that an individual's involvement in the conference is compromised by their own interests, which may not align with the conference's goals or values.",yes,2529.1981999998825,47,109,156,
+http://confOf#expertOn,http://cmt#acceptedBy,expertOn,acceptedBy,expert on,accepted by,False,Target->Source,"Question: Is expert on equivalent to accepted by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""expert on"" typically refers to someone who has a deep understanding and knowledge of a specific topic or field, often gained through extensive research, experience, or education. On the other hand, ""accepted by"" implies that a paper or idea has been validated or endorsed by a group of peers or a professional organization. While an expert on a topic may be considered an authority, being accepted by a conference implies a level of validation and recognition that goes beyond mere expertise.",no,2414.7007999999914,45,103,148,
+http://confOf#expertOn,http://cmt#assignedTo,expertOn,assignedTo,expert on,assigned to,False,Target->Source,"Question: Is expert on equivalent to assigned to?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""expert on"" and ""assigned to"" can be equivalent. For example, if a speaker is listed as ""expert on machine learning"" or ""assigned to lead the machine learning track"", it implies that they have a deep understanding of the topic and are responsible for overseeing the relevant sessions or activities at the conference.",yes,1745.588300000236,45,73,118,
+http://confOf#hasAdministrativeEvent,http://cmt#hasSubjectArea,hasAdministrativeEvent,hasSubjectArea,has administrative event,has subject area,False,Target->Source,"Question: Is has administrative event equivalent to has subject area?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""administrative event"" likely refers to events such as registration, orientation, or networking sessions that are not directly related to the conference's main subject area. These events are important for the conference's organization and logistics, but they are not part of the conference's main program or subject matter.",no,1619.2539000003308,47,68,115,
+http://confOf#hasCity,http://cmt#hasAuthor,hasCity,hasAuthor,has city,has author,False,Target->Source,"Question: Is has city equivalent to has author?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""has city"" and ""has author"" are not equivalent. ""Has city"" refers to the location where the conference is taking place, whereas ""has author"" refers to the person who wrote a particular paper or presentation being presented at the conference.",no,1441.5404999999737,45,60,105,
+http://confOf#hasCountry,http://cmt#hasAuthor,hasCountry,hasAuthor,has country,has author,False,Target->Source,"Question: Is has country equivalent to has author?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""has country"" is likely referring to the country where the conference is being held, whereas ""has author"" refers to the author of a specific paper or presentation being presented at the conference. These two concepts are not equivalent.",no,1336.941099998512,45,55,100,
+http://confOf#hasEmail,http://cmt#hasAuthor,hasEmail,hasAuthor,has email,has author,False,Target->Source,"Question: Is has email equivalent to has author?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, having an email address is often equivalent to being an author. This is because authors typically receive a unique email address associated with their paper or presentation, which they use to communicate with the conference organizers, reviewers, and attendees.",yes,1328.5531000001356,45,54,99,
+http://confOf#hasFirstName,http://cmt#hasAuthor,hasFirstName,hasAuthor,has first name,has author,False,Target->Source,"Question: Is has first name equivalent to has author?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""Is has first name"" and ""has author"" are equivalent in the sense that they both refer to the same concept - the attribution of a name or identity to a work, such as a paper or presentation, that is being presented at the conference.",yes,1498.47039999986,46,61,107,
+http://confOf#hasHomePage,http://cmt#hasAuthor,hasHomePage,hasAuthor,has home page,has author,False,Target->Source,"Question: Is has home page equivalent to has author?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, having a home page is not equivalent to having an author. A home page is a webpage that serves as an entry point for a conference, providing information about the event, such as the schedule, speakers, and location. On the other hand, an author is a person who has written a paper or presented a talk at the conference. While there may be some overlap between the two, they are distinct concepts.",no,2193.0697999996482,46,92,138,
+http://confOf#hasHomePage,http://cmt#acceptedBy,hasHomePage,acceptedBy,has home page,accepted by,False,Target->Source,"Question: Is has home page equivalent to accepted by?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""has home page"" likely refers to a speaker or presenter having a personal or professional website that serves as their online presence. On the other hand, ""accepted by"" implies that the speaker's abstract or proposal has been reviewed and approved by the conference organizers, indicating that their presentation has been accepted for inclusion in the conference program. These two concepts are distinct and not equivalent.",no,1962.3505999988993,46,85,131,
+http://confOf#hasHomePage,http://cmt#assignedTo,hasHomePage,assignedTo,has home page,assigned to,False,Target->Source,"Question: Is has home page equivalent to assigned to?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, having a home page equivalent to being assigned to means that the home page is the default or primary page for a particular group or track within the conference. It's the first page that attendees will see when they access that group or track, and it often serves as a hub for all the related content, sessions, and information.",yes,1757.2927999990497,46,75,121,
+http://confOf#hasKeyword,http://cmt#hasAuthor,hasKeyword,hasAuthor,has keyword,has author,False,Target->Source,"Question: Is has keyword equivalent to has author?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""has"" is a keyword that is often used to indicate that a paper or presentation has a specific characteristic, such as ""has been accepted"" or ""has been presented"". On the other hand, ""has author"" is a specific field in a conference paper's metadata that lists the authors of the paper. While there may be some overlap between the two, they are not equivalent.",no,2046.5534000013577,45,87,132,
+http://confOf#hasPhone,http://cmt#hasConferenceMember,hasPhone,hasConferenceMember,has phone,has conference member,False,Target->Source,"Question: Is has phone equivalent to has conference member?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, having a phone equivalent to having a conference member. This is because a phone is a device that allows a person to participate in a conference call, just like a conference member is a person who is part of the conference.",yes,1327.920499999891,46,54,100,
+http://confOf#hasSurname,http://cmt#hasAuthor,hasSurname,hasAuthor,has surname,has author,False,Target->Source,"Question: Is has surname equivalent to has author?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, having a surname is equivalent to having an author. This is because the surname is often used to identify the author of a paper or presentation, and is typically included in the author list or credits.",yes,1228.165699998499,45,49,94,
+http://confOf#hasTitle,http://cmt#hasAuthor,hasTitle,hasAuthor,has title,has author,False,Target->Source,"Question: Is has title equivalent to has author?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, having a title is not equivalent to having an author. A title is a descriptive label for a presentation, paper, or talk, whereas an author is the person who created the content. While there may be a single author for a paper or presentation, there can be multiple authors or no author at all for a presentation with a title.",no,1857.5283999998646,45,77,122,
+http://confOf#hasTitle,http://cmt#title,hasTitle,title,has title,title,False,Target->Source,"Question: Is has title equivalent to title?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""Has Title"" and ""Title"" are equivalent. ""Has Title"" is a property that indicates whether an entity (e.g., a speaker, author, or presenter) has a title or not, while ""Title"" refers to the actual title held by that entity. In a conference setting, both terms can be used interchangeably to describe the same information, such as ""John Smith, Has Title: Professor"" or ""John Smith, Title: Professor"".",yes,2364.67040000025,44,103,147,
+http://confOf#hasTopic,http://cmt#hasAuthor,hasTopic,hasAuthor,has topic,has author,False,Target->Source,"Question: Is has topic equivalent to has author?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""has topic"" refers to the fact that a paper or presentation deals with a specific area of research or a particular theme. On the other hand, ""has author"" refers to the fact that a paper or presentation is written or presented by a specific person. While there may be some overlap between the two, they are not equivalent concepts.",no,1859.1384999999718,45,78,123,
+http://confOf#hasTopic,http://cmt#title,hasTopic,title,has topic,title,False,Target->Source,"Question: Is has topic equivalent to title?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, the topic is the main subject or theme of the presentation, whereas the title is a brief and catchy phrase that summarizes the presentation's main idea. While the topic and title are related, they are not equivalent. The topic provides a broader context for the presentation, while the title is a concise summary of the presentation's main point.",no,1800.436899999113,44,76,120,
+http://confOf#hasTopic,http://cmt#reviewsPerPaper,hasTopic,reviewsPerPaper,has topic,reviews per paper,False,Target->Source,"Question: Is has topic equivalent to reviews per paper?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""has topic"" is equivalent to ""reviews per paper"" because both metrics measure the number of reviews a paper receives. ""Has topic"" refers to the number of reviews a paper receives from reviewers who are experts in the paper's topic, while ""reviews per paper"" is a straightforward count of the number of reviews a paper receives. Both metrics provide insight into the paper's quality and the level of scrutiny it receives from the reviewing process.",yes,2274.4829000002937,46,98,144,
+http://confOf#has_short_title,http://cmt#date,has_short_title,date,has short title,date,False,Target->Source,"Question: Is has short title equivalent to date?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a short title is a brief summary of the presentation's content, whereas the date refers to the specific day and time the presentation is scheduled to take place. While both are important details, they serve different purposes and are not equivalent.",no,1391.1157000002277,45,56,101,
+http://confOf#has_short_title,http://cmt#hasDecision,has_short_title,hasDecision,has short title,has decision,False,Target->Source,"Question: Is has short title equivalent to has decision?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, a short title is often equivalent to a decision. A short title is a concise summary of a paper or presentation, while a decision is a formal outcome or conclusion reached by the conference organizers or reviewers. Both convey a sense of finality and clarity, making them equivalent in this context.",yes,1612.0740000005753,46,67,113,
+http://confOf#has_title,http://cmt#hasAuthor,has_title,hasAuthor,has title,has author,False,Target->Source,"Question: Is has title equivalent to has author?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, having a title is not equivalent to having an author. A title is a descriptive label for a presentation, such as a talk or poster, while an author is a person who has written or contributed to the content of a paper or presentation. While there may be some overlap between the two, they are distinct concepts.",no,1733.4018999990803,45,73,118,
+http://confOf#maxChoice,http://cmt#maxPapers,maxChoice,maxPapers,max choice,max papers,False,Target->Source,"Question: Is max choice equivalent to max papers?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, Max Choice and Max Papers are often used interchangeably. Max Choice refers to the maximum number of presentation choices that a conference attendee can make, whereas Max Papers refers to the maximum number of papers or abstracts that a conference can accommodate. In both cases, the goal is to provide attendees with a wide range of options to choose from, allowing them to tailor their conference experience to their interests.",yes,2074.2363999997906,45,88,133,
+http://confOf#starts_on,http://cmt#title,starts_on,title,starts on,title,False,Target->Source,"Question: Is starts on equivalent to title?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, a title is a brief phrase that summarizes the main topic or theme of a presentation, whereas a start on is a rough or preliminary outline of the presentation's content. While a title is typically a concise and final statement, a start on is a working draft that may evolve as the presentation is developed.",no,1679.7898999993777,44,70,114,
+http://confOf#starts_on,http://cmt#hasConflictOfInterest,starts_on,hasConflictOfInterest,starts on,has conflict of interest,False,Target->Source,"Question: Is starts on equivalent to has conflict of interest?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+Starts on is a term used in conference planning to refer to the process of assigning a speaker or presenter to a specific time slot or session. It does not imply a conflict of interest.
+
+In contrast, a conflict of interest refers to a situation where an individual or organization has a personal or financial stake that could influence their decision-making or actions, potentially leading to unfair or biased outcomes.",no,1902.3550000001705,47,80,127,
+http://confOf#starts_on,http://cmt#reviewsPerPaper,starts_on,reviewsPerPaper,starts on,reviews per paper,False,Target->Source,"Question: Is starts on equivalent to reviews per paper?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""starts on"" refers to the number of times a paper is cited or referenced by other authors in their own papers. This metric is often used to measure the impact or influence of a particular paper. Similarly, ""reviews per paper"" also measures the impact or influence of a paper, but from the perspective of the authors who reviewed the paper. Since both metrics are related to the number of times a paper is cited or referenced, they are equivalent.",yes,2359.3371999995725,46,100,146,
+http://confOf#studyAt,http://cmt#submitPaper,studyAt,submitPaper,study at,submit paper,False,Target->Source,"Question: Is study at equivalent to submit paper?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, a study at equivalent to a submit paper. A submit paper is a research paper that is submitted to a conference for review and potential presentation. A study at is a research paper that presents the results of a study or investigation, which is similar to a submit paper. Both terms refer to a written document that presents research findings and is intended for publication or presentation.",yes,1956.784300000436,45,82,127,
+http://confOf#writes,http://cmt#hasDecision,writes,hasDecision,writes,has decision,False,Target->Source,"Question: Is writes equivalent to has decision?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","Yes.
+
+In the context of a conference, ""writes"" is equivalent to ""has decided"" because both phrases imply a sense of commitment or intention. When someone writes a paper or a proposal, they are making a deliberate decision to express their ideas and share them with others. Similarly, when someone has decided to do something, they have made a conscious choice to take a particular action. In both cases, there is a sense of intentionality and commitment, which is reflected in the equivalence of the two phrases.",yes,2414.8574999999255,44,103,147,
+http://confOf#writes,http://cmt#readPaper,writes,readPaper,writes,read paper,False,Target->Source,"Question: Is writes equivalent to read paper?
+                            Context: conference
+                            Answer the question within the context.
+                            Answer yes or no. Give a short explanation.
+                            ","No.
+
+In the context of a conference, ""writes"" likely refers to the act of creating written content, such as a presentation or a paper, whereas ""read paper"" implies the act of consuming written content, such as reading a research paper or a presentation. These two actions are distinct and not equivalent.",no,1523.2801000001928,44,63,107,
+http://confOf#writtenBy,http://cmt#writtenBy,writtenBy,writtenBy,written by,written by,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,

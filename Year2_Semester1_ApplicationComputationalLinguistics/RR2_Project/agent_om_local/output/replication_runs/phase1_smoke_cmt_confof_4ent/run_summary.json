@@ -1,0 +1,636 @@
+{
+  "experiment_id": "phase1_smoke_cmt_confof_4ent",
+  "completed_at_utc": "2026-11-02T19:00:15.408387+00:00",
+  "status": "COMPLETED",
+  "error": null,
+  "run_dir": "E:\\_3_Master\\Applied-Computational-Intelligence-UBB\\Year2_Semester1_ApplicationComputationalLinguistics\\RR2_Project\\agent_om_local\\output\\replication_runs\\phase1_smoke_cmt_confof_4ent",
+  "configuration": {
+    "implementation": "original_repo (Agent-OM upstream)",
+    "alignment": "conference/cmt-confof/component/",
+    "context": "conference",
+    "o1_is_code": false,
+    "o2_is_code": false,
+    "llm_model": "llama3:8b",
+    "embedding_model": "llama3:8b",
+    "vector_length": 4096,
+    "verified_embedding_dim": 4096,
+    "temperature": 0.0,
+    "seed": 42,
+    "llm_top_k": 1,
+    "top_p": 1.0,
+    "repeat_penalty": 1.0,
+    "num_ctx": null,
+    "similarity_threshold": 0.9,
+    "top_k": 3,
+    "num_matches": 50,
+    "dbname": "agent_om_upstream",
+    "smoke_limit": 2,
+    "use_llama_embed_bridge": true
+  },
+  "total_elapsed_ms": 117322.86,
+  "total_elapsed_sec": 117.323,
+  "stages": [
+    {
+      "script": "om_ontology_to_csv.py",
+      "returncode": 0,
+      "elapsed_ms": 71557.91,
+      "elapsed_sec": 71.558,
+      "stdout_log": "stage_logs/om_ontology_to_csv.stdout.log",
+      "stderr_log": "stage_logs/om_ontology_to_csv.stderr.log",
+      "hw_before": {
+        "nvidia_smi": "NVIDIA GeForce RTX 4060 Laptop GPU, 916 MiB, 8188 MiB, 22 %"
+      },
+      "hw_after": {
+        "nvidia_smi": "NVIDIA GeForce RTX 4060 Laptop GPU, 6352 MiB, 8188 MiB, 0 %"
+      }
+    },
+    {
+      "script": "om_csv_to_database.py",
+      "returncode": 0,
+      "elapsed_ms": 12864.48,
+      "elapsed_sec": 12.864,
+      "stdout_log": "stage_logs/om_csv_to_database.stdout.log",
+      "stderr_log": "stage_logs/om_csv_to_database.stderr.log",
+      "hw_before": {
+        "nvidia_smi": "NVIDIA GeForce RTX 4060 Laptop GPU, 6352 MiB, 8188 MiB, 0 %"
+      },
+      "hw_after": {
+        "nvidia_smi": "NVIDIA GeForce RTX 4060 Laptop GPU, 5609 MiB, 8188 MiB, 1 %"
+      }
+    },
+    {
+      "script": "om_database_matching.py",
+      "returncode": 0,
+      "elapsed_ms": 29883.66,
+      "elapsed_sec": 29.884,
+      "stdout_log": "stage_logs/om_database_matching.stdout.log",
+      "stderr_log": "stage_logs/om_database_matching.stderr.log",
+      "hw_before": {
+        "nvidia_smi": "NVIDIA GeForce RTX 4060 Laptop GPU, 954 MiB, 8188 MiB, 1 %"
+      },
+      "hw_after": {
+        "nvidia_smi": "NVIDIA GeForce RTX 4060 Laptop GPU, 6298 MiB, 8188 MiB, 1 %"
+      }
+    }
+  ],
+  "llm_telemetry": {
+    "total_calls": 36,
+    "prompt_tokens": 5487,
+    "completion_tokens": 2925,
+    "total_tokens": 8412,
+    "by_stage": {
+      "om_ontology_to_csv.py": {
+        "calls": 21,
+        "prompt_tokens": 3054,
+        "completion_tokens": 2379,
+        "elapsed_ms": 50803.34
+      },
+      "om_csv_to_database.py": {
+        "calls": 1,
+        "prompt_tokens": 112,
+        "completion_tokens": 24,
+        "elapsed_ms": 711.94
+      },
+      "om_database_matching.py": {
+        "calls": 14,
+        "prompt_tokens": 2321,
+        "completion_tokens": 522,
+        "elapsed_ms": 19828.14
+      }
+    }
+  },
+  "embedding_bridge_stats": {
+    "requests": 8,
+    "texts_embedded": 30
+  },
+  "database_snapshot": {
+    "tables": [
+      "lexical_matching",
+      "ontology_matching",
+      "semantic_matching",
+      "syntactic_matching"
+    ],
+    "row_counts": {
+      "lexical_matching": 13,
+      "ontology_matching": 4,
+      "semantic_matching": 12,
+      "syntactic_matching": 4
+    },
+    "embedding_dimensions": {
+      "lexical_matching": 4096,
+      "semantic_matching": 4096,
+      "syntactic_matching": 4096
+    }
+  },
+  "metrics": {
+    "source_no_validation": {
+      "exists": true,
+      "gold_count": 16,
+      "predicted_count": 1,
+      "tp": 1,
+      "fp": 0,
+      "fn": 15,
+      "precision": 1.0,
+      "recall": 0.0625,
+      "f1": 0.117647,
+      "precision_pct": 100.0,
+      "recall_pct": 6.25,
+      "f1_pct": 11.76,
+      "tp_pairs": [
+        [
+          "http://cmt#Administrator",
+          "http://confOf#Administrator"
+        ]
+      ],
+      "fp_pairs": [],
+      "fn_pairs": [
+        [
+          "http://cmt#Author",
+          "http://confOf#Author"
+        ],
+        [
+          "http://cmt#Conference",
+          "http://confOf#Conference"
+        ],
+        [
+          "http://cmt#ConferenceMember",
+          "http://confOf#Member"
+        ],
+        [
+          "http://cmt#Paper",
+          "http://confOf#Contribution"
+        ],
+        [
+          "http://cmt#PaperFullVersion",
+          "http://confOf#Paper"
+        ],
+        [
+          "http://cmt#Person",
+          "http://confOf#Person"
+        ],
+        [
+          "http://cmt#ProgramCommitteeChair",
+          "http://confOf#Chair_PC"
+        ],
+        [
+          "http://cmt#ProgramCommitteeMember",
+          "http://confOf#Member_PC"
+        ],
+        [
+          "http://cmt#SubjectArea",
+          "http://confOf#Topic"
+        ],
+        [
+          "http://cmt#email",
+          "http://confOf#hasEmail"
+        ],
+        [
+          "http://cmt#hasAuthor",
+          "http://confOf#writtenBy"
+        ],
+        [
+          "http://cmt#hasBeenAssigned",
+          "http://confOf#reviewes"
+        ],
+        [
+          "http://cmt#hasSubjectArea",
+          "http://confOf#dealsWith"
+        ],
+        [
+          "http://cmt#title",
+          "http://confOf#hasTitle"
+        ],
+        [
+          "http://cmt#writePaper",
+          "http://confOf#writes"
+        ]
+      ]
+    },
+    "source": {
+      "exists": true,
+      "gold_count": 16,
+      "predicted_count": 1,
+      "tp": 1,
+      "fp": 0,
+      "fn": 15,
+      "precision": 1.0,
+      "recall": 0.0625,
+      "f1": 0.117647,
+      "precision_pct": 100.0,
+      "recall_pct": 6.25,
+      "f1_pct": 11.76,
+      "tp_pairs": [
+        [
+          "http://cmt#Administrator",
+          "http://confOf#Administrator"
+        ]
+      ],
+      "fp_pairs": [],
+      "fn_pairs": [
+        [
+          "http://cmt#Author",
+          "http://confOf#Author"
+        ],
+        [
+          "http://cmt#Conference",
+          "http://confOf#Conference"
+        ],
+        [
+          "http://cmt#ConferenceMember",
+          "http://confOf#Member"
+        ],
+        [
+          "http://cmt#Paper",
+          "http://confOf#Contribution"
+        ],
+        [
+          "http://cmt#PaperFullVersion",
+          "http://confOf#Paper"
+        ],
+        [
+          "http://cmt#Person",
+          "http://confOf#Person"
+        ],
+        [
+          "http://cmt#ProgramCommitteeChair",
+          "http://confOf#Chair_PC"
+        ],
+        [
+          "http://cmt#ProgramCommitteeMember",
+          "http://confOf#Member_PC"
+        ],
+        [
+          "http://cmt#SubjectArea",
+          "http://confOf#Topic"
+        ],
+        [
+          "http://cmt#email",
+          "http://confOf#hasEmail"
+        ],
+        [
+          "http://cmt#hasAuthor",
+          "http://confOf#writtenBy"
+        ],
+        [
+          "http://cmt#hasBeenAssigned",
+          "http://confOf#reviewes"
+        ],
+        [
+          "http://cmt#hasSubjectArea",
+          "http://confOf#dealsWith"
+        ],
+        [
+          "http://cmt#title",
+          "http://confOf#hasTitle"
+        ],
+        [
+          "http://cmt#writePaper",
+          "http://confOf#writes"
+        ]
+      ]
+    },
+    "target_no_validation": {
+      "exists": true,
+      "gold_count": 16,
+      "predicted_count": 1,
+      "tp": 1,
+      "fp": 0,
+      "fn": 15,
+      "precision": 1.0,
+      "recall": 0.0625,
+      "f1": 0.117647,
+      "precision_pct": 100.0,
+      "recall_pct": 6.25,
+      "f1_pct": 11.76,
+      "tp_pairs": [
+        [
+          "http://cmt#Administrator",
+          "http://confOf#Administrator"
+        ]
+      ],
+      "fp_pairs": [],
+      "fn_pairs": [
+        [
+          "http://cmt#Author",
+          "http://confOf#Author"
+        ],
+        [
+          "http://cmt#Conference",
+          "http://confOf#Conference"
+        ],
+        [
+          "http://cmt#ConferenceMember",
+          "http://confOf#Member"
+        ],
+        [
+          "http://cmt#Paper",
+          "http://confOf#Contribution"
+        ],
+        [
+          "http://cmt#PaperFullVersion",
+          "http://confOf#Paper"
+        ],
+        [
+          "http://cmt#Person",
+          "http://confOf#Person"
+        ],
+        [
+          "http://cmt#ProgramCommitteeChair",
+          "http://confOf#Chair_PC"
+        ],
+        [
+          "http://cmt#ProgramCommitteeMember",
+          "http://confOf#Member_PC"
+        ],
+        [
+          "http://cmt#SubjectArea",
+          "http://confOf#Topic"
+        ],
+        [
+          "http://cmt#email",
+          "http://confOf#hasEmail"
+        ],
+        [
+          "http://cmt#hasAuthor",
+          "http://confOf#writtenBy"
+        ],
+        [
+          "http://cmt#hasBeenAssigned",
+          "http://confOf#reviewes"
+        ],
+        [
+          "http://cmt#hasSubjectArea",
+          "http://confOf#dealsWith"
+        ],
+        [
+          "http://cmt#title",
+          "http://confOf#hasTitle"
+        ],
+        [
+          "http://cmt#writePaper",
+          "http://confOf#writes"
+        ]
+      ]
+    },
+    "target": {
+      "exists": true,
+      "gold_count": 16,
+      "predicted_count": 1,
+      "tp": 1,
+      "fp": 0,
+      "fn": 15,
+      "precision": 1.0,
+      "recall": 0.0625,
+      "f1": 0.117647,
+      "precision_pct": 100.0,
+      "recall_pct": 6.25,
+      "f1_pct": 11.76,
+      "tp_pairs": [
+        [
+          "http://cmt#Administrator",
+          "http://confOf#Administrator"
+        ]
+      ],
+      "fp_pairs": [],
+      "fn_pairs": [
+        [
+          "http://cmt#Author",
+          "http://confOf#Author"
+        ],
+        [
+          "http://cmt#Conference",
+          "http://confOf#Conference"
+        ],
+        [
+          "http://cmt#ConferenceMember",
+          "http://confOf#Member"
+        ],
+        [
+          "http://cmt#Paper",
+          "http://confOf#Contribution"
+        ],
+        [
+          "http://cmt#PaperFullVersion",
+          "http://confOf#Paper"
+        ],
+        [
+          "http://cmt#Person",
+          "http://confOf#Person"
+        ],
+        [
+          "http://cmt#ProgramCommitteeChair",
+          "http://confOf#Chair_PC"
+        ],
+        [
+          "http://cmt#ProgramCommitteeMember",
+          "http://confOf#Member_PC"
+        ],
+        [
+          "http://cmt#SubjectArea",
+          "http://confOf#Topic"
+        ],
+        [
+          "http://cmt#email",
+          "http://confOf#hasEmail"
+        ],
+        [
+          "http://cmt#hasAuthor",
+          "http://confOf#writtenBy"
+        ],
+        [
+          "http://cmt#hasBeenAssigned",
+          "http://confOf#reviewes"
+        ],
+        [
+          "http://cmt#hasSubjectArea",
+          "http://confOf#dealsWith"
+        ],
+        [
+          "http://cmt#title",
+          "http://confOf#hasTitle"
+        ],
+        [
+          "http://cmt#writePaper",
+          "http://confOf#writes"
+        ]
+      ]
+    },
+    "no_validation": {
+      "exists": true,
+      "gold_count": 16,
+      "predicted_count": 1,
+      "tp": 1,
+      "fp": 0,
+      "fn": 15,
+      "precision": 1.0,
+      "recall": 0.0625,
+      "f1": 0.117647,
+      "precision_pct": 100.0,
+      "recall_pct": 6.25,
+      "f1_pct": 11.76,
+      "tp_pairs": [
+        [
+          "http://cmt#Administrator",
+          "http://confOf#Administrator"
+        ]
+      ],
+      "fp_pairs": [],
+      "fn_pairs": [
+        [
+          "http://cmt#Author",
+          "http://confOf#Author"
+        ],
+        [
+          "http://cmt#Conference",
+          "http://confOf#Conference"
+        ],
+        [
+          "http://cmt#ConferenceMember",
+          "http://confOf#Member"
+        ],
+        [
+          "http://cmt#Paper",
+          "http://confOf#Contribution"
+        ],
+        [
+          "http://cmt#PaperFullVersion",
+          "http://confOf#Paper"
+        ],
+        [
+          "http://cmt#Person",
+          "http://confOf#Person"
+        ],
+        [
+          "http://cmt#ProgramCommitteeChair",
+          "http://confOf#Chair_PC"
+        ],
+        [
+          "http://cmt#ProgramCommitteeMember",
+          "http://confOf#Member_PC"
+        ],
+        [
+          "http://cmt#SubjectArea",
+          "http://confOf#Topic"
+        ],
+        [
+          "http://cmt#email",
+          "http://confOf#hasEmail"
+        ],
+        [
+          "http://cmt#hasAuthor",
+          "http://confOf#writtenBy"
+        ],
+        [
+          "http://cmt#hasBeenAssigned",
+          "http://confOf#reviewes"
+        ],
+        [
+          "http://cmt#hasSubjectArea",
+          "http://confOf#dealsWith"
+        ],
+        [
+          "http://cmt#title",
+          "http://confOf#hasTitle"
+        ],
+        [
+          "http://cmt#writePaper",
+          "http://confOf#writes"
+        ]
+      ]
+    },
+    "llm_with_agent": {
+      "exists": true,
+      "gold_count": 16,
+      "predicted_count": 1,
+      "tp": 1,
+      "fp": 0,
+      "fn": 15,
+      "precision": 1.0,
+      "recall": 0.0625,
+      "f1": 0.117647,
+      "precision_pct": 100.0,
+      "recall_pct": 6.25,
+      "f1_pct": 11.76,
+      "tp_pairs": [
+        [
+          "http://cmt#Administrator",
+          "http://confOf#Administrator"
+        ]
+      ],
+      "fp_pairs": [],
+      "fn_pairs": [
+        [
+          "http://cmt#Author",
+          "http://confOf#Author"
+        ],
+        [
+          "http://cmt#Conference",
+          "http://confOf#Conference"
+        ],
+        [
+          "http://cmt#ConferenceMember",
+          "http://confOf#Member"
+        ],
+        [
+          "http://cmt#Paper",
+          "http://confOf#Contribution"
+        ],
+        [
+          "http://cmt#PaperFullVersion",
+          "http://confOf#Paper"
+        ],
+        [
+          "http://cmt#Person",
+          "http://confOf#Person"
+        ],
+        [
+          "http://cmt#ProgramCommitteeChair",
+          "http://confOf#Chair_PC"
+        ],
+        [
+          "http://cmt#ProgramCommitteeMember",
+          "http://confOf#Member_PC"
+        ],
+        [
+          "http://cmt#SubjectArea",
+          "http://confOf#Topic"
+        ],
+        [
+          "http://cmt#email",
+          "http://confOf#hasEmail"
+        ],
+        [
+          "http://cmt#hasAuthor",
+          "http://confOf#writtenBy"
+        ],
+        [
+          "http://cmt#hasBeenAssigned",
+          "http://confOf#reviewes"
+        ],
+        [
+          "http://cmt#hasSubjectArea",
+          "http://confOf#dealsWith"
+        ],
+        [
+          "http://cmt#title",
+          "http://confOf#hasTitle"
+        ],
+        [
+          "http://cmt#writePaper",
+          "http://confOf#writes"
+        ]
+      ]
+    }
+  },
+  "integrity_verification": {
+    "original_repo_unchanged": true,
+    "original_repo_aggregate_sha256": "afed3137d9905945c5167559b15ef62815c64220a0aa1038ea06893e97b7c7c0",
+    "protected_agent_om_local_db_unchanged": true,
+    "protected_agent_om_local_counts": {
+      "lexical_matching": 206,
+      "ontology_matching": 162,
+      "semantic_matching": 258,
+      "syntactic_matching": 162
+    }
+  }
+}

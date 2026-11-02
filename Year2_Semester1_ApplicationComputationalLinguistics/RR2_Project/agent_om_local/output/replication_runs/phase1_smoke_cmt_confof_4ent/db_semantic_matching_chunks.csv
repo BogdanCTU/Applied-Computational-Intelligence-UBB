@@ -1,0 +1,126 @@
+entity_id,content
+1-Source-Class-Acceptance,"Here are the triples verbalized into phrases:
+
+1. ""Acceptance"" is a subclass of ""Decision"" and has no instances in common with ""Rejection"".
+2. ""Rejection"" has no instances in common with ""Acceptance"".
+
+Let me know if you'd like me to rephrase them in a different way!"
+2-Source-Class-Administrator,"Here are the triples verbalized into phrases:
+
+1. ""acceptPaper"" rdfs:domain ""Administrator"" .
+	* An administrator can accept a paper.
+
+2. ""acceptedBy"" rdfs:range ""Administrator"" .
+	* A paper can be accepted by an administrator.
+
+3. ""addProgramCommitteeMember"" rdfs:domain ""Administrator"" .
+	* An administrator can add a program committee member.
+
+4. ""addedBy"" rdfs:range ""Administrator"" .
+	* A program committee member can be added by an administrator.
+
+5"
+2-Source-Class-Administrator,". ""assignReviewer"" rdfs:domain ""Administrator"" .
+	* An administrator can assign a reviewer.
+
+6. ""assignedByAdministrator"" rdfs:range ""Administrator"" .
+	* A reviewer can be assigned by an administrator.
+
+7. ""detailsEnteredBy"" rdfs:range ""Administrator"" .
+	* Conference details can be entered by an administrator.
+
+8. ""enableVirtualMeeting"" rdfs:domain ""Administrator"" .
+	* An administrator can enable a virtual meeting.
+
+9. ""enterConferenceDetails"" rdfs:domain ""Administrator"""
+2-Source-Class-Administrator,".
+	* An administrator can enter conference details.
+
+10. ""enterReviewCriteria"" rdfs:domain ""Administrator"" .
+	* An administrator can enter review criteria.
+
+11. ""finalizePaperAssignment"" rdfs:domain ""Administrator"" .
+	* An administrator can finalize a paper assignment.
+
+12. ""hardcopyMailingManifestsPrintedBy"" rdfs:range ""Administrator"" .
+	* Hardcopy mailing manifests can be printed by an administrator.
+
+13. ""paperAssignmentFinalizedBy"" rdfs:range ""Administrator"""
+2-Source-Class-Administrator,".
+	* A paper assignment can be finalized by an administrator.
+
+14. ""paperAssignmentToolsRunBy"" rdfs:range ""Administrator"" .
+	* Paper assignment tools can be run by an administrator.
+
+15. ""printHardcopyMailingManifests"" rdfs:domain ""Administrator"" .
+	* An administrator can print hardcopy mailing manifests.
+
+16. ""rejectPaper"" rdfs:domain ""Administrator"" .
+	* An administrator can reject a paper.
+
+17. ""rejectedBy"" rdfs:range ""Administrator"" .
+	* A paper can be rejected by an administrator.
+
+18"
+2-Source-Class-Administrator,". ""reviewCriteriaEnteredBy"" rdfs:range ""Administrator"" .
+	* Review criteria can be entered by an administrator.
+
+19. ""reviewerBiddingStartedBy"" rdfs:range ""Administrator"" .
+	* Reviewer bidding can be started by an administrator.
+
+20. ""runPaperAssignmentTools"" rdfs:domain ""Administrator"" .
+	* An administrator can run paper assignment tools.
+
+21. ""setMaxPapers"" rdfs:domain ""Administrator"" .
+	* An administrator can set the maximum number of papers.
+
+22"
+2-Source-Class-Administrator,". ""startReviewerBidding"" rdfs:domain ""Administrator"" .
+	* An administrator can start reviewer bidding.
+
+23. ""virtualMeetingEnabledBy"" rdfs:range ""Administrator"" .
+	* A virtual meeting can be enabled by an administrator.
+
+24. ""Administrator"" rdfs:subClassOf ""User"" .
+	* An administrator is a type of user."
+3-Target-Class-Administrative_event,"Here are the triples verbalized into phrases:
+
+1. ""Camera_Ready_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Camera Ready"" event is a type of administrative event.
+
+2. ""Registration_of_participants_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Registration of Participants"" event is a type of administrative event.
+
+3. ""Reviewing_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Reviewing"" event is a type of administrative event.
+
+4"
+3-Target-Class-Administrative_event,". ""Reviewing_results_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Reviewing Results"" event is a type of administrative event.
+
+5. ""Submission_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Submission"" event is a type of administrative event.
+
+6. ""follows"" rdfs:domain ""Administrative_event"" ; rdfs:range ""Administrative_event"" .
+	* One administrative event follows another administrative event.
+
+7. ""hasAdministrativeEvent"" rdfs:range ""Administrative_event"""
+3-Target-Class-Administrative_event,".
+	* Something has an administrative event.
+
+8. ""parallel_with"" rdfs:domain ""Administrative_event"" ; rdfs:range ""Administrative_event"" .
+	* One administrative event is parallel with another administrative event.
+
+9. ""Social_event"" owl:disjointWith ""Administrative_event"" .
+	* Social events are not the same as administrative events.
+
+10. ""Working_event"" owl:disjointWith ""Administrative_event"" .
+	* Working events are not the same as administrative events.
+
+11"
+3-Target-Class-Administrative_event,". ""Administrative_event"" rdfs:subClassOf ""Event"" ; owl:disjointWith ""Social_event"", ""Working_event"" .
+	* Administrative events are a type of event, and are not the same as social events or working events."
+4-Target-Class-Administrator,"Here are the triples verbalized into phrases:
+
+1. ""Administrator"" rdfs:subClassOf ""Person"".
+Phrase: ""An Administrator is a type of Person."""

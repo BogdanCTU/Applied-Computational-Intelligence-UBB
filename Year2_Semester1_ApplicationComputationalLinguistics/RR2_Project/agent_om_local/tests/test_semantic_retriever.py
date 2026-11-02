@@ -3,14 +3,20 @@
 from pathlib import Path
 from unittest.mock import MagicMock
 import pytest
-from rdflib import BNode, Graph, Literal, URIRef
-from rdflib.namespace import OWL, RDF, RDFS, SKOS
+from rdflib.namespace import RDFS
 from langchain_core.messages import AIMessage
 
 from src.ontology.parser import OntologyGraph, load_ontology
 from src.retrieval.semantic_retriever import SemanticRetriever
 
-DATA_DIR = Path(r"E:\_3_Master\_9_ACL_Project\original_repo\data\conference\cmt-confof\component")
+DATA_DIR = (
+    Path(__file__).resolve().parents[2]
+    / "original_repo"
+    / "data"
+    / "conference"
+    / "cmt-confof"
+    / "component"
+)
 CMT_PATH = DATA_DIR / "source.xml"
 CONFOF_PATH = DATA_DIR / "target.xml"
 
@@ -125,4 +131,3 @@ class TestSemanticRetriever:
         assert "A Paper is submitted to a Conference." in answer
         assert meta["has_predicate_triples"] is True
         assert mock_llm.invoke.called
-

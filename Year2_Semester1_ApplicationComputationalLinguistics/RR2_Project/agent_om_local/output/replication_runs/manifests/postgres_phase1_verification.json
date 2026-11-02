@@ -1,0 +1,60 @@
+{
+  "server_version": "PostgreSQL 16.15, compiled by Visual C++ build 1944, 64-bit",
+  "listen_addresses": "127.0.0.1",
+  "port": "5432",
+  "existing_databases_before": [
+    "agent_om_local",
+    "postgres"
+  ],
+  "active_connections": [
+    {
+      "datname": "postgres",
+      "pid": 15416,
+      "state": "active",
+      "client_addr": "127.0.0.1",
+      "app": ""
+    }
+  ],
+  "agent_om_local_before": {
+    "tables": [
+      "lexical_matching",
+      "ontology_matching",
+      "semantic_matching",
+      "syntactic_matching"
+    ],
+    "row_counts": {
+      "lexical_matching": 206,
+      "ontology_matching": 162,
+      "semantic_matching": 258,
+      "syntactic_matching": 162
+    }
+  },
+  "created_database": "agent_om_upstream",
+  "existing_databases_after": [
+    "agent_om_local",
+    "agent_om_upstream",
+    "postgres"
+  ],
+  "upstream_db_connection": {
+    "database": "agent_om_upstream",
+    "server_addr": "127.0.0.1",
+    "server_port": 5432
+  },
+  "pgvector_extension": {
+    "extname": "vector",
+    "extversion": "0.8.7"
+  },
+  "vector_4096_probe": [
+    {
+      "id": 1,
+      "dims": 4096,
+      "cosine_sim": 1.0
+    },
+    {
+      "id": 2,
+      "dims": 4096,
+      "cosine_sim": 0.0
+    }
+  ],
+  "agent_om_local_unchanged": true
+}

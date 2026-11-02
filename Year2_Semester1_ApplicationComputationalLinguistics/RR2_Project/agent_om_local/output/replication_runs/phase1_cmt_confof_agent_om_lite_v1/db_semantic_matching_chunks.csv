@@ -1,0 +1,2220 @@
+entity_id,content
+001-Source-Class-Acceptance,"Here are the triples verbalized into phrases:
+
+1. ""Acceptance"" is a subclass of ""Decision"" and has no instances in common with ""Rejection"".
+2. ""Rejection"" has no instances in common with ""Acceptance"".
+
+Let me know if you'd like me to rephrase them in a different way!"
+002-Source-Class-Administrator,"Here are the triples verbalized into phrases:
+
+1. ""acceptPaper"" rdfs:domain ""Administrator"" .
+	* An administrator can accept a paper.
+
+2. ""acceptedBy"" rdfs:range ""Administrator"" .
+	* A paper can be accepted by an administrator.
+
+3. ""addProgramCommitteeMember"" rdfs:domain ""Administrator"" .
+	* An administrator can add a program committee member.
+
+4. ""addedBy"" rdfs:range ""Administrator"" .
+	* A program committee member can be added by an administrator.
+
+5"
+002-Source-Class-Administrator,".
+	* An administrator can enter conference details.
+
+10. ""enterReviewCriteria"" rdfs:domain ""Administrator"" .
+	* An administrator can enter review criteria.
+
+11. ""finalizePaperAssignment"" rdfs:domain ""Administrator"" .
+	* An administrator can finalize a paper assignment.
+
+12. ""hardcopyMailingManifestsPrintedBy"" rdfs:range ""Administrator"" .
+	* Hardcopy mailing manifests can be printed by an administrator.
+
+13. ""paperAssignmentFinalizedBy"" rdfs:range ""Administrator"""
+002-Source-Class-Administrator,". ""assignReviewer"" rdfs:domain ""Administrator"" .
+	* An administrator can assign a reviewer.
+
+6. ""assignedByAdministrator"" rdfs:range ""Administrator"" .
+	* A reviewer can be assigned by an administrator.
+
+7. ""detailsEnteredBy"" rdfs:range ""Administrator"" .
+	* Conference details can be entered by an administrator.
+
+8. ""enableVirtualMeeting"" rdfs:domain ""Administrator"" .
+	* An administrator can enable a virtual meeting.
+
+9. ""enterConferenceDetails"" rdfs:domain ""Administrator"""
+002-Source-Class-Administrator,".
+	* A paper assignment can be finalized by an administrator.
+
+14. ""paperAssignmentToolsRunBy"" rdfs:range ""Administrator"" .
+	* Paper assignment tools can be run by an administrator.
+
+15. ""printHardcopyMailingManifests"" rdfs:domain ""Administrator"" .
+	* An administrator can print hardcopy mailing manifests.
+
+16. ""rejectPaper"" rdfs:domain ""Administrator"" .
+	* An administrator can reject a paper.
+
+17. ""rejectedBy"" rdfs:range ""Administrator"" .
+	* A paper can be rejected by an administrator.
+
+18"
+002-Source-Class-Administrator,". ""reviewCriteriaEnteredBy"" rdfs:range ""Administrator"" .
+	* Review criteria can be entered by an administrator.
+
+19. ""reviewerBiddingStartedBy"" rdfs:range ""Administrator"" .
+	* Reviewer bidding can be started by an administrator.
+
+20. ""runPaperAssignmentTools"" rdfs:domain ""Administrator"" .
+	* An administrator can run paper assignment tools.
+
+21. ""setMaxPapers"" rdfs:domain ""Administrator"" .
+	* An administrator can set the maximum number of papers.
+
+22"
+002-Source-Class-Administrator,". ""startReviewerBidding"" rdfs:domain ""Administrator"" .
+	* An administrator can start reviewer bidding.
+
+23. ""virtualMeetingEnabledBy"" rdfs:range ""Administrator"" .
+	* A virtual meeting can be enabled by an administrator.
+
+24. ""Administrator"" rdfs:subClassOf ""User"" .
+	* An administrator is a type of user."
+003-Source-Class-AssociatedChair,". This class has two subclasses: 'AssociatedChair' and 'ConferenceChair'. 'AssociatedChair' is the first element in a list, and 'ConferenceChair' is the first element in another list. The second list also has a second element, which is 'ProgramCommitteeChair', and this list is the rest of the 'Chairman' class. The 'Chairman' class is also the union of these two lists."""
+003-Source-Class-AssociatedChair,"Here are the triples verbalized into phrases:
+
+1. ""AssociatedChair"" is a subclass of ""ConferenceMember"" and has no instances in common with ""ConferenceChair"".
+2. ""ConferenceChair"" has no instances in common with ""AssociatedChair"".
+
+Let me know if you'd like me to rephrase or reorganize these phrases in any way!Here is a natural language description of the subgraph:
+
+""There is a class called 'Chairman' that is equivalent to a class"
+004-Source-Class-Author,"Here are the triples verbalized into phrases:
+
+1. ""AuthorNotReviewer"" rdfs:subClassOf ""Author"" .
+	* ""AuthorNotReviewer"" is a subclass of ""Author"".
+
+2. ""Co-author"" rdfs:subClassOf ""Author"" .
+	* ""Co-author"" is a subclass of ""Author"".
+
+3. ""hasAuthor"" rdfs:range ""Author"" .
+	* The range of ""hasAuthor"" is ""Author"".
+
+4. ""submitPaper"" rdfs:domain ""Author"" .
+	* The domain of ""submitPaper"" is ""Author"".
+
+5. ""writePaper"" rdfs:domain ""Author"" .
+	* The domain of ""writePaper"" is ""Author"".
+
+6"
+004-Source-Class-Author,". ""Author"" rdfs:subClassOf ""ConferenceMember"", ""User"" .
+	* ""Author"" is a subclass of both ""ConferenceMember"" and ""User"".Here is a natural language description of the subgraph:
+
+""A Chairman is a Reviewer, and a Reviewer is a member of a Class. The Class is a union of two roles: a Chairman and an Author. There is a markConflictOfInterest domain that is related to this Class. The Chairman and Author are also part of a rest, which is nil"
+004-Source-Class-Author,".""
+
+Note that this description is a simplification of the original graph, and some details may have been omitted or condensed to make it easier to understand."
+005-Source-Class-AuthorNotReviewer,"Here are the triples verbalized into phrases:
+
+1. ""ProgramCommitteeMember"" owl:disjointWith ""AuthorNotReviewer"" .
+	* The set of ProgramCommitteeMembers is disjoint from the set of AuthorNotReviewers.
+
+2. ""Reviewer"" owl:disjointWith ""AuthorNotReviewer"" .
+	* The set of Reviewers is disjoint from the set of AuthorNotReviewers.
+
+3. ""AuthorNotReviewer"" rdfs:subClassOf ""Author"" .
+	* AuthorNotReviewers are a subclass of Authors.
+
+4"
+005-Source-Class-AuthorNotReviewer,". ""AuthorNotReviewer"" owl:disjointWith ""ProgramCommitteeMember"", ""Reviewer"" .
+	* The set of AuthorNotReviewers is disjoint from the sets of ProgramCommitteeMembers and Reviewers."
+006-Source-Class-Bid,"Here are the triples verbalized into phrases:
+
+1. ""adjustBid"" rdfs:range ""Bid"" - The range of ""adjustBid"" is a Bid.
+2. ""adjustedBy"" rdfs:domain ""Bid"" - The domain of ""adjustedBy"" is a Bid.
+3. ""hasBid"" rdfs:range ""Bid"" - The range of ""hasBid"" is a Bid.
+4. ""Conference"" owl:disjointWith ""Bid"" - Conference is disjoint from Bid.
+5. ""Decision"" owl:disjointWith ""Bid"" - Decision is disjoint from Bid.
+6. ""Document"" owl:disjointWith ""Bid"" - Document is disjoint from Bid.
+7"
+006-Source-Class-Bid,". ""Person"" owl:disjointWith ""Bid"" - Person is disjoint from Bid.
+8. ""Preference"" owl:disjointWith ""Bid"" - Preference is disjoint from Bid.
+9. ""ProgramCommittee"" owl:disjointWith ""Bid"" - ProgramCommittee is disjoint from Bid.
+10. ""Bid"" owl:disjointWith ""Conference"", ""Decision"", ""Document"", ""Person"", ""Preference"", ""ProgramCommittee"" - Bid is disjoint from Conference, Decision, Document, Person, Preference, and ProgramCommittee."
+007-Source-Class-Chairman,"Here are the triples verbalized into phrases:
+
+1. ""Chairman"" rdfs:subClassOf ""Person"".
+Phrase: ""A Chairman is a type of Person.""Here is a natural language description of the subgraph:
+
+""This subgraph represents a set of roles and relationships within an organization. There is a Chairman, who is equivalent to a Class, and an Author, who is part of a rest. There is also an AssociatedChair, who is part of a rest, and a ConferenceChair, who is part of a rest"
+007-Source-Class-Chairman,". A Reviewer is part of a unionOf, which is also part of the Class. A ProgramCommitteeChair is part of a rest, and a Chairman is part of a first. There is also a markConflictOfInterest, which is part of a domain that is also part of the Class. Overall, this subgraph suggests a hierarchical structure with different roles and relationships within an organization."""
+008-Source-Class-Co-author,"Here are the triples verbalized into phrases:
+
+1. ""co-writePaper"" rdfs:domain ""Co-author"" .
+	* The predicate ""co-writePaper"" is a property of the class ""Co-author"".
+	* Phrase: ""Co-author is a domain for co-writing a paper.""
+
+2. ""hasCo-author"" rdfs:range ""Co-author"" .
+	* The predicate ""hasCo-author"" returns instances of the class ""Co-author"".
+	* Phrase: ""The range of having a co-author is a Co-author.""
+
+3. ""Co-author"" rdfs:subClassOf ""Author"""
+008-Source-Class-Co-author,".
+	* The class ""Co-author"" is a subclass of the class ""Author"".
+	* Phrase: ""A Co-author is a type of Author."""
+009-Source-Class-Conference,". The conference is also a subclass of another type of event that has a minimum cardinality of one and is restricted to have a single value for its date. The conference is a union of two types of events: a person and a conference. The person is the first element in the union, and the conference is the second element. The conference has a restriction on its reviews per paper, which is a single value"
+009-Source-Class-Conference,"Here are the triples verbalized into phrases:
+
+1. ""acceptsHardcopySubmissions"" rdfs:domain ""Conference"" - A conference accepts hardcopy submissions.
+2. ""date"" rdfs:domain ""Conference"" - A conference has a date.
+3. ""detailsEnteredBy"" rdfs:domain ""Conference"" - The details of a conference are entered by someone.
+4. ""enableVirtualMeeting"" rdfs:range ""Conference"" - Enabling virtual meetings is a conference.
+5"
+009-Source-Class-Conference,". ""enterConferenceDetails"" rdfs:range ""Conference"" - Entering conference details is a conference.
+6. ""enterReviewCriteria"" rdfs:range ""Conference"" - Entering review criteria is a conference.
+7. ""finalizePaperAssignment"" rdfs:range ""Conference"" - Finalizing paper assignments is a conference.
+8. ""hardcopyMailingManifestsPrintedBy"" rdfs:domain ""Conference"" - Hardcopy mailing manifests are printed by a conference.
+9. ""hasConferenceMember"" rdfs:domain ""Conference"" - A conference has a member.
+10"
+009-Source-Class-Conference,". ""logoURL"" rdfs:domain ""Conference"" - A conference has a logo URL.
+11. ""memberOfConference"" rdfs:range ""Conference"" - Being a member of a conference is a conference.
+12. ""paperAssignmentFinalizedBy"" rdfs:domain ""Conference"" - Paper assignments are finalized by a conference.
+13. ""paperAssignmentToolsRunBy"" rdfs:domain ""Conference"" - Paper assignment tools are run by a conference.
+14. ""printHardcopyMailingManifests"" rdfs:range ""Conference"" - Printing hardcopy mailing manifests is a conference.
+15"
+009-Source-Class-Conference,". ""reviewCriteriaEnteredBy"" rdfs:domain ""Conference"" - Review criteria are entered by a conference.
+16. ""reviewerBiddingStartedBy"" rdfs:domain ""Conference"" - Reviewer bidding is started by a conference.
+17. ""reviewsPerPaper"" rdfs:domain ""Conference"" - Reviews are given per paper in a conference.
+18. ""runPaperAssignmentTools"" rdfs:range ""Conference"" - Running paper assignment tools is a conference.
+19. ""siteURL"" rdfs:domain ""Conference"" - A conference has a site URL.
+20"
+009-Source-Class-Conference,". ""startReviewerBidding"" rdfs:range ""Conference"" - Starting reviewer bidding is a conference.
+21. ""virtualMeetingEnabledBy"" rdfs:domain ""Conference"" - Virtual meetings are enabled by a conference.
+
+And the disjointness statements:
+
+22. ""Bid"" owl:disjointWith ""Conference"" - A bid is not a conference.
+23. ""Decision"" owl:disjointWith ""Conference"" - A decision is not a conference.
+24. ""Document"" owl:disjointWith ""Conference"" - A document is not a conference.
+25"
+009-Source-Class-Conference,". ""Person"" owl:disjointWith ""Conference"" - A person is not a conference.
+26. ""Preference"" owl:disjointWith ""Conference"" - A preference is not a conference.
+27. ""ProgramCommittee"" owl:disjointWith ""Conference"" - A program committee is not a conference.
+28. ""Conference"" owl:disjointWith ""Bid"", ""Decision"", ""Document"", ""Person"", ""Preference"", ""ProgramCommittee"" - A conference is not a bid, decision, document, person, preference, or program committee"
+009-Source-Class-Conference,".Here is a natural language description of the subgraph:
+
+""A conference is a type of event that has at least one restriction on its name, which is a single value. The conference is also restricted to have exactly one review per paper. The conference is a subclass of a more general type of event, which is itself restricted to have exactly one review per paper"
+009-Source-Class-Conference,".""
+
+Note that this description is not a formal definition of the concepts represented in the subgraph, but rather a natural language summary of the relationships and constraints defined in the subgraph."
+010-Source-Class-ConferenceChair,".
+
+Let me know if you'd like me to help with anything else!Here is a natural language description of the subgraph:
+
+""There is a class called 'Chairman' that is equivalent to a class. This class has two subclasses: 'AssociatedChair' and 'ConferenceChair'. 'AssociatedChair' has a rest that is 'nil', while 'ConferenceChair' has a rest that is another class. This class has a first that is 'ConferenceChair'"
+010-Source-Class-ConferenceChair,"Here are the triples verbalized into phrases:
+
+1. ""AssociatedChair"" owl:disjointWith ""ConferenceChair"" .
+	* Associated Chair is disjoint from Conference Chair.
+2. ""ConferenceChair"" rdfs:subClassOf ""ConferenceMember"" .
+	* Conference Chair is a subclass of Conference Member.
+3. ""ConferenceChair"" owl:disjointWith ""AssociatedChair"" .
+	* Conference Chair is disjoint from Associated Chair"
+010-Source-Class-ConferenceChair,". Additionally, there is another class that is the rest of 'ProgramCommitteeChair', which has a first that is also 'ProgramCommitteeChair'.""
+
+Note that this description is not a formal definition of the classes and their relationships, but rather a natural language summary of the subgraph."
+011-Source-Class-ConferenceMember,"Here are the triples verbalized into phrases:
+
+1. ""AssociatedChair"" rdfs:subClassOf ""ConferenceMember"" .
+	* Associated Chair is a type of Conference Member.
+
+2. ""Author"" rdfs:subClassOf ""ConferenceMember"" .
+	* Author is a type of Conference Member.
+
+3. ""ConferenceChair"" rdfs:subClassOf ""ConferenceMember"" .
+	* Conference Chair is a type of Conference Member.
+
+4. ""ProgramCommitteeMember"" rdfs:subClassOf ""ConferenceMember"" .
+	* Program Committee Member is a type of Conference Member.
+
+5"
+011-Source-Class-ConferenceMember,". ""Reviewer"" rdfs:subClassOf ""ConferenceMember"" .
+	* Reviewer is a type of Conference Member.
+
+6. ""hasConferenceMember"" rdfs:range ""ConferenceMember"" .
+	* The relationship ""has Conference Member"" has a range of Conference Members.
+
+7. ""memberOfConference"" rdfs:domain ""ConferenceMember"" .
+	* The relationship ""Member of Conference"" has a domain of Conference Members.
+
+8. ""ConferenceMember"" rdfs:subClassOf ""Person"" .
+	* Conference Member is a type of Person."
+012-Source-Class-Decision,". ""Document"" owl:disjointWith ""Decision"" .
+	* Document is not the same as Decision.
+
+7. ""Person"" owl:disjointWith ""Decision"" .
+	* Person is not the same as Decision.
+
+8. ""Preference"" owl:disjointWith ""Decision"" .
+	* Preference is not the same as Decision.
+
+9. ""ProgramCommittee"" owl:disjointWith ""Decision"" .
+	* ProgramCommittee is not the same as Decision.
+
+10. ""Decision"" owl:disjointWith ""Bid"", ""Conference"", ""Document"", ""Person"", ""Preference"", ""ProgramCommittee"""
+012-Source-Class-Decision,"Here are the triples verbalized into phrases:
+
+1. ""Acceptance"" rdfs:subClassOf ""Decision"" .
+	* Acceptance is a type of Decision.
+
+2. ""Rejection"" rdfs:subClassOf ""Decision"" .
+	* Rejection is a type of Decision.
+
+3. ""hasDecision"" rdfs:range ""Decision"" .
+	* The hasDecision property has a range of Decisions.
+
+4. ""Bid"" owl:disjointWith ""Decision"" .
+	* Bid is not the same as Decision.
+
+5. ""Conference"" owl:disjointWith ""Decision"" .
+	* Conference is not the same as Decision.
+
+6"
+012-Source-Class-Decision,".
+	* Decision is not the same as Bid, Conference, Document, Person, Preference, or ProgramCommittee."
+013-Source-Class-Document,".
+	* ""Documents are not the same as Bids, Conferences, Decisions, People, Preferences, or ProgramCommittees."""
+013-Source-Class-Document,"Here are the triples verbalized into phrases:
+
+1. ""Paper"" rdfs:subClassOf ""Document"".
+	* ""Paper is a type of Document.""
+
+2. ""Review"" rdfs:subClassOf ""Document"".
+	* ""Review is a type of Document.""
+
+3. ""hasConflictOfInterest"" rdfs:range ""Document"".
+	* ""hasConflictOfInterest is a property that relates to Documents.""
+
+4. ""Bid"" owl:disjointWith ""Document"".
+	* ""Bids are not the same as Documents.""
+
+5. ""Conference"" owl:disjointWith ""Document"".
+	* ""Conferences are not the same as Documents.""
+
+6"
+013-Source-Class-Document,". ""Decision"" owl:disjointWith ""Document"".
+	* ""Decisions are not the same as Documents.""
+
+7. ""Person"" owl:disjointWith ""Document"".
+	* ""People are not the same as Documents.""
+
+8. ""Preference"" owl:disjointWith ""Document"".
+	* ""Preferences are not the same as Documents.""
+
+9. ""ProgramCommittee"" owl:disjointWith ""Document"".
+	* ""ProgramCommittees are not the same as Documents.""
+
+10. ""Document"" owl:disjointWith ""Bid"", ""Conference"", ""Decision"", ""Person"", ""Preference"", ""ProgramCommittee"""
+014-Source-Class-ExternalReviewer,"Here are the triples verbalized into phrases:
+
+1. ""assignExternalReviewer"" rdfs:range ""ExternalReviewer"" .
+	* The ""assignExternalReviewer"" relation has ""ExternalReviewer"" as its range, meaning it relates to or targets ""ExternalReviewer"" entities.
+
+2. ""assignedByReviewer"" rdfs:domain ""ExternalReviewer"" .
+	* The ""assignedByReviewer"" relation has ""ExternalReviewer"" as its domain, meaning it originates from or is associated with ""ExternalReviewer"" entities.
+
+3"
+014-Source-Class-ExternalReviewer,". ""Reviewer"" owl:disjointWith ""ExternalReviewer"" .
+	* ""Reviewer"" and ""ExternalReviewer"" are disjoint, meaning they do not overlap or share any instances.
+
+4. ""ExternalReviewer"" rdfs:subClassOf ""Person"" ;
+    owl:disjointWith ""Reviewer"" .
+	* ""ExternalReviewer"" is a subclass of ""Person"", meaning all ""ExternalReviewer"" entities are also ""Person"" entities.
+	* Additionally, ""ExternalReviewer"" is disjoint with ""Reviewer"", meaning there is no overlap between these two classes"
+014-Source-Class-ExternalReviewer,".Here is a natural language description of the subgraph:
+
+""The entity with the identifier N13b2e00939184d87b611b0ba9c456c81 is a Restriction that has a cardinality of 1, meaning it can only have one instance. This Restriction is related to a property called 'assignedByReviewer', indicating that it is assigned by an external reviewer. Additionally, the external reviewer is a subclass of this Restriction."""
+015-Source-Class-Meta-Review,"Here are the triples verbalized into phrases:
+
+* ""Meta-Review"" rdfs:subClassOf ""Review"" .
+	+ ""Meta-Review"" is a subclass of ""Review""."
+016-Source-Class-Meta-Reviewer,"Here are the triples verbalized into phrases:
+
+1. ""readByMeta-Reviewer"" rdfs:range ""Meta-Reviewer"".
+	* The ""readByMeta-Reviewer"" relation has the range of ""Meta-Reviewer"", meaning that ""readByMeta-Reviewer"" is a relation that points to instances of ""Meta-Reviewer"".
+	* Phrase: ""The 'readByMeta-Reviewer' relation points to Meta-Reviewers.""
+
+2. ""Meta-Reviewer"" rdfs:subClassOf ""Reviewer"""
+016-Source-Class-Meta-Reviewer,".
+	* ""Meta-Reviewer"" is a subclass of ""Reviewer"", meaning that all instances of ""Meta-Reviewer"" are also instances of ""Reviewer"".
+	* Phrase: ""Meta-Reviewers are a type of Reviewer."""
+017-Source-Class-Paper,".Here is a natural language description of the subgraph:
+
+""A paper has a decision, which is restricted to be read by a meta-reviewer and has a decision. The paper is a subclass of a restriction that has a decision and is read by a reviewer. The restriction has a minimum cardinality of 1, meaning that at least one reviewer must read the paper. The paper is also a subclass of another restriction that has a decision and is read by a meta-reviewer"
+017-Source-Class-Paper,"Here are the triples verbalized into phrases:
+
+1. ""PaperAbstract"" rdfs:subClassOf ""Paper"" .
+	* Paper abstract is a type of paper.
+
+2. ""PaperFullVersion"" rdfs:subClassOf ""Paper"" .
+	* Paper full version is a type of paper.
+
+3. ""acceptPaper"" rdfs:range ""Paper"" .
+	* Accept paper is a type of paper.
+
+4. ""acceptedBy"" rdfs:domain ""Paper"" .
+	* A paper is accepted by something.
+
+5. ""assignedTo"" rdfs:domain ""Paper"" .
+	* A paper is assigned to something.
+
+6. ""co-writePaper"" rdfs:range ""Paper"""
+017-Source-Class-Paper,".
+	* Co-write a paper is a type of paper.
+
+7. ""hasAuthor"" rdfs:domain ""Paper"" .
+	* A paper has an author.
+
+8. ""hasBeenAssigned"" rdfs:range ""Paper"" .
+	* A paper has been assigned.
+
+9. ""hasBid"" rdfs:domain ""Paper"" .
+	* A paper has a bid.
+
+10. ""hasCo-author"" rdfs:domain ""Paper"" .
+	* A paper has a co-author.
+
+11. ""hasDecision"" rdfs:domain ""Paper"" .
+	* A paper has a decision.
+
+12. ""hasSubjectArea"" rdfs:domain ""Paper"" .
+	* A paper has a subject area.
+
+13. ""markConflictOfInterest"" rdfs:range ""Paper"""
+017-Source-Class-Paper,".
+	* Mark conflict of interest is a type of paper.
+
+14. ""paperID"" rdfs:domain ""Paper"" .
+	* A paper has a paper ID.
+
+15. ""readByMeta-Reviewer"" rdfs:domain ""Paper"" .
+	* A paper is read by a meta-reviewer.
+
+16. ""readByReviewer"" rdfs:domain ""Paper"" .
+	* A paper is read by a reviewer.
+
+17. ""readPaper"" rdfs:range ""Paper"" .
+	* Read a paper is a type of paper.
+
+18. ""rejectPaper"" rdfs:range ""Paper"" .
+	* Reject a paper is a type of paper.
+
+19. ""rejectedBy"" rdfs:domain ""Paper"""
+017-Source-Class-Paper,".
+	* A paper is rejected by something.
+
+20. ""submitPaper"" rdfs:range ""Paper"" .
+	* Submit a paper is a type of paper.
+
+21. ""title"" rdfs:domain ""Paper"" .
+	* A paper has a title.
+
+22. ""writePaper"" rdfs:range ""Paper"" .
+	* Write a paper is a type of paper.
+
+23. ""Review"" owl:disjointWith ""Paper"" .
+	* Reviews and papers are disjoint.
+
+24. ""Paper"" rdfs:subClassOf ""Document"" .
+	* Papers are a type of document.
+
+25. ""Paper"" owl:disjointWith ""Review"" .
+	* Papers and reviews are disjoint"
+017-Source-Class-Paper,". The restriction has a minimum cardinality of 0, meaning that zero or more reviewers can read the paper.""
+
+Note that this description is not a formal definition, but rather a natural language summary of the subgraph."
+018-Source-Class-PaperAbstract,"Here are the triples verbalized into phrases:
+
+* ""PaperAbstract"" rdfs:subClassOf ""Paper"" .
+	+ ""PaperAbstract"" is a subclass of ""Paper""."
+019-Source-Class-PaperFullVersion,"Here are the triples verbalized into phrases:
+
+* ""PaperFullVersion"" rdfs:subClassOf ""Paper"" is equivalent to ""PaperFullVersion is a subclass of Paper""."
+020-Source-Class-Person,".
+	* A Person is not the same thing as a Bid, Conference, Decision, Document, Preference, or ProgramCommittee.Here is a natural language description of the subgraph:
+
+""A conference is a type of union, specifically a union of a person and a conference. The name of this domain is not specified. The first element of this union is a person, and the second element is a conference. There is no additional information provided about the rest of the union. This domain is classified as a class"
+020-Source-Class-Person,"Here are the triples verbalized into phrases:
+
+1. ""Chairman"" rdfs:subClassOf ""Person"" .
+	* A Chairman is a type of Person.
+
+2. ""ConferenceMember"" rdfs:subClassOf ""Person"" .
+	* A ConferenceMember is a type of Person.
+
+3. ""ExternalReviewer"" rdfs:subClassOf ""Person"" .
+	* An ExternalReviewer is a type of Person.
+
+4. ""ProgramCommitteeMember"" rdfs:subClassOf ""Person"" .
+	* A ProgramCommitteeMember is a type of Person.
+
+5. ""User"" rdfs:subClassOf ""Person"" .
+	* A User is a type of Person.
+
+6"
+020-Source-Class-Person,". ""email"" rdfs:domain ""Person"" .
+	* Email is something that belongs to a Person.
+
+7. ""hasConflictOfInterest"" rdfs:domain ""Person"" .
+	* Having a Conflict of Interest is something that belongs to a Person.
+
+8. ""Bid"" owl:disjointWith ""Person"" .
+	* A Bid is not the same thing as a Person.
+
+9. ""Conference"" owl:disjointWith ""Person"" .
+	* A Conference is not the same thing as a Person.
+
+10. ""Decision"" owl:disjointWith ""Person"" .
+	* A Decision is not the same thing as a Person.
+
+11"
+020-Source-Class-Person,". ""Document"" owl:disjointWith ""Person"" .
+	* A Document is not the same thing as a Person.
+
+12. ""Preference"" owl:disjointWith ""Person"" .
+	* A Preference is not the same thing as a Person.
+
+13. ""ProgramCommittee"" owl:disjointWith ""Person"" .
+	* A ProgramCommittee is not the same thing as a Person.
+
+14. ""Person"" owl:disjointWith ""Bid"", ""Conference"", ""Decision"", ""Document"", ""Preference"", ""ProgramCommittee"""
+020-Source-Class-Person,".""
+
+Note that this description is a simplification of the original graph, and some information may have been lost or condensed in the process."
+021-Source-Class-Preference,"Here are the triples verbalized into phrases:
+
+1. ""Bid"" owl:disjointWith ""Preference"" - ""Bids are unrelated to preferences.""
+2. ""Conference"" owl:disjointWith ""Preference"" - ""Conferences are unrelated to preferences.""
+3. ""Decision"" owl:disjointWith ""Preference"" - ""Decisions are unrelated to preferences.""
+4. ""Document"" owl:disjointWith ""Preference"" - ""Documents are unrelated to preferences.""
+5. ""Person"" owl:disjointWith ""Preference"" - ""People are unrelated to preferences.""
+6"
+021-Source-Class-Preference,". ""ProgramCommittee"" owl:disjointWith ""Preference"" - ""Program committees are unrelated to preferences.""
+7. ""Preference"" owl:disjointWith ""Bid"", ""Conference"", ""Decision"", ""Document"", ""Person"", ""ProgramCommittee"" - ""Preferences are unrelated to bids, conferences, decisions, documents, people, and program committees."""
+022-Source-Class-ProgramCommittee,". ""Conference"" owl:disjointWith ""ProgramCommittee"" .
+	* ""Conference"" is disjoint from ""ProgramCommittee"", meaning they are mutually exclusive.
+
+5. ""Decision"" owl:disjointWith ""ProgramCommittee"" .
+	* ""Decision"" is disjoint from ""ProgramCommittee"", meaning they are mutually exclusive.
+
+6. ""Document"" owl:disjointWith ""ProgramCommittee"" .
+	* ""Document"" is disjoint from ""ProgramCommittee"", meaning they are mutually exclusive.
+
+7. ""Person"" owl:disjointWith ""ProgramCommittee"""
+022-Source-Class-ProgramCommittee,"Here are the triples verbalized into phrases:
+
+1. ""hasProgramCommitteeMember"" rdfs:domain ""ProgramCommittee"" .
+	* A ""hasProgramCommitteeMember"" relationship is a property of a ""ProgramCommittee"".
+
+2. ""memberOfProgramCommittee"" rdfs:range ""ProgramCommittee"" .
+	* A ""memberOfProgramCommittee"" relationship is a type of ""ProgramCommittee"".
+
+3. ""Bid"" owl:disjointWith ""ProgramCommittee"" .
+	* ""Bid"" is disjoint from ""ProgramCommittee"", meaning they are mutually exclusive.
+
+4"
+022-Source-Class-ProgramCommittee,".
+	* ""Person"" is disjoint from ""ProgramCommittee"", meaning they are mutually exclusive.
+
+8. ""Preference"" owl:disjointWith ""ProgramCommittee"" .
+	* ""Preference"" is disjoint from ""ProgramCommittee"", meaning they are mutually exclusive.
+
+9. ""ProgramCommittee"" owl:disjointWith ""Bid"", ""Conference"", ""Decision"", ""Document"", ""Person"", ""Preference"" .
+	* ""ProgramCommittee"" is disjoint from ""Bid"", ""Conference"", ""Decision"", ""Document"", ""Person"", and ""Preference"", meaning they are mutually exclusive."
+023-Source-Class-ProgramCommitteeChair,". This class has two subclasses: 'AssociatedChair' and 'ConferenceChair'. 'AssociatedChair' has a rest that is 'nil', while 'ConferenceChair' has a rest that is another class. This class has a first that is 'ConferenceChair'. Additionally, there is another class that is the rest of 'ProgramCommitteeChair', which has a first that is also 'ProgramCommitteeChair'"
+023-Source-Class-ProgramCommitteeChair,"Here are the triples verbalized into phrases:
+
+1. ""endReview"" rdfs:domain ""ProgramCommitteeChair"" .
+	* The ""endReview"" activity is a responsibility of the ""ProgramCommitteeChair"".
+2. ""ProgramCommitteeChair"" rdfs:subClassOf ""ProgramCommitteeMember"" .
+	* A ""ProgramCommitteeChair"" is a type of ""ProgramCommitteeMember"".Here is a natural language description of the subgraph:
+
+""There is a class called 'Chairman' that is equivalent to a class"
+023-Source-Class-ProgramCommitteeChair,".""
+
+Note that this description is not a formal definition of the classes and their relationships, but rather a natural language summary of the subgraph."
+024-Source-Class-ProgramCommitteeMember,".
+	* The result of ""setMaxPapers"" is a Program Committee Member.
+
+8. ""AuthorNotReviewer"" owl:disjointWith ""ProgramCommitteeMember"" .
+	* AuthorNotReviewer and Program Committee Member are disjoint classes.
+
+9. ""ProgramCommitteeMember"" rdfs:subClassOf ""ConferenceMember"", ""Person"" ;
+    owl:disjointWith ""AuthorNotReviewer"" .
+	* A Program Committee Member is a type of Conference Member or Person, and is disjoint from AuthorNotReviewer."
+024-Source-Class-ProgramCommitteeMember,"Here are the triples verbalized into phrases:
+
+1. ""ProgramCommitteeChair"" rdfs:subClassOf ""ProgramCommitteeMember"" .
+	* A Program Committee Chair is a type of Program Committee Member.
+
+2. ""addProgramCommitteeMember"" rdfs:range ""ProgramCommitteeMember"" .
+	* The result of adding a Program Committee Member is a Program Committee Member.
+
+3. ""addedBy"" rdfs:domain ""ProgramCommitteeMember"" .
+	* The ""addedBy"" property is related to a Program Committee Member.
+
+4"
+024-Source-Class-ProgramCommitteeMember,". ""hasProgramCommitteeMember"" rdfs:range ""ProgramCommitteeMember"" .
+	* The result of ""hasProgramCommitteeMember"" is a Program Committee Member.
+
+5. ""maxPapers"" rdfs:domain ""ProgramCommitteeMember"" .
+	* The ""maxPapers"" property is related to a Program Committee Member.
+
+6. ""memberOfProgramCommittee"" rdfs:domain ""ProgramCommitteeMember"" .
+	* The ""memberOfProgramCommittee"" property is related to a Program Committee Member.
+
+7. ""setMaxPapers"" rdfs:range ""ProgramCommitteeMember"""
+025-Source-Class-Rejection,"Here are the triples verbalized into phrases:
+
+1. ""Acceptance"" owl:disjointWith ""Rejection"" .
+	* Acceptance is disjoint from Rejection.
+
+2. ""Rejection"" rdfs:subClassOf ""Decision"" ;
+    owl:disjointWith ""Acceptance"" .
+	* Rejection is a subclass of Decision, and is disjoint from Acceptance."
+026-Source-Class-Review,".
+	* Phrase: Papers and reviews are two different things.
+6. A ""Review"" is a type of ""Document"", and ""Paper"" is a distinct concept.
+	* Phrase: A review is a type of document, and it's different from a paper."
+026-Source-Class-Review,"Here are the triples verbalized into phrases:
+
+1. ""Meta-Review"" is a type of ""Review"".
+	* Phrase: A meta-review is a type of review.
+2. The output of ""endReview"" is a ""Review"".
+	* Phrase: The end review produces a review.
+3. The output of ""writeReview"" is a ""Review"".
+	* Phrase: Writing a review produces a review.
+4. The property ""writtenBy"" is used to describe a ""Review"".
+	* Phrase: A review is written by someone.
+5. ""Paper"" and ""Review"" are two distinct concepts"
+027-Source-Class-Reviewer,". ""ExternalReviewer"" owl:disjointWith ""Reviewer"" .
+	* External Reviewers and Reviewers are disjoint classes.
+
+16. ""Reviewer"" rdfs:subClassOf ""ConferenceMember"", ""User"" ;
+    owl:disjointWith ""AuthorNotReviewer"", ""ExternalReviewer"" .
+	* Reviewers are a type of Conference Member or User, and are disjoint from Authors and External Reviewers.Here is a natural language description of the subgraph:
+
+""A Chairman is a 'rest' of a nil entity, which is a 'first' of a Reviewer"
+027-Source-Class-Reviewer,"Here are the triples verbalized into phrases:
+
+1. ""Meta-Reviewer"" rdfs:subClassOf ""Reviewer"" .
+	* A Meta-Reviewer is a type of Reviewer.
+
+2. ""adjustBid"" rdfs:domain ""Reviewer"" .
+	* The adjustBid action is performed by a Reviewer.
+
+3. ""adjustedBy"" rdfs:range ""Reviewer"" .
+	* The adjustedBy property is related to a Reviewer.
+
+4. ""assignExternalReviewer"" rdfs:domain ""Reviewer"" .
+	* The assignExternalReviewer action is performed by a Reviewer.
+
+5. ""assignReviewer"" rdfs:range ""Reviewer"""
+027-Source-Class-Reviewer,".
+	* The assignReviewer property is related to a Reviewer.
+
+6. ""assignedByAdministrator"" rdfs:domain ""Reviewer"" .
+	* The assignedByAdministrator property is related to a Reviewer.
+
+7. ""assignedByReviewer"" rdfs:range ""Reviewer"" .
+	* The assignedByReviewer property is related to a Reviewer.
+
+8. ""assignedTo"" rdfs:range ""Reviewer"" .
+	* The assignedTo property is related to a Reviewer.
+
+9. ""hasBeenAssigned"" rdfs:domain ""Reviewer"" .
+	* The hasBeenAssigned property is related to a Reviewer.
+
+10"
+027-Source-Class-Reviewer,". ""readByReviewer"" rdfs:range ""Reviewer"" .
+	* The readByReviewer property is related to a Reviewer.
+
+11. ""readPaper"" rdfs:domain ""Reviewer"" .
+	* The readPaper action is performed by a Reviewer.
+
+12. ""writeReview"" rdfs:domain ""Reviewer"" .
+	* The writeReview action is performed by a Reviewer.
+
+13. ""writtenBy"" rdfs:range ""Reviewer"" .
+	* The writtenBy property is related to a Reviewer.
+
+14. ""AuthorNotReviewer"" owl:disjointWith ""Reviewer"" .
+	* Authors and Reviewers are disjoint classes.
+
+15"
+027-Source-Class-Reviewer,". A Class is a 'type' of a union of a Reviewer and an Author. The domain of the markConflictOfInterest is this Class. The Author is also a 'first' of a nil entity, which is a 'rest' of the same Chairman.""
+
+Note that this description is not a formal definition, but rather a natural language summary of the relationships and entities in the subgraph."
+028-Source-Class-SubjectArea,"Here are the triples verbalized into phrases:
+
+* ""hasSubjectArea"" rdfs:range ""SubjectArea"" .
+	+ The phrase: ""The hasSubjectArea property has a range of SubjectArea."""
+029-Source-Class-User,"Here are the triples verbalized into phrases:
+
+1. ""Administrator"" is a subclass of ""User"".
+2. ""Author"" is a subclass of ""User"".
+3. ""Reviewer"" is a subclass of ""User"".
+4. ""User"" is a subclass of ""Person"".
+
+Let me know if you'd like me to help with anything else!"
+030-Source-Property-acceptPaper,"Here are the triples verbalized into phrases:
+
+* ""acceptPaper"" rdfs:domain ""Administrator"" : The domain of the ""acceptPaper"" relation is ""Administrator"".
+* ""acceptPaper"" rdfs:range ""Paper"" : The range of the ""acceptPaper"" relation is ""Paper"".
+
+In other words, the ""acceptPaper"" relation is used to describe the relationship between an Administrator and a Paper, indicating that the Administrator accepts the Paper."
+031-Source-Property-acceptedBy,"Here are the triples verbalized into phrases:
+
+* ""acceptedBy"" rdfs:domain ""Paper"" : The domain of the property ""acceptedBy"" is ""Paper"".
+* ""acceptedBy"" rdfs:range ""Administrator"" : The range of the property ""acceptedBy"" is ""Administrator"".
+
+In phrase form, this becomes:
+
+""The acceptedBy property is about Papers and relates to Administrators."""
+032-Source-Property-acceptsHardcopySubmissions,"Here are the triples verbalized into phrases:
+
+* ""acceptsHardcopySubmissions"" is a property that is a domain of ""Conference"", meaning that a Conference has the ability to accept hardcopy submissions.
+* ""acceptsHardcopySubmissions"" is a property that has a range of ""boolean"", meaning that the value of this property is either true (accepts hardcopy submissions) or false (does not accept hardcopy submissions)"
+032-Source-Property-acceptsHardcopySubmissions,".
+
+So, the verbalized phrases would be:
+
+* A Conference has the ability to accept hardcopy submissions.
+* The value of whether a Conference accepts hardcopy submissions is either true or false."
+033-Source-Property-addProgramCommitteeMember,"Here are the triples verbalized into phrases:
+
+* ""addProgramCommitteeMember"" is a property that is related to the domain of ""Administrator"" and the range of ""ProgramCommitteeMember"".
+	+ Phrase: ""The 'addProgramCommitteeMember' property is associated with administrators and is used to describe program committee members.""
+* The first phrase is: ""The 'addProgramCommitteeMember' property is associated with administrators and is used to describe program committee members."""
+034-Source-Property-addedBy,"Here are the triples verbalized into phrases:
+
+* ""addedBy"" is a property that is a domain of ""ProgramCommitteeMember"" and has a range of ""Administrator"".
+* In other words, ""addedBy"" is a property that is specific to ""ProgramCommitteeMember"" and its values are instances of ""Administrator""."
+035-Source-Property-adjustBid,"Here are the triples verbalized into phrases:
+
+* ""adjustBid"" has domain ""Reviewer"" and range ""Bid"".
+* The domain of ""adjustBid"" is ""Reviewer"".
+* The range of ""adjustBid"" is ""Bid"".
+
+Let me know if you'd like me to rephrase them in a different way!"
+036-Source-Property-adjustedBy,"Here are the triples verbalized into phrases:
+
+* ""adjustedBy"" has domain ""Bid"" and range ""Reviewer"".
+* The relationship ""adjustedBy"" is used to describe the adjustment of a ""Bid"" by a ""Reviewer""."
+037-Source-Property-assignExternalReviewer,"Here are the triples verbalized into phrases:
+
+* ""assignExternalReviewer"" is a property that is a domain of ""Reviewer"".
+	+ Phrase: ""Assigning an external reviewer is a responsibility of a reviewer.""
+* ""assignExternalReviewer"" is a property that has ""ExternalReviewer"" as its range.
+	+ Phrase: ""The result of assigning an external reviewer is an external reviewer."""
+038-Source-Property-assignReviewer,"Here are the triples verbalized into phrases:
+
+* ""assignReviewer"" has domain ""Administrator"" and range ""Reviewer"".
+* The assignReviewer property is used by Administrators to assign tasks to Reviewers."
+039-Source-Property-assignedByAdministrator,"Here are the triples verbalized into phrases:
+
+* ""assignedByAdministrator"" is a property that is assigned to a ""Reviewer"" and has a range of ""Administrator"".
+* In other words, ""assignedByAdministrator"" is a relationship between a Reviewer and an Administrator.
+
+Here are the phrases:
+
+* The assignedByAdministrator property is a property of Reviewers.
+* The assignedByAdministrator property has an Administrator as its range."
+040-Source-Property-assignedByReviewer,"Here are the triples verbalized into phrases:
+
+* ""assignedByReviewer"" has domain ""ExternalReviewer"" and range ""Reviewer"".
+* The assigned-by-reviewer relationship is defined for external reviewers and has reviewers as its range.
+
+Let me know if you'd like me to rephrase it in a different way!Here is a natural language description of the subgraph:
+
+""The entity with the identifier N13b2e00939184d87b611b0ba9c456c81 is a Restriction that has a cardinality of 1, meaning it can only have one instance"
+040-Source-Property-assignedByReviewer,". This Restriction is related to a property called 'assignedByReviewer', indicating that it is assigned by an external reviewer. Additionally, the external reviewer is a subclass of this Restriction."""
+041-Source-Property-assignedTo,"Here are the triples verbalized into phrases:
+
+* ""assignedTo"" rdfs:domain ""Paper"" : The domain of the property ""assignedTo"" is ""Paper"".
+* ""assignedTo"" rdfs:range ""Reviewer"" : The range of the property ""assignedTo"" is ""Reviewer"".
+
+In other words, the phrase is: ""The assignedTo property is about Papers and relates to Reviewers."""
+042-Source-Property-co-writePaper,"Here are the triples verbalized into phrases:
+
+* ""co-writePaper"" rdfs:domain ""Co-author"" : The domain of the ""co-writePaper"" relationship is ""Co-author"".
+* ""co-writePaper"" rdfs:range ""Paper"" : The range of the ""co-writePaper"" relationship is ""Paper"".
+
+In other words, the phrase is: ""Co-authors co-write papers."""
+043-Source-Property-date,"Here are the triples verbalized into phrases:
+
+* ""date"" is a property of ""Conference"" and its values are dates.
+* The range of the ""date"" property is dates.Here is a natural language description of the subgraph:
+
+""The entity with the identifier N5af5bff1b0e64e85b9931dbee0b5f322 is a Restriction that has a date on which it occurs. This entity is a subclass of Conference, meaning that it is a type of conference. Additionally, this entity must have at least one date associated with it"
+043-Source-Property-date,".""
+
+Let me know if you'd like me to clarify or expand on this description!"
+044-Source-Property-detailsEnteredBy,"Here are the triples verbalized into phrases:
+
+* ""detailsEnteredBy"" rdfs:domain ""Conference"" : The ""detailsEnteredBy"" property is related to the domain of ""Conference"".
+* ""detailsEnteredBy"" rdfs:range ""Administrator"" : The ""detailsEnteredBy"" property is related to the range of ""Administrator"".
+
+In phrase form, this becomes:
+
+""The 'detailsEnteredBy' property is related to the domain of conferences and the range of administrators."""
+045-Source-Property-email,"Here are the triples verbalized into phrases:
+
+* ""email"" has domain ""Person"" and range ""string"".
+* The property ""email"" is defined for individuals of type ""Person"" and takes values of type ""string""."
+046-Source-Property-enableVirtualMeeting,"Here are the triples verbalized into phrases:
+
+* ""enableVirtualMeeting"" is a property that is a domain of ""Administrator"".
+* ""enableVirtualMeeting"" is a property that has ""Conference"" as its range.
+
+Or, in sentence form:
+
+The enableVirtualMeeting property is specific to Administrators, and its value is a Conference."
+047-Source-Property-endReview,"Here are the triples verbalized into phrases:
+
+* ""endReview"" is a property of ""ProgramCommitteeChair"" and has as its range ""Review"".
+* This can be verbalized as: ""The endReview property is a property of ProgramCommitteeChair and is related to Review."""
+048-Source-Property-enterConferenceDetails,"Here are the triples verbalized into phrases:
+
+* ""enterConferenceDetails"" is a property that is specific to ""Administrator"" and has as its range ""Conference"".
+* This can be verbalized as: ""The enterConferenceDetails property is used by Administrators to describe Conferences.""
+
+Let me know if you'd like me to help with anything else!"
+049-Source-Property-enterReviewCriteria,"Here are the triples verbalized into phrases:
+
+* ""enterReviewCriteria"" is a property that is specific to ""Administrator"" and relates to ""Conference"".
+* The phrase: ""Administrators can enter review criteria for a conference.""
+
+Let me know if you'd like me to verbalize any other triples!"
+050-Source-Property-finalizePaperAssignment,"Here are the triples verbalized into phrases:
+
+* ""finalizePaperAssignment"" rdfs:domain ""Administrator"" : The finalizePaperAssignment action is related to the Administrator role.
+* ""finalizePaperAssignment"" rdfs:range ""Conference"" : The finalizePaperAssignment action is related to a Conference.
+
+Let me know if you'd like me to help with anything else!"
+051-Source-Property-hardcopyMailingManifestsPrintedBy,"Here are the triples verbalized into phrases:
+
+* ""hardcopyMailingManifestsPrintedBy"" rdfs:domain ""Conference"" : The property ""hardcopyMailingManifestsPrintedBy"" is related to the domain ""Conference"".
+* ""hardcopyMailingManifestsPrintedBy"" rdfs:range ""Administrator"" : The property ""hardcopyMailingManifestsPrintedBy"" is related to the range ""Administrator"".
+
+In phrase form:
+
+* The ""hardcopyMailingManifestsPrintedBy"" property is about Conferences"
+051-Source-Property-hardcopyMailingManifestsPrintedBy,".
+* The ""hardcopyMailingManifestsPrintedBy"" property is about Administrators."
+052-Source-Property-hasAuthor,"Here are the triples verbalized into phrases:
+
+* ""hasAuthor"" rdfs:domain ""Paper"" : The domain of the property ""hasAuthor"" is ""Paper"".
+* ""hasAuthor"" rdfs:range ""Author"" : The range of the property ""hasAuthor"" is ""Author"".
+
+In other words, the phrase ""hasAuthor"" refers to the relationship between a paper and its author, where the paper is the subject and the author is the object."
+053-Source-Property-hasBeenAssigned,"Here are the triples verbalized into phrases:
+
+* ""hasBeenAssigned"" rdfs:domain ""Reviewer"" : A reviewer has been assigned.
+* rdfs:range ""Paper"" : The assignment is related to a paper.
+
+So, the verbalized phrases are:
+
+1. A reviewer has been assigned.
+2. The assignment is related to a paper."
+054-Source-Property-hasBid,"Here are the triples verbalized into phrases:
+
+* ""hasBid"" rdfs:domain ""Paper"" : The domain of the property ""hasBid"" is ""Paper"".
+* ""hasBid"" rdfs:range ""Bid"" : The range of the property ""hasBid"" is ""Bid"".
+
+In other words, the phrase is: ""The 'hasBid' property is about Papers and relates to Bids."""
+055-Source-Property-hasCo-author,"Here are the triples verbalized into phrases:
+
+1. ""hasCo-author"" rdfs:domain ""Paper"" - The domain of the property ""hasCo-author"" is ""Paper"".
+2. ""hasCo-author"" rdfs:range ""Co-author"" - The range of the property ""hasCo-author"" is ""Co-author"".
+
+These phrases can be read as:
+
+""The domain of the property 'hasCo-author' is 'Paper'.""
+""The range of the property 'hasCo-author' is 'Co-author'."""
+056-Source-Property-hasConferenceMember,"Here are the triples verbalized into phrases:
+
+* ""hasConferenceMember"" rdfs:domain ""Conference"" : A conference has a conference member.
+* rdfs:range ""ConferenceMember"" : The range of ""hasConferenceMember"" is a conference member.
+
+So, the verbalized phrases are:
+
+1. A conference has a conference member.
+2. The range of ""hasConferenceMember"" is a conference member."
+057-Source-Property-hasConflictOfInterest,"Here are the triples verbalized into phrases:
+
+* ""hasConflictOfInterest"" rdfs:domain ""Person"" : A person has a conflict of interest.
+* rdfs:range ""Document"" : The range of a conflict of interest is a document.
+
+Let me know if you'd like me to help with anything else!"
+058-Source-Property-hasDecision,"Here are the triples verbalized into phrases:
+
+* ""hasDecision"" rdfs:domain ""Paper"" : A paper has a decision.
+* rdfs:range ""Decision"" : The range of ""hasDecision"" is a decision.
+
+So, the verbalized phrases are:
+
+1. A paper has a decision.
+2. The range of ""hasDecision"" is a decision.Here is a natural language description of the subgraph:
+
+""A decision is a restriction that can be associated with a paper, and a paper can have at most one decision"
+058-Source-Property-hasDecision,". A decision is a type of restriction that has a decision property. A paper is a type of restriction that has a decision property. In other words, a paper can have a decision, and a decision is a restriction that is associated with a paper.""
+
+Note that this description is a simplification of the original graph, and some details may have been lost in the translation."
+059-Source-Property-hasProgramCommitteeMember,"Here are the triples verbalized into phrases:
+
+* ""hasProgramCommitteeMember"" rdfs:domain ""ProgramCommittee"" : A member of the Program Committee has a program committee member.
+* ""hasProgramCommitteeMember"" rdfs:range ""ProgramCommitteeMember"" : The range of ""hasProgramCommitteeMember"" is a Program Committee Member."
+060-Source-Property-hasSubjectArea,"Here are the triples verbalized into phrases:
+
+* ""hasSubjectArea"" rdfs:domain ""Paper"" : The domain of the property ""hasSubjectArea"" is ""Paper"".
+* ""hasSubjectArea"" rdfs:range ""SubjectArea"" : The range of the property ""hasSubjectArea"" is ""SubjectArea"".
+
+So, the verbalized phrases are:
+
+* The domain of ""hasSubjectArea"" is Paper.
+* The range of ""hasSubjectArea"" is SubjectArea."
+061-Source-Property-logoURL,"Here are the triples verbalized into phrases:
+
+* ""logoURL"" is a property of ""Conference"" and its values are any URI.
+* The domain of the ""logoURL"" property is ""Conference"".
+* The range of the ""logoURL"" property is any URI."
+062-Source-Property-markConflictOfInterest,"Here are the triples verbalized into phrases:
+
+* ""markConflictOfInterest"" rdfs:range ""Paper"" .
+	+ The property ""markConflictOfInterest"" has the range ""Paper"", meaning that the values of ""markConflictOfInterest"" are instances of ""Paper"".Here is a natural language description of the subgraph:
+
+""A Chairman is a 'rest' of a nil entity, which is a 'first' of a Reviewer. A Class is a 'type' of a union of a Reviewer and an Author. The domain of the markConflictOfInterest is this Class"
+062-Source-Property-markConflictOfInterest,". The Author is also a 'first' of a nil entity, which is a 'rest' of the same Chairman.""
+
+Note that this description is not a formal definition, but rather a natural language summary of the relationships and entities in the subgraph."
+063-Source-Property-maxPapers,"Here are the triples verbalized into phrases:
+
+* ""maxPapers"" has domain ""ProgramCommitteeMember"", meaning that the property ""maxPapers"" is applicable to entities that are instances of the class ""ProgramCommitteeMember"".
+* ""maxPapers"" has range ""int"", meaning that the values of the property ""maxPapers"" are integers.
+
+So, the verbalized phrases are:
+
+* The domain of the property ""maxPapers"" is ProgramCommitteeMember.
+* The range of the property ""maxPapers"" is integers."
+064-Source-Property-memberOfConference,"Here are the triples verbalized into phrases:
+
+1. ""memberOfConference"" is a property that is a domain of ""ConferenceMember"".
+	* Phrase: ""Member of conference is a characteristic of a conference member.""
+2. ""memberOfConference"" is a property that has ""Conference"" as its range.
+	* Phrase: ""Member of conference is a property that relates to a conference."""
+065-Source-Property-memberOfProgramCommittee,"Here are the triples verbalized into phrases:
+
+1. ""memberOfProgramCommittee"" rdfs:domain ""ProgramCommitteeMember"" - A member of a program committee is a Program Committee Member.
+2. ""memberOfProgramCommittee"" rdfs:range ""ProgramCommittee"" - The range of a member of a program committee is a Program Committee."
+066-Source-Property-name,"Here are the triples verbalized into phrases:
+
+1. `@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>`: This is a prefix declaration, stating that the prefix ""rdfs"" refers to the namespace ""http://www.w3.org/2000/01/rdf-schema#"".
+
+2. `name rdfs:range ""string""`: This triple states that the property ""name"" has a range of ""string"", meaning that the values of the ""name"" property are strings"
+066-Source-Property-name,".Here is a natural language description of the subgraph:
+
+""A restriction is defined, which has a cardinality of 1 and applies to the property 'name'. This restriction is part of a class that represents a conference. The class of conferences is a subclass of the restriction. The restriction also applies to a class that represents a person, and the first element of this class is a person. The rest of this class is nil"
+066-Source-Property-name,". Additionally, there is a union of two classes: one representing conferences and the other representing a restriction. The domain of the property 'name' is this union of classes.""
+
+Note that this description is not a formal definition, but rather a natural language summary of the subgraph."
+067-Source-Property-paperAssignmentFinalizedBy,"Here are the triples verbalized into phrases:
+
+* ""paperAssignmentFinalizedBy"" rdfs:domain ""Conference"" : The property ""paperAssignmentFinalizedBy"" is related to the domain ""Conference"".
+* ""paperAssignmentFinalizedBy"" rdfs:range ""Administrator"" : The property ""paperAssignmentFinalizedBy"" is related to the range ""Administrator"".
+
+In phrase form:
+
+* The domain of the property ""paperAssignmentFinalizedBy"" is a Conference.
+* The range of the property ""paperAssignmentFinalizedBy"" is an Administrator."
+068-Source-Property-paperAssignmentToolsRunBy,"Here are the triples verbalized into phrases:
+
+* ""paperAssignmentToolsRunBy"" rdfs:domain ""Conference"" : The domain of the property ""paperAssignmentToolsRunBy"" is ""Conference"".
+* ""paperAssignmentToolsRunBy"" rdfs:range ""Administrator"" : The range of the property ""paperAssignmentToolsRunBy"" is ""Administrator"".
+
+In other words, the phrase is: ""The domain of paperAssignmentToolsRunBy is Conference, and the range is Administrator."""
+069-Source-Property-paperID,"Here are the triples verbalized into phrases:
+
+* ""paperID"" has domain ""Paper"" and range ""unsignedLong"".
+
+In other words, the phrase is: ""The domain of 'paperID' is 'Paper' and its range is 'unsignedLong'."""
+070-Source-Property-printHardcopyMailingManifests,"Here are the triples verbalized into phrases:
+
+* The ""printHardcopyMailingManifests"" action is only applicable to ""Administrators"" and is related to ""Conferences"".
+* The output of the ""printHardcopyMailingManifests"" action is a ""Conference"".
+
+Let me know if you'd like me to rephrase it in a different way!"
+071-Source-Property-readByMeta-Reviewer,"Here are the triples verbalized into phrases:
+
+* ""readByMeta-Reviewer"" is a property that relates a ""Paper"" to a ""Meta-Reviewer"", meaning: ""A paper is read by a meta-reviewer.""
+* The domain of ""readByMeta-Reviewer"" is ""Paper"", meaning: ""The property 'readByMeta-Reviewer' is applicable to papers.""
+* The range of ""readByMeta-Reviewer"" is ""Meta-Reviewer"", meaning: ""The property 'readByMeta-Reviewer' has as its values meta-reviewers"
+071-Source-Property-readByMeta-Reviewer,".""Here is a natural language description of the subgraph:
+
+""A paper has a property called 'readByMeta-Reviewer', which is a restriction that can only be read by one reviewer.""
+
+Let me break it down:
+
+* The subgraph starts with a node `_N0aa1ae5fac114b1b9d696b0ca8e0b200`, which represents a concept or entity.
+* The edge `onProperty` indicates that this entity has a property called `readByMeta-Reviewer`"
+071-Source-Property-readByMeta-Reviewer,".
+* The edge `subClassOf` indicates that the entity `Paper` is a subclass of the entity `_N0aa1ae5fac114b1b9d696b0ca8e0b200`, meaning that `Paper` is a type of thing that has the property `readByMeta-Reviewer`.
+* The edge `maxCardinality` indicates that the property `readByMeta-Reviewer` can only have a maximum of one value (i.e., one reviewer).
+* The edge `type` indicates that the entity `_N0aa1ae5fac114b1b9d696b0ca8e0b200` is a type of restriction, which is a specific type of property."
+072-Source-Property-readByReviewer,"Here are the triples verbalized into phrases:
+
+* ""readByReviewer"" rdfs:domain ""Paper"" : A paper is read by a reviewer.
+* rdfs:range ""Reviewer"" : The range of ""readByReviewer"" is a reviewer.
+
+So, the verbalized phrases are:
+
+1. A paper is read by a reviewer.
+2. The range of ""readByReviewer"" is a reviewer.Here is a natural language description of the subgraph:
+
+""A paper is a type of Restriction that has a minimum cardinality of 1 and is read by a reviewer"
+072-Source-Property-readByReviewer,".""
+
+Let me break it down:
+
+* The subgraph starts by saying that a ""Paper"" is a subclass of something (denoted by _:N989519911fa34df180eb2324b0477b63). This means that a paper is a type of thing that falls under the category of this unnamed entity.
+* The unnamed entity has a property called ""minCardinality"" with a value of 1, which means that the minimum number of things that can be associated with this entity is 1"
+072-Source-Property-readByReviewer,".
+* The unnamed entity also has a property called ""onProperty"" with a value of ""readByReviewer"", which means that the entity is related to the act of being read by a reviewer.
+* Finally, the unnamed entity has a type of ""Restriction"", which means that it is a type of constraint or limitation.
+
+Putting it all together, we get the natural language description above."
+073-Source-Property-readPaper,"Here are the triples verbalized into phrases:
+
+* ""readPaper"" rdfs:domain ""Reviewer"" : The domain of the ""readPaper"" relation is ""Reviewer"".
+* ""readPaper"" rdfs:range ""Paper"" : The range of the ""readPaper"" relation is ""Paper"".
+
+In other words, the phrases would be:
+
+* The domain of reading a paper is a Reviewer.
+* The range of reading a paper is a Paper."
+074-Source-Property-rejectPaper,"Here are the triples verbalized into phrases:
+
+* ""rejectPaper"" has domain ""Administrator"" and range ""Paper"".
+* The verb ""rejectPaper"" is used by an ""Administrator"" to refer to a ""Paper""."
+075-Source-Property-rejectedBy,"Here are the triples verbalized into phrases:
+
+* ""rejectedBy"" rdfs:domain ""Paper"" : The ""rejectedBy"" property is related to the domain of ""Paper"".
+* rdfs:range ""Administrator"" : The range of the ""rejectedBy"" property is ""Administrator"".
+
+In phrase form, this becomes:
+
+""The rejectedBy property is about Papers and is related to Administrators."""
+076-Source-Property-reviewCriteriaEnteredBy,"Here are the triples verbalized into phrases:
+
+* ""reviewCriteriaEnteredBy"" rdfs:domain ""Conference"" : The property ""reviewCriteriaEnteredBy"" is related to the domain ""Conference"".
+* rdfs:range ""Administrator"" : The range of the property ""reviewCriteriaEnteredBy"" is ""Administrator"".
+
+So, the verbalized phrases are:
+
+* The property ""reviewCriteriaEnteredBy"" is related to the domain ""Conference"".
+* The range of the property ""reviewCriteriaEnteredBy"" is ""Administrator""."
+077-Source-Property-reviewerBiddingStartedBy,"Here are the triples verbalized into phrases:
+
+* ""reviewerBiddingStartedBy"" rdfs:domain ""Conference"" : The ""reviewerBiddingStartedBy"" property is related to the domain of ""Conference"".
+* ""reviewerBiddingStartedBy"" rdfs:range ""Administrator"" : The ""reviewerBiddingStartedBy"" property is related to the range of ""Administrator"".
+
+In phrase form:
+
+* The ""reviewerBiddingStartedBy"" property is about a Conference.
+* The ""reviewerBiddingStartedBy"" property is an Administrator."
+078-Source-Property-reviewsPerPaper,"Here are the triples verbalized into phrases:
+
+* ""reviewsPerPaper"" rdfs:domain ""Conference"" : The domain of the property ""reviewsPerPaper"" is ""Conference"".
+* ""reviewsPerPaper"" rdfs:range ""int"" : The range of the property ""reviewsPerPaper"" is integers.Here is a natural language description of the subgraph:
+
+""A conference is a type of restriction that has exactly one review per paper, as measured by the number of reviews per paper"
+078-Source-Property-reviewsPerPaper,".""
+
+Let me break it down:
+
+* The subgraph starts by defining a node `_N7a00362aedee4b1c9a8ab51168b2416d` with two properties: `onProperty` set to `'reviewsPerPaper'` and `type` set to `'Restriction'`. This node represents a restriction on the number of reviews per paper.
+* The next statement says that the class `Conference` is a subclass of the node `_N7a00362aedee4b1c9a8ab51168b2416d`, which means that a conference is a type of restriction"
+078-Source-Property-reviewsPerPaper,".
+* Finally, the `cardinality` property of the node is set to `'1'`, indicating that a conference has exactly one review per paper.
+
+Putting it all together, the natural language description is: ""A conference is a type of restriction that has exactly one review per paper, as measured by the number of reviews per paper."""
+079-Source-Property-runPaperAssignmentTools,"Here are the triples verbalized into phrases:
+
+* ""runPaperAssignmentTools"" is a property that is used by ""Administrator"" and is related to ""Conference"".
+* The property ""runPaperAssignmentTools"" is used to describe something that is an instance of ""Conference"" and is controlled by ""Administrator"".
+
+In phrase form, this would be:
+
+* The runPaperAssignmentTools property is used by Administrators to manage Conferences"
+079-Source-Property-runPaperAssignmentTools,".
+* The runPaperAssignmentTools property is related to Conferences and is controlled by Administrators."
+080-Source-Property-setMaxPapers,"Here are the triples verbalized into phrases:
+
+* The setMaxPapers property is a property of Administrators.
+* The setMaxPapers property returns ProgramCommitteeMembers.
+
+Let me know if you'd like me to help with anything else!"
+081-Source-Property-siteURL,"Here are the triples verbalized into phrases:
+
+* ""siteURL"" is a property of ""Conference"" and its values are any URI.
+* The domain of the property ""siteURL"" is ""Conference"".
+* The range of the property ""siteURL"" is any URI."
+082-Source-Property-startReviewerBidding,"Here are the triples verbalized into phrases:
+
+* ""startReviewerBidding"" is a property that is owned by ""Administrator"" and is related to ""Conference"".
+* The domain of ""startReviewerBidding"" is ""Administrator"".
+* The range of ""startReviewerBidding"" is ""Conference"".
+
+Verbalized phrases:
+
+* The startReviewerBidding property is owned by an Administrator and is related to a Conference.
+* The domain of startReviewerBidding is an Administrator.
+* The range of startReviewerBidding is a Conference."
+083-Source-Property-submitPaper,"Here are the triples verbalized into phrases:
+
+* ""submitPaper"" rdfs:domain ""Author"" : The submitPaper action is related to the domain of Authors.
+* ""submitPaper"" rdfs:range ""Paper"" : The submitPaper action has as its range Papers.
+
+So, the verbalized phrases are:
+
+* The submitPaper action is related to Authors.
+* The submitPaper action has Papers as its output."
+084-Source-Property-title,"Here are the triples verbalized into phrases:
+
+1. ""title"" rdfs:domain ""Paper"" - The property ""title"" is related to the domain ""Paper"".
+2. ""title"" rdfs:range ""string"" - The property ""title"" has a range of ""string"" values.
+
+Let me know if you'd like me to help with anything else!"
+085-Source-Property-virtualMeetingEnabledBy,"Here are the triples verbalized into phrases:
+
+* ""virtualMeetingEnabledBy"" rdfs:domain ""Conference"" : The property ""virtualMeetingEnabledBy"" is related to the domain ""Conference"".
+* ""virtualMeetingEnabledBy"" rdfs:range ""Administrator"" : The property ""virtualMeetingEnabledBy"" is related to the range ""Administrator"".
+
+In phrase form:
+
+* The ""virtualMeetingEnabledBy"" property is specific to ""Conference"" entities.
+* The ""virtualMeetingEnabledBy"" property is associated with ""Administrator"" entities."
+086-Source-Property-writePaper,"Here are the triples verbalized into phrases:
+
+* ""writePaper"" rdfs:domain ""Author"" : The domain of the ""writePaper"" relation is ""Author"".
+* ""writePaper"" rdfs:range ""Paper"" : The range of the ""writePaper"" relation is ""Paper"".
+
+In other words, the phrase is: ""The writePaper relation is about Authors and relates to Papers."""
+087-Source-Property-writeReview,"Here are the triples verbalized into phrases:
+
+* ""writeReview"" rdfs:domain ""Reviewer"" : The writeReview action is related to the domain of Reviewer.
+* ""writeReview"" rdfs:range ""Review"" : The writeReview action has a range of Review.
+
+So, the verbalized phrases are:
+
+* The writeReview action is related to Reviewers.
+* The writeReview action produces Reviews."
+088-Source-Property-writtenBy,"Here are the triples verbalized into phrases:
+
+* ""writtenBy"" rdfs:domain ""Review"" : The writtenBy property is related to the domain of Review.
+* rdfs:range ""Reviewer"" : The range of the writtenBy property is Reviewer.
+
+So, the verbalized phrases are:
+
+* The writtenBy property is related to the domain of Review.
+* The writtenBy property has a range of Reviewer."
+089-Target-Class-Administrative_event,".
+	* ""Working_event"" and ""Administrative_event"" are mutually exclusive.
+
+11. ""Administrative_event"" rdfs:subClassOf ""Event"" ; owl:disjointWith ""Social_event"", ""Working_event"" .
+	* ""Administrative_event"" is a type of ""Event"" and is mutually exclusive with ""Social_event"" and ""Working_event""."
+089-Target-Class-Administrative_event,"Here are the triples verbalized into phrases:
+
+1. ""Camera_Ready_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Camera_Ready_event"" is a type of ""Administrative_event"".
+
+2. ""Registration_of_participants_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Registration_of_participants_event"" is a type of ""Administrative_event"".
+
+3. ""Reviewing_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Reviewing_event"" is a type of ""Administrative_event"".
+
+4"
+089-Target-Class-Administrative_event,". ""Reviewing_results_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Reviewing_results_event"" is a type of ""Administrative_event"".
+
+5. ""Submission_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Submission_event"" is a type of ""Administrative_event"".
+
+6. ""follows"" rdfs:domain ""Administrative_event"" ; rdfs:range ""Administrative_event"" .
+	* One ""Administrative_event"" can follow another ""Administrative_event"".
+
+7. ""hasAdministrativeEvent"" rdfs:range ""Administrative_event"""
+089-Target-Class-Administrative_event,".
+	* Something has an ""Administrative_event"" as its administrative event.
+
+8. ""parallel_with"" rdfs:domain ""Administrative_event"" ; rdfs:range ""Administrative_event"" .
+	* One ""Administrative_event"" can be parallel with another ""Administrative_event"".
+
+9. ""Social_event"" owl:disjointWith ""Administrative_event"" .
+	* ""Social_event"" and ""Administrative_event"" are mutually exclusive.
+
+10. ""Working_event"" owl:disjointWith ""Administrative_event"""
+090-Target-Class-Administrator,"Here are the triples verbalized into phrases:
+
+1. ""Administrator"" rdfs:subClassOf ""Person"".
+Phrase: ""An Administrator is a type of Person."""
+091-Target-Class-Assistant,"Here are the triples verbalized into phrases:
+
+1. ""Assistant"" rdfs:subClassOf ""Person"".
+Phrase: ""An Assistant is a type of Person."""
+092-Target-Class-Author,"Here are the triples verbalized into phrases:
+
+1. ""writes"" rdfs:domain ""Author"" .
+	* The predicate ""writes"" is a property of the class ""Author"".
+	* Phrase: ""The writes property is a characteristic of Authors.""
+
+2. ""writtenBy"" rdfs:range ""Author"" .
+	* The predicate ""writtenBy"" has ""Author"" as its range.
+	* Phrase: ""The writtenBy predicate relates to Authors.""
+
+3. ""Author"" rdfs:subClassOf ""Person"" .
+	* The class ""Author"" is a subclass of the class ""Person"".
+	* Phrase: ""Authors are a type of Person"
+092-Target-Class-Author,".""Here is a natural language description of the subgraph:
+
+""An Author is a type of entity that makes a Contribution, either by making all contributions or some contributions. This entity is characterized by writing, which is the property that defines the type of contribution they make.""
+
+Note that this description is a simplification of the original graph, and some details may have been lost in the translation."
+093-Target-Class-Banquet,"Here are the triples verbalized into phrases:
+
+1. ""Reception"" owl:disjointWith ""Banquet"" .
+	* The set of receptions is disjoint from the set of banquets.
+2. ""Trip"" owl:disjointWith ""Banquet"" .
+	* The set of trips is disjoint from the set of banquets.
+3. ""Banquet"" rdfs:subClassOf ""Social_event"" .
+	* A banquet is a type of social event.
+4. ""Banquet"" owl:disjointWith ""Reception"", ""Trip"" .
+	* The set of banquets is disjoint from the set of receptions and the set of trips."
+094-Target-Class-Camera_Ready_event,". ""Camera_Ready_event"" owl:disjointWith ""Registration_of_participants_event"", ""Reviewing_event"", ""Reviewing_results_event"", ""Submission_event"" .
+	* The event of being camera-ready is unrelated to the events of registering participants, reviewing, reviewing results, and submission."
+094-Target-Class-Camera_Ready_event,"Here are the triples verbalized into phrases:
+
+1. ""Registration_of_participants_event"" owl:disjointWith ""Camera_Ready_event"" .
+	* The event of registering participants is unrelated to the event of being camera-ready.
+
+2. ""Reviewing_event"" owl:disjointWith ""Camera_Ready_event"" .
+	* The event of reviewing is unrelated to the event of being camera-ready.
+
+3. ""Reviewing_results_event"" owl:disjointWith ""Camera_Ready_event"""
+094-Target-Class-Camera_Ready_event,".
+	* The event of reviewing results is unrelated to the event of being camera-ready.
+
+4. ""Submission_event"" owl:disjointWith ""Camera_Ready_event"" .
+	* The event of submission is unrelated to the event of being camera-ready.
+
+5. ""Camera_Ready_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The event of being camera-ready is a type of administrative event.
+
+6"
+095-Target-Class-Chair_PC,"Here are the triples verbalized into phrases:
+
+1. ""Chair_PC"" rdfs:subClassOf ""Person"".
+Phrase: ""Chair_PC is a subclass of Person."""
+096-Target-Class-City,"Here are the triples verbalized into phrases:
+
+1. ""hasCity"" rdfs:range ""City"" .
+	* The property ""hasCity"" is a range of City.
+
+2. ""Contribution"" owl:disjointWith ""City"" .
+	* Contributions are disjoint from Cities.
+
+3. ""Event"" owl:disjointWith ""City"" .
+	* Events are disjoint from Cities.
+
+4. ""Organization"" owl:disjointWith ""City"" .
+	* Organizations are disjoint from Cities.
+
+5. ""Person"" owl:disjointWith ""City"" .
+	* People are disjoint from Cities.
+
+6. ""Topic"" owl:disjointWith ""City"""
+096-Target-Class-City,".
+	* Topics are disjoint from Cities.
+
+7. ""City"" owl:disjointWith ""Contribution"", ""Event"", ""Organization"", ""Person"", ""Topic"" .
+	* Cities are disjoint from Contributions, Events, Organizations, People, and Topics.Here is a natural language description of the subgraph:
+
+""A Person is a subclass of something that has a City, specifically a City that is described by the property 'hasCity'"
+096-Target-Class-City,".""
+
+Or, in a more concise form:
+
+""A Person is a type of entity that is associated with a City, which is described by the property 'hasCity'."""
+097-Target-Class-Company,"Here are the triples verbalized into phrases:
+
+1. ""Company"" rdfs:subClassOf ""Organization"" ; - ""Company is a subclass of Organization.""
+2. ""Company"" owl:disjointWith ""University"" . - ""Company is disjoint with University.""
+3. ""University"" owl:disjointWith ""Company"" . - ""University is disjoint with Company.""
+
+Let me know if you'd like me to help with anything else!"
+098-Target-Class-Conference,"Here are the triples verbalized into phrases:
+
+1. ""Tutorial"" owl:disjointWith ""Conference"" .
+	* The set of tutorials is disjoint from the set of conferences.
+
+2. ""Workshop"" owl:disjointWith ""Conference"" .
+	* The set of workshops is disjoint from the set of conferences.
+
+3. ""Conference"" rdfs:subClassOf ""Working_event"" .
+	* A conference is a type of working event.
+
+4. ""Conference"" owl:disjointWith ""Tutorial"", ""Workshop"""
+098-Target-Class-Conference,".
+	* The set of conferences is disjoint from the set of tutorials and the set of workshops."
+099-Target-Class-Contribution,". A 'Member_PC' is related to a 'Contribution' and has a minimum cardinality of 1. An 'Author' is related to a 'Contribution' and has a minimum cardinality of 1.
+
+Additionally, there are restrictions on the properties of entities. A 'Contribution' has a minimum cardinality of 1 and is related to a 'Topic'. A 'Member_PC' has a minimum cardinality of 1 and is related to a 'Contribution'. An 'Author' has a minimum cardinality of 1 and is related to a 'Contribution'"
+099-Target-Class-Contribution,"Here are the triples verbalized into phrases:
+
+1. ""Paper"" rdfs:subClassOf ""Contribution"" .
+	* Papers are a type of contribution.
+
+2. ""Poster"" rdfs:subClassOf ""Contribution"" .
+	* Posters are a type of contribution.
+
+3. ""Short_paper"" rdfs:subClassOf ""Contribution"" .
+	* Short papers are a type of contribution.
+
+4. ""abstract"" rdfs:domain ""Contribution"" .
+	* Abstracts are related to contributions.
+
+5. ""contactEmail"" rdfs:domain ""Contribution"" .
+	* Contact emails are related to contributions.
+
+6"
+099-Target-Class-Contribution,". ""dealsWith"" rdfs:domain ""Contribution"" .
+	* Deals with is related to contributions.
+
+7. ""hasKeyword"" rdfs:domain ""Contribution"" .
+	* Has keywords is related to contributions.
+
+8. ""hasTitle"" rdfs:domain ""Contribution"" .
+	* Has a title is related to contributions.
+
+9. ""remark"" rdfs:domain ""Contribution"" .
+	* Remarks are related to contributions.
+
+10. ""reviewes"" rdfs:range ""Contribution"" .
+	* Reviews are a type of contribution.
+
+11. ""writes"" rdfs:range ""Contribution"""
+099-Target-Class-Contribution,".
+	* Writing is a type of contribution.
+
+12. ""writtenBy"" rdfs:domain ""Contribution"" .
+	* Written by is related to contributions.
+
+13. ""City"" owl:disjointWith ""Contribution"" .
+	* Cities are not the same as contributions.
+
+14. ""Country"" owl:disjointWith ""Contribution"" .
+	* Countries are not the same as contributions.
+
+15. ""Event"" owl:disjointWith ""Contribution"" .
+	* Events are not the same as contributions.
+
+16. ""Organization"" owl:disjointWith ""Contribution"""
+099-Target-Class-Contribution,".
+	* Organizations are not the same as contributions.
+
+17. ""Person"" owl:disjointWith ""Contribution"" .
+	* People are not the same as contributions.
+
+18. ""Topic"" owl:disjointWith ""Contribution"" .
+	* Topics are not the same as contributions.
+
+19. ""Contribution"" owl:disjointWith ""City"", ""Country"", ""Event"", ""Organization"", ""Person"", ""Topic"" .
+	* Contributions are not the same as cities, countries, events, organizations, people, or topics"
+099-Target-Class-Contribution,".Here is a natural language description of the subgraph:
+
+""This subgraph represents a set of restrictions and relationships between entities. There are four types of restrictions: 'Contribution', 'Member_PC', 'Restriction', and 'Author'. A 'Contribution' is a type of restriction that is related to a 'Topic' and has a minimum cardinality of 1. A 'Member_PC' is a type of restriction that is related to a 'Contribution' and has a minimum cardinality of 1"
+099-Target-Class-Contribution,". An 'Author' is a type of restriction that is related to a 'Contribution' and has a minimum cardinality of 1.
+
+A 'Contribution' is also related to a 'Topic' and has a minimum cardinality of 1. A 'Member_PC' is related to a 'Contribution' and has a minimum cardinality of 1. An 'Author' is related to a 'Contribution' and has a minimum cardinality of 1.
+
+There are also relationships between entities. A 'Contribution' is related to a 'Topic' and has a minimum cardinality of 1"
+099-Target-Class-Contribution,".
+
+Overall, this subgraph represents a set of restrictions and relationships between entities, including 'Contribution', 'Member_PC', 'Author', and 'Topic'."""
+100-Target-Class-Country,". ""Country"" owl:disjointWith ""Contribution"", ""Event"", ""Organization"", ""Person"", ""Topic"" - ""Country"" is disjoint from all of ""Contribution"", ""Event"", ""Organization"", ""Person"", and ""Topic"", meaning it has no common instances with any of these.Here is a natural language description of the subgraph:
+
+""A person is a type of entity that has a restriction on the property 'hasCountry', which means that a person can only have values from the class 'Country'"
+100-Target-Class-Country,"Here are the triples verbalized into phrases:
+
+1. ""hasCountry"" rdfs:range ""Country"" - The property ""hasCountry"" is a type of range that is a ""Country"".
+2. ""Contribution"" owl:disjointWith ""Country"" - ""Contribution"" is disjoint from ""Country"", meaning they have no common instances.
+3. ""Event"" owl:disjointWith ""Country"" - ""Event"" is disjoint from ""Country"", meaning they have no common instances.
+4"
+100-Target-Class-Country,". ""Organization"" owl:disjointWith ""Country"" - ""Organization"" is disjoint from ""Country"", meaning they have no common instances.
+5. ""Person"" owl:disjointWith ""Country"" - ""Person"" is disjoint from ""Country"", meaning they have no common instances.
+6. ""Topic"" owl:disjointWith ""Country"" - ""Topic"" is disjoint from ""Country"", meaning they have no common instances.
+7"
+100-Target-Class-Country,".""
+
+Let me know if you'd like me to rephrase or expand on this description!"
+101-Target-Class-Event,".
+	* The class ""Organization"" is disjoint from the class ""Event"".
+
+10. ""Person"" owl:disjointWith ""Event"" .
+	* The class ""Person"" is disjoint from the class ""Event"".
+
+11. ""Topic"" owl:disjointWith ""Event"" .
+	* The class ""Topic"" is disjoint from the class ""Event"".
+
+12. ""Event"" owl:disjointWith ""City"", ""Contribution"", ""Country"", ""Organization"", ""Person"", ""Topic"" .
+	* The class ""Event"" is disjoint from the classes ""City"", ""Contribution"", ""Country"", ""Organization"", ""Person"", and ""Topic""."
+101-Target-Class-Event,"Here are the triples verbalized into phrases:
+
+1. ""Administrative_event"" rdfs:subClassOf ""Event"" .
+	* The class ""Administrative_event"" is a subclass of the class ""Event"".
+
+2. ""Social_event"" rdfs:subClassOf ""Event"" .
+	* The class ""Social_event"" is a subclass of the class ""Event"".
+
+3. ""Working_event"" rdfs:subClassOf ""Event"" .
+	* The class ""Working_event"" is a subclass of the class ""Event"".
+
+4. ""ends_on"" rdfs:domain ""Event"" .
+	* The property ""ends_on"" is a domain of the class ""Event"".
+
+5"
+101-Target-Class-Event,". ""starts_on"" rdfs:domain ""Event"" .
+	* The property ""starts_on"" is a domain of the class ""Event"".
+
+6. ""City"" owl:disjointWith ""Event"" .
+	* The class ""City"" is disjoint from the class ""Event"".
+
+7. ""Contribution"" owl:disjointWith ""Event"" .
+	* The class ""Contribution"" is disjoint from the class ""Event"".
+
+8. ""Country"" owl:disjointWith ""Event"" .
+	* The class ""Country"" is disjoint from the class ""Event"".
+
+9. ""Organization"" owl:disjointWith ""Event"""
+102-Target-Class-Member,"Here are the triples verbalized into phrases:
+
+* ""Member"" rdfs:subClassOf ""Participant"" .
+	+ ""A member is a type of participant."""
+103-Target-Class-Member_PC,".
+	* The ""Member_PC"" class is a subclass of the ""Person"" class.
+	* Phrase: ""Members of a professional computer club are a type of person.""Here is a natural language description of the subgraph:
+
+""A member of a peer community (Member_PC) is someone who is an expert on a specific topic and has reviewed contributions related to that topic. This person has reviewed contributions that are related to a specific topic, and they are considered an expert on that topic"
+103-Target-Class-Member_PC,"Here are the triples verbalized into phrases:
+
+1. ""expertOn"" rdfs:domain ""Member_PC"" .
+	* The ""expertOn"" property is related to the ""Member_PC"" class.
+	* Phrase: ""The 'expertOn' property is related to members of a professional computer club.""
+
+2. ""reviewes"" rdfs:domain ""Member_PC"" .
+	* The ""reviewes"" property is related to the ""Member_PC"" class.
+	* Phrase: ""The 'reviewes' property is related to members of a professional computer club.""
+
+3. ""Member_PC"" rdfs:subClassOf ""Person"""
+103-Target-Class-Member_PC,". The contributions they have reviewed are of type 'Contribution', and the topic they are an expert on is of type 'Topic'. Additionally, the member is also a restriction of type 'Restriction'.""
+
+Please note that this is just one possible way to verbalize the subgraph, and different people may interpret it differently."
+104-Target-Class-Organization,". ""Organization"" owl:disjointWith ""City"", ""Contribution"", ""Country"", ""Event"", ""Person"", ""Topic"" .
+	* Organizations are mutually exclusive with cities, contributions, countries, events, people, and topics.Here is a natural language description of the subgraph:
+
+""A person is a subclass of an organization. A restriction type is a class that has a first value of an organization and a rest value of nil. A class is a union of a person and an organization. A person is employed by an organization"
+104-Target-Class-Organization,"Here are the triples verbalized into phrases:
+
+1. ""Company"" rdfs:subClassOf ""Organization"" .
+	* A company is a type of organization.
+
+2. ""University"" rdfs:subClassOf ""Organization"" .
+	* A university is a type of organization.
+
+3. ""employedBy"" rdfs:range ""Organization"" .
+	* The employedBy relationship is related to an organization.
+
+4. ""City"" owl:disjointWith ""Organization"" .
+	* Cities and organizations are mutually exclusive.
+
+5. ""Contribution"" owl:disjointWith ""Organization"""
+104-Target-Class-Organization,".
+	* Contributions and organizations are mutually exclusive.
+
+6. ""Country"" owl:disjointWith ""Organization"" .
+	* Countries and organizations are mutually exclusive.
+
+7. ""Event"" owl:disjointWith ""Organization"" .
+	* Events and organizations are mutually exclusive.
+
+8. ""Person"" owl:disjointWith ""Organization"" .
+	* People and organizations are mutually exclusive.
+
+9. ""Topic"" owl:disjointWith ""Organization"" .
+	* Topics and organizations are mutually exclusive.
+
+10"
+104-Target-Class-Organization,". An organization has a postal code, city, and country. A class is a union of an organization and a person. A person is a subclass of a restriction type. A restriction type has some values from an organization. An organization has a first value of a person and a rest value of nil. A class is a union of a person and an organization. A person is a subclass of a restriction type. A restriction type has all values from an organization"
+104-Target-Class-Organization,".""
+
+Please note that this is a simplified description and may not fully capture the nuances of the original subgraph."
+105-Target-Class-Paper,"Here are the triples verbalized into phrases:
+
+1. ""Poster"" owl:disjointWith ""Paper"" .
+	* The set of posters is disjoint from the set of papers.
+2. ""Short_paper"" owl:disjointWith ""Paper"" .
+	* The set of short papers is disjoint from the set of papers.
+3. ""Paper"" rdfs:subClassOf ""Contribution"" .
+	* Papers are a type of contribution.
+4. ""Paper"" owl:disjointWith ""Poster"", ""Short_paper"" .
+	* Papers are disjoint from posters and short papers.
+
+Let me know if you'd like me to rephrase anything!"
+106-Target-Class-Participant,"Here are the triples verbalized into phrases:
+
+1. ""Member"" rdfs:subClassOf ""Participant"" .
+	* A member is a type of participant.
+
+2. ""Regular"" rdfs:subClassOf ""Participant"" .
+	* A regular person is a type of participant.
+
+3. ""Student"" rdfs:subClassOf ""Participant"" .
+	* A student is a type of participant.
+
+4. ""earlyRegistration"" rdfs:domain ""Participant"" .
+	* Early registration is something that participants can do.
+
+5. ""Participant"" rdfs:subClassOf ""Person"" .
+	* A participant is a type of person"
+106-Target-Class-Participant,.
+107-Target-Class-Person,".
+	* The hasEmail relationship is related to a person.
+
+12. ""hasFax"" rdfs:domain ""Person"" .
+	* The hasFax relationship is related to a person.
+
+13. ""hasFirstName"" rdfs:domain ""Person"" .
+	* The hasFirstName relationship is related to a person.
+
+14. ""hasHomePage"" rdfs:domain ""Person"" .
+	* The hasHomePage relationship is related to a person.
+
+15. ""hasPhone"" rdfs:domain ""Person"" .
+	* The hasPhone relationship is related to a person.
+
+16. ""hasSurname"" rdfs:domain ""Person"""
+107-Target-Class-Person,".
+	* The hasSurname relationship is related to a person.
+
+17. ""City"" owl:disjointWith ""Person"" .
+	* A city is not the same as a person.
+
+18. ""Contribution"" owl:disjointWith ""Person"" .
+	* A contribution is not the same as a person.
+
+19. ""Country"" owl:disjointWith ""Person"" .
+	* A country is not the same as a person.
+
+20. ""Event"" owl:disjointWith ""Person"" .
+	* An event is not the same as a person.
+
+21. ""Organization"" owl:disjointWith ""Person"" .
+	* An organization is not the same as a person.
+
+22"
+107-Target-Class-Person,". ""Topic"" owl:disjointWith ""Person"" .
+	* A topic is not the same as a person.
+
+23. ""Person"" owl:disjointWith ""City"",
+        ""Contribution"",
+        ""Country"",
+        ""Event"",
+        ""Organization"",
+        ""Topic"" .
+	* A person is not the same as a city, contribution, country, event, organization, or topic.Here is a natural language description of the subgraph:
+
+""A person is a subclass of a restriction that has a first value of an organization and a rest value of nil"
+107-Target-Class-Person,". A person is also a subclass of a restriction that has a first value of a person and a rest value of nil. A person is employed by an organization. A person has a postal code, which is a domain of a class. A person has a city, which is a domain of a class. A person has a country, which is a domain of a class. A person has a first name, which is a domain of a restriction. A person has a surname, which is a domain of a restriction. A person has an email, which is a domain of a restriction"
+107-Target-Class-Person,".""
+
+Please note that this description is not very readable and is more of a technical representation of the subgraph."
+107-Target-Class-Person,". A person has a street, which is a domain of a restriction. A person is a subclass of a restriction that has a first value of an organization and a rest value of nil. A person is a subclass of a restriction that has a first value of a person and a rest value of nil. A person is a subclass of a restriction that has a first value of a person and a rest value of nil. A person is a subclass of a restriction that has a first value of an organization and a rest value of nil"
+107-Target-Class-Person,"Here are the triples verbalized into phrases:
+
+1. ""Administrator"" rdfs:subClassOf ""Person"" .
+	* An administrator is a type of person.
+
+2. ""Assistant"" rdfs:subClassOf ""Person"" .
+	* An assistant is a type of person.
+
+3. ""Author"" rdfs:subClassOf ""Person"" .
+	* An author is a type of person.
+
+4. ""Chair_PC"" rdfs:subClassOf ""Person"" .
+	* A chair of a program committee is a type of person.
+
+5. ""Member_PC"" rdfs:subClassOf ""Person"" .
+	* A member of a program committee is a type of person.
+
+6"
+107-Target-Class-Person,". ""Participant"" rdfs:subClassOf ""Person"" .
+	* A participant is a type of person.
+
+7. ""Scholar"" rdfs:subClassOf ""Person"" .
+	* A scholar is a type of person.
+
+8. ""Science_Worker"" rdfs:subClassOf ""Person"" .
+	* A science worker is a type of person.
+
+9. ""Volunteer"" rdfs:subClassOf ""Person"" .
+	* A volunteer is a type of person.
+
+10. ""employedBy"" rdfs:domain ""Person"" .
+	* The employedBy relationship is related to a person.
+
+11. ""hasEmail"" rdfs:domain ""Person"""
+108-Target-Class-Poster,"Here are the triples verbalized into phrases:
+
+1. ""Paper"" owl:disjointWith ""Poster"" .
+	* Paper is disjoint from Poster.
+2. ""Short_paper"" owl:disjointWith ""Poster"" .
+	* Short paper is disjoint from Poster.
+3. ""Poster"" rdfs:subClassOf ""Contribution"" .
+	* Poster is a subclass of Contribution.
+4. ""Poster"" owl:disjointWith ""Paper"", ""Short_paper"" .
+	* Poster is disjoint from both Paper and Short paper."
+109-Target-Class-Reception,"Here are the triples verbalized into phrases:
+
+1. ""Banquet"" owl:disjointWith ""Reception"" .
+	* Banquets are disjoint from receptions.
+2. ""Trip"" owl:disjointWith ""Reception"" .
+	* Trips are disjoint from receptions.
+3. ""Reception"" rdfs:subClassOf ""Social_event"" .
+	* Receptions are a type of social event.
+4. ""Reception"" owl:disjointWith ""Banquet"", ""Trip"" .
+	* Receptions are disjoint from both banquets and trips."
+110-Target-Class-Registration_of_participants_event,". ""Registration_of_participants_event"" owl:disjointWith ""Camera_Ready_event"", ""Reviewing_event"", ""Reviewing_results_event"", ""Submission_event"" .
+	* The ""Registration_of_participants_event"" is disjoint from the ""Camera_Ready_event"", ""Reviewing_event"", ""Reviewing_results_event"", and ""Submission_event""."
+110-Target-Class-Registration_of_participants_event,"Here are the triples verbalized into phrases:
+
+1. ""Camera_Ready_event"" owl:disjointWith ""Registration_of_participants_event"" .
+	* The ""Camera_Ready_event"" is disjoint from the ""Registration_of_participants_event"".
+
+2. ""Reviewing_event"" owl:disjointWith ""Registration_of_participants_event"" .
+	* The ""Reviewing_event"" is disjoint from the ""Registration_of_participants_event"".
+
+3. ""Reviewing_results_event"" owl:disjointWith ""Registration_of_participants_event"""
+110-Target-Class-Registration_of_participants_event,".
+	* The ""Reviewing_results_event"" is disjoint from the ""Registration_of_participants_event"".
+
+4. ""Submission_event"" owl:disjointWith ""Registration_of_participants_event"" .
+	* The ""Submission_event"" is disjoint from the ""Registration_of_participants_event"".
+
+5. ""Registration_of_participants_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Registration_of_participants_event"" is a subclass of the ""Administrative_event"".
+
+6"
+111-Target-Class-Regular,"Here are the triples verbalized into phrases:
+
+* ""Regular"" rdfs:subClassOf ""Participant"" is equivalent to: ""Regular is a subclass of Participant."""
+112-Target-Class-Reviewing_event,". ""Submission_event"" owl:disjointWith ""Reviewing_event"" .
+	* The ""Submission"" event is unrelated to the ""Reviewing"" event.
+
+5. ""Reviewing_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The ""Reviewing"" event is a type of ""Administrative"" event.
+
+6. ""Reviewing_event"" owl:disjointWith ""Camera_Ready_event"", ""Registration_of_participants_event"", ""Reviewing_results_event"", ""Submission_event"""
+112-Target-Class-Reviewing_event,"Here are the triples verbalized into phrases:
+
+1. ""Camera_Ready_event"" owl:disjointWith ""Reviewing_event"" .
+	* The ""Camera Ready"" event is unrelated to the ""Reviewing"" event.
+
+2. ""Registration_of_participants_event"" owl:disjointWith ""Reviewing_event"" .
+	* The ""Registration of Participants"" event is unrelated to the ""Reviewing"" event.
+
+3. ""Reviewing_results_event"" owl:disjointWith ""Reviewing_event"" .
+	* The ""Reviewing Results"" event is unrelated to the ""Reviewing"" event.
+
+4"
+112-Target-Class-Reviewing_event,".
+	* The ""Reviewing"" event is unrelated to the ""Camera Ready"", ""Registration of Participants"", ""Reviewing Results"", and ""Submission"" events."
+113-Target-Class-Reviewing_results_event,".
+	* The event ""Reviewing_event"" is unrelated to the event ""Reviewing_results_event"".
+
+4. ""Submission_event"" owl:disjointWith ""Reviewing_results_event"" .
+	* The event ""Submission_event"" is unrelated to the event ""Reviewing_results_event"".
+
+5. ""Reviewing_results_event"" rdfs:subClassOf ""Administrative_event"" .
+	* The event ""Reviewing_results_event"" is a type of administrative event.
+
+6"
+113-Target-Class-Reviewing_results_event,"Here are the triples verbalized into phrases:
+
+1. ""Camera_Ready_event"" owl:disjointWith ""Reviewing_results_event"" .
+	* The event ""Camera_Ready_event"" is unrelated to the event ""Reviewing_results_event"".
+
+2. ""Registration_of_participants_event"" owl:disjointWith ""Reviewing_results_event"" .
+	* The event ""Registration_of_participants_event"" is unrelated to the event ""Reviewing_results_event"".
+
+3. ""Reviewing_event"" owl:disjointWith ""Reviewing_results_event"""
+113-Target-Class-Reviewing_results_event,". ""Reviewing_results_event"" owl:disjointWith ""Camera_Ready_event"", ""Registration_of_participants_event"", ""Reviewing_event"", ""Submission_event"" .
+	* The event ""Reviewing_results_event"" is unrelated to the events ""Camera_Ready_event"", ""Registration_of_participants_event"", ""Reviewing_event"", and ""Submission_event""."
+114-Target-Class-Scholar,"Here are the triples verbalized into phrases:
+
+1. ""studyAt"" rdfs:domain ""Scholar"" .
+	* The relationship ""studyAt"" is a property of the class ""Scholar"".
+	* Phrase: ""The studyAt relationship is a property of scholars.""
+
+2. ""Scholar"" rdfs:subClassOf ""Person"" .
+	* The class ""Scholar"" is a subclass of the class ""Person"".
+	* Phrase: ""Scholars are a type of person"
+114-Target-Class-Scholar,".""Here is a natural language description of the subgraph:
+
+""A Scholar is a person who studies at some University, and a person who studies at a University is a Scholar. Additionally, a person who studies at a University must study at a specific University.""
+
+Note: This description assumes that the ""studyAt"" property represents the location where a person studies, and that the ""University"" class represents a specific type of educational institution."
+115-Target-Class-Science_Worker,"Here are the triples verbalized into phrases:
+
+* ""Science_Worker"" rdfs:subClassOf ""Person"" .
+	+ ""Science workers are a type of person."""
+116-Target-Class-Short_paper,"Here are the triples verbalized into phrases:
+
+1. ""Paper"" owl:disjointWith ""Short_paper"" .
+	* The set of papers is disjoint from the set of short papers.
+2. ""Poster"" owl:disjointWith ""Short_paper"" .
+	* The set of posters is disjoint from the set of short papers.
+3. ""Short_paper"" rdfs:subClassOf ""Contribution"" .
+	* A short paper is a type of contribution.
+4. ""Short_paper"" owl:disjointWith ""Paper"", ""Poster"" .
+	* A short paper is disjoint from both papers and posters."
+117-Target-Class-Social_event,". 
+
+Overall, this system provides a framework for organizing and managing social events, including their properties and relationships."""
+117-Target-Class-Social_event,"Here are the triples verbalized into phrases:
+
+1. ""Banquet"" is a type of ""Social_event"".
+2. ""Reception"" is a type of ""Social_event"".
+3. ""Trip"" is a type of ""Social_event"".
+4. ""Administrative_event"" is unrelated to ""Social_event"".
+5. ""Working_event"" is unrelated to ""Social_event"".
+6. ""Social_event"" is a type of ""Event"" and is unrelated to both ""Administrative_event"" and ""Working_event"""
+117-Target-Class-Social_event,".Here is a natural language description of the subgraph:
+
+""This is a class hierarchy that represents a system for managing social events. The top-level class is 'Social_event', which is a subclass of 'Restriction' with a cardinality of 1. There are several subclasses of 'Social_event', including 'Working_event', which has a first property that is also a 'Social_event'. 
+
+The system also includes a 'location' domain, which is a class that has a unionOf property that includes several other classes"
+117-Target-Class-Social_event,". The 'location' domain is also related to the 'hasVAT' domain, which is a class that has a type property that is also a 'Class'. 
+
+There are also several other domains and classes in the system, including 'has_short_title', 'has_title', 'minChoice', 'maxChoice', and 'defaultChoice'. These domains and classes are all related to the management of social events and the properties of those events"
+118-Target-Class-Student,"Here are the triples verbalized into phrases:
+
+* ""Student"" rdfs:subClassOf ""Participant"" .
+	+ ""Student is a subclass of Participant."""
+119-Target-Class-Submission_event,"Here are the triples verbalized into phrases:
+
+1. ""Camera_Ready_event"" is disjoint from ""Submission_event"".
+   (The event ""Camera_Ready_event"" has no overlap with the event ""Submission_event"".)
+
+2. ""Registration_of_participants_event"" is disjoint from ""Submission_event"".
+   (The event ""Registration_of_participants_event"" has no overlap with the event ""Submission_event"".)
+
+3. ""Reviewing_event"" is disjoint from ""Submission_event"""
+119-Target-Class-Submission_event,".
+   (The event ""Submission_event"" is a specific type of administrative event and has no overlap with the events ""Camera_Ready_event"", ""Registration_of_participants_event"", ""Reviewing_event"", and ""Reviewing_results_event"".)"
+119-Target-Class-Submission_event,".
+   (The event ""Reviewing_event"" has no overlap with the event ""Submission_event"".)
+
+4. ""Reviewing_results_event"" is disjoint from ""Submission_event"".
+   (The event ""Reviewing_results_event"" has no overlap with the event ""Submission_event"".)
+
+5. ""Submission_event"" is a type of ""Administrative_event"" and is disjoint from ""Camera_Ready_event"", ""Registration_of_participants_event"", ""Reviewing_event"", and ""Reviewing_results_event"""
+120-Target-Class-Topic,". 
+
+A 'Member_PC' is a subclass of a 'Restriction' that has a topic and is made by someone who is an expert on that topic. 
+
+A 'Working_event' is a subclass of a 'Restriction' that has a topic. 
+
+The 'Contribution' and 'Working_event' are both subclasses of a 'Restriction' that has a topic. 
+
+The 'Member_PC' is a subclass of a 'Restriction' that has a topic. 
+
+The 'Contribution' and 'Working_event' are both related to topics through the 'hasTopic' and 'dealsWith' properties"
+120-Target-Class-Topic,"Here are the triples verbalized into phrases:
+
+1. ""dealsWith"" rdfs:range ""Topic"" .
+	* The ""dealsWith"" property is related to topics.
+
+2. ""expertOn"" rdfs:range ""Topic"" .
+	* The ""expertOn"" property is related to topics.
+
+3. ""hasTopic"" rdfs:range ""Topic"" .
+	* The ""hasTopic"" property is related to topics.
+
+4. ""City"" owl:disjointWith ""Topic"" .
+	* Cities are disjoint from topics.
+
+5. ""Contribution"" owl:disjointWith ""Topic"" .
+	* Contributions are disjoint from topics.
+
+6"
+120-Target-Class-Topic,". ""Country"" owl:disjointWith ""Topic"" .
+	* Countries are disjoint from topics.
+
+7. ""Event"" owl:disjointWith ""Topic"" .
+	* Events are disjoint from topics.
+
+8. ""Organization"" owl:disjointWith ""Topic"" .
+	* Organizations are disjoint from topics.
+
+9. ""Person"" owl:disjointWith ""Topic"" .
+	* People are disjoint from topics.
+
+10. ""Topic"" owl:disjointWith ""City"", ""Contribution"", ""Country"", ""Event"", ""Organization"", ""Person"""
+120-Target-Class-Topic,".
+	* Topics are disjoint from cities, contributions, countries, events, organizations, and people.Here is a natural language description of the subgraph:
+
+""This subgraph represents a set of relationships between entities related to contributions, topics, and restrictions. 
+
+A 'Contribution' is a subclass of a 'Restriction' that has a topic and is made by someone who is an expert on that topic"
+120-Target-Class-Topic,". 
+
+The 'Member_PC' is related to topics through the 'hasTopic' and 'expertOn' properties. 
+
+The 'Contribution', 'Working_event', and 'Member_PC' are all restricted to topics through the 'someValuesFrom' and 'allValuesFrom' properties."""
+121-Target-Class-Trip,"Here are the triples verbalized into phrases:
+
+1. ""Banquet"" owl:disjointWith ""Trip"" .
+	* Banquets are disjoint from trips.
+2. ""Reception"" owl:disjointWith ""Trip"" .
+	* Receptions are disjoint from trips.
+3. ""Trip"" rdfs:subClassOf ""Social_event"" .
+	* Trips are a type of social event.
+4. ""Trip"" owl:disjointWith ""Banquet"", ""Reception"" .
+	* Trips are disjoint from both banquets and receptions."
+122-Target-Class-Tutorial,"Here are the triples verbalized into phrases:
+
+1. ""Conference"" owl:disjointWith ""Tutorial"" .
+	* The set of conferences is disjoint from the set of tutorials.
+2. ""Workshop"" owl:disjointWith ""Tutorial"" .
+	* The set of workshops is disjoint from the set of tutorials.
+3. ""Tutorial"" rdfs:subClassOf ""Working_event"" .
+	* Tutorials are a type of working event.
+4. ""Tutorial"" owl:disjointWith ""Conference"", ""Workshop"" .
+	* Tutorials are disjoint from both conferences and workshops."
+123-Target-Class-University,"Here are the triples verbalized into phrases:
+
+1. ""studyAt"" rdfs:range ""University"" .
+	* The property ""studyAt"" is a range of ""University"", meaning that the values of ""studyAt"" are instances of ""University"".
+	* Phrase: ""The studyAt property is a range of universities.""
+
+2. ""Company"" owl:disjointWith ""University"" .
+	* The classes ""Company"" and ""University"" are disjoint, meaning they have no common instances.
+	* Phrase: ""Companies and universities are mutually exclusive.""
+
+3"
+123-Target-Class-University,". ""University"" rdfs:subClassOf ""Organization"" .
+	* The class ""University"" is a subclass of ""Organization"", meaning that all universities are organizations.
+	* Phrase: ""Universities are a type of organization.""
+
+4. ""University"" owl:disjointWith ""Company"" .
+	* The class ""University"" is disjoint with the class ""Company"", meaning they have no common instances.
+	* Phrase: ""Universities and companies are mutually exclusive"
+123-Target-Class-University,".""Here is a natural language description of the subgraph:
+
+""A Scholar is a person who studies at some University, and a person who studies at a University is a person who is restricted to studying at that University.""
+
+In other words, the subgraph defines a Scholar as someone who has a restriction on the University they study at, and that restriction is that they study at some University."
+124-Target-Class-Volunteer,"Here are the triples verbalized into phrases:
+
+* ""Volunteer"" rdfs:subClassOf ""Person"" .
+	+ ""Volunteer is a subclass of Person."""
+125-Target-Class-Working_event,". A social event can have a first event, and a working event can have a first event. A class can have a union of social events, and a social event can have a first event. A restriction can have a some values from a topic, and a class can have a union of restrictions. A default choice can have a some values from a topic, and a class can have a union of default choices.""
+
+Please note that this is a simplified description and may not capture all the nuances and complexities of the original subgraph"
+125-Target-Class-Working_event,"Here are the triples verbalized into phrases:
+
+1. ""Conference"" rdfs:subClassOf ""Working_event"" .
+	* The class ""Conference"" is a subclass of the class ""Working_event"".
+
+2. ""Tutorial"" rdfs:subClassOf ""Working_event"" .
+	* The class ""Tutorial"" is a subclass of the class ""Working_event"".
+
+3. ""Workshop"" rdfs:subClassOf ""Working_event"" .
+	* The class ""Workshop"" is a subclass of the class ""Working_event"".
+
+4. ""hasAdministrativeEvent"" rdfs:domain ""Working_event"""
+125-Target-Class-Working_event,".
+	* The property ""hasAdministrativeEvent"" is a domain property of the class ""Working_event"".
+
+5. ""hasTopic"" rdfs:domain ""Working_event"" .
+	* The property ""hasTopic"" is a domain property of the class ""Working_event"".
+
+6. ""Administrative_event"" owl:disjointWith ""Working_event"" .
+	* The class ""Administrative_event"" is disjoint from the class ""Working_event"".
+
+7. ""Social_event"" owl:disjointWith ""Working_event"" .
+	* The class ""Social_event"" is disjoint from the class ""Working_event"".
+
+8"
+125-Target-Class-Working_event,". ""Working_event"" rdfs:subClassOf ""Event"" ;
+    owl:disjointWith ""Administrative_event"",
+        ""Social_event"" .
+	* The class ""Working_event"" is a subclass of the class ""Event"" and is disjoint from the classes ""Administrative_event"" and ""Social_event"".Here is a natural language description of the subgraph:
+
+""A social event is a type of event that can have a location and a topic. It can also have a short title and a title. A working event is a type of event that is a subclass of a social event"
+125-Target-Class-Working_event,". It can have a location and a topic, and it can also have a default choice. A restriction is a type of class that can have a cardinality of 1. A class can have a union of restrictions, and a restriction can have a some values from a topic. A default choice is a type of restriction that can have a cardinality of 1. A class can have a union of default choices, and a default choice can have a some values from a topic"
+125-Target-Class-Working_event,.
+126-Target-Class-Workshop,".
+	* The set of workshops is disjoint from the set of conferences and the set of tutorials."
+126-Target-Class-Workshop,"Here are the triples verbalized into phrases:
+
+1. ""Conference"" owl:disjointWith ""Workshop"" .
+	* The set of conferences is disjoint from the set of workshops.
+2. ""Tutorial"" owl:disjointWith ""Workshop"" .
+	* The set of tutorials is disjoint from the set of workshops.
+3. ""Workshop"" rdfs:subClassOf ""Working_event"" .
+	* A workshop is a type of working event.
+4. ""Workshop"" owl:disjointWith ""Conference"", ""Tutorial"""
+127-Target-Property-abstract,"Here are the triples verbalized into phrases:
+
+* ""abstract"" is a domain of ""Contribution"".
+* The range of ""abstract"" is ""string"".Here is a natural language description of the subgraph:
+
+""A Contribution is a type of Restriction that has a cardinality of 1 and is defined by being an abstract property.""
+
+Let me know if you'd like me to clarify or expand on this description!"
+128-Target-Property-contactEmail,"Here are the triples verbalized into phrases:
+
+* ""contactEmail"" rdfs:domain ""Contribution"" : The property ""contactEmail"" is related to the domain ""Contribution"".
+* rdfs:range ""string"" : The range of the property ""contactEmail"" is a string.
+
+Let me know if you'd like me to help with anything else!Here is a natural language description of the subgraph:
+
+""A contribution is a type of thing that is a subclass of something, and it is defined by being related to a contact email"
+128-Target-Property-contactEmail,". Specifically, a contribution is a restriction that has at least one contact email.""
+
+Let me know if you'd like me to clarify or expand on this description!"
+129-Target-Property-dealsWith,"Here are the triples verbalized into phrases:
+
+* ""dealsWith"" rdfs:domain ""Contribution"" : A ""dealsWith"" relation is a property of a ""Contribution"".
+* ""dealsWith"" rdfs:range ""Topic"" : The ""dealsWith"" relation relates to a ""Topic"".
+
+Let me know if you'd like me to help with anything else!Here is a natural language description of the subgraph:
+
+""A contribution is a topic that deals with something, and it is a type of restriction. A restriction is something that deals with a topic"
+129-Target-Property-dealsWith,". In other words, a contribution is a way of dealing with a topic, and it is a specific type of restriction that is related to a topic.""
+
+Note that this description is not a direct translation of the RDF triples, but rather an interpretation of the relationships and concepts represented in the subgraph."
+130-Target-Property-defaultChoice,". The rest of the events are nil, meaning there are no more events after the second event.""
+
+Note that this description is an interpretation of the subgraph and may not be the only possible natural language description."
+130-Target-Property-defaultChoice,"Here are the triples verbalized into phrases:
+
+* ""defaultChoice"" rdfs:range ""positiveInteger"" is equivalent to ""The default choice is a positive integer.""Here is a natural language description of the subgraph:
+
+""A Working_event is a type of event that is related to a default choice. This default choice is a property that is restricted to a specific domain. There are two types of events: Working_events and Social_events"
+130-Target-Property-defaultChoice,". Working_events are the first type of event, and they are restricted to a single instance. Social_events are also restricted to a single instance. The default choice is applicable to both Working_events and Social_events. The domain of the default choice is a class that includes both Working_events and Social_events. The relationship between the events is that a Working_event is the first event, and a Social_event is the second event"
+131-Target-Property-earlyRegistration,"Here are the triples verbalized into phrases:
+
+* ""earlyRegistration"" rdfs:domain ""Participant"" : The property ""earlyRegistration"" is a domain of the class ""Participant"".
+* rdfs:range ""boolean"" : The range of the property ""earlyRegistration"" is a boolean value.
+
+So, the verbalized phrases are:
+
+* The early registration is a property of participants.
+* The value of early registration is a boolean."
+132-Target-Property-employedBy,".""
+
+Note that this description assumes a basic understanding of OWL (Web Ontology Language) and its syntax. If you'd like me to explain the specific parts of the subgraph that are being described, I'd be happy to do so!"
+132-Target-Property-employedBy,"Here are the triples verbalized into phrases:
+
+* ""employedBy"" rdfs:domain ""Person"" : The employedBy relationship is a property of a Person.
+* ""employedBy"" rdfs:range ""Organization"" : The employedBy relationship is a property that relates to an Organization"
+132-Target-Property-employedBy,".
+
+Let me know if you'd like me to help with anything else!Here is a natural language description of the subgraph:
+
+""A Person is a subclass of two types: one that is restricted to being employed by an Organization, and another that is restricted to being employed by some Organization. In other words, a Person can be employed by a specific Organization or by some Organization, but not necessarily by any Organization"
+133-Target-Property-ends_on,"Here are the triples verbalized into phrases:
+
+* ""ends_on"" rdfs:domain ""Event"" : The property ""ends_on"" is related to the domain ""Event"".
+* rdfs:range ""string"" : The range of the property ""ends_on"" is a string.
+
+Let me know if you'd like me to help with anything else!"
+134-Target-Property-expertOn,"Here are the triples verbalized into phrases:
+
+* ""expertOn"" rdfs:domain ""Member_PC"" : The ""expertOn"" property is related to the domain of ""Member_PC"".
+* ""expertOn"" rdfs:range ""Topic"" : The ""expertOn"" property is related to the range of ""Topic"".
+
+In phrase form, this becomes:
+
+* The ""expertOn"" property is related to the domain of Member_PC.
+* The ""expertOn"" property is related to the range of Topic"
+134-Target-Property-expertOn,".Here is a natural language description of the subgraph:
+
+""A person who is an expert on a specific topic is a member of a particular group (Member_PC). This group is characterized by having members who are experts on various topics. In other words, the group consists of individuals who are knowledgeable about specific areas of expertise.""
+
+Note that this description is a high-level summary of the subgraph, and may not capture all the nuances and details of the original RDF data."
+135-Target-Property-follows,"Here are the triples verbalized into phrases:
+
+1. ""follows"" is a property that is used to describe ""Administrative_event"" instances.
+	* Phrase: ""The 'follows' property is used to describe Administrative events.""
+2. The ""follows"" property is used to relate ""Administrative_event"" instances to other ""Administrative_event"" instances.
+	* Phrase: ""The 'follows' property relates Administrative events to other Administrative events."""
+136-Target-Property-hasAdministrativeEvent,"Here are the triples verbalized into phrases:
+
+* ""hasAdministrativeEvent"" rdfs:domain ""Working_event"" : The domain of the property ""hasAdministrativeEvent"" is ""Working_event"".
+* ""hasAdministrativeEvent"" rdfs:range ""Administrative_event"" : The range of the property ""hasAdministrativeEvent"" is ""Administrative_event"".
+
+In phrase form, these become:
+
+* The domain of ""hasAdministrativeEvent"" is a Working_event.
+* The range of ""hasAdministrativeEvent"" is an Administrative_event."
+137-Target-Property-hasCity,"Here are the triples verbalized into phrases:
+
+1. ""hasCity"" rdfs:range ""City"" .
+	* The property ""hasCity"" has a range of ""City"", meaning that the values of ""hasCity"" are instances of the class ""City"".Here is a natural language description of the subgraph:
+
+""There is a class called N6e83385b367e45b6a805ca351cbb73fe, which is a union of an organization and something else. This class has a domain of cities. A person is a subclass of a restriction that has a property called 'hasCity'"
+137-Target-Property-hasCity,". This restriction is of type 'Person' and is restricted to cities. There is also an organization that is a union of a person and something else. The rest of this organization is a person, and the rest of the class N6e83385b367e45b6a805ca351cbb73fe is nil.""
+
+Note that this description is not a formal definition, but rather a natural language summary of the subgraph."
+138-Target-Property-hasCountry,"Here are the triples verbalized into phrases:
+
+* ""hasCountry"" rdfs:range ""Country"" .
+	+ The property ""hasCountry"" has as its range the class ""Country"".Here is a natural language description of the subgraph:
+
+""A Restriction is defined for a Class that has a property called 'hasCountry'. This Restriction states that the value of 'hasCountry' must be a Country, and it is a union of two values: a Person and an Organization"
+138-Target-Property-hasCountry,". In other words, the 'hasCountry' property can have either a Person or an Organization as its value.""
+
+Note that this description assumes a basic understanding of the concepts and terminology used in the subgraph, such as Classes, properties, and values."
+139-Target-Property-hasEmail,"Here are the triples verbalized into phrases:
+
+* ""hasEmail"" rdfs:domain ""Person"" : The property ""hasEmail"" is related to the domain ""Person"", meaning that ""hasEmail"" is a property of people.
+* rdfs:range ""string"" : The range of the property ""hasEmail"" is a string, meaning that the value of ""hasEmail"" is a string of characters.Here is a natural language description of the subgraph:
+
+""A person is a type of entity that has at least one email address"
+139-Target-Property-hasEmail,". In other words, a person is a type of entity that has an email property.""
+
+Note: I've used the term ""entity"" to refer to the _:Ne544b19be9d94186b658313c0045bedb node, as it is not explicitly defined as a person or anything else in the original subgraph."
+140-Target-Property-hasFax,"Here are the triples verbalized into phrases:
+
+* ""hasFax"" rdfs:domain ""Person"" : The property ""hasFax"" is related to the domain ""Person"", meaning that only people can have a fax number.
+* ""hasFax"" rdfs:range ""string"" : The property ""hasFax"" has a range of ""string"", meaning that the value of this property is a string (e.g. a phone number)."
+141-Target-Property-hasFirstName,"Here are the triples verbalized into phrases:
+
+1. ""hasFirstName"" rdfs:domain ""Person"" - The property ""hasFirstName"" is related to the domain ""Person"", meaning it is a characteristic of a person.
+2. ""hasFirstName"" rdfs:range ""string"" - The property ""hasFirstName"" has a range of ""string"", meaning its value is a string of characters.Here is a natural language description of the subgraph:
+
+""A person must have exactly one first name, which is a restriction on the property 'hasFirstName'"
+141-Target-Property-hasFirstName,".""
+
+Let me know if you'd like me to clarify or expand on this description!"
+142-Target-Property-hasHomePage,"Here are the triples verbalized into phrases:
+
+* ""hasHomePage"" rdfs:domain ""Person"" : The property ""hasHomePage"" is related to the domain ""Person"".
+* ""hasHomePage"" rdfs:range ""string"" : The property ""hasHomePage"" has a range of ""string"", meaning it returns a string value.
+
+So, the verbalized phrases are:
+
+* ""The hasHomePage property is related to people.""
+* ""The hasHomePage property returns a string value."""
+143-Target-Property-hasKeyword,"Here are the triples verbalized into phrases:
+
+* ""hasKeyword"" rdfs:domain ""Contribution"" : The ""hasKeyword"" property is related to the domain of ""Contribution"".
+* ""hasKeyword"" rdfs:range ""string"" : The ""hasKeyword"" property has a range of ""string"" (i.e., it returns a string value).
+
+So, the verbalized phrases are:
+
+* ""The 'hasKeyword' property is related to the domain of 'Contribution'.""
+* ""The 'hasKeyword' property has a range of 'string'"
+143-Target-Property-hasKeyword,".""Here is a natural language description of the subgraph:
+
+""A Contribution is a type of Restriction, which has a minimum cardinality of 1. In other words, a Contribution is a specific kind of Restriction that must have at least one keyword associated with it.""
+
+Let me know if you'd like me to clarify or expand on this description!"
+144-Target-Property-hasPhone,"Here are the triples verbalized into phrases:
+
+1. ""hasPhone"" rdfs:domain ""Person"" - A person has a phone.
+2. ""hasPhone"" rdfs:range ""string"" - The phone is a string (i.e., a phone number or a description of the phone)."
+145-Target-Property-hasPostalCode,"Here are the triples verbalized into phrases:
+
+* ""hasPostalCode"" rdfs:range ""string"" .
+	+ The property ""hasPostalCode"" has a range of strings.Here is a natural language description of the subgraph:
+
+""A person is a union of a person and an organization. A person must have a postal code. The postal code is a restriction on the property 'has postal code' and has a minimum cardinality of 1. The organization is the first element in the union, and the rest of the elements are nil"
+145-Target-Property-hasPostalCode,". The postal code is a domain of the class that represents a person.""
+
+Note that this description is not a direct translation of the RDF graph, but rather an attempt to convey the meaning and relationships in the graph in a natural language format."
+146-Target-Property-hasStreet,". The person is on the property 'hasStreet'. The organization is also the first element in the union, and the rest is nil. The restriction is of type 'Class' and has a minimum cardinality of 1.""
+
+Note that this description is a simplification of the original graph, and some details may have been omitted or rephrased for clarity."
+146-Target-Property-hasStreet,"Here are the triples verbalized into phrases:
+
+* ""hasStreet"" rdfs:range ""string"" .
+	+ The property ""hasStreet"" has a range of strings.Here is a natural language description of the subgraph:
+
+""A person is a subclass of a restriction. The restriction is a union of an organization and a person. The organization is the first element in the union, and the person is the rest. The restriction has a property called 'hasStreet' that is domain-specific to the organization"
+147-Target-Property-hasSurname,"Here are the triples verbalized into phrases:
+
+* ""hasSurname"" rdfs:domain ""Person"" : The property ""hasSurname"" is a characteristic of a ""Person"".
+* ""hasSurname"" rdfs:range ""string"" : The value of the property ""hasSurname"" is a ""string"" (i.e., a sequence of characters).Here is a natural language description of the subgraph:
+
+""A Person is a Restriction that has exactly one value for the property 'hasSurname'"
+147-Target-Property-hasSurname,".""
+
+Let me break it down:
+
+* The subject is a ""Person"", which is a subclass of the entity represented by the URI ""_:N12a23d2d5e544c469c5e60f78f38d993"".
+* The relationship is a ""Restriction"" with a cardinality of 1, meaning it has exactly one value.
+* The restriction is applied to the property ""hasSurname"", which is the property being restricted"
+147-Target-Property-hasSurname,".
+
+So, the natural language description summarizes the subgraph as a statement about the properties of a Person, specifically that they have exactly one surname."
+148-Target-Property-hasTitle,"Here are the triples verbalized into phrases:
+
+* ""hasTitle"" rdfs:domain ""Contribution"" : The property ""hasTitle"" is a domain of the class ""Contribution"".
+* ""hasTitle"" rdfs:range ""string"" : The property ""hasTitle"" has a range of strings.Here is a natural language description of the subgraph:
+
+""A contribution has a title, and this title is a property of the contribution. The contribution is a type of Restriction, and it has a cardinality of 1, meaning it can only have one title"
+148-Target-Property-hasTitle,".""
+
+Let me know if you'd like me to clarify or expand on this description!"
+149-Target-Property-hasTopic,"Here are the triples verbalized into phrases:
+
+* ""hasTopic"" rdfs:domain ""Working_event"" : The domain of the property ""hasTopic"" is ""Working_event"".
+* ""hasTopic"" rdfs:range ""Topic"" : The range of the property ""hasTopic"" is ""Topic"".
+
+Let me know if you'd like me to help with anything else!Here is a natural language description of the subgraph:
+
+""A Working_event is a type of event that is restricted to have a topic"
+149-Target-Property-hasTopic,". This topic can be any topic, and the event is a subclass of a restriction that allows for any topic. In other words, a Working_event is an event that is about something, and that something can be anything.""
+
+Note that this description is a simplification of the original RDF data, and may not capture all the nuances and details of the original graph."
+150-Target-Property-hasVAT,"Here are the triples verbalized into phrases:
+
+* ""hasVAT"" rdfs:range ""string"" .
+	+ The property ""hasVAT"" has a range of strings.Here is a natural language description of the subgraph:
+
+""The entity with ID N28059afbc3eb4226a97cb9c1b8707b6c is a class that has a VAT domain. It is a union of a social event and a working event. The social event is the first part of the union, followed by the rest of the union, which is nil"
+150-Target-Property-hasVAT,". The social event is also a social event in its own right, with no further parts.""
+
+Note that this description assumes that the reader is familiar with the concepts of VAT domains, classes, and events, and that the IDs are unique identifiers for entities in a database or knowledge graph."
+151-Target-Property-has_short_title,"Here are the triples verbalized into phrases:
+
+* ""has_short_title"" rdfs:range ""string"" .
+	+ The property ""has_short_title"" has a range of ""string"", meaning it is used to describe a string value.Here is a natural language description of the subgraph:
+
+""There is a Working event, which is the first event in a sequence. This event is of type Class. The event has a rest, which is nil. There is also a Social event, which is the rest of the sequence"
+151-Target-Property-has_short_title,". The domain of the has_short_title property is a Class, which is the union of the Working event and the Social event.""
+
+Note that this description assumes that the graph is describing a sequence of events, where each event has a type and a rest (i.e., the next event in the sequence). The description also assumes that the has_short_title property is a property of the Class type, and that the unionOf relationship is a union of the Working event and the Social event."
+152-Target-Property-has_title,"Here are the triples verbalized into phrases:
+
+* ""has_title"" rdfs:range ""string"" .
+	+ The property ""has_title"" has a range of strings.Here is a natural language description of the subgraph:
+
+""A social event is a type of event that has a title. The title is a restriction that can only have one value. This event is a subclass of a working event, which is also a type of event. The working event is a subclass of a restriction that has a title"
+152-Target-Property-has_title,". The title of the social event is the first event in a sequence of events. The social event is a subclass of the working event.""
+
+Note that this description is a simplification of the original graph, and some details may have been omitted or condensed for clarity."
+153-Target-Property-location,"Here are the triples verbalized into phrases:
+
+* ""location"" rdfs:range ""string"" .
+	+ The property ""location"" has a range of ""string"" type.Here is a natural language description of the subgraph:
+
+""There is a social event that is a subclass of a restriction on the property 'location'. This social event is the first event in a sequence of events, which also includes a working event. The location is a class that is a union of the social event and possibly other events"
+153-Target-Property-location,". The social event and the working event are both restrictions with a cardinality of 1, meaning they only occur once. The working event is also a subclass of the same restriction as the social event.""
+
+Note that this description assumes a basic understanding of the concepts and terminology used in the subgraph, such as ""social event"", ""working event"", ""location"", ""restriction"", and ""cardinality""."
+154-Target-Property-maxChoice,"Here are the triples verbalized into phrases:
+
+* ""maxChoice"" rdfs:range ""positiveInteger"" .
+	+ The maximum choice is a range of positive integers.Here is a natural language description of the subgraph:
+
+""A class, represented by node N22e28be452194838b2bbaf4c28da9b12, is defined as a union of two types of events: a 'Working_event' and a 'Social_event'. The 'Working_event' is the first event in the sequence, and the 'Social_event' is the second event"
+154-Target-Property-maxChoice,". The class is a maximum choice, meaning that only one of these two types of events can occur. The 'Working_event' is the first event in the sequence, and the 'Social_event' is the second event. The rest of the sequence is nil, indicating that there are no additional events beyond these two."""
+155-Target-Property-minChoice,"Here is the verbalized triple in a phrase:
+
+""The range of the 'minChoice' property is a positive integer.""Here is a natural language description of the subgraph:
+
+""A person is resting (rest). This rest is part of a union of events, which includes a social event and a working event. The domain of this union is a class of events, specifically a choice between a minimum of one event. The first event in this union is a social event, and the second event is a working event"
+155-Target-Property-minChoice,".""
+
+Note: I've assumed that the nodes with IDs starting with ""_:"" are instances of classes or events, and the relationships are describing the properties of these instances."
+156-Target-Property-parallel_with,"Here are the triples verbalized into phrases:
+
+* ""parallel_with"" has domain ""Administrative_event"" and range ""Administrative_event"".
+* This can be verbalized as: ""The parallel_with property relates to Administrative events and only applies to Administrative events."""
+157-Target-Property-remark,"Here are the triples verbalized into phrases:
+
+* ""remark"" is a domain of ""Contribution"".
+* The range of ""remark"" is ""string"".
+
+In other words:
+
+* The concept of ""remark"" is related to the concept of ""Contribution"" in some way.
+* The value or value range of ""remark"" is a string (i.e., a sequence of characters)."
+158-Target-Property-reviewes,"Here are the triples verbalized into phrases:
+
+* ""reviewes"" rdfs:domain ""Member_PC"" : The domain of the ""reviewes"" property is ""Member_PC"", meaning that only members of the PC (perhaps a peer review committee) can have reviews.
+* ""reviewes"" rdfs:range ""Contribution"" : The range of the ""reviewes"" property is ""Contribution"", meaning that the reviews are related to contributions (perhaps papers, articles, or other types of submissions)"
+158-Target-Property-reviewes,".Here is a natural language description of the subgraph:
+
+""A Member_PC is a type of Restriction that applies to the 'reviewes' property. This Restriction has all values from 'Contribution'. Additionally, a Member_PC is also a subclass of another Restriction that also applies to the 'reviewes' property and has some values from 'Contribution'.""
+
+Let me know if you'd like me to clarify or rephrase anything!"
+159-Target-Property-starts_on,"Here are the triples verbalized into phrases:
+
+* ""starts_on"" has domain ""Event"" - The property ""starts_on"" is applicable to events.
+* ""starts_on"" has range ""string"" - The value of the property ""starts_on"" is a string."
+160-Target-Property-studyAt,"Here are the triples verbalized into phrases:
+
+1. ""studyAt"" is a property that is a domain of ""Scholar"".
+	* Phrase: ""Study at"" is a characteristic of a scholar.
+2. ""studyAt"" is a property that has ""University"" as its range.
+	* Phrase: The range of ""study at"" is a university.
+
+So, the verbalized phrases are:
+
+* Study at is a characteristic of a scholar.
+* The range of study at is a university"
+160-Target-Property-studyAt,".Here is a natural language description of the subgraph:
+
+""A Scholar is a person who studies at some University, and a person who studies at a University is a person who is restricted to studying at that University.""
+
+In other words, the subgraph defines a Scholar as someone who has a restriction on the University they study at, and that restriction is that they study at some University."
+161-Target-Property-writes,"Here are the triples verbalized into phrases:
+
+1. ""writes"" rdfs:domain ""Author"" : An author writes.
+2. ""writes"" rdfs:range ""Contribution"" : The range of writing is a contribution.
+
+Let me know if you'd like me to help with anything else!Here is a natural language description of the subgraph:
+
+""An Author is a type of entity that makes a Contribution, either by making all contributions or some contributions"
+161-Target-Property-writes,". This entity is characterized by writing, which is the property that defines the type of contribution they make.""
+
+Note that this description is a simplification of the original graph, and some details may have been lost in the translation."
+162-Target-Property-writtenBy,"Here are the triples verbalized into phrases:
+
+* ""writtenBy"" rdfs:domain ""Contribution"" : The writtenBy property is related to the domain of Contribution.
+* rdfs:range ""Author"" : The range of the writtenBy property is Author.
+
+So, the verbalized phrases are:
+
+* The writtenBy property is related to the domain of Contribution.
+* The range of the writtenBy property is Author."

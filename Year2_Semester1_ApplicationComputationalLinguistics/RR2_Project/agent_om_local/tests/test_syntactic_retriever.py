@@ -2,13 +2,19 @@
 
 from pathlib import Path
 import pytest
-from rdflib import URIRef
 
 from src.ontology.parser import load_ontology
-from src.ontology.entity_extractor import EntityExtractor, EntityType, OntologyEntity
+from src.ontology.entity_extractor import EntityType, OntologyEntity
 from src.retrieval.syntactic_retriever import SyntacticRetriever
 
-DATA_DIR = Path(r"E:\_3_Master\_9_ACL_Project\original_repo\data\conference\cmt-confof\component")
+DATA_DIR = (
+    Path(__file__).resolve().parents[2]
+    / "original_repo"
+    / "data"
+    / "conference"
+    / "cmt-confof"
+    / "component"
+)
 CMT_PATH = DATA_DIR / "source.xml"
 CONFOF_PATH = DATA_DIR / "target.xml"
 
@@ -109,4 +115,3 @@ class TestSyntacticRetriever:
         # With ontology_is_code=False: local name "c_101" -> "c 101"
         res_nocode = retriever_nocode.retrieve_syntactic_representation("http://example.org/#c_101", ont)
         assert res_nocode == "c 101"
-

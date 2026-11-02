@@ -7,8 +7,15 @@ from src.ontology.parser import OntologyGraph, OntologyParseError, load_ontology
 from src.ontology.entity_extractor import EntityExtractor, EntityType, OntologyEntity
 
 
-# Paths to original benchmark datasets
-ORIGINAL_DATA_DIR = Path(r"E:\_3_Master\_9_ACL_Project\original_repo\data\conference\cmt-confof\component")
+# Workspace-relative paths to original read-only benchmark datasets
+ORIGINAL_DATA_DIR = (
+    Path(__file__).resolve().parents[2]
+    / "original_repo"
+    / "data"
+    / "conference"
+    / "cmt-confof"
+    / "component"
+)
 CMT_PATH = ORIGINAL_DATA_DIR / "source.xml"
 CONFOF_PATH = ORIGINAL_DATA_DIR / "target.xml"
 
@@ -395,4 +402,3 @@ class TestStep4CorrectionsAndEdgeCases:
         assert len(entities) == 1
         assert entities[0].entity_type == EntityType.CLASS
         assert entities[0].uri == "http://example.org/#TaxonomyNode"
-

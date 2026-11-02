@@ -1,0 +1,121 @@
+[
+  {
+    "query_entity_id": "5-Target-Class-Administrative_event",
+    "query_entity_uri": "http://confOf#Administrative_event",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "6-Target-Class-Administrator",
+    "query_entity_uri": "http://confOf#Administrator",
+    "syntactic_ranking": [
+      "2-Source-Class-Administrator"
+    ],
+    "lexical_ranking": [
+      "2-Source-Class-Administrator"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "2-Source-Class-Administrator",
+        "similarity": 1.0
+      }
+    ],
+    "lexical_scores": [
+      {
+        "entity_id": "2-Source-Class-Administrator",
+        "similarity": 0.9221006724714497
+      }
+    ],
+    "semantic_scores": [],
+    "fused_ranking": [
+      [
+        2.0,
+        [
+          "2-Source-Class-Administrator"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#Administrator"
+    ],
+    "top_candidate_uri": "http://cmt#Administrator"
+  },
+  {
+    "query_entity_id": "7-Target-Class-Assistant",
+    "query_entity_uri": "http://confOf#Assistant",
+    "syntactic_ranking": [
+      "Entity-Dummy"
+    ],
+    "lexical_ranking": [
+      "Entity-Dummy"
+    ],
+    "semantic_ranking": [
+      "Entity-Dummy"
+    ],
+    "syntactic_scores": [],
+    "lexical_scores": [],
+    "semantic_scores": [],
+    "fused_ranking": [],
+    "candidate_uris": [],
+    "top_candidate_uri": null
+  },
+  {
+    "query_entity_id": "8-Target-Class-Author",
+    "query_entity_uri": "http://confOf#Author",
+    "syntactic_ranking": [
+      "4-Source-Class-Author"
+    ],
+    "lexical_ranking": [
+      "4-Source-Class-Author"
+    ],
+    "semantic_ranking": [
+      "4-Source-Class-Author"
+    ],
+    "syntactic_scores": [
+      {
+        "entity_id": "4-Source-Class-Author",
+        "similarity": 1.0
+      }
+    ],
+    "lexical_scores": [
+      {
+        "entity_id": "4-Source-Class-Author",
+        "similarity": 0.9111292905288528
+      }
+    ],
+    "semantic_scores": [
+      {
+        "entity_id": "4-Source-Class-Author",
+        "similarity": 0.9097625613212585
+      }
+    ],
+    "fused_ranking": [
+      [
+        3.0,
+        [
+          "4-Source-Class-Author"
+        ]
+      ]
+    ],
+    "candidate_uris": [
+      "http://cmt#Author"
+    ],
+    "top_candidate_uri": "http://cmt#Author"
+  }
+]

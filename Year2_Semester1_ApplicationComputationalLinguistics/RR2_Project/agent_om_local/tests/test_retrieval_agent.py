@@ -1,17 +1,18 @@
-"""Unit and integration tests for RetrievalAgent and DatabaseManager."""
+"""Unit and integration tests for RetrievalAgent and DatabaseManager (isolated to agent_om_test)."""
 
-from unittest.mock import MagicMock
+import hashlib
 import numpy as np
-import pandas as pd
 import pytest
 
+from src.config import AppConfig
 from src.db.database_manager import DatabaseManager
 from src.agents.retrieval_agent import RetrievalAgent
-from scripts.run_experiments_step6 import ensure_database_populated
+
+TEST_DB_DSN = "postgresql://postgres@127.0.0.1:5432/agent_om_test"
 
 
 class DummyEmbeddings:
-    """Mock embeddings service producing deterministic unit vectors."""
+    """Mock embeddings service producing deterministic unit vectors across runs."""
 
     def __init__(self, dim: int = 4):
         self.dim = dim
@@ -19,8 +20,8 @@ class DummyEmbeddings:
     def embed_documents(self, texts):
         results = []
         for t in texts:
-            # Deterministic vector based on text hash
-            val = float(abs(hash(t)) % 100) / 100.0
+            digest = hashlib.sha256(str(t).encode("utf-8")).digest()
+            val = float(digest[0] % 100) / 100.0
             vec = np.zeros(self.dim, dtype=np.float32)
             vec[0] = val
             vec[1] = 1.0 - val
@@ -35,16 +36,18 @@ class DummyEmbeddings:
 
 
 class TestRetrievalAgent:
-    """Test suite for RetrievalAgent coordination and candidate retrieval."""
-
-    @classmethod
-    def teardown_class(cls):
-        """Restore full 162 CMT-ConfOf entities after integration tests run."""
-        db = DatabaseManager()
-        ensure_database_populated(db)
+    """Test suite for RetrievalAgent coordination and candidate retrieval on isolated test DB."""
 
     @pytest.fixture
-    def test_df(self):
+    def isolated_db(self):
+        """Provision and connect strictly to isolated `agent_om_test` database."""
+        db = DatabaseManager(connection_string=TEST_DB_DSN)
+        db.ensure_database_exists()
+        db.init_extensions()
+        return db
+
+    @pytest.fixture
+    def test_df(self, isolated_db):
         """Create sample features DataFrame matching Agent-OM conventions."""
         data = [
             # Source entities
@@ -82,7 +85,8 @@ class TestRetrievalAgent:
                 "semantic_matching": "Conference has events and members.",
             },
         ]
-        agent = RetrievalAgent()
+        test_cfg = AppConfig.from_profile("experimental", db_name="agent_om_test")
+        agent = RetrievalAgent(db_manager=isolated_db, app_config=test_cfg)
         df = agent.build_features_dataframe(data[:2], data[2:])
         return df
 
@@ -97,14 +101,11 @@ class TestRetrievalAgent:
         ]
         assert test_df["entity_id"].tolist() == expected_ids
 
-    def test_database_ingestion_and_vector_query(self, test_df):
+    def test_database_ingestion_and_vector_query(self, isolated_db, test_df):
         """Verify ingestion into pgvector tables and vector similarity queries."""
-        db = DatabaseManager()
-        db.init_extensions()
-
         dim = 4
         emb_service = DummyEmbeddings(dim=dim)
-        agent = RetrievalAgent(db_manager=db, embeddings_service=emb_service)
+        agent = RetrievalAgent(db_manager=isolated_db, embeddings_service=emb_service)
 
         # Ingest test records
         stats = agent.ingest_features_to_database(test_df, embeddings_service=emb_service, vector_length=dim)
@@ -112,7 +113,7 @@ class TestRetrievalAgent:
         assert stats["syntactic_chunks"] == 4
 
         # Test querying a strategy directly
-        matches = db.query_strategy(
+        matches = isolated_db.query_strategy(
             entity_id="1-Source-Class-Author",
             table_name="syntactic_matching",
             similarity_threshold=0.0,  # Lower threshold for dummy embeddings test
@@ -124,13 +125,12 @@ class TestRetrievalAgent:
         for m in matches:
             assert "Target-Class" in m
 
-    def test_candidate_retrieval_and_rrf_coordination(self, test_df):
+    def test_candidate_retrieval_and_rrf_coordination(self, isolated_db, test_df):
         """Verify complete candidate retrieval and ranking fusion for an entity."""
-        db = DatabaseManager()
         dim = 4
         emb_service = DummyEmbeddings(dim=dim)
         agent = RetrievalAgent(
-            db_manager=db,
+            db_manager=isolated_db,
             embeddings_service=emb_service,
             similarity_threshold=0.0,
             top_k=3,
@@ -152,13 +152,12 @@ class TestRetrievalAgent:
         for cand_uri in result["candidate_uris"]:
             assert "confOf" in cand_uri
 
-    def test_directional_candidates_separation(self, test_df):
+    def test_directional_candidates_separation(self, isolated_db, test_df):
         """Verify that Source->Target and Target->Source candidates are kept strictly separate."""
-        db = DatabaseManager()
         dim = 4
         emb_service = DummyEmbeddings(dim=dim)
         agent = RetrievalAgent(
-            db_manager=db,
+            db_manager=isolated_db,
             embeddings_service=emb_service,
             similarity_threshold=0.0,
             top_k=2,
@@ -183,4 +182,3 @@ class TestRetrievalAgent:
             assert "Target" in res["query_entity_id"]
             for cand in res["candidate_uris"]:
                 assert "cmt" in cand
-

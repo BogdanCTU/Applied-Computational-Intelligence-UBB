@@ -1,0 +1,163 @@
+entity_id,content
+001-Source-Class-Acceptance,acceptance
+002-Source-Class-Administrator,administrator
+003-Source-Class-AssociatedChair,associated chair
+004-Source-Class-Author,author
+005-Source-Class-AuthorNotReviewer,author not reviewer
+006-Source-Class-Bid,bid
+007-Source-Class-Chairman,chairman
+008-Source-Class-Co-author,co author
+009-Source-Class-Conference,conference
+010-Source-Class-ConferenceChair,conference chair
+011-Source-Class-ConferenceMember,conference member
+012-Source-Class-Decision,decision
+013-Source-Class-Document,document
+014-Source-Class-ExternalReviewer,external reviewer
+015-Source-Class-Meta-Review,meta review
+016-Source-Class-Meta-Reviewer,meta reviewer
+017-Source-Class-Paper,paper
+018-Source-Class-PaperAbstract,paper abstract
+019-Source-Class-PaperFullVersion,paper full version
+020-Source-Class-Person,person
+021-Source-Class-Preference,preference
+022-Source-Class-ProgramCommittee,program committee
+023-Source-Class-ProgramCommitteeChair,program committee chair
+024-Source-Class-ProgramCommitteeMember,program committee member
+025-Source-Class-Rejection,rejection
+026-Source-Class-Review,review
+027-Source-Class-Reviewer,reviewer
+028-Source-Class-SubjectArea,subject area
+029-Source-Class-User,user
+030-Source-Property-acceptPaper,accept paper
+031-Source-Property-acceptedBy,accepted by
+032-Source-Property-acceptsHardcopySubmissions,accepts hardcopy submissions
+033-Source-Property-addProgramCommitteeMember,add program committee member
+034-Source-Property-addedBy,added by
+035-Source-Property-adjustBid,adjust bid
+036-Source-Property-adjustedBy,adjusted by
+037-Source-Property-assignExternalReviewer,assign external reviewer
+038-Source-Property-assignReviewer,assign reviewer
+039-Source-Property-assignedByAdministrator,assigned by administrator
+040-Source-Property-assignedByReviewer,assigned by reviewer
+041-Source-Property-assignedTo,assigned to
+042-Source-Property-co-writePaper,co writepaper
+043-Source-Property-date,date
+044-Source-Property-detailsEnteredBy,details entered by
+045-Source-Property-email,email
+046-Source-Property-enableVirtualMeeting,enable virtual meeting
+047-Source-Property-endReview,end review
+048-Source-Property-enterConferenceDetails,enter conference details
+049-Source-Property-enterReviewCriteria,enter review criteria
+050-Source-Property-finalizePaperAssignment,finalize paper assignment
+051-Source-Property-hardcopyMailingManifestsPrintedBy,hardcopy mailing manifests printed by
+052-Source-Property-hasAuthor,has author
+053-Source-Property-hasBeenAssigned,has been assigned
+054-Source-Property-hasBid,has bid
+055-Source-Property-hasCo-author,hasco author
+056-Source-Property-hasConferenceMember,has conference member
+057-Source-Property-hasConflictOfInterest,has conflict of interest
+058-Source-Property-hasDecision,has decision
+059-Source-Property-hasProgramCommitteeMember,has program committee member
+060-Source-Property-hasSubjectArea,has subject area
+061-Source-Property-logoURL,logo url
+062-Source-Property-markConflictOfInterest,mark conflict of interest
+063-Source-Property-maxPapers,max papers
+064-Source-Property-memberOfConference,member of conference
+065-Source-Property-memberOfProgramCommittee,member of program committee
+066-Source-Property-name,name
+067-Source-Property-paperAssignmentFinalizedBy,paper assignment finalized by
+068-Source-Property-paperAssignmentToolsRunBy,paper assignment tools run by
+069-Source-Property-paperID,paper id
+070-Source-Property-printHardcopyMailingManifests,print hardcopy mailing manifests
+071-Source-Property-readByMeta-Reviewer,readbymeta reviewer
+072-Source-Property-readByReviewer,read by reviewer
+073-Source-Property-readPaper,read paper
+074-Source-Property-rejectPaper,reject paper
+075-Source-Property-rejectedBy,rejected by
+076-Source-Property-reviewCriteriaEnteredBy,review criteria entered by
+077-Source-Property-reviewerBiddingStartedBy,reviewer bidding started by
+078-Source-Property-reviewsPerPaper,reviews per paper
+079-Source-Property-runPaperAssignmentTools,run paper assignment tools
+080-Source-Property-setMaxPapers,set max papers
+081-Source-Property-siteURL,site url
+082-Source-Property-startReviewerBidding,start reviewer bidding
+083-Source-Property-submitPaper,submit paper
+084-Source-Property-title,title
+085-Source-Property-virtualMeetingEnabledBy,virtual meeting enabled by
+086-Source-Property-writePaper,write paper
+087-Source-Property-writeReview,write review
+088-Source-Property-writtenBy,written by
+089-Target-Class-Administrative_event,administrative event
+090-Target-Class-Administrator,administrator
+091-Target-Class-Assistant,assistant
+092-Target-Class-Author,author
+093-Target-Class-Banquet,banquet
+094-Target-Class-Camera_Ready_event,camera ready event
+095-Target-Class-Chair_PC,chair pc
+096-Target-Class-City,city
+097-Target-Class-Company,company
+098-Target-Class-Conference,conference
+099-Target-Class-Contribution,contribution
+100-Target-Class-Country,country
+101-Target-Class-Event,event
+102-Target-Class-Member,member
+103-Target-Class-Member_PC,member pc
+104-Target-Class-Organization,organization
+105-Target-Class-Paper,paper
+106-Target-Class-Participant,participant
+107-Target-Class-Person,person
+108-Target-Class-Poster,poster
+109-Target-Class-Reception,reception
+110-Target-Class-Registration_of_participants_event,registration of participants event
+111-Target-Class-Regular,regular
+112-Target-Class-Reviewing_event,reviewing event
+113-Target-Class-Reviewing_results_event,reviewing results event
+114-Target-Class-Scholar,scholar
+115-Target-Class-Science_Worker,science worker
+116-Target-Class-Short_paper,short paper
+117-Target-Class-Social_event,social event
+118-Target-Class-Student,student
+119-Target-Class-Submission_event,submission event
+120-Target-Class-Topic,topic
+121-Target-Class-Trip,trip
+122-Target-Class-Tutorial,tutorial
+123-Target-Class-University,university
+124-Target-Class-Volunteer,volunteer
+125-Target-Class-Working_event,working event
+126-Target-Class-Workshop,workshop
+127-Target-Property-abstract,abstract
+128-Target-Property-contactEmail,contact email
+129-Target-Property-dealsWith,deals with
+130-Target-Property-defaultChoice,default choice
+131-Target-Property-earlyRegistration,early registration
+132-Target-Property-employedBy,employed by
+133-Target-Property-ends_on,ends on
+134-Target-Property-expertOn,expert on
+135-Target-Property-follows,follows
+136-Target-Property-hasAdministrativeEvent,has administrative event
+137-Target-Property-hasCity,has city
+138-Target-Property-hasCountry,has country
+139-Target-Property-hasEmail,has email
+140-Target-Property-hasFax,has fax
+141-Target-Property-hasFirstName,has first name
+142-Target-Property-hasHomePage,has home page
+143-Target-Property-hasKeyword,has keyword
+144-Target-Property-hasPhone,has phone
+145-Target-Property-hasPostalCode,has postal code
+146-Target-Property-hasStreet,has street
+147-Target-Property-hasSurname,has surname
+148-Target-Property-hasTitle,has title
+149-Target-Property-hasTopic,has topic
+150-Target-Property-hasVAT,has vat
+151-Target-Property-has_short_title,has short title
+152-Target-Property-has_title,has title
+153-Target-Property-location,location
+154-Target-Property-maxChoice,max choice
+155-Target-Property-minChoice,min choice
+156-Target-Property-parallel_with,parallel with
+157-Target-Property-remark,remark
+158-Target-Property-reviewes,reviewes
+159-Target-Property-starts_on,starts on
+160-Target-Property-studyAt,study at
+161-Target-Property-writes,writes
+162-Target-Property-writtenBy,written by
