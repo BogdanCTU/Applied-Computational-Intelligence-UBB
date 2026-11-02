@@ -1,0 +1,17 @@
+source_name,target_name,source_uri,target_uri,entity_type,syntactic_sim_s2t,syntactic_sim_t2s,lexical_sim_s2t,lexical_sim_t2s,semantic_sim_s2t,semantic_sim_t2s,max_sim_s2t,max_sim_t2s,min_eligible_threshold_s2t,min_eligible_threshold_t2s,retrievable_at_800_s2t,retrievable_at_800_t2s,reciprocal_retrievable_at_800,unretrieved_reason
+Administrator,Administrator,http://cmt#Administrator,http://confOf#Administrator,Class,1.0,1.0,0.928,0.928,0.6502,0.7393,1.0,1.0,1.0,1.0,True,True,True,Retrievable at tau <= 1.0
+Author,Author,http://cmt#Author,http://confOf#Author,Class,1.0,1.0,0.9576,0.9576,0.9071,0.9071,1.0,1.0,1.0,1.0,True,True,True,Retrievable at tau <= 1.0
+Conference,Conference,http://cmt#Conference,http://confOf#Conference,Class,1.0,1.0,1.0,1.0,0.7562,0.7571,1.0,1.0,1.0,1.0,True,True,True,Retrievable at tau <= 1.0
+ConferenceMember,Member,http://cmt#ConferenceMember,http://confOf#Member,Class,0.7604,0.7604,0.8896,0.8896,0.7137,0.8033,0.8896,0.8896,0.8896,0.8896,True,True,True,Retrievable at tau <= 0.8896
+Paper,Contribution,http://cmt#Paper,http://confOf#Contribution,Class,0.4982,0.4982,0.7583,0.7583,0.9047,0.9047,0.9047,0.9047,0.9047,0.9047,True,True,True,Retrievable at tau <= 0.9047
+PaperFullVersion,Paper,http://cmt#PaperFullVersion,http://confOf#Paper,Class,0.7345,0.7345,0.8397,0.8397,0.7335,0.7335,0.8397,0.8397,0.8397,0.8397,True,True,True,Retrievable at tau <= 0.8397
+Person,Person,http://cmt#Person,http://confOf#Person,Class,1.0,1.0,0.9468,0.9468,0.9235,0.9235,1.0,1.0,1.0,1.0,True,True,True,Retrievable at tau <= 1.0
+ProgramCommitteeChair,Chair_PC,http://cmt#ProgramCommitteeChair,http://confOf#Chair_PC,Class,0.5423,0.5423,0.9229,0.9229,0.7088,0.7406,0.9229,0.9229,0.9229,0.9229,True,True,True,Retrievable at tau <= 0.9229
+ProgramCommitteeMember,Member_PC,http://cmt#ProgramCommitteeMember,http://confOf#Member_PC,Class,0.5378,0.5378,0.8525,0.8525,0.8207,0.8207,0.8525,0.8525,0.8525,0.8525,True,True,True,Retrievable at tau <= 0.8525
+SubjectArea,Topic,http://cmt#SubjectArea,http://confOf#Topic,Class,0.7731,0.7731,0.8256,0.8256,0.7016,0.6936,0.8256,0.8256,0.8256,0.8256,True,True,True,Retrievable at tau <= 0.8256
+email,hasEmail,http://cmt#email,http://confOf#hasEmail,Property,0.8888,0.8888,0.7916,0.7916,0.838,0.838,0.8888,0.8888,0.8888,0.8888,True,True,True,Retrievable at tau <= 0.8888
+hasAuthor,writtenBy,http://cmt#hasAuthor,http://confOf#writtenBy,Property,0.6734,0.6734,0.7624,0.7624,0.7598,0.7598,0.7624,0.7624,0.7624,0.7624,False,False,False,All directional representations < 0.800
+hasBeenAssigned,reviewes,http://cmt#hasBeenAssigned,http://confOf#reviewes,Property,0.4892,0.4892,0.6397,0.6397,0.7775,0.7775,0.7775,0.7775,0.7775,0.7775,False,False,False,All directional representations < 0.800
+hasSubjectArea,dealsWith,http://cmt#hasSubjectArea,http://confOf#dealsWith,Property,0.4865,0.4865,0.7371,0.7371,0.7323,0.7323,0.7371,0.7371,0.7371,0.7371,False,False,False,All directional representations < 0.800
+title,hasTitle,http://cmt#title,http://confOf#hasTitle,Property,0.9292,0.9292,0.8238,0.8238,0.7351,0.7351,0.9292,0.9292,0.9292,0.9292,True,True,True,Retrievable at tau <= 0.9292
+writePaper,writes,http://cmt#writePaper,http://confOf#writes,Property,0.7228,0.7228,0.8192,0.8042,0.8415,0.8415,0.8415,0.8415,0.8415,0.8415,True,True,True,Retrievable at tau <= 0.8415

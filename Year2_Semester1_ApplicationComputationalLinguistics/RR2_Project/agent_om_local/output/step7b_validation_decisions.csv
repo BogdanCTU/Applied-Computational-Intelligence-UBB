@@ -1,0 +1,357 @@
+threshold,direction,source_name,target_name,source_uri,target_uri,bypassed,is_ground_truth,decision,failure_type,prompt,raw_response,duration_ms,prompt_tokens,completion_tokens
+0.875,Source->Target,Administrator,Administrator,http://cmt#Administrator,http://confOf#Administrator,True,True,yes,None,Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.875,Source->Target,Author,Author,http://cmt#Author,http://confOf#Author,True,True,yes,None,Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.875,Source->Target,Co-author,Author,http://cmt#Co-author,http://confOf#Author,False,False,no,None,"Question: Is co author equivalent to author?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, a ""co-author"" is one of multiple individuals who contributed to a paper, whereas an ""author"" can refer to any contributor (including the co-authors) but often implies sole responsibility in casual usage; technically, all co-authors are authors, but not all authors listed on a publication are necessarily co-authors if there is only one.",3042.9062000002887,44,80
+0.875,Source->Target,Conference,Conference,http://cmt#Conference,http://confOf#Conference,True,True,yes,None,Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.875,Source->Target,ConferenceMember,Conference,http://cmt#ConferenceMember,http://confOf#Conference,False,False,no,None,"Question: Is conference member equivalent to conference?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. A ""conference"" refers to the event itself, whereas a ""conference member"" is an individual or entity participating in that event; they are not equivalent concepts.",1372.3425999996834,44,35
+0.875,Source->Target,ConferenceMember,Participant,http://cmt#ConferenceMember,http://confOf#Participant,False,False,no,None,"Question: Is conference member equivalent to participant?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. A ""conference member"" typically refers to an official attendee, organizer, or staff with specific rights or roles, whereas a ""participant"" is a broader term that can include anyone taking part in the event, such as speakers or general attendees, without necessarily implying membership status.",2115.6692000004114,44,57
+0.875,Source->Target,ConferenceMember,Member,http://cmt#ConferenceMember,http://confOf#Member,False,True,no,False Negative (GT Rejected),"Question: Is conference member equivalent to member?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. A ""conference member"" is a specific type of member who participates in a particular conference, whereas ""member"" is a general term that can apply to any group or organization without specifying the context of a conference.",1748.5351000004812,44,45
+0.875,Source->Target,Paper,Paper,http://cmt#Paper,http://confOf#Paper,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.875,Source->Target,Person,Person,http://cmt#Person,http://confOf#Person,True,True,yes,None,Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.875,Source->Target,ProgramCommitteeChair,Chair_PC,http://cmt#ProgramCommitteeChair,http://confOf#Chair_PC,False,True,yes,None,"Question: Is program committee chair equivalent to chair pc?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","Yes. In the context of a conference, ""program committee chair"" and ""chair PC"" refer to the same role; both titles denote the individual responsible for leading the Program Committee (PC) in managing submissions, reviews, and final acceptance decisions.",1995.5570000001899,46,51
+0.875,Source->Target,User,Person,http://cmt#User,http://confOf#Person,False,False,no,None,"Question: Is user equivalent to person?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""user"" typically refers to an attendee, participant, or system operator interacting with specific services or platforms, whereas ""person"" is a general term for any human being; not all persons at a conference are necessarily active users of the conference's digital systems.",2311.598199999935,43,61
+0.875,Source->Target,email,hasEmail,http://cmt#email,http://confOf#hasEmail,False,True,no,False Negative (GT Rejected),"Question: Is email equivalent to has email?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""email"" refers to the electronic messaging system itself, whereas ""has email"" describes an attribute indicating that a person or entity possesses an email address or account. One is a tool/service, and the other is a state or capability.",2301.553899999817,44,57
+0.875,Source->Target,email,contactEmail,http://cmt#email,http://confOf#contactEmail,False,False,no,None,"Question: Is email equivalent to contact email?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""email"" is a general communication method, whereas ""contact email"" specifically refers to the designated address provided for inquiries, registration, or support related to that event.",1673.9183999998204,44,43
+0.875,Source->Target,title,hasTitle,http://cmt#title,http://confOf#hasTitle,False,True,no,False Negative (GT Rejected),"Question: Is title equivalent to has title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of conferences, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is a property or field indicating whether a specific item (like a paper or session) possesses a name. One defines the entity, while the other asserts the existence of that definition for an instance.",2908.3614000001035,44,74
+0.875,Source->Target,title,has_title,http://cmt#title,http://confOf#has_title,False,False,no,None,"Question: Is title equivalent to has title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of conferences, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is a property or field indicating whether a specific item (like a paper or session) possesses a name. One defines the entity, while the other asserts the existence of that definition for an instance.",2658.3018000001175,44,74
+0.875,Source->Target,writtenBy,writtenBy,http://cmt#writtenBy,http://confOf#writtenBy,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.875,Target->Source,Administrator,Administrator,http://confOf#Administrator,http://cmt#Administrator,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.875,Target->Source,Author,Author,http://confOf#Author,http://cmt#Author,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.875,Target->Source,Chair_PC,ProgramCommitteeChair,http://confOf#Chair_PC,http://cmt#ProgramCommitteeChair,False,False,no,None,"Question: Is chair pc equivalent to program committee chair?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. ""Chair PC"" is an abbreviation for Program Committee Chair, but ""chair pc"" (lowercase) could be misinterpreted as referring to a chair of a Personal Computer or another unrelated entity; however, in the specific context of academic conferences, they refer to the same role if capitalized correctly. Strictly speaking, the lowercase version is not standard terminology for the role.",2884.9073000001226,46,77
+0.875,Target->Source,Conference,Conference,http://confOf#Conference,http://cmt#Conference,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.875,Target->Source,Contribution,Paper,http://confOf#Contribution,http://cmt#Paper,False,False,no,None,"Question: Is contribution equivalent to paper?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, a ""contribution"" refers to any intellectual input provided by an author (such as a research paper, poster, or presentation), whereas a ""paper"" is specifically the written document that details that contribution. While every paper is typically a contribution, not all contributions are necessarily full papers (e.g., short communications or posters).",2718.8394000004337,43,75
+0.875,Target->Source,Member,ConferenceMember,http://confOf#Member,http://cmt#ConferenceMember,False,False,no,None,"Question: Is member equivalent to conference member?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, a ""member"" typically refers to an individual who belongs to the organizing body or association, whereas a ""conference member"" specifically denotes someone registered to attend and participate in that particular event. The terms are not equivalent because one describes general organizational status while the other describes specific event participation.",2469.8935000005804,44,66
+0.875,Target->Source,Paper,Paper,http://confOf#Paper,http://cmt#Paper,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.875,Target->Source,Participant,ConferenceMember,http://confOf#Participant,http://cmt#ConferenceMember,False,False,no,None,"Question: Is participant equivalent to conference member?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. A ""participant"" is a broad term that can include anyone involved in an event (such as speakers, exhibitors, or attendees), whereas a ""conference member"" specifically refers to individuals who have joined the conference organization, often implying membership in a professional association or holding a specific status within the conference structure.",2356.594099999711,44,64
+0.875,Target->Source,Person,Person,http://confOf#Person,http://cmt#Person,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.875,Target->Source,Short_paper,Paper,http://confOf#Short_paper,http://cmt#Paper,False,False,no,None,"Question: Is short paper equivalent to paper?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""short paper"" refers to a specific type of contribution that is significantly shorter in length and scope than a full-length research paper, often resulting in less detailed results and discussion.",1752.5698999997985,44,45
+0.875,Target->Source,contactEmail,email,http://confOf#contactEmail,http://cmt#email,False,False,no,None,"Question: Is contact email equivalent to email?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""contact email"" refers specifically to an address for administrative inquiries (such as registration, venue details, or speaker coordination), whereas ""email"" is the general term for any electronic mail communication, including personal correspondence between attendees.",2142.1344000000317,44,54
+0.875,Target->Source,hasEmail,email,http://confOf#hasEmail,http://cmt#email,False,False,no,None,"Question: Is has email equivalent to email?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""has email"" typically refers to possessing an email address or account, whereas ""email"" is the action of sending a message or the system itself; they are not equivalent in meaning or function.",1888.4539000000586,44,49
+0.875,Target->Source,hasTitle,title,http://confOf#hasTitle,http://cmt#title,False,False,no,None,"Question: Is has title equivalent to title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is not a standard equivalent term; it appears to be a grammatical construction or a property label rather than a synonym for the event's name.",2395.056000000295,44,65
+0.875,Target->Source,has_title,title,http://confOf#has_title,http://cmt#title,False,False,no,None,"Question: Is has title equivalent to title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is not a standard equivalent term; it appears to be a grammatical construction or a property label rather than a synonym for the event's name.",2382.322700000259,44,65
+0.875,Target->Source,writtenBy,writtenBy,http://confOf#writtenBy,http://cmt#writtenBy,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.85,Source->Target,Administrator,Administrator,http://cmt#Administrator,http://confOf#Administrator,True,True,yes,None,Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.85,Source->Target,Author,Author,http://cmt#Author,http://confOf#Author,True,True,yes,None,Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.85,Source->Target,Co-author,Author,http://cmt#Co-author,http://confOf#Author,False,False,no,None,"Question: Is co author equivalent to author?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, a ""co-author"" is one of multiple individuals who contributed to a paper, whereas an ""author"" can refer to any contributor (including the co-authors) but often implies sole responsibility in casual usage; technically, all co-authors are authors, but not all authors listed on a publication are necessarily co-authors if there is only one.",2985.921899999994,44,80
+0.85,Source->Target,Co-author,Contribution,http://cmt#Co-author,http://confOf#Contribution,False,False,no,None,"Question: Is co author equivalent to contribution?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. Being a co-author indicates shared responsibility for creating and writing a paper, whereas ""contribution"" is a broader term that can include various roles such as data collection, analysis, funding, or supervision without necessarily resulting in authorship credit.",1889.666799999759,44,50
+0.85,Source->Target,Conference,Conference,http://cmt#Conference,http://confOf#Conference,True,True,yes,None,Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.85,Source->Target,ConferenceMember,Person,http://cmt#ConferenceMember,http://confOf#Person,False,False,yes,False Positive (Non-GT Accepted),"Question: Is conference member equivalent to person?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","Yes. A conference member is a specific type of person who participates in a conference, making them equivalent to a person within that context.",1122.4214000003485,44,28
+0.85,Source->Target,Paper,Paper,http://cmt#Paper,http://confOf#Paper,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.85,Source->Target,Person,Person,http://cmt#Person,http://confOf#Person,True,True,yes,None,Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.85,Source->Target,ProgramCommitteeChair,Chair_PC,http://cmt#ProgramCommitteeChair,http://confOf#Chair_PC,False,True,yes,None,"Question: Is program committee chair equivalent to chair pc?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","Yes. In the context of a conference, ""program committee chair"" and ""chair PC"" refer to the same role; both titles denote the individual responsible for leading the Program Committee (PC) in managing submissions, reviews, and final acceptance decisions.",2046.660900000461,46,51
+0.85,Source->Target,ProgramCommitteeMember,Member_PC,http://cmt#ProgramCommitteeMember,http://confOf#Member_PC,False,True,yes,None,"Question: Is program committee member equivalent to member pc?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","Yes. In the context of academic conferences, ""program committee member"" and ""member PC"" refer to the same role; both terms describe an individual selected to review submissions and assist in the selection process for the conference proceedings.",1757.9482000001008,46,46
+0.85,Source->Target,Review,Reviewing_event,http://cmt#Review,http://confOf#Reviewing_event,False,False,no,None,"Question: Is review equivalent to reviewing event?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""review"" typically refers to an academic peer-review process for papers or proposals, whereas ""reviewing an event"" implies providing feedback or commentary on the conference proceedings itself (e.g., a post-conference report). They are distinct activities with different purposes.",2241.6370000000825,44,61
+0.85,Source->Target,Review,Reviewing_results_event,http://cmt#Review,http://confOf#Reviewing_results_event,False,False,no,None,"Question: Is review equivalent to reviewing results event?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In a conference context, ""review"" typically refers to the evaluation of submitted papers (peer review), whereas ""reviewing results"" specifically denotes the presentation and discussion of findings at an event like a poster session or workshop; they are distinct activities with different purposes.",2062.0065000002796,45,55
+0.85,Source->Target,User,Person,http://cmt#User,http://confOf#Person,False,False,no,None,"Question: Is user equivalent to person?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""user"" typically refers to an attendee, participant, or system operator interacting with specific services or platforms, whereas ""person"" is a general term for any human being; not all persons at a conference are necessarily active users of the conference's digital systems.",2288.962300000094,43,61
+0.85,Source->Target,User,Participant,http://cmt#User,http://confOf#Participant,False,False,no,None,"Question: Is user equivalent to participant?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, a ""user"" typically refers to someone who utilizes the conference's technology or platform (like an attendee logging into a system), whereas a ""participant"" specifically denotes someone actively engaged in the event's proceedings, such as a speaker, panelist, or registered attendee. While all participants may be users, not all users are necessarily active participants in the event itself.",2910.3187999999136,43,82
+0.85,Source->Target,email,hasEmail,http://cmt#email,http://confOf#hasEmail,False,True,no,False Negative (GT Rejected),"Question: Is email equivalent to has email?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""email"" refers to the electronic messaging system itself, whereas ""has email"" describes an attribute indicating that a person or entity possesses an email address or account. One is a tool/service, and the other is a state or capability.",2322.5007999999434,44,57
+0.85,Source->Target,email,contactEmail,http://cmt#email,http://confOf#contactEmail,False,False,no,None,"Question: Is email equivalent to contact email?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""email"" is a general communication method, whereas ""contact email"" specifically refers to the designated address provided for inquiries, registration, or support related to that event.",1664.5924000004015,44,43
+0.85,Source->Target,name,has_title,http://cmt#name,http://confOf#has_title,False,False,no,None,"Question: Is name equivalent to has title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""name"" typically refers to the title of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is a property or attribute indicating that an entity possesses a specific name or designation. They are not equivalent; one is the value, and the other is a relationship or characteristic describing that value.",2840.5516000002535,44,74
+0.85,Source->Target,reviewCriteriaEnteredBy,reviewes,http://cmt#reviewCriteriaEnteredBy,http://confOf#reviewes,False,False,no,None,"Question: Is review criteria entered by equivalent to reviewes?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. ""Review criteria"" refers to the specific standards, guidelines, or metrics used to evaluate submissions (e.g., novelty, technical soundness), whereas ""reviewers"" are the individuals assigned to perform the evaluation. They represent different concepts: one is a set of rules, and the other is a group of people.",2408.408999999665,47,66
+0.85,Source->Target,title,hasTitle,http://cmt#title,http://confOf#hasTitle,False,True,no,False Negative (GT Rejected),"Question: Is title equivalent to has title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of conferences, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is a property or field indicating whether a specific item (like a paper or session) possesses a name. One defines the entity, while the other asserts the existence of that definition for an instance.",2681.6704000002574,44,74
+0.85,Source->Target,title,has_title,http://cmt#title,http://confOf#has_title,False,False,no,None,"Question: Is title equivalent to has title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of conferences, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is a property or field indicating whether a specific item (like a paper or session) possesses a name. One defines the entity, while the other asserts the existence of that definition for an instance.",2622.275300000183,44,74
+0.85,Source->Target,writePaper,writtenBy,http://cmt#writePaper,http://confOf#writtenBy,False,False,no,None,"Question: Is write paper equivalent to written by?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. ""Write paper"" is an active verb phrase meaning to compose a document, whereas ""written by"" is a passive participle phrase used to attribute authorship to someone who has already completed the action. They describe different grammatical functions and stages of the process.",2046.2547000006452,45,55
+0.85,Source->Target,writtenBy,writtenBy,http://cmt#writtenBy,http://confOf#writtenBy,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.85,Target->Source,Administrator,Administrator,http://confOf#Administrator,http://cmt#Administrator,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.85,Target->Source,Author,Author,http://confOf#Author,http://cmt#Author,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.85,Target->Source,Chair_PC,ProgramCommitteeChair,http://confOf#Chair_PC,http://cmt#ProgramCommitteeChair,False,False,no,None,"Question: Is chair pc equivalent to program committee chair?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. ""Chair PC"" is an abbreviation for Program Committee Chair, but ""chair pc"" (lowercase) could be misinterpreted as referring to a chair of a Personal Computer or another unrelated entity; however, in the specific context of academic conferences, they refer to the same role if capitalized correctly. Strictly speaking, the lowercase version is not standard terminology for the role.",2755.5732999999236,46,77
+0.85,Target->Source,Conference,Conference,http://confOf#Conference,http://cmt#Conference,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.85,Target->Source,Contribution,Paper,http://confOf#Contribution,http://cmt#Paper,False,False,no,None,"Question: Is contribution equivalent to paper?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, a ""contribution"" refers to any intellectual input provided by an author (such as a research paper, poster, or presentation), whereas a ""paper"" is specifically the written document that details that contribution. While every paper is typically a contribution, not all contributions are necessarily full papers (e.g., short communications or posters).",2695.0630999999703,43,75
+0.85,Target->Source,Contribution,Author,http://confOf#Contribution,http://cmt#Author,False,False,no,None,"Question: Is contribution equivalent to author?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""contribution"" refers to the work submitted (such as a paper, poster, or presentation), whereas ""author"" refers to the individual(s) who created that work. One is the content itself, and the other is the person responsible for it.",2261.453000000074,43,61
+0.85,Target->Source,Contribution,Co-author,http://confOf#Contribution,http://cmt#Co-author,False,False,no,None,"Question: Is contribution equivalent to co author?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In a conference context, ""contribution"" refers broadly to any intellectual input (such as a poster, workshop talk, or panel discussion), whereas ""co-author"" specifically denotes an individual who has formally signed the paper and is credited with authorship on that specific submission. One can make a contribution without being listed as a co-author, and one can be a co-author based solely on their role in writing the paper regardless of other contributions made to the conference.",3287.5334000000294,44,95
+0.85,Target->Source,Event,Person,http://confOf#Event,http://cmt#Person,False,False,no,None,"Question: Is event equivalent to person?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, an ""event"" refers to the gathering itself (the occurrence), while a ""person"" refers to an individual attendee, speaker, or organizer; they are distinct entities with different roles and definitions.",1866.3445000001957,43,49
+0.85,Target->Source,Member,ConferenceMember,http://confOf#Member,http://cmt#ConferenceMember,False,False,no,None,"Question: Is member equivalent to conference member?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, a ""member"" typically refers to an individual who belongs to the organizing body or association, whereas a ""conference member"" specifically denotes someone registered to attend and participate in that particular event. The terms are not equivalent because one describes general organizational status while the other describes specific event participation.",2422.4145999996836,44,66
+0.85,Target->Source,Member_PC,ConferenceMember,http://confOf#Member_PC,http://cmt#ConferenceMember,False,False,no,None,"Question: Is member pc equivalent to conference member?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""member"" typically refers to an individual participant or attendee, whereas ""pc"" (personal computer) is a hardware device used by members; they are not equivalent concepts.",1703.538099999605,45,44
+0.85,Target->Source,Member_PC,ProgramCommitteeMember,http://confOf#Member_PC,http://cmt#ProgramCommitteeMember,False,False,yes,False Positive (Non-GT Accepted),"Question: Is member pc equivalent to program committee member?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","Yes. In the context of academic conferences, ""PC"" is the standard abbreviation for ""Program Committee,"" so a ""member PC"" refers to a Program Committee member who reviews submissions and helps select papers for publication.",1685.6345999995028,46,44
+0.85,Target->Source,Paper,Paper,http://confOf#Paper,http://cmt#Paper,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.85,Target->Source,Participant,ConferenceMember,http://confOf#Participant,http://cmt#ConferenceMember,False,False,no,None,"Question: Is participant equivalent to conference member?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. A ""participant"" is a broad term that can include anyone involved in an event (such as speakers, exhibitors, or attendees), whereas a ""conference member"" specifically refers to individuals who have joined the conference organization, often implying membership in a professional association or holding a specific status within the conference structure.",2361.7395000001125,44,64
+0.85,Target->Source,Participant,User,http://confOf#Participant,http://cmt#User,False,False,no,None,"Question: Is participant equivalent to user?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In a conference context, a ""participant"" refers to anyone attending the event (including speakers, panelists, and attendees), whereas a ""user"" typically refers specifically to an individual interacting with a digital platform or system associated with the conference.",1929.5471999994334,43,51
+0.85,Target->Source,Participant,Person,http://confOf#Participant,http://cmt#Person,False,False,yes,False Positive (Non-GT Accepted),"Question: Is participant equivalent to person?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","Yes. In the context of a conference, a ""participant"" is a specific type of ""person"" who is actively involved in the event, such as attending sessions, presenting, or networking.",1535.5627000008099,43,40
+0.85,Target->Source,Person,Person,http://confOf#Person,http://cmt#Person,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.85,Target->Source,Reviewing_event,Review,http://confOf#Reviewing_event,http://cmt#Review,False,False,no,None,"Question: Is reviewing event equivalent to review?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""reviewing an event"" typically refers to evaluating the overall proceedings, logistics, or success of the entire gathering, whereas ""review"" is a broader term that can also refer to critiquing specific sessions, papers, or presentations within that event.",2301.8855999998777,44,60
+0.85,Target->Source,Reviewing_results_event,Review,http://confOf#Reviewing_results_event,http://cmt#Review,False,False,no,None,"Question: Is reviewing results event equivalent to review?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""reviewing results"" refers to analyzing specific data or outcomes from an experiment or study, whereas ""review"" typically refers to the formal evaluation process (peer review) conducted by experts to assess the quality and validity of a submitted paper before it is accepted for presentation or publication.",2377.4153000003935,45,65
+0.85,Target->Source,Short_paper,Paper,http://confOf#Short_paper,http://cmt#Paper,False,False,no,None,"Question: Is short paper equivalent to paper?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""short paper"" refers to a specific type of contribution that is significantly shorter in length and scope than a full-length research paper, often resulting in less detailed results and discussion.",1718.6314000000493,44,45
+0.85,Target->Source,Social_event,Conference,http://confOf#Social_event,http://cmt#Conference,False,False,no,None,"Question: Is social event equivalent to conference?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. A conference is a specific type of formal gathering focused on discussion, education, or professional exchange, whereas ""social event"" is a broader category that includes informal gatherings like parties or mixers; not all social events are conferences, and not all conferences are purely social events.",2127.1914999997534,44,57
+0.85,Target->Source,contactEmail,email,http://confOf#contactEmail,http://cmt#email,False,False,no,None,"Question: Is contact email equivalent to email?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""contact email"" refers specifically to an address for administrative inquiries (such as registration, venue details, or speaker coordination), whereas ""email"" is the general term for any electronic mail communication, including personal correspondence between attendees.",2030.661400000099,44,54
+0.85,Target->Source,hasEmail,email,http://confOf#hasEmail,http://cmt#email,False,False,no,None,"Question: Is has email equivalent to email?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""has email"" typically refers to possessing an email address or account, whereas ""email"" is the action of sending a message or the system itself; they are not equivalent in meaning or function.",1885.1862999999867,44,49
+0.85,Target->Source,hasTitle,title,http://confOf#hasTitle,http://cmt#title,False,False,no,None,"Question: Is has title equivalent to title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is not a standard equivalent term; it appears to be a grammatical construction or a property label rather than a synonym for the event's name.",2401.6239000002315,44,65
+0.85,Target->Source,has_title,name,http://confOf#has_title,http://cmt#name,False,False,no,None,"Question: Is has title equivalent to name?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""title"" typically refers to the official name of the event itself (e.g., ""International AI Conference""), whereas ""name"" is a broader term that could refer to the title, but also to the names of individual speakers, organizers, or attendees. They are not strictly equivalent.",2481.7708000000493,44,67
+0.85,Target->Source,has_title,title,http://confOf#has_title,http://cmt#title,False,False,no,None,"Question: Is has title equivalent to title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is not a standard equivalent term; it appears to be a grammatical construction or a property label rather than a synonym for the event's name.",2414.0989999996236,44,65
+0.85,Target->Source,reviewes,reviewCriteriaEnteredBy,http://confOf#reviewes,http://cmt#reviewCriteriaEnteredBy,False,False,no,None,"Question: Is reviewes equivalent to review criteria entered by?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. ""Reviewees"" refers to the individuals or papers being evaluated, whereas ""review criteria entered by"" refers to the specific standards or guidelines provided by the reviewers to assess those submissions. They represent different entities within the review process rather than equivalent concepts.",1982.009499999549,47,52
+0.85,Target->Source,writtenBy,writtenBy,http://confOf#writtenBy,http://cmt#writtenBy,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.9,Source->Target,Administrator,Administrator,http://cmt#Administrator,http://confOf#Administrator,True,True,yes,None,Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.9,Source->Target,Author,Author,http://cmt#Author,http://confOf#Author,True,True,yes,None,Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.9,Source->Target,Conference,Conference,http://cmt#Conference,http://confOf#Conference,True,True,yes,None,Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.9,Source->Target,Paper,Paper,http://cmt#Paper,http://confOf#Paper,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.9,Source->Target,Person,Person,http://cmt#Person,http://confOf#Person,True,True,yes,None,Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.9,Source->Target,ProgramCommitteeChair,Chair_PC,http://cmt#ProgramCommitteeChair,http://confOf#Chair_PC,False,True,yes,None,"Question: Is program committee chair equivalent to chair pc?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","Yes. In the context of a conference, ""program committee chair"" and ""chair PC"" refer to the same role; both titles denote the individual responsible for leading the Program Committee (PC) in managing submissions, reviews, and final acceptance decisions.",2106.147100000271,46,51
+0.9,Source->Target,User,Person,http://cmt#User,http://confOf#Person,False,False,no,None,"Question: Is user equivalent to person?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""user"" typically refers to an attendee, participant, or system operator interacting with specific services or platforms, whereas ""person"" is a general term for any human being; not all persons at a conference are necessarily active users of the conference's digital systems.",2259.140099999968,43,61
+0.9,Source->Target,title,hasTitle,http://cmt#title,http://confOf#hasTitle,False,True,no,False Negative (GT Rejected),"Question: Is title equivalent to has title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of conferences, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is a property or field indicating whether a specific item (like a paper or session) possesses a name. One defines the entity, while the other asserts the existence of that definition for an instance.",2893.7490999996953,44,74
+0.9,Source->Target,title,has_title,http://cmt#title,http://confOf#has_title,False,False,no,None,"Question: Is title equivalent to has title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of conferences, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is a property or field indicating whether a specific item (like a paper or session) possesses a name. One defines the entity, while the other asserts the existence of that definition for an instance.",2636.194599999726,44,74
+0.9,Source->Target,writtenBy,writtenBy,http://cmt#writtenBy,http://confOf#writtenBy,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.9,Target->Source,Administrator,Administrator,http://confOf#Administrator,http://cmt#Administrator,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.9,Target->Source,Author,Author,http://confOf#Author,http://cmt#Author,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.9,Target->Source,Chair_PC,ProgramCommitteeChair,http://confOf#Chair_PC,http://cmt#ProgramCommitteeChair,False,False,no,None,"Question: Is chair pc equivalent to program committee chair?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. ""Chair PC"" is an abbreviation for Program Committee Chair, but ""chair pc"" (lowercase) could be misinterpreted as referring to a chair of a Personal Computer or another unrelated entity; however, in the specific context of academic conferences, they refer to the same role if capitalized correctly. Strictly speaking, the lowercase version is not standard terminology for the role.",2841.1222999993697,46,77
+0.9,Target->Source,Conference,Conference,http://confOf#Conference,http://cmt#Conference,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.9,Target->Source,Contribution,Paper,http://confOf#Contribution,http://cmt#Paper,False,False,no,None,"Question: Is contribution equivalent to paper?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, a ""contribution"" refers to any intellectual input provided by an author (such as a research paper, poster, or presentation), whereas a ""paper"" is specifically the written document that details that contribution. While every paper is typically a contribution, not all contributions are necessarily full papers (e.g., short communications or posters).",2725.0502000006236,43,75
+0.9,Target->Source,Paper,Paper,http://confOf#Paper,http://cmt#Paper,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.9,Target->Source,Person,Person,http://confOf#Person,http://cmt#Person,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0
+0.9,Target->Source,hasTitle,title,http://confOf#hasTitle,http://cmt#title,False,False,no,None,"Question: Is has title equivalent to title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is not a standard equivalent term; it appears to be a grammatical construction or a property label rather than a synonym for the event's name.",2598.2879000002868,44,65
+0.9,Target->Source,has_title,title,http://confOf#has_title,http://cmt#title,False,False,no,None,"Question: Is has title equivalent to title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is not a standard equivalent term; it appears to be a grammatical construction or a property label rather than a synonym for the event's name.",2398.5821999995096,44,65
+0.9,Target->Source,writtenBy,writtenBy,http://confOf#writtenBy,http://cmt#writtenBy,True,False,yes,False Positive (Non-GT Accepted),Bypassed by exact-name rule,BYPASSED: Identical cleaned names,0.0,0,0

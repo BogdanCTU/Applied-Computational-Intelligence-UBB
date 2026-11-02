@@ -1,0 +1,261 @@
+source_uri,target_uri,source_name,target_name,cleaned_source_name,cleaned_target_name,bypassed,direction,prompt,raw_response,decision,duration_ms,prompt_tokens,completion_tokens,total_tokens,error_message,experiment_id
+http://cmt#Administrator,http://confOf#Administrator,Administrator,Administrator,administrator,administrator,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E1
+http://cmt#Author,http://confOf#Author,Author,Author,author,author,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E1
+http://cmt#Conference,http://confOf#Conference,Conference,Conference,conference,conference,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E1
+http://cmt#Paper,http://confOf#Paper,Paper,Paper,paper,paper,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E1
+http://cmt#Person,http://confOf#Person,Person,Person,person,person,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E1
+http://cmt#ProgramCommitteeChair,http://confOf#Chair_PC,ProgramCommitteeChair,Chair_PC,program committee chair,chair pc,False,Source->Target,"Question: Is program committee chair equivalent to chair pc?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","Yes. In the context of a conference, ""program committee chair"" and ""chair PC"" refer to the same role; both titles denote the individual responsible for leading the Program Committee (PC) in managing submissions, reviews, and final acceptance decisions.",yes,2151.061800000207,46,51,97,,E1
+http://cmt#User,http://confOf#Person,User,Person,user,person,False,Source->Target,"Question: Is user equivalent to person?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""user"" typically refers to an attendee, participant, or system operator interacting with specific services or platforms, whereas ""person"" is a general term for any human being; not all persons at a conference are necessarily active users of the conference's digital systems.",no,2351.9901999998183,43,61,104,,E1
+http://cmt#title,http://confOf#hasTitle,title,hasTitle,title,has title,False,Source->Target,"Question: Is title equivalent to has title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of conferences, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is a property or field indicating whether a specific item (like a paper or session) possesses a name. One defines the entity, while the other asserts the existence of that definition for an instance.",no,2942.0381999998426,44,74,118,,E1
+http://cmt#title,http://confOf#has_title,title,has_title,title,has title,False,Source->Target,"Question: Is title equivalent to has title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of conferences, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is a property or field indicating whether a specific item (like a paper or session) possesses a name. One defines the entity, while the other asserts the existence of that definition for an instance.",no,2702.090699999644,44,74,118,,E1
+http://cmt#writtenBy,http://confOf#writtenBy,writtenBy,writtenBy,written by,written by,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E1
+http://confOf#Administrator,http://cmt#Administrator,Administrator,Administrator,administrator,administrator,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E1
+http://confOf#Author,http://cmt#Author,Author,Author,author,author,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E1
+http://confOf#Chair_PC,http://cmt#ProgramCommitteeChair,Chair_PC,ProgramCommitteeChair,chair pc,program committee chair,False,Target->Source,"Question: Is chair pc equivalent to program committee chair?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. ""Chair PC"" is an abbreviation for Program Committee Chair, but ""chair pc"" (lowercase) could be misinterpreted as referring to a chair of a Personal Computer or another unrelated entity; however, in the specific context of academic conferences, they refer to the same role if capitalized correctly. Strictly speaking, the lowercase version is not standard terminology for the role.",no,2826.177799999641,46,77,123,,E1
+http://confOf#Conference,http://cmt#Conference,Conference,Conference,conference,conference,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E1
+http://confOf#Contribution,http://cmt#Paper,Contribution,Paper,contribution,paper,False,Target->Source,"Question: Is contribution equivalent to paper?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, a ""contribution"" refers to any intellectual input provided by an author (such as a research paper, poster, or presentation), whereas a ""paper"" is specifically the written document that details that contribution. While every paper is typically a contribution, not all contributions are necessarily full papers (e.g., short communications or posters).",no,2817.6296000001457,43,75,118,,E1
+http://confOf#Paper,http://cmt#Paper,Paper,Paper,paper,paper,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E1
+http://confOf#Person,http://cmt#Person,Person,Person,person,person,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E1
+http://confOf#hasTitle,http://cmt#title,hasTitle,title,has title,title,False,Target->Source,"Question: Is has title equivalent to title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is not a standard equivalent term; it appears to be a grammatical construction or a property label rather than a synonym for the event's name.",no,2599.9735000004875,44,65,109,,E1
+http://confOf#has_title,http://cmt#title,has_title,title,has title,title,False,Target->Source,"Question: Is has title equivalent to title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is not a standard equivalent term; it appears to be a grammatical construction or a property label rather than a synonym for the event's name.",no,2392.4762000006012,44,65,109,,E1
+http://confOf#writtenBy,http://cmt#writtenBy,writtenBy,writtenBy,written by,written by,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E1
+http://cmt#Administrator,http://confOf#Administrator,Administrator,Administrator,administrator,administrator,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E6
+http://cmt#Author,http://confOf#Author,Author,Author,author,author,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E6
+http://cmt#Conference,http://confOf#Conference,Conference,Conference,conference,conference,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E6
+http://cmt#Paper,http://confOf#Paper,Paper,Paper,paper,paper,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E6
+http://cmt#Person,http://confOf#Person,Person,Person,person,person,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E6
+http://cmt#ProgramCommitteeChair,http://confOf#Chair_PC,ProgramCommitteeChair,Chair_PC,program committee chair,chair pc,False,Source->Target,"Question: Is program committee chair equivalent to chair pc?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","Yes. In the context of a conference, ""program committee chair"" and ""chair PC"" refer to the same role; both titles denote the individual responsible for leading the Program Committee (PC) in managing submissions, reviews, and final acceptance decisions.",yes,2087.5969999997324,46,51,97,,E6
+http://cmt#User,http://confOf#Person,User,Person,user,person,False,Source->Target,"Question: Is user equivalent to person?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""user"" typically refers to an attendee, participant, or system operator interacting with specific services or platforms, whereas ""person"" is a general term for any human being; not all persons at a conference are necessarily active users of the conference's digital systems.",no,2340.172799999891,43,61,104,,E6
+http://cmt#title,http://confOf#hasTitle,title,hasTitle,title,has title,False,Source->Target,"Question: Is title equivalent to has title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of conferences, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is a property or field indicating whether a specific item (like a paper or session) possesses a name. One defines the entity, while the other asserts the existence of that definition for an instance.",no,2835.813899999266,44,74,118,,E6
+http://cmt#title,http://confOf#has_title,title,has_title,title,has title,False,Source->Target,"Question: Is title equivalent to has title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of conferences, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is a property or field indicating whether a specific item (like a paper or session) possesses a name. One defines the entity, while the other asserts the existence of that definition for an instance.",no,2650.0506000002133,44,74,118,,E6
+http://cmt#writtenBy,http://confOf#writtenBy,writtenBy,writtenBy,written by,written by,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E6
+http://confOf#Administrator,http://cmt#Administrator,Administrator,Administrator,administrator,administrator,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E6
+http://confOf#Author,http://cmt#Author,Author,Author,author,author,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E6
+http://confOf#Chair_PC,http://cmt#ProgramCommitteeChair,Chair_PC,ProgramCommitteeChair,chair pc,program committee chair,False,Target->Source,"Question: Is chair pc equivalent to program committee chair?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. ""Chair PC"" is an abbreviation for Program Committee Chair, but ""chair pc"" (lowercase) could be misinterpreted as referring to a chair of a Personal Computer or another unrelated entity; however, in the specific context of academic conferences, they refer to the same role if capitalized correctly. Strictly speaking, the lowercase version is not standard terminology for the role.",no,2731.422500000008,46,77,123,,E6
+http://confOf#Conference,http://cmt#Conference,Conference,Conference,conference,conference,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E6
+http://confOf#Contribution,http://cmt#Paper,Contribution,Paper,contribution,paper,False,Target->Source,"Question: Is contribution equivalent to paper?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, a ""contribution"" refers to any intellectual input provided by an author (such as a research paper, poster, or presentation), whereas a ""paper"" is specifically the written document that details that contribution. While every paper is typically a contribution, not all contributions are necessarily full papers (e.g., short communications or posters).",no,2721.0933999995177,43,75,118,,E6
+http://confOf#Paper,http://cmt#Paper,Paper,Paper,paper,paper,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E6
+http://confOf#Person,http://cmt#Person,Person,Person,person,person,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E6
+http://confOf#hasTitle,http://cmt#title,hasTitle,title,has title,title,False,Target->Source,"Question: Is has title equivalent to title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is not a standard equivalent term; it appears to be a grammatical construction or a property label rather than a synonym for the event's name.",no,2618.8003000006574,44,65,109,,E6
+http://confOf#has_title,http://cmt#title,has_title,title,has title,title,False,Target->Source,"Question: Is has title equivalent to title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is not a standard equivalent term; it appears to be a grammatical construction or a property label rather than a synonym for the event's name.",no,2375.0100999995993,44,65,109,,E6
+http://confOf#writtenBy,http://cmt#writtenBy,writtenBy,writtenBy,written by,written by,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E6
+http://cmt#Administrator,http://confOf#Administrator,Administrator,Administrator,administrator,administrator,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run1
+http://cmt#Author,http://confOf#Author,Author,Author,author,author,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run1
+http://cmt#Conference,http://confOf#Conference,Conference,Conference,conference,conference,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run1
+http://cmt#Paper,http://confOf#Paper,Paper,Paper,paper,paper,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run1
+http://cmt#Person,http://confOf#Person,Person,Person,person,person,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run1
+http://cmt#ProgramCommitteeChair,http://confOf#Chair_PC,ProgramCommitteeChair,Chair_PC,program committee chair,chair pc,False,Source->Target,"Question: Is program committee chair equivalent to chair pc?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","Yes. In the context of a conference, ""program committee chair"" and ""chair PC"" refer to the same role; both titles denote the individual responsible for leading the Program Committee (PC) in managing submissions, reviews, and final acceptance decisions.",yes,2077.146399999947,46,51,97,,E7_Run1
+http://cmt#User,http://confOf#Person,User,Person,user,person,False,Source->Target,"Question: Is user equivalent to person?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""user"" typically refers to an attendee, participant, or system operator interacting with specific services or platforms, whereas ""person"" is a general term for any human being; not all persons at a conference are necessarily active users of the conference's digital systems.",no,2285.489100000632,43,61,104,,E7_Run1
+http://cmt#title,http://confOf#hasTitle,title,hasTitle,title,has title,False,Source->Target,"Question: Is title equivalent to has title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of conferences, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is a property or field indicating whether a specific item (like a paper or session) possesses a name. One defines the entity, while the other asserts the existence of that definition for an instance.",no,2881.3139999992927,44,74,118,,E7_Run1
+http://cmt#title,http://confOf#has_title,title,has_title,title,has title,False,Source->Target,"Question: Is title equivalent to has title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of conferences, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is a property or field indicating whether a specific item (like a paper or session) possesses a name. One defines the entity, while the other asserts the existence of that definition for an instance.",no,2650.0350999995135,44,74,118,,E7_Run1
+http://cmt#writtenBy,http://confOf#writtenBy,writtenBy,writtenBy,written by,written by,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run1
+http://confOf#Administrator,http://cmt#Administrator,Administrator,Administrator,administrator,administrator,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run1
+http://confOf#Author,http://cmt#Author,Author,Author,author,author,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run1
+http://confOf#Chair_PC,http://cmt#ProgramCommitteeChair,Chair_PC,ProgramCommitteeChair,chair pc,program committee chair,False,Target->Source,"Question: Is chair pc equivalent to program committee chair?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. ""Chair PC"" is an abbreviation for Program Committee Chair, but ""chair pc"" (lowercase) could be misinterpreted as referring to a chair of a Personal Computer or another unrelated entity; however, in the specific context of academic conferences, they refer to the same role if capitalized correctly. Strictly speaking, the lowercase version is not standard terminology for the role.",no,2728.0374000001757,46,77,123,,E7_Run1
+http://confOf#Conference,http://cmt#Conference,Conference,Conference,conference,conference,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run1
+http://confOf#Contribution,http://cmt#Paper,Contribution,Paper,contribution,paper,False,Target->Source,"Question: Is contribution equivalent to paper?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, a ""contribution"" refers to any intellectual input provided by an author (such as a research paper, poster, or presentation), whereas a ""paper"" is specifically the written document that details that contribution. While every paper is typically a contribution, not all contributions are necessarily full papers (e.g., short communications or posters).",no,2747.034199999689,43,75,118,,E7_Run1
+http://confOf#Paper,http://cmt#Paper,Paper,Paper,paper,paper,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run1
+http://confOf#Person,http://cmt#Person,Person,Person,person,person,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run1
+http://confOf#hasTitle,http://cmt#title,hasTitle,title,has title,title,False,Target->Source,"Question: Is has title equivalent to title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is not a standard equivalent term; it appears to be a grammatical construction or a property label rather than a synonym for the event's name.",no,2662.4652000000424,44,65,109,,E7_Run1
+http://confOf#has_title,http://cmt#title,has_title,title,has title,title,False,Target->Source,"Question: Is has title equivalent to title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is not a standard equivalent term; it appears to be a grammatical construction or a property label rather than a synonym for the event's name.",no,2401.3107999999193,44,65,109,,E7_Run1
+http://confOf#writtenBy,http://cmt#writtenBy,writtenBy,writtenBy,written by,written by,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run1
+http://cmt#Administrator,http://confOf#Administrator,Administrator,Administrator,administrator,administrator,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run2
+http://cmt#Author,http://confOf#Author,Author,Author,author,author,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run2
+http://cmt#Conference,http://confOf#Conference,Conference,Conference,conference,conference,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run2
+http://cmt#Paper,http://confOf#Paper,Paper,Paper,paper,paper,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run2
+http://cmt#Person,http://confOf#Person,Person,Person,person,person,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run2
+http://cmt#ProgramCommitteeChair,http://confOf#Chair_PC,ProgramCommitteeChair,Chair_PC,program committee chair,chair pc,False,Source->Target,"Question: Is program committee chair equivalent to chair pc?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","Yes. In the context of a conference, ""program committee chair"" and ""chair PC"" refer to the same role; both titles denote the individual responsible for leading the Program Committee (PC) in managing submissions, reviews, and final acceptance decisions.",yes,2094.6006000003763,46,51,97,,E7_Run2
+http://cmt#User,http://confOf#Person,User,Person,user,person,False,Source->Target,"Question: Is user equivalent to person?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""user"" typically refers to an attendee, participant, or system operator interacting with specific services or platforms, whereas ""person"" is a general term for any human being; not all persons at a conference are necessarily active users of the conference's digital systems.",no,2278.187199999593,43,61,104,,E7_Run2
+http://cmt#title,http://confOf#hasTitle,title,hasTitle,title,has title,False,Source->Target,"Question: Is title equivalent to has title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of conferences, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is a property or field indicating whether a specific item (like a paper or session) possesses a name. One defines the entity, while the other asserts the existence of that definition for an instance.",no,2859.95819999971,44,74,118,,E7_Run2
+http://cmt#title,http://confOf#has_title,title,has_title,title,has title,False,Source->Target,"Question: Is title equivalent to has title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of conferences, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is a property or field indicating whether a specific item (like a paper or session) possesses a name. One defines the entity, while the other asserts the existence of that definition for an instance.",no,2701.202000000194,44,74,118,,E7_Run2
+http://cmt#writtenBy,http://confOf#writtenBy,writtenBy,writtenBy,written by,written by,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run2
+http://confOf#Administrator,http://cmt#Administrator,Administrator,Administrator,administrator,administrator,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run2
+http://confOf#Author,http://cmt#Author,Author,Author,author,author,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run2
+http://confOf#Chair_PC,http://cmt#ProgramCommitteeChair,Chair_PC,ProgramCommitteeChair,chair pc,program committee chair,False,Target->Source,"Question: Is chair pc equivalent to program committee chair?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. ""Chair PC"" is an abbreviation for Program Committee Chair, but ""chair pc"" (lowercase) could be misinterpreted as referring to a chair of a Personal Computer or another unrelated entity; however, in the specific context of academic conferences, they refer to the same role if capitalized correctly. Strictly speaking, the lowercase version is not standard terminology for the role.",no,2739.2798000000766,46,77,123,,E7_Run2
+http://confOf#Conference,http://cmt#Conference,Conference,Conference,conference,conference,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run2
+http://confOf#Contribution,http://cmt#Paper,Contribution,Paper,contribution,paper,False,Target->Source,"Question: Is contribution equivalent to paper?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, a ""contribution"" refers to any intellectual input provided by an author (such as a research paper, poster, or presentation), whereas a ""paper"" is specifically the written document that details that contribution. While every paper is typically a contribution, not all contributions are necessarily full papers (e.g., short communications or posters).",no,2708.548999999948,43,75,118,,E7_Run2
+http://confOf#Paper,http://cmt#Paper,Paper,Paper,paper,paper,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run2
+http://confOf#Person,http://cmt#Person,Person,Person,person,person,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run2
+http://confOf#hasTitle,http://cmt#title,hasTitle,title,has title,title,False,Target->Source,"Question: Is has title equivalent to title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is not a standard equivalent term; it appears to be a grammatical construction or a property label rather than a synonym for the event's name.",no,2541.42580000007,44,65,109,,E7_Run2
+http://confOf#has_title,http://cmt#title,has_title,title,has title,title,False,Target->Source,"Question: Is has title equivalent to title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is not a standard equivalent term; it appears to be a grammatical construction or a property label rather than a synonym for the event's name.",no,2388.2512000000133,44,65,109,,E7_Run2
+http://confOf#writtenBy,http://cmt#writtenBy,writtenBy,writtenBy,written by,written by,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run2
+http://cmt#Administrator,http://confOf#Administrator,Administrator,Administrator,administrator,administrator,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run3
+http://cmt#Author,http://confOf#Author,Author,Author,author,author,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run3
+http://cmt#Conference,http://confOf#Conference,Conference,Conference,conference,conference,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run3
+http://cmt#Paper,http://confOf#Paper,Paper,Paper,paper,paper,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run3
+http://cmt#Person,http://confOf#Person,Person,Person,person,person,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run3
+http://cmt#ProgramCommitteeChair,http://confOf#Chair_PC,ProgramCommitteeChair,Chair_PC,program committee chair,chair pc,False,Source->Target,"Question: Is program committee chair equivalent to chair pc?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","Yes. In the context of a conference, ""program committee chair"" and ""chair PC"" refer to the same role; both titles denote the individual responsible for leading the Program Committee (PC) in managing submissions, reviews, and final acceptance decisions.",yes,2058.5613000002922,46,51,97,,E7_Run3
+http://cmt#User,http://confOf#Person,User,Person,user,person,False,Source->Target,"Question: Is user equivalent to person?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""user"" typically refers to an attendee, participant, or system operator interacting with specific services or platforms, whereas ""person"" is a general term for any human being; not all persons at a conference are necessarily active users of the conference's digital systems.",no,2258.238400000664,43,61,104,,E7_Run3
+http://cmt#title,http://confOf#hasTitle,title,hasTitle,title,has title,False,Source->Target,"Question: Is title equivalent to has title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of conferences, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is a property or field indicating whether a specific item (like a paper or session) possesses a name. One defines the entity, while the other asserts the existence of that definition for an instance.",no,2841.1881000001813,44,74,118,,E7_Run3
+http://cmt#title,http://confOf#has_title,title,has_title,title,has title,False,Source->Target,"Question: Is title equivalent to has title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of conferences, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is a property or field indicating whether a specific item (like a paper or session) possesses a name. One defines the entity, while the other asserts the existence of that definition for an instance.",no,2729.357400000481,44,74,118,,E7_Run3
+http://cmt#writtenBy,http://confOf#writtenBy,writtenBy,writtenBy,written by,written by,True,Source->Target,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run3
+http://confOf#Administrator,http://cmt#Administrator,Administrator,Administrator,administrator,administrator,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run3
+http://confOf#Author,http://cmt#Author,Author,Author,author,author,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run3
+http://confOf#Chair_PC,http://cmt#ProgramCommitteeChair,Chair_PC,ProgramCommitteeChair,chair pc,program committee chair,False,Target->Source,"Question: Is chair pc equivalent to program committee chair?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. ""Chair PC"" is an abbreviation for Program Committee Chair, but ""chair pc"" (lowercase) could be misinterpreted as referring to a chair of a Personal Computer or another unrelated entity; however, in the specific context of academic conferences, they refer to the same role if capitalized correctly. Strictly speaking, the lowercase version is not standard terminology for the role.",no,2751.622399999178,46,77,123,,E7_Run3
+http://confOf#Conference,http://cmt#Conference,Conference,Conference,conference,conference,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run3
+http://confOf#Contribution,http://cmt#Paper,Contribution,Paper,contribution,paper,False,Target->Source,"Question: Is contribution equivalent to paper?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, a ""contribution"" refers to any intellectual input provided by an author (such as a research paper, poster, or presentation), whereas a ""paper"" is specifically the written document that details that contribution. While every paper is typically a contribution, not all contributions are necessarily full papers (e.g., short communications or posters).",no,2727.9183999999077,43,75,118,,E7_Run3
+http://confOf#Paper,http://cmt#Paper,Paper,Paper,paper,paper,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run3
+http://confOf#Person,http://cmt#Person,Person,Person,person,person,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run3
+http://confOf#hasTitle,http://cmt#title,hasTitle,title,has title,title,False,Target->Source,"Question: Is has title equivalent to title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is not a standard equivalent term; it appears to be a grammatical construction or a property label rather than a synonym for the event's name.",no,2653.156200000012,44,65,109,,E7_Run3
+http://confOf#has_title,http://cmt#title,has_title,title,has title,title,False,Target->Source,"Question: Is has title equivalent to title?
+Context: conference
+Answer the question within the context.
+Answer yes or no. Give a short explanation.
+","No. In the context of a conference, ""title"" typically refers to the name of the event itself (e.g., ""International AI Conference""), whereas ""has title"" is not a standard equivalent term; it appears to be a grammatical construction or a property label rather than a synonym for the event's name.",no,2411.168699999507,44,65,109,,E7_Run3
+http://confOf#writtenBy,http://cmt#writtenBy,writtenBy,writtenBy,written by,written by,True,Target->Source,,BYPASSED: Identical cleaned names,yes,0.0,0,0,0,,E7_Run3

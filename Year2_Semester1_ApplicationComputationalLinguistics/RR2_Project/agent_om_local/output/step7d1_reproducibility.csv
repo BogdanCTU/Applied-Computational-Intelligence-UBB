@@ -1,0 +1,7 @@
+run_key,variant,mode,run_index,llm_calls,bypasses,llm_accepts,llm_rejects,prompt_tokens,completion_tokens,duration_s,s2t_pred,s2t_tp,s2t_fp,s2t_fn,s2t_precision,s2t_recall,s2t_f1,t2s_pred,t2s_tp,t2s_fp,t2s_fn,t2s_precision,t2s_recall,t2s_f1,recip_pred,recip_tp,recip_fp,recip_fn,recip_precision,recip_recall,recip_f1,pcc_s2t,pcc_t2s,pcc_recip
+A2.1_Original_Run1,A2.1_Original,original,1,37,12,5,32,1639,2202,92.31,9,6,3,10,66.67,37.5,48.0,8,5,3,11,62.5,31.25,41.67,7,5,2,11,71.43,31.25,43.48,True,False,False
+A2.1_Original_Run2,A2.1_Original,original,2,37,12,5,32,1639,2202,78.91,9,6,3,10,66.67,37.5,48.0,8,5,3,11,62.5,31.25,41.67,7,5,2,11,71.43,31.25,43.48,True,False,False
+A2.1_Original_Run3,A2.1_Original,original,3,37,12,5,32,1639,2202,78.91,9,6,3,10,66.67,37.5,48.0,8,5,3,11,62.5,31.25,41.67,7,5,2,11,71.43,31.25,43.48,True,False,False
+A2.3_Canonical_Run1,A2.3_Canonical,canonical,1,37,12,5,32,1639,2239,80.55,9,6,3,10,66.67,37.5,48.0,8,6,2,10,75.0,37.5,50.0,8,6,2,10,75.0,37.5,50.0,True,True,True
+A2.3_Canonical_Run2,A2.3_Canonical,canonical,2,37,12,5,32,1639,2239,79.89,9,6,3,10,66.67,37.5,48.0,8,6,2,10,75.0,37.5,50.0,8,6,2,10,75.0,37.5,50.0,True,True,True
+A2.3_Canonical_Run3,A2.3_Canonical,canonical,3,37,12,5,32,1639,2239,79.68,9,6,3,10,66.67,37.5,48.0,8,6,2,10,75.0,37.5,50.0,8,6,2,10,75.0,37.5,50.0,True,True,True

@@ -1,0 +1,4 @@
+threshold,s2t_pred,s2t_tp,s2t_fp,s2t_fn,s2t_precision,s2t_recall,s2t_f1,t2s_pred,t2s_tp,t2s_fp,t2s_fn,t2s_precision,t2s_recall,t2s_f1,recip_pred,recip_tp,recip_fp,recip_fn,recip_precision,recip_recall,recip_f1,llm_calls,bypasses,llm_accepts,llm_rejects,prompt_tokens,completion_tokens,duration_s
+0.85,9,6,3,10,66.67,37.5,48.0,8,5,3,11,62.5,31.25,41.67,7,5,2,11,71.43,31.25,43.48,37,12,5,32,1639,2202,105.96
+0.875,7,5,2,11,71.43,31.25,43.48,6,4,2,12,66.67,25.0,36.36,6,4,2,12,66.67,25.0,36.36,19,12,1,18,838,1137,66.06
+0.9,7,5,2,11,71.43,31.25,43.48,6,4,2,12,66.67,25.0,36.36,6,4,2,12,66.67,25.0,36.36,8,12,1,7,354,542,42.44

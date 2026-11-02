@@ -1,0 +1,27 @@
+# Agent-OM Local Dependencies
+# Ontology parsing and semantic processing
+rdflib>=7.0.0
+breame>=0.1.2
+
+# Data manipulation and evaluation
+pandas>=2.0.3
+numpy>=1.26.4
+
+# Database and vector storage
+psycopg2-binary>=2.9.9
+asyncpg>=0.28.0
+pgvector>=0.2.5
+
+# LLM and Local Embeddings (Ollama)
+ollama>=0.3.0
+langchain-core>=0.2.0
+langchain-ollama>=0.1.0
+langchain-text-splitters>=0.2.0
+
+# Configuration, testing and utilities
+pyyaml>=6.0.1
+python-dotenv>=1.0.1
+pytest>=8.0.0
+tqdm>=4.66.0
+colorama>=0.4.6
+

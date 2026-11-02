@@ -1,0 +1,183 @@
+{
+  "audit_timestamp": "2026-10-31 18:58:47",
+  "total_runtime_seconds": 20.71,
+  "configuration": {
+    "embedding_model": "nomic-embed-text:latest",
+    "embedding_dimensions": 768,
+    "chat_model": "qwen3.5:9b",
+    "similarity_threshold": 0.9,
+    "top_k": 3,
+    "num_matches": 50,
+    "context": "conference",
+    "reference_file": "E:\\_3_Master\\_9_ACL_Project\\original_repo\\data\\conference\\cmt-confof\\component\\reference.xml",
+    "total_reference_correspondences": 16
+  },
+  "strategy_evaluations": {
+    "syntactic_matching_S2T": {
+      "A": 8,
+      "TP": 5,
+      "FP": 3,
+      "FN": 11,
+      "Precision": 62.5,
+      "Recall": 31.25,
+      "F1": 41.67
+    },
+    "syntactic_matching_T2S": {
+      "A": 8,
+      "TP": 5,
+      "FP": 3,
+      "FN": 11,
+      "Precision": 62.5,
+      "Recall": 31.25,
+      "F1": 41.67
+    },
+    "syntactic_matching_Union": {
+      "A": 8,
+      "TP": 5,
+      "FP": 3,
+      "FN": 11,
+      "Precision": 62.5,
+      "Recall": 31.25,
+      "F1": 41.67
+    },
+    "lexical_matching_S2T": {
+      "A": 7,
+      "TP": 5,
+      "FP": 2,
+      "FN": 11,
+      "Precision": 71.43,
+      "Recall": 31.25,
+      "F1": 43.48
+    },
+    "lexical_matching_T2S": {
+      "A": 7,
+      "TP": 5,
+      "FP": 2,
+      "FN": 11,
+      "Precision": 71.43,
+      "Recall": 31.25,
+      "F1": 43.48
+    },
+    "lexical_matching_Union": {
+      "A": 7,
+      "TP": 5,
+      "FP": 2,
+      "FN": 11,
+      "Precision": 71.43,
+      "Recall": 31.25,
+      "F1": 43.48
+    },
+    "semantic_matching_S2T": {
+      "A": 5,
+      "TP": 3,
+      "FP": 2,
+      "FN": 13,
+      "Precision": 60.0,
+      "Recall": 18.75,
+      "F1": 28.57
+    },
+    "semantic_matching_T2S": {
+      "A": 5,
+      "TP": 3,
+      "FP": 2,
+      "FN": 13,
+      "Precision": 60.0,
+      "Recall": 18.75,
+      "F1": 28.57
+    },
+    "semantic_matching_Union": {
+      "A": 5,
+      "TP": 3,
+      "FP": 2,
+      "FN": 13,
+      "Precision": 60.0,
+      "Recall": 18.75,
+      "F1": 28.57
+    }
+  },
+  "rrf_evaluations": {
+    "RRF_k0_S2T_Top1": {
+      "A": 9,
+      "TP": 6,
+      "FP": 3,
+      "FN": 10,
+      "Precision": 66.67,
+      "Recall": 37.5,
+      "F1": 48.0
+    },
+    "RRF_k0_S2T_Top3": {
+      "A": 11,
+      "TP": 7,
+      "FP": 4,
+      "FN": 9,
+      "Precision": 63.64,
+      "Recall": 43.75,
+      "F1": 51.85
+    },
+    "RRF_k0_T2S_Top1": {
+      "A": 10,
+      "TP": 7,
+      "FP": 3,
+      "FN": 9,
+      "Precision": 70.0,
+      "Recall": 43.75,
+      "F1": 53.85
+    },
+    "RRF_k0_T2S_Top3": {
+      "A": 11,
+      "TP": 7,
+      "FP": 4,
+      "FN": 9,
+      "Precision": 63.64,
+      "Recall": 43.75,
+      "F1": 51.85
+    },
+    "RRF_k0_Union_Top3": {
+      "A": 11,
+      "TP": 7,
+      "FP": 4,
+      "FN": 9,
+      "Precision": 63.64,
+      "Recall": 43.75,
+      "F1": 51.85
+    }
+  },
+  "original_committed_baseline": {
+    "predict_source_no_validation.csv": {
+      "A": 36,
+      "TP": 7,
+      "FP": 29,
+      "FN": 9,
+      "Precision": 19.44,
+      "Recall": 43.75,
+      "F1": 26.92
+    },
+    "predict_target_no_validation.csv": {
+      "A": 44,
+      "TP": 10,
+      "FP": 34,
+      "FN": 6,
+      "Precision": 22.73,
+      "Recall": 62.5,
+      "F1": 33.33
+    },
+    "predict_no_validation.csv": {
+      "A": 17,
+      "TP": 7,
+      "FP": 10,
+      "FN": 9,
+      "Precision": 41.18,
+      "Recall": 43.75,
+      "F1": 42.42
+    },
+    "predict.csv": {
+      "A": 8,
+      "TP": 6,
+      "FP": 2,
+      "FN": 10,
+      "Precision": 75.0,
+      "Recall": 37.5,
+      "F1": 50.0
+    }
+  }
+}

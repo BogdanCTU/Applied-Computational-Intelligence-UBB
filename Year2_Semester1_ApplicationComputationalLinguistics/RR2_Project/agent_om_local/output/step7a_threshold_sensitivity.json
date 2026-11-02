@@ -1,0 +1,3228 @@
+{
+  "dataset": "cmt-confof",
+  "embedding_model": "nomic-embed-text",
+  "reference_threshold": 0.9,
+  "evaluated_thresholds": [
+    0.8,
+    0.825,
+    0.85,
+    0.875,
+    0.9,
+    0.925,
+    0.95
+  ],
+  "selected_full_pipeline_thresholds": [
+    0.8,
+    0.85,
+    0.9
+  ],
+  "phase1_retrieval_analysis": {
+    "0.8": {
+      "threshold": 0.8,
+      "duration_s": 19.14,
+      "candidate_union_metrics": {
+        "tp": 13,
+        "fp": 119,
+        "fn": 3,
+        "predicted_count": 132,
+        "reference_count": 16,
+        "precision": 9.85,
+        "recall": 81.25,
+        "f1": 17.57,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Acceptance",
+            "http://confOf#Submission_event"
+          ],
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrative_event"
+          ],
+          [
+            "http://cmt#AssociatedChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#AssociatedChair",
+            "http://confOf#Company"
+          ],
+          [
+            "http://cmt#AssociatedChair",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#AssociatedChair",
+            "http://confOf#University"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#AuthorNotReviewer",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#AuthorNotReviewer",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#AuthorNotReviewer",
+            "http://confOf#Poster"
+          ],
+          [
+            "http://cmt#AuthorNotReviewer",
+            "http://confOf#Registration_of_participants_event"
+          ],
+          [
+            "http://cmt#AuthorNotReviewer",
+            "http://confOf#Short_paper"
+          ],
+          [
+            "http://cmt#AuthorNotReviewer",
+            "http://confOf#Tutorial"
+          ],
+          [
+            "http://cmt#AuthorNotReviewer",
+            "http://confOf#Workshop"
+          ],
+          [
+            "http://cmt#Bid",
+            "http://confOf#City"
+          ],
+          [
+            "http://cmt#Chairman",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#Chairman",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#Co-author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Co-author",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#Co-author",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Banquet"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Company"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Event"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Organization"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Reception"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Social_event"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Trip"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#University"
+          ],
+          [
+            "http://cmt#ConferenceChair",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#ConferenceChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ConferenceChair",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#ConferenceChair",
+            "http://confOf#Tutorial"
+          ],
+          [
+            "http://cmt#ConferenceChair",
+            "http://confOf#Workshop"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Event"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Participant"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#Document",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Document",
+            "http://confOf#Organization"
+          ],
+          [
+            "http://cmt#Document",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#Document",
+            "http://confOf#Poster"
+          ],
+          [
+            "http://cmt#Document",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#ExternalReviewer",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#ExternalReviewer",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Poster"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Short_paper"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#PaperAbstract",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#PaperAbstract",
+            "http://confOf#Short_paper"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Event"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Participant"
+          ],
+          [
+            "http://cmt#ProgramCommittee",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ProgramCommittee",
+            "http://confOf#City"
+          ],
+          [
+            "http://cmt#ProgramCommittee",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#ProgramCommittee",
+            "http://confOf#Event"
+          ],
+          [
+            "http://cmt#ProgramCommittee",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommittee",
+            "http://confOf#Poster"
+          ],
+          [
+            "http://cmt#ProgramCommittee",
+            "http://confOf#Registration_of_participants_event"
+          ],
+          [
+            "http://cmt#ProgramCommittee",
+            "http://confOf#Short_paper"
+          ],
+          [
+            "http://cmt#ProgramCommittee",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#ProgramCommittee",
+            "http://confOf#Tutorial"
+          ],
+          [
+            "http://cmt#ProgramCommittee",
+            "http://confOf#Workshop"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#Review",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#Review",
+            "http://confOf#Poster"
+          ],
+          [
+            "http://cmt#Review",
+            "http://confOf#Registration_of_participants_event"
+          ],
+          [
+            "http://cmt#Review",
+            "http://confOf#Reviewing_event"
+          ],
+          [
+            "http://cmt#Review",
+            "http://confOf#Reviewing_results_event"
+          ],
+          [
+            "http://cmt#Review",
+            "http://confOf#Short_paper"
+          ],
+          [
+            "http://cmt#User",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#User",
+            "http://confOf#Participant"
+          ],
+          [
+            "http://cmt#User",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#date",
+            "http://confOf#location"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#contactEmail"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasFax"
+          ],
+          [
+            "http://cmt#endReview",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#enterReviewCriteria",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#hasTitle"
+          ],
+          [
+            "http://cmt#hasBid",
+            "http://confOf#hasAdministrativeEvent"
+          ],
+          [
+            "http://cmt#hasBid",
+            "http://confOf#hasCity"
+          ],
+          [
+            "http://cmt#hasDecision",
+            "http://confOf#hasAdministrativeEvent"
+          ],
+          [
+            "http://cmt#hasDecision",
+            "http://confOf#hasTitle"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#hasAdministrativeEvent"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#hasTopic"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#hasCity"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#hasCountry"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#hasFirstName"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#hasPostalCode"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#hasStreet"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#hasSurname"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#has_short_title"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#has_title"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#location"
+          ],
+          [
+            "http://cmt#readByMeta-Reviewer",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#readByReviewer",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#reviewCriteriaEnteredBy",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#reviewerBiddingStartedBy",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#reviewsPerPaper",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#startReviewerBidding",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#has_short_title"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#has_title"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#writeReview",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writes"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ]
+        ]
+      },
+      "rrf_top1_reciprocal_metrics": {
+        "tp": 7,
+        "fp": 9,
+        "fn": 9,
+        "predicted_count": 16,
+        "reference_count": 16,
+        "precision": 43.75,
+        "recall": 43.75,
+        "f1": 43.75,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Acceptance",
+            "http://confOf#Submission_event"
+          ],
+          [
+            "http://cmt#AuthorNotReviewer",
+            "http://confOf#Poster"
+          ],
+          [
+            "http://cmt#Chairman",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#hasDecision",
+            "http://confOf#hasAdministrativeEvent"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#hasTopic"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#hasFirstName"
+          ],
+          [
+            "http://cmt#writeReview",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ]
+        ]
+      },
+      "retrievable_reference_correspondences": [
+        "Administrator = Administrator",
+        "Author = Author",
+        "Conference = Conference",
+        "ConferenceMember = Member",
+        "Paper = Contribution",
+        "PaperFullVersion = Paper",
+        "Person = Person",
+        "ProgramCommitteeChair = Chair_PC",
+        "ProgramCommitteeMember = Member_PC",
+        "SubjectArea = Topic",
+        "email = hasEmail",
+        "title = hasTitle",
+        "writePaper = writes"
+      ]
+    },
+    "0.825": {
+      "threshold": 0.825,
+      "duration_s": 19.17,
+      "candidate_union_metrics": {
+        "tp": 13,
+        "fp": 59,
+        "fn": 3,
+        "predicted_count": 72,
+        "reference_count": 16,
+        "precision": 18.06,
+        "recall": 81.25,
+        "f1": 29.55,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Author",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#AuthorNotReviewer",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#AuthorNotReviewer",
+            "http://confOf#Poster"
+          ],
+          [
+            "http://cmt#AuthorNotReviewer",
+            "http://confOf#Short_paper"
+          ],
+          [
+            "http://cmt#Bid",
+            "http://confOf#City"
+          ],
+          [
+            "http://cmt#Co-author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Co-author",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#Co-author",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Banquet"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Company"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Reception"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Social_event"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#University"
+          ],
+          [
+            "http://cmt#ConferenceChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Participant"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Short_paper"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#PaperAbstract",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Event"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Participant"
+          ],
+          [
+            "http://cmt#ProgramCommittee",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ProgramCommittee",
+            "http://confOf#City"
+          ],
+          [
+            "http://cmt#ProgramCommittee",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommittee",
+            "http://confOf#Poster"
+          ],
+          [
+            "http://cmt#ProgramCommittee",
+            "http://confOf#Short_paper"
+          ],
+          [
+            "http://cmt#ProgramCommittee",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#Review",
+            "http://confOf#Reviewing_event"
+          ],
+          [
+            "http://cmt#Review",
+            "http://confOf#Reviewing_results_event"
+          ],
+          [
+            "http://cmt#User",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#User",
+            "http://confOf#Participant"
+          ],
+          [
+            "http://cmt#User",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#contactEmail"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasFax"
+          ],
+          [
+            "http://cmt#endReview",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#enterReviewCriteria",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#hasCity"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#hasFirstName"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#hasPostalCode"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#hasStreet"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#has_title"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#location"
+          ],
+          [
+            "http://cmt#reviewCriteriaEnteredBy",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#startReviewerBidding",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#has_title"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ]
+        ]
+      },
+      "rrf_top1_reciprocal_metrics": {
+        "tp": 7,
+        "fp": 6,
+        "fn": 9,
+        "predicted_count": 13,
+        "reference_count": 16,
+        "precision": 53.85,
+        "recall": 43.75,
+        "f1": 48.28,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#AuthorNotReviewer",
+            "http://confOf#Poster"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#Review",
+            "http://confOf#Reviewing_event"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#hasFirstName"
+          ],
+          [
+            "http://cmt#reviewCriteriaEnteredBy",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "retrievable_reference_correspondences": [
+        "Administrator = Administrator",
+        "Author = Author",
+        "Conference = Conference",
+        "ConferenceMember = Member",
+        "Paper = Contribution",
+        "PaperFullVersion = Paper",
+        "Person = Person",
+        "ProgramCommitteeChair = Chair_PC",
+        "ProgramCommitteeMember = Member_PC",
+        "SubjectArea = Topic",
+        "email = hasEmail",
+        "title = hasTitle",
+        "writePaper = writes"
+      ]
+    },
+    "0.85": {
+      "threshold": 0.85,
+      "duration_s": 19.72,
+      "candidate_union_metrics": {
+        "tp": 10,
+        "fp": 24,
+        "fn": 6,
+        "predicted_count": 34,
+        "reference_count": 16,
+        "precision": 29.41,
+        "recall": 62.5,
+        "f1": 40.0,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Author",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#Co-author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Co-author",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Social_event"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Participant"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Short_paper"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Event"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Participant"
+          ],
+          [
+            "http://cmt#Review",
+            "http://confOf#Reviewing_event"
+          ],
+          [
+            "http://cmt#Review",
+            "http://confOf#Reviewing_results_event"
+          ],
+          [
+            "http://cmt#User",
+            "http://confOf#Participant"
+          ],
+          [
+            "http://cmt#User",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#contactEmail"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#has_title"
+          ],
+          [
+            "http://cmt#reviewCriteriaEnteredBy",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#has_title"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "rrf_top1_reciprocal_metrics": {
+        "tp": 7,
+        "fp": 5,
+        "fn": 9,
+        "predicted_count": 12,
+        "reference_count": 16,
+        "precision": 58.33,
+        "recall": 43.75,
+        "f1": 50.0,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#Review",
+            "http://confOf#Reviewing_event"
+          ],
+          [
+            "http://cmt#name",
+            "http://confOf#has_title"
+          ],
+          [
+            "http://cmt#reviewCriteriaEnteredBy",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "retrievable_reference_correspondences": [
+        "Administrator = Administrator",
+        "Author = Author",
+        "Conference = Conference",
+        "ConferenceMember = Member",
+        "Paper = Contribution",
+        "Person = Person",
+        "ProgramCommitteeChair = Chair_PC",
+        "ProgramCommitteeMember = Member_PC",
+        "email = hasEmail",
+        "title = hasTitle"
+      ]
+    },
+    "0.875": {
+      "threshold": 0.875,
+      "duration_s": 19.09,
+      "candidate_union_metrics": {
+        "tp": 9,
+        "fp": 10,
+        "fn": 7,
+        "predicted_count": 19,
+        "reference_count": 16,
+        "precision": 47.37,
+        "recall": 56.25,
+        "f1": 51.43,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Author",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#Co-author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Participant"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Short_paper"
+          ],
+          [
+            "http://cmt#User",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#contactEmail"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#has_title"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "rrf_top1_reciprocal_metrics": {
+        "tp": 7,
+        "fp": 2,
+        "fn": 9,
+        "predicted_count": 9,
+        "reference_count": 16,
+        "precision": 77.78,
+        "recall": 43.75,
+        "f1": 56.0,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "retrievable_reference_correspondences": [
+        "Administrator = Administrator",
+        "Author = Author",
+        "Conference = Conference",
+        "ConferenceMember = Member",
+        "Paper = Contribution",
+        "Person = Person",
+        "ProgramCommitteeChair = Chair_PC",
+        "email = hasEmail",
+        "title = hasTitle"
+      ]
+    },
+    "0.9": {
+      "threshold": 0.9,
+      "duration_s": 18.92,
+      "candidate_union_metrics": {
+        "tp": 7,
+        "fp": 4,
+        "fn": 9,
+        "predicted_count": 11,
+        "reference_count": 16,
+        "precision": 63.64,
+        "recall": 43.75,
+        "f1": 51.85,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#User",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#has_title"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "rrf_top1_reciprocal_metrics": {
+        "tp": 6,
+        "fp": 2,
+        "fn": 10,
+        "predicted_count": 8,
+        "reference_count": 16,
+        "precision": 75.0,
+        "recall": 37.5,
+        "f1": 50.0,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "retrievable_reference_correspondences": [
+        "Administrator = Administrator",
+        "Author = Author",
+        "Conference = Conference",
+        "Paper = Contribution",
+        "Person = Person",
+        "ProgramCommitteeChair = Chair_PC",
+        "title = hasTitle"
+      ]
+    },
+    "0.925": {
+      "threshold": 0.925,
+      "duration_s": 19.31,
+      "candidate_union_metrics": {
+        "tp": 5,
+        "fp": 3,
+        "fn": 11,
+        "predicted_count": 8,
+        "reference_count": 16,
+        "precision": 62.5,
+        "recall": 31.25,
+        "f1": 41.67,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#has_title"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "rrf_top1_reciprocal_metrics": {
+        "tp": 5,
+        "fp": 2,
+        "fn": 11,
+        "predicted_count": 7,
+        "reference_count": 16,
+        "precision": 71.43,
+        "recall": 31.25,
+        "f1": 43.48,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "retrievable_reference_correspondences": [
+        "Administrator = Administrator",
+        "Author = Author",
+        "Conference = Conference",
+        "Person = Person",
+        "title = hasTitle"
+      ]
+    },
+    "0.95": {
+      "threshold": 0.95,
+      "duration_s": 19.08,
+      "candidate_union_metrics": {
+        "tp": 4,
+        "fp": 2,
+        "fn": 12,
+        "predicted_count": 6,
+        "reference_count": 16,
+        "precision": 66.67,
+        "recall": 25.0,
+        "f1": 36.36,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "rrf_top1_reciprocal_metrics": {
+        "tp": 4,
+        "fp": 2,
+        "fn": 12,
+        "predicted_count": 6,
+        "reference_count": 16,
+        "precision": 66.67,
+        "recall": 25.0,
+        "f1": 36.36,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "retrievable_reference_correspondences": [
+        "Administrator = Administrator",
+        "Author = Author",
+        "Conference = Conference",
+        "Person = Person"
+      ]
+    }
+  },
+  "phase2_full_pipeline_analysis": {
+    "0.8": {
+      "threshold": 0.8,
+      "duration_s": 383.28,
+      "validation_calls": 155,
+      "bypasses": 12,
+      "prompt_tokens": 6886,
+      "completion_tokens": 8854,
+      "source_to_target_metrics": {
+        "tp": 6,
+        "fp": 3,
+        "fn": 10,
+        "predicted_count": 9,
+        "reference_count": 16,
+        "precision": 66.67,
+        "recall": 37.5,
+        "f1": 48.0,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "target_to_source_metrics": {
+        "tp": 5,
+        "fp": 4,
+        "fn": 11,
+        "predicted_count": 9,
+        "reference_count": 16,
+        "precision": 55.56,
+        "recall": 31.25,
+        "f1": 40.0,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Participant"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#hasTopic"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "final_metrics": {
+        "tp": 5,
+        "fp": 2,
+        "fn": 11,
+        "predicted_count": 7,
+        "reference_count": 16,
+        "precision": 71.43,
+        "recall": 31.25,
+        "f1": 43.48,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "merger_details": {
+        "source_to_target_count": 9,
+        "target_to_source_count": 9,
+        "merged_count": 7,
+        "merged_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "dropped_from_source_count": 2,
+        "dropped_from_source_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ]
+        ],
+        "dropped_from_target_count": 2,
+        "dropped_from_target_pairs": [
+          [
+            "http://cmt#Person",
+            "http://confOf#Participant"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#hasTopic"
+          ]
+        ]
+      }
+    },
+    "0.85": {
+      "threshold": 0.85,
+      "duration_s": 106.94,
+      "validation_calls": 37,
+      "bypasses": 12,
+      "prompt_tokens": 1639,
+      "completion_tokens": 2202,
+      "source_to_target_metrics": {
+        "tp": 6,
+        "fp": 3,
+        "fn": 10,
+        "predicted_count": 9,
+        "reference_count": 16,
+        "precision": 66.67,
+        "recall": 37.5,
+        "f1": 48.0,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "target_to_source_metrics": {
+        "tp": 5,
+        "fp": 3,
+        "fn": 11,
+        "predicted_count": 8,
+        "reference_count": 16,
+        "precision": 62.5,
+        "recall": 31.25,
+        "f1": 41.67,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Participant"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "final_metrics": {
+        "tp": 5,
+        "fp": 2,
+        "fn": 11,
+        "predicted_count": 7,
+        "reference_count": 16,
+        "precision": 71.43,
+        "recall": 31.25,
+        "f1": 43.48,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "merger_details": {
+        "source_to_target_count": 9,
+        "target_to_source_count": 8,
+        "merged_count": 7,
+        "merged_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "dropped_from_source_count": 2,
+        "dropped_from_source_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ]
+        ],
+        "dropped_from_target_count": 1,
+        "dropped_from_target_pairs": [
+          [
+            "http://cmt#Person",
+            "http://confOf#Participant"
+          ]
+        ]
+      }
+    },
+    "0.9": {
+      "threshold": 0.9,
+      "duration_s": 42.25,
+      "validation_calls": 8,
+      "bypasses": 12,
+      "prompt_tokens": 354,
+      "completion_tokens": 542,
+      "source_to_target_metrics": {
+        "tp": 5,
+        "fp": 2,
+        "fn": 11,
+        "predicted_count": 7,
+        "reference_count": 16,
+        "precision": 71.43,
+        "recall": 31.25,
+        "f1": 43.48,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "target_to_source_metrics": {
+        "tp": 4,
+        "fp": 2,
+        "fn": 12,
+        "predicted_count": 6,
+        "reference_count": 16,
+        "precision": 66.67,
+        "recall": 25.0,
+        "f1": 36.36,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "final_metrics": {
+        "tp": 4,
+        "fp": 2,
+        "fn": 12,
+        "predicted_count": 6,
+        "reference_count": 16,
+        "precision": 66.67,
+        "recall": 25.0,
+        "f1": 36.36,
+        "tp_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ]
+        ],
+        "fp_pairs": [
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "fn_pairs": [
+          [
+            "http://cmt#ConferenceMember",
+            "http://confOf#Member"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Contribution"
+          ],
+          [
+            "http://cmt#PaperFullVersion",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ],
+          [
+            "http://cmt#ProgramCommitteeMember",
+            "http://confOf#Member_PC"
+          ],
+          [
+            "http://cmt#SubjectArea",
+            "http://confOf#Topic"
+          ],
+          [
+            "http://cmt#email",
+            "http://confOf#hasEmail"
+          ],
+          [
+            "http://cmt#hasAuthor",
+            "http://confOf#writtenBy"
+          ],
+          [
+            "http://cmt#hasBeenAssigned",
+            "http://confOf#reviewes"
+          ],
+          [
+            "http://cmt#hasSubjectArea",
+            "http://confOf#dealsWith"
+          ],
+          [
+            "http://cmt#title",
+            "http://confOf#hasTitle"
+          ],
+          [
+            "http://cmt#writePaper",
+            "http://confOf#writes"
+          ]
+        ]
+      },
+      "merger_details": {
+        "source_to_target_count": 7,
+        "target_to_source_count": 6,
+        "merged_count": 6,
+        "merged_pairs": [
+          [
+            "http://cmt#Administrator",
+            "http://confOf#Administrator"
+          ],
+          [
+            "http://cmt#Author",
+            "http://confOf#Author"
+          ],
+          [
+            "http://cmt#Conference",
+            "http://confOf#Conference"
+          ],
+          [
+            "http://cmt#Paper",
+            "http://confOf#Paper"
+          ],
+          [
+            "http://cmt#Person",
+            "http://confOf#Person"
+          ],
+          [
+            "http://cmt#writtenBy",
+            "http://confOf#writtenBy"
+          ]
+        ],
+        "dropped_from_source_count": 1,
+        "dropped_from_source_pairs": [
+          [
+            "http://cmt#ProgramCommitteeChair",
+            "http://confOf#Chair_PC"
+          ]
+        ],
+        "dropped_from_target_count": 0,
+        "dropped_from_target_pairs": []
+      }
+    }
+  }
+}
