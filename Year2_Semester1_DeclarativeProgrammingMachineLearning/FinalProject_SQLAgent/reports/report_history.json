@@ -1,0 +1,48 @@
+[
+  {
+    "report_id": "4f3947970ee5429aa192143c3a710d84",
+    "title": "Monthly Captured Revenue by Payment Method",
+    "description": "CSV export of monthly captured revenue by payment method",
+    "user_request": "Export monthly captured revenue by payment method as CSV",
+    "sql_query": "SELECT\n            STRFTIME('%Y-%m', o.order_date) AS month,\n            p.method AS payment_method,\n            COUNT(DISTINCT o.order_id) AS orders_count,\n            ROUND(SUM(p.amount), 2) AS captured_revenue\n        FROM orders o\n        JOIN payments p ON p.order_id = o.order_id\n        WHERE p.status = 'captured'\n        GROUP BY month, payment_method\n        ORDER BY month DESC, captured_revenue DESC\n        LIMIT 60",
+    "output_format": "CSV",
+    "file_name": "monthly_captured_revenue_by_payment_method_20261103_225619_31465c.csv",
+    "output_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reports/monthly_captured_revenue_by_payment_method_20261103_225619_31465c.csv",
+    "record_count": 60,
+    "total_input_records": 60,
+    "truncated": false,
+    "column_names": [
+      "month",
+      "payment_method",
+      "orders_count",
+      "captured_revenue"
+    ],
+    "file_size_bytes": 1895,
+    "created_at": "2026-11-03T22:56:19",
+    "status": "completed",
+    "error_message": null
+  },
+  {
+    "report_id": "1f692d85f4b74b11ae557ca5e565227b",
+    "title": "Monthly Captured Revenue by Payment Method",
+    "description": "Captured payment volume and order count grouped by calendar month and payment method.",
+    "user_request": "Generate a report showing monthly captured revenue by payment method",
+    "sql_query": "SELECT\n            STRFTIME('%Y-%m', o.order_date) AS month,\n            p.method AS payment_method,\n            COUNT(DISTINCT o.order_id) AS orders_count,\n            ROUND(SUM(p.amount), 2) AS captured_revenue\n        FROM orders o\n        JOIN payments p ON p.order_id = o.order_id\n        WHERE p.status = 'captured'\n        GROUP BY month, payment_method\n        ORDER BY month DESC, captured_revenue DESC\n        LIMIT 60",
+    "output_format": "PDF",
+    "file_name": "monthly_captured_revenue_by_payment_method_20261103_225619_79f4a8.pdf",
+    "output_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reports/monthly_captured_revenue_by_payment_method_20261103_225619_79f4a8.pdf",
+    "record_count": 60,
+    "total_input_records": 60,
+    "truncated": false,
+    "column_names": [
+      "month",
+      "payment_method",
+      "orders_count",
+      "captured_revenue"
+    ],
+    "file_size_bytes": 47809,
+    "created_at": "2026-11-03T22:56:19",
+    "status": "completed",
+    "error_message": null
+  }
+]
