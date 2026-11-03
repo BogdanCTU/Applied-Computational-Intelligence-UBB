@@ -58,6 +58,7 @@ macOS / Linux:
 ```bash
 python3.13 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python scripts/import_dataset.py --run-validation-queries
 .venv/bin/python scripts/verify_environment.py
 ```
 
@@ -65,6 +66,7 @@ Windows (PowerShell):
 ```powershell
 py -3.13 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe scripts\import_dataset.py --run-validation-queries
 .\.venv\Scripts\python.exe scripts\verify_environment.py
 ```
 
@@ -77,7 +79,7 @@ The Ollama host must be local (`localhost`/`127.0.0.1`); remote hosts are reject
 ## Milestones
 
 1. Environment and project initialisation ✅
-2. Dataset import and SQLite
+2. Dataset import and SQLite ✅
 3. MCP server
 4. Ollama agent
 5. GUI
