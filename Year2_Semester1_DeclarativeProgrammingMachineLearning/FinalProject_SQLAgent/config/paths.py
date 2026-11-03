@@ -4,9 +4,9 @@ All paths are resolved relative to the *application root* so that no absolute
 paths are hardcoded:
 
 * When running from source, the application root is the project directory
-  (the folder containing ``settings.json`` and ``src/``).
+  (the folder containing ``settings.json`` and ``main.py``).
 * When running as a PyInstaller executable, the application root is the folder
-  containing the executable. The database, ``output/`` and ``logs/`` live next
+  containing the executable. The database, ``reports/`` and ``logs/`` live next
   to the executable, never inside it.
 """
 
@@ -25,21 +25,25 @@ def is_frozen() -> bool:
 
 
 def app_root() -> Path:
-    """Directory that holds settings.json, data/, output/ and logs/."""
+    """Directory that holds settings.json, data/, reports/ and logs/."""
     override = os.environ.get(ENV_APP_ROOT)
     if override:
         return Path(override).expanduser().resolve()
     if is_frozen():
-        return Path(sys.executable).resolve().parent
-    # src/report_agent/paths.py -> project root is three levels up
-    return Path(__file__).resolve().parents[2]
+        exe_dir = Path(sys.executable).resolve().parent
+        # macOS .app bundle: <App>.app/Contents/MacOS/<exe> -> use folder holding the .app
+        if exe_dir.name == "MacOS" and exe_dir.parent.name == "Contents":
+            return exe_dir.parents[2]
+        return exe_dir
+    # config/paths.py -> project root is one level up
+    return Path(__file__).resolve().parents[1]
 
 
 def resource_root() -> Path:
     """Directory holding read-only bundled resources (icons, default settings)."""
     if is_frozen():
         return Path(getattr(sys, "_MEIPASS", app_root()))
-    return Path(__file__).resolve().parent / "resources"
+    return app_root()
 
 
 def resolve_path(value: str | os.PathLike[str], base: Path | None = None) -> Path:
@@ -48,3 +52,4 @@ def resolve_path(value: str | os.PathLike[str], base: Path | None = None) -> Pat
     if not p.is_absolute():
         p = (base or app_root()) / p
     return p.resolve()
+

@@ -7,7 +7,7 @@ import logging.handlers
 import sys
 from pathlib import Path
 
-from .config import AppSettings
+from .settings import AppSettings
 
 FORMAT = "%(asctime)s | %(levelname)-7s | %(process)d | %(name)s | %(message)s"
 
@@ -47,3 +47,4 @@ def setup_logging(settings: AppSettings, process_name: str = "app", console: boo
 
     logging.getLogger(__name__).info("Logging initialised (%s) -> %s", process_name, log_file)
     return log_file
+

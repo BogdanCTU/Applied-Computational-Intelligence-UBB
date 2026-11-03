@@ -18,6 +18,7 @@ import threading
 from dataclasses import asdict, dataclass, field, fields, is_dataclass
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 from .paths import app_root, resolve_path
 
@@ -25,17 +26,24 @@ log = logging.getLogger(__name__)
 
 SETTINGS_FILENAME = "settings.json"
 
+# Hosts considered "local". The application refuses to talk to any other host
+# so that prompts and database content never leave the machine.
+LOCAL_HOSTS = {"localhost", "127.0.0.1", "::1", "[::1]"}
+
 
 @dataclass
 class OllamaSettings:
-    host: str = "http://127.0.0.1:11434"
-    model: str = "qwen2.5:7b"
+    host: str = "http://localhost:11434"
+    model: str = "qwen3.5:4b"
     temperature: float = 0.1
     top_p: float = 0.9
     num_ctx: int = 8192
     request_timeout_s: float = 300.0
     stream: bool = True
     keep_alive: str = "10m"
+    # "auto" = probe native tool calling and fall back to JSON protocol,
+    # "native" = always native, "json" = always JSON fallback protocol.
+    tool_mode: str = "auto"
 
 
 @dataclass
@@ -50,20 +58,19 @@ class DatabaseSettings:
 class AgentSettings:
     max_iterations: int = 8
     max_tool_calls: int = 16
+    max_sql_retries: int = 3
     max_history_messages: int = 30
+    require_sql_approval: bool = True
+    system_prompt_override: str = ""
 
 
 @dataclass
 class ReportSettings:
-    output_dir: str = "output"
+    output_dir: str = "reports"
     page_size: str = "A4"  # "A4" or "LETTER"
-    orientation: str = "auto"  # "portrait", "landscape" or "auto"
-    max_pdf_rows: int = 500
+    max_pdf_rows: int = 5000
     max_report_rows: int = 100000
-    company_name: str = "Outdoor Gear E-commerce"
-    accent_color: str = "#2563EB"
     include_sql_in_pdf: bool = True
-    include_chart: bool = True
 
 
 @dataclass
@@ -104,16 +111,45 @@ class AppSettings:
         _merge_into(settings, data or {})
         return settings
 
+    # -------------------------------------------------------------- validation
+    def validate(self) -> list[str]:
+        """Return a list of human-readable validation errors (empty = valid)."""
+        errors: list[str] = []
+        parsed = urlparse(self.ollama.host)
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+            errors.append("Ollama host must be a URL such as http://localhost:11434")
+        elif parsed.hostname not in LOCAL_HOSTS:
+            errors.append("Ollama host must be local (localhost / 127.0.0.1) for data privacy")
+        if not self.ollama.model.strip():
+            errors.append("Model name must not be empty")
+        if self.ollama.tool_mode not in {"auto", "native", "json"}:
+            errors.append("Tool mode must be 'auto', 'native' or 'json'")
+        if not self.database.path.strip():
+            errors.append("Database path must not be empty")
+        if not 1 <= self.database.max_result_rows <= 100_000:
+            errors.append("Maximum SQL result rows must be between 1 and 100000")
+        if not 0.5 <= self.database.query_timeout_s <= 600:
+            errors.append("SQL execution timeout must be between 0.5 and 600 seconds")
+        if not 1 <= self.agent.max_iterations <= 50:
+            errors.append("Maximum agent iterations must be between 1 and 50")
+        if not self.reports.output_dir.strip():
+            errors.append("Reports output directory must not be empty")
+        if self.reports.page_size.upper() not in {"A4", "LETTER"}:
+            errors.append("Page size must be A4 or LETTER")
+        return errors
+
 
 # Environment variable overrides: VAR -> (section, key)
 ENV_OVERRIDES: dict[str, tuple[str, str]] = {
     "REPORT_AGENT_OLLAMA_HOST": ("ollama", "host"),
     "REPORT_AGENT_OLLAMA_MODEL": ("ollama", "model"),
+    "REPORT_AGENT_TOOL_MODE": ("ollama", "tool_mode"),
     "REPORT_AGENT_DB_PATH": ("database", "path"),
     "REPORT_AGENT_OUTPUT_DIR": ("reports", "output_dir"),
     "REPORT_AGENT_MAX_ROWS": ("database", "max_result_rows"),
     "REPORT_AGENT_QUERY_TIMEOUT": ("database", "query_timeout_s"),
     "REPORT_AGENT_MAX_ITERATIONS": ("agent", "max_iterations"),
+    "REPORT_AGENT_REQUIRE_APPROVAL": ("agent", "require_sql_approval"),
     "REPORT_AGENT_LOG_LEVEL": ("logging", "level"),
 }
 
@@ -179,7 +215,13 @@ def load_settings(path: Path | None = None, apply_env: bool = True) -> AppSettin
 
 
 def save_settings(settings: AppSettings, path: Path | None = None) -> Path:
-    """Persist settings to JSON atomically."""
+    """Validate and persist settings to JSON atomically.
+
+    Raises ``ValueError`` with all validation messages if settings are invalid.
+    """
+    errors = settings.validate()
+    if errors:
+        raise ValueError("; ".join(errors))
     path = path or settings_file()
     with _lock:
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -188,3 +230,4 @@ def save_settings(settings: AppSettings, path: Path | None = None) -> Path:
         tmp.replace(path)
     log.info("Settings saved to %s", path)
     return path
+
