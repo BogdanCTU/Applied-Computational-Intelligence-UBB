@@ -64,7 +64,9 @@ graph LR
 
 * **Publication Growth:** SBSE publications have grown rapidly since 1976. **Search-Based Software Testing (SBST)** cumulative publications follow a 4th-degree polynomial growth trend:
 
-$$ y = 0.0013x^4 - 0.061x^3 + 1.0008x^2 - 5.8636x + 10.443 $$
+$$
+y = 0.0013x^4 - 0.061x^3 + 1.0008x^2 - 5.8636x + 10.443
+$$
 
 * **Topic Distribution:** Testing is the dominant topic in SBSE, though its relative share stabilized around **50%–54%** as non-testing areas grew:
 * **Testing:** 54%
@@ -72,7 +74,6 @@ $$ y = 0.0013x^4 - 0.061x^3 + 1.0008x^2 - 5.8636x + 10.443 $$
 * **Design:** 10%
 * **Management:** 10%
 * **Verification:** 4% | **General:** 4% | **Others:** 4% | **Requirements:** 3%
-
 
 * **Non-Functional Properties Tested:**
 * *1996–2007:* Dominated by Execution Time (43%), Usability (20%), Security (20%), Safety (11%), and Quality of Service / QoS (6%).
@@ -105,18 +106,18 @@ $$ y = 0.0013x^4 - 0.061x^3 + 1.0008x^2 - 5.8636x + 10.443 $$
 
 Standard real-world systems used to test, analyze, and apply SBSE techniques:
 
-* **LibreOffice:** Large productivity suite (C++ and others), 8 MLOC (Million Lines of Code), 3 levels of regression testing.
-* **SQLite:** Widely used database engine deployed as a single C source file, 338 KLOC (Thousand Lines of Code), 3 separate test suites.
-* **Guava:** Google's core Java collections/utilities library, >252 KLOC, thorough performance tests.
+* **LibreOffice:** Large productivity suite (C++ and others), 8 MLOC (Million Lines of Code), 3 levels of regression testing;
+* **SQLite:** Widely used database engine deployed as a single C source file, 338 KLOC (Thousand Lines of Code), 3 separate test suites;
+* **Guava:** Google's core Java collections/utilities library, >252 KLOC, thorough performance tests;
 * **Flask:** Minimalist Python web framework, 9 KLOC, full test suite.
 
 ### Major Tools, Frameworks & Benchmarks
 
-#### 1. EvoSuite
+#### 2.3.1 EvoSuite
 
 An automated tool for Java that generates whole test suites with assertions. It uses a hybrid evolutionary search approach to optimize entire test suites simultaneously toward satisfying a coverage criterion.
 
-#### 2. Defects4J
+#### 2.3.2 Defects4J
 
 A database and extensible framework of real, reproducible bugs from open-source Java projects used for controlled software testing research.
 
@@ -137,7 +138,7 @@ A database and extensible framework of real, reproducible bugs from open-source 
 4. **Source-Code Only:** Fixed by modifying source code (not configuration, documentation, or test files).
 5. **Reproducible Triggering Test:** Accompanied by a deterministic test that fails before the fix and passes after the fix (independent of test execution order).
 
-#### 3. Sapienz (at Facebook)
+#### 2.3.3 Sapienz (at Facebook)
 
 A multi-objective search-based Android testing system deployed in production at Facebook.
 
@@ -158,7 +159,7 @@ graph LR
 
 ## 2.4 Reformulating SE Problems as ML / Search Problems
 
-### 4.1 Component Reuse (Instance-Based Learning / CBR)
+### 2.4.1 Component Reuse (Instance-Based Learning / CBR)
 
 **Goal:** Retrieve reusable software components from a repository to match a new task.
 
@@ -177,7 +178,7 @@ graph LR
 
 ---
 
-### 4.2 Rapid Prototyping / Program Generation (Genetic Programming)
+### 2.4.2 Rapid Prototyping / Program Generation (Genetic Programming)
 
 **Goal:** Automatically generate a working prototype program to understand and validate software requirements.
 
@@ -189,7 +190,6 @@ graph TD
     A --> C["Function: *"]
     C --> D["Terminal: y"]
     C --> E["Terminal: 2"]
-
 ```
 
 **7-Step GP Rapid Prototyping Framework:**
@@ -216,12 +216,15 @@ graph TD
 1. Let $X$ be the input domain and $C$ be the output co-domain of a target system function $f$.
 2. Define the empirical training dataset $D$:
 
-$$D = \{ \langle x_i, c_k \rangle \mid x_i \in X \text{ and } c_k \in C \}$$
-
+$$
+D = \{ \langle x_i, c_k \rangle \mid x_i \in X \text{ and } c_k \in C \}
+$$
 
 3. Learn the target function $f$ using supervised learning (AL, BBN, CL, DT, ILP) such that for any pair in $D$:
 
-$$f(x_i) = c_k$$
+$$
+f(x_i) = c_k
+$$
 
 #### Scenario-Based Requirement Engineering (Inductive Learning)
 
@@ -238,12 +241,15 @@ $$f(x_i) = c_k$$
 
 1. Given executable program $p$, input dataset $X$, and output set $C$, construct the training dataset $D$ by running $p$ on inputs $x_i$:
 
-$$D = \{ \langle x_i, p(x_i) \rangle \mid x_i \in X \text{ and } p(x_i) \in C \}$$
-
+$$
+D = \{ \langle x_i, p(x_i) \rangle \mid x_i \in X \text{ and } p(x_i) \in C \}
+$$
 
 2. Use supervised learning (e.g., Concept Learning) to learn a human-understandable specification function $f$ such that:
 
-$$\forall x_i \in X, \quad f(x_i) = p(x_i)$$
+$$
+\forall x_i \in X, \quad f(x_i) = p(x_i)
+$$
 
 ---
 
@@ -256,13 +262,16 @@ $$\forall x_i \in X, \quad f(x_i) = p(x_i)$$
 1. Let executable implementation $p$ map inputs to outputs: $p: X \rightarrow C$.
 2. Define the test execution dataset $D$:
 
-$$D = \{ \langle x_i, p(x_i) \rangle \mid x_i \in X \}$$
+$$
+D = \{ \langle x_i, p(x_i) \rangle \mid x_i \in X \}
+$$
 
 3. Represent the system specification as the **domain theory** $B$.
 4. **Validation Condition:** Implementation $p$ is valid if and only if for every pair in $D$, the specification $B$ and input $x_i$ logically imply the program's output $p(x_i)$:
 
-$$\forall \langle x_i, p(x_i) \rangle \in D, \quad (B \land x_i) \implies p(x_i)$$
-
+$$
+\forall \langle x_i, p(x_i) \rangle \in D, \quad (B \land x_i) \implies p(x_i)
+$$
 
 5. Carry out the logical verification using **Explanation-Based Learning (EBL)**.
 
@@ -286,7 +295,6 @@ Unifies multiple software lifecycle perspectives (size, complexity, testing metr
 * **Hypothesis variables:** Unobservable or too costly to measure directly; the target values to predict.
 * **Information variables:** Observable metrics and measurements collected during development.
 * **Mediating variables:** Helper variables introduced to represent conditional independence and simplify probability calculations.
-
 
 2. **Define Causal Relationships:** Connect variables with directed edges that reflect real-world cause-and-effect across the software lifecycle.
 3. **Acquire Probability Distributions:** Assign conditional probabilities to each variable.
