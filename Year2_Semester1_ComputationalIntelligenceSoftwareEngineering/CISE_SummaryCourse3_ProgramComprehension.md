@@ -1,8 +1,8 @@
-# CISE Course 3&4 Study Guide: Program Comprehension & Search-Based Software Engineering
+# CISE Course 3&4: Program Comprehension & Search-Based Software Engineering
 
 ---
 
-## 1. Program Comprehension in Software Engineering
+## 3.1 Program Comprehension in Software Engineering
 
 ### Core Concepts & Definitions
 * **Maintenance and Evolution**: Stages in the software lifecycle that account for approximately **66% of the total cost** of software development.
@@ -43,7 +43,7 @@ SBSE applies metaheuristics and machine learning to automate and optimize compre
 
 ---
 
-## 2. Clustering Fundamentals
+## 3.2 Clustering Fundamentals
 
 ### Core Principles
 * **Clustering (Unsupervised Classification)**: A data mining activity that partitions a set of objects into distinct, non-empty groups (**clusters**) based on relevant attributes.
@@ -65,7 +65,7 @@ SBSE applies metaheuristics and machine learning to automate and optimize compre
 
 ---
 
-## 3. Clustering Algorithms & Implementations
+## 3.3 Clustering Algorithms & Implementations
 
 ### Partitioning Methods: K-Means vs. K-Medoids (PAM)
 Both algorithms partition $n$ objects into $k$ clusters ($k \le n$) iteratively and heuristically to minimize a squared-error criterion (works best with isolated, compact clusters).
@@ -86,14 +86,11 @@ Both algorithms partition $n$ objects into $k$ clusters ($k \le n$) iteratively 
 #### K-Means Implementation
 ```java
 import java.util.List;
-
 /**
  * Implements the K-Means clustering algorithm to partition a set of objects.
  */
 public class KMeansClusterer<ObjType ObjectWithFeature extends> {
-
     private DistanceMetric dist;
-
     /**
      * Constructs a KMeansClusterer with a specified distance metric.
      *
@@ -102,7 +99,6 @@ public class KMeansClusterer<ObjType ObjectWithFeature extends> {
     public KMeansClusterer(DistanceMetric dist) {
         this.dist = dist;
     }
-
     /**
      * Partitions a list of objects into a specified number of clusters using K-Means.
      * Iteratively assigns objects to the closest centroid and updates centroids until convergence.
@@ -117,7 +113,6 @@ public class KMeansClusterer<ObjType ObjectWithFeature extends> {
         List<? extends ObjectWithFeature> centroidsOld = KMedoids.pickRandomSeeds(nrClusters, objects);
         Partition<ObjType> part;
         double centroidDist;
-
         do {
             part = KMedoids.computePartition(centroidsOld, objects, dist);
             if (list != null) {
@@ -127,10 +122,8 @@ public class KMeansClusterer<ObjType ObjectWithFeature extends> {
             centroidDist = computeDistance(centroidsOld, centroidsNew);
             centroidsOld = centroidsNew;
         } while (centroidDist > epsilon);
-
         return part;
     }
-
     /**
      * Computes the new centroids by averaging the feature attributes of objects in each cluster.
      *
@@ -141,7 +134,6 @@ public class KMeansClusterer<ObjType ObjectWithFeature extends> {
         // Implementation computes mean attribute values per cluster
         return part.calculateClusterMeans();
     }
-
     /**
      * Calculates the total shift distance between the previous centroids and the updated centroids.
      *
@@ -159,14 +151,11 @@ public class KMeansClusterer<ObjType ObjectWithFeature extends> {
 ```java
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  * Implements the Partitioning Around Medoids (PAM / K-Medoids) clustering algorithm.
  */
 public class KMedoidsClusterer<T> {
-
     private DistanceMetric<T> dist;
-
     /**
      * Constructs a KMedoidsClusterer with a given distance metric.
      *
@@ -175,7 +164,6 @@ public class KMedoidsClusterer<T> {
     public KMedoidsClusterer(DistanceMetric<T> dist) {
         this.dist = dist;
     }
-
     /**
      * Partitions a list of objects into k clusters by iteratively swapping medoids with
      * non-medoids to minimize the total distance cost.
@@ -190,7 +178,6 @@ public class KMedoidsClusterer<T> {
         Partition<T> part = computePartition(medoids, objects, dist);
         double cost = computeCost(part, medoids);
         boolean changed = false;
-
         do {
             changed = false;
             List<T> medoidCopy = new ArrayList<T>(medoids);
@@ -212,10 +199,8 @@ public class KMedoidsClusterer<T> {
                 }
             }
         } while (changed);
-
         return part;
     }
-
     /**
      * Assigns each object in the dataset to the cluster of the closest medoid.
      *
@@ -227,7 +212,6 @@ public class KMedoidsClusterer<T> {
     private Partition<T> computePartition(List<T> medoids, List<T> objects, DistanceMetric<T> dist) {
         return Partition.assignToClosest(medoids, objects, dist);
     }
-
     /**
      * Calculates the total cost of a partition as the sum of distances from all objects to their medoids.
      *
@@ -238,7 +222,6 @@ public class KMedoidsClusterer<T> {
     private double computeCost(Partition<T> part, List<T> medoids) {
         return part.sumDistancesToCenters(medoids, dist);
     }
-
     /**
      * Notifies the clustering listener when an improved partition is found.
      *
@@ -265,15 +248,12 @@ public class KMedoidsClusterer<T> {
 #### Hierarchical Agglomerative Implementation
 ```java
 import java.util.List;
-
 /**
  * Implements the Hierarchical Agglomerative Clustering (HAC) algorithm.
  */
 public class HierarchicalAgglomerativeClusterer<T> {
-
     private StopCondition<T> stopC;
     private LinkageMetric<T> linkMetric;
-
     /**
      * Constructs an agglomerative clusterer with a stop criterion and linkage metric.
      *
@@ -284,7 +264,6 @@ public class HierarchicalAgglomerativeClusterer<T> {
         this.stopC = stopC;
         this.linkMetric = linkMetric;
     }
-
     /**
      * Executes bottom-up hierarchical clustering on a list of objects.
      *
@@ -295,7 +274,6 @@ public class HierarchicalAgglomerativeClusterer<T> {
     public Partition<T> partition(List<T> objects, ClusteringListener<T> list) {
         Partition<T> part = new Partition<T>(objects);
         boolean change = true;
-
         while (change) {
             hierarhicStep(part);
             if (stopC.isStopConditionReached(part)) {
@@ -307,7 +285,6 @@ public class HierarchicalAgglomerativeClusterer<T> {
         }
         return part;
     }
-
     /**
      * Searches for the two closest clusters in the current partition and merges them into a single cluster.
      *
@@ -318,11 +295,9 @@ public class HierarchicalAgglomerativeClusterer<T> {
         if (nrClusters < 2) {
             return;
         }
-
         Cluster<T> minCl1 = part.get(0);
         Cluster<T> minCl2 = part.get(1);
         double dmin = linkMetric.metric(minCl1, minCl2);
-
         for (int i = 0; i < nrClusters - 1; i++) {
             Cluster<T> cl1 = part.get(i);
             for (int j = i + 1; j < nrClusters; j++) {
@@ -334,7 +309,6 @@ public class HierarchicalAgglomerativeClusterer<T> {
                 }
             }
         }
-
         Cluster<T> c = new Cluster<T>(minCl1, minCl2);
         part.delete(minCl1);
         part.delete(minCl2);
@@ -345,7 +319,7 @@ public class HierarchicalAgglomerativeClusterer<T> {
 
 ---
 
-## 4. Software Design Patterns (GoF)
+## 3.4 Software Design Patterns (GoF)
 
 * **Definition**: A general, reusable solution template to a commonly occurring problem within a specific software design context. Popularized in 1994 by the **Gang of Four (GoF)**: *Erich Gamma, Richard Helm, Ralph Johnson, and John Vlissides*.
 
@@ -391,7 +365,7 @@ classDiagram
 
 ---
 
-## 5. Case Study 1: Design Pattern Identification via Clustering
+## 3.5 Case Study 1: Design Pattern Identification via Clustering
 
 ### Problem Formulation
 * An object-oriented software system $S$ is modeled as a set of classes.
@@ -414,9 +388,12 @@ flowchart LR
 4. **Design Pattern Instances Recovery**: Filter the resulting clusters to retain only valid instances of pattern $p$.
 
 ### Dissimilarity (Distance) Metric
+
 The distance $d(C_i, C_j)$ between two classes is determined by the number of binary constraints in $R_p$ that are **not satisfied** between $C_i$ and $C_j$:
 
-$$d(C_i, C_j) = 1 + \left\vert{} \left\{ k \mid 1 \le k \le nr_p \text{ s.t. } \neg(C_i \, r_k^p \, C_j \lor C_j \, r_k^p \, C_i) \right\} \right\vert{}$$
+$$
+d(C_i, C_j) = 1 + \lvert \{ k \mid 1 \leq k \leq nr_p,\ \neg(C_i \, r_k^p \, C_j \lor C_j \, r_k^p \, C_i) \} \rvert
+$$
 
 *The smaller the distance $d$, the more likely $C_i$ and $C_j$ belong to the same instance of pattern $p$.*
 
@@ -434,7 +411,7 @@ $$d(C_i, C_j) = 1 + \left\vert{} \left\{ k \mid 1 \le k \le nr_p \text{ s.t. } \
 
 ---
 
-## 6. Case Study 2: Refactoring Identification via Clustering
+## 3.6 Case Study 2: Refactoring Identification via Clustering
 
 ### Refactoring Fundamentals (Martin Fowler)
 * **Refactoring**: Changing a software system to improve its internal structure **without altering its external behavior**. It improves design, readability, bug detection, and development speed.
@@ -516,7 +493,7 @@ $$d(s_i, s_j) = \begin{cases} 1 - \dfrac{\vert{}p(s_i) \cap p(s_j)\vert{}}{\vert
 
 ---
 
-## 7. Techniques for Extracting Information from Source Code
+## 3.7 Techniques for Extracting Information from Source Code
 
 To populate models for program comprehension and clustering, tools extract static and dynamic data using five primary techniques:
 
