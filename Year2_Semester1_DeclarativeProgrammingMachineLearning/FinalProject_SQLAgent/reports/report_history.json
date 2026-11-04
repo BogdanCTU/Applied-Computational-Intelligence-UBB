@@ -1,5 +1,47 @@
 [
   {
+    "report_id": "814f4244ffb04c9881449df38a9e319d",
+    "title": "Product Category CSV",
+    "description": "Category breakdown CSV",
+    "user_request": "Category breakdown CSV",
+    "sql_query": "SELECT category, COUNT(*) as count FROM products GROUP BY category LIMIT 5",
+    "output_format": "CSV",
+    "file_name": "product_category_csv_20261104_095249_36a58b.csv",
+    "output_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reports/product_category_csv_20261104_095249_36a58b.csv",
+    "record_count": 5,
+    "total_input_records": 5,
+    "truncated": false,
+    "column_names": [
+      "category",
+      "count"
+    ],
+    "file_size_bytes": 82,
+    "created_at": "2026-11-04T09:52:49",
+    "status": "completed",
+    "error_message": null
+  },
+  {
+    "report_id": "334ccee8cf304819b58d4921d1041703",
+    "title": "Product Category Distribution",
+    "description": "Category breakdown report",
+    "user_request": "Category breakdown report",
+    "sql_query": "SELECT category, COUNT(*) as count FROM products GROUP BY category LIMIT 5",
+    "output_format": "PDF",
+    "file_name": "product_category_distribution_20261104_095249_6d5b5e.pdf",
+    "output_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reports/product_category_distribution_20261104_095249_6d5b5e.pdf",
+    "record_count": 5,
+    "total_input_records": 5,
+    "truncated": false,
+    "column_names": [
+      "category",
+      "count"
+    ],
+    "file_size_bytes": 42953,
+    "created_at": "2026-11-04T09:52:49",
+    "status": "completed",
+    "error_message": null
+  },
+  {
     "report_id": "4f3947970ee5429aa192143c3a710d84",
     "title": "Monthly Captured Revenue by Payment Method",
     "description": "CSV export of monthly captured revenue by payment method",
