@@ -56,8 +56,8 @@ class DatabaseSettings:
 
 @dataclass
 class AgentSettings:
-    max_iterations: int = 12
-    max_tool_calls: int = 24
+    max_iterations: int = 20
+    max_tool_calls: int = 40
     max_sql_retries: int = 3
     max_history_messages: int = 30
     require_sql_approval: bool = True
@@ -70,7 +70,7 @@ class ReportSettings:
     page_size: str = "A4"  # "A4" or "LETTER"
     max_pdf_rows: int = 5000
     max_report_rows: int = 100000
-    include_sql_in_pdf: bool = True
+    include_sql_in_pdf: bool = False
 
 
 @dataclass

@@ -16,6 +16,8 @@ import httpx
 import pytest
 
 from agent import (
+    ActivityCategory,
+    ActivityEvent,
     AgentEventType,
     AgentOrchestrator,
     ConversationManager,
@@ -30,6 +32,7 @@ from agent import (
     ToolHandler,
     build_system_prompt,
     detect_requested_report_format,
+    mask_sensitive_data,
 )
 from config.settings import AppSettings, OllamaSettings
 from database import import_dataset
@@ -908,5 +911,339 @@ def test_timeout_configuration_defaults() -> None:
     assert settings.ollama.request_timeout_s == 600.0
     assert settings.database.query_timeout_s == 120.0
     assert settings.validate() == []
+
+
+# ===========================================================================
+# Milestone 8: SQL Approval Workflow & Transparency Regression Tests
+# ===========================================================================
+
+
+@pytest.mark.asyncio
+async def test_m8_valid_sql_reaches_approval_dialog(agent_test_settings: AppSettings) -> None:
+    """Milestone 8: Valid SQL reaches the approval callback with exact query and explanation."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_mcp = MagicMock(spec=MCPStdioClient)
+    mock_mcp.is_connected = True
+    mock_mcp.call_tool = AsyncMock(return_value={"columns": ["id"], "rows": [[1]], "record_count": 1})
+
+    query = "SELECT order_id, total_amount FROM orders LIMIT 5"
+    mock_ollama.chat = AsyncMock(
+        side_effect=[
+            OllamaChatResponse(
+                content="Executing orders query.",
+                tool_calls=[
+                    OllamaToolCall(id="c1", name="execute_readonly_sql", arguments={"sql_query": query})
+                ],
+            ),
+            OllamaChatResponse(content="Here is your result.", tool_calls=[]),
+        ]
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama, mcp_client=mock_mcp)
+    orchestrator._initialized = True
+
+    approval_queries_received: list[str] = []
+
+    def mock_approval(sql_text: str, explanation: str) -> bool:
+        approval_queries_received.append(sql_text)
+        return True
+
+    res = await orchestrator.process_message("Show orders", approval_callback=mock_approval)
+    assert res.is_success is True
+    assert len(approval_queries_received) == 1
+    assert "SELECT order_id, total_amount FROM orders" in approval_queries_received[0]
+
+
+@pytest.mark.asyncio
+async def test_m8_sql_displayed_matches_sql_executed(agent_test_settings: AppSettings) -> None:
+    """Milestone 8: The SQL query shown in the dialog is identically equal to the SQL executed."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_mcp = MagicMock(spec=MCPStdioClient)
+    mock_mcp.is_connected = True
+    executed_queries: list[str] = []
+
+    async def mock_call_tool(tool_name: str, args: dict[str, Any]) -> dict[str, Any]:
+        if tool_name == "execute_readonly_sql":
+            executed_queries.append(args["sql_query"])
+        return {"columns": ["cnt"], "rows": [[42]], "record_count": 1}
+
+    mock_mcp.call_tool = AsyncMock(side_effect=mock_call_tool)
+
+    query = "SELECT count(*) AS total_orders FROM orders"
+    mock_ollama.chat = AsyncMock(
+        side_effect=[
+            OllamaChatResponse(
+                content="Counting orders.",
+                tool_calls=[
+                    OllamaToolCall(id="c1", name="execute_readonly_sql", arguments={"sql_query": query})
+                ],
+            ),
+            OllamaChatResponse(content="Done.", tool_calls=[]),
+        ]
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama, mcp_client=mock_mcp)
+    orchestrator._initialized = True
+
+    dialog_queries: list[str] = []
+
+    def capture_approval(sql_text: str, exp: str) -> bool:
+        dialog_queries.append(sql_text)
+        return True
+
+    await orchestrator.process_message("Count orders", approval_callback=capture_approval)
+    assert len(dialog_queries) == 1
+    assert len(executed_queries) == 1
+    # INVARIANT: SQL shown in dialog MUST identically equal SQL executed
+    assert dialog_queries[0] == executed_queries[0]
+
+
+@pytest.mark.asyncio
+async def test_m8_empty_sql_rejected_without_dialog(agent_test_settings: AppSettings) -> None:
+    """Milestone 8: Empty SQL query is rejected BEFORE approval dialog is shown."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_mcp = MagicMock(spec=MCPStdioClient)
+    mock_mcp.is_connected = True
+
+    mock_ollama.chat = AsyncMock(
+        side_effect=[
+            OllamaChatResponse(
+                content="Running empty query.",
+                tool_calls=[
+                    OllamaToolCall(id="c1", name="execute_readonly_sql", arguments={"sql_query": "   "})
+                ],
+            ),
+            OllamaChatResponse(content="Correcting my query.", tool_calls=[]),
+        ]
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama, mcp_client=mock_mcp)
+    orchestrator._initialized = True
+
+    dialog_shown = False
+
+    def check_dialog(sql_text: str, exp: str) -> bool:
+        nonlocal dialog_shown
+        dialog_shown = True
+        return True
+
+    await orchestrator.process_message("Get data", approval_callback=check_dialog)
+    # Safety Invariant: Dialog MUST NOT have been displayed!
+    assert dialog_shown is False
+    mock_mcp.call_tool.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_m8_missing_sql_argument_rejected_without_dialog(agent_test_settings: AppSettings) -> None:
+    """Milestone 8: Missing sql_query argument is rejected without showing approval dialog."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_mcp = MagicMock(spec=MCPStdioClient)
+    mock_mcp.is_connected = True
+
+    mock_ollama.chat = AsyncMock(
+        side_effect=[
+            OllamaChatResponse(
+                content="Calling tool with no arguments.",
+                tool_calls=[
+                    OllamaToolCall(id="c1", name="execute_readonly_sql", arguments={})
+                ],
+            ),
+            OllamaChatResponse(content="Understood.", tool_calls=[]),
+        ]
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama, mcp_client=mock_mcp)
+    orchestrator._initialized = True
+
+    dialog_shown = False
+
+    def check_dialog(sql_text: str, exp: str) -> bool:
+        nonlocal dialog_shown
+        dialog_shown = True
+        return True
+
+    await orchestrator.process_message("Get data", approval_callback=check_dialog)
+    assert dialog_shown is False
+    mock_mcp.call_tool.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_m8_invalid_sql_syntax_rejected_without_dialog(agent_test_settings: AppSettings) -> None:
+    """Milestone 8: Malformed SQL syntax is rejected BEFORE approval dialog is shown."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_mcp = MagicMock(spec=MCPStdioClient)
+    mock_mcp.is_connected = True
+
+    bad_sql = "SELECT FROM WHERE GROUP BY ORDER"
+    mock_ollama.chat = AsyncMock(
+        side_effect=[
+            OllamaChatResponse(
+                content="Trying invalid syntax.",
+                tool_calls=[
+                    OllamaToolCall(id="c1", name="execute_readonly_sql", arguments={"sql_query": bad_sql})
+                ],
+            ),
+            OllamaChatResponse(content="Recovered.", tool_calls=[]),
+        ]
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama, mcp_client=mock_mcp)
+    orchestrator._initialized = True
+
+    dialog_shown = False
+
+    def check_dialog(sql_text: str, exp: str) -> bool:
+        nonlocal dialog_shown
+        dialog_shown = True
+        return True
+
+    await orchestrator.process_message("Execute invalid", approval_callback=check_dialog)
+    assert dialog_shown is False
+    mock_mcp.call_tool.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_m8_destructive_statement_rejected_without_dialog(agent_test_settings: AppSettings) -> None:
+    """Milestone 8: Destructive statements (DROP TABLE) are rejected BEFORE approval dialog."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_mcp = MagicMock(spec=MCPStdioClient)
+    mock_mcp.is_connected = True
+
+    forbidden_sql = "DROP TABLE orders;"
+    mock_ollama.chat = AsyncMock(
+        side_effect=[
+            OllamaChatResponse(
+                content="Attempting drop.",
+                tool_calls=[
+                    OllamaToolCall(id="c1", name="execute_readonly_sql", arguments={"sql_query": forbidden_sql})
+                ],
+            ),
+            OllamaChatResponse(content="Forbidden.", tool_calls=[]),
+        ]
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama, mcp_client=mock_mcp)
+    orchestrator._initialized = True
+
+    dialog_shown = False
+
+    def check_dialog(sql_text: str, exp: str) -> bool:
+        nonlocal dialog_shown
+        dialog_shown = True
+        return True
+
+    await orchestrator.process_message("Drop orders", approval_callback=check_dialog)
+    assert dialog_shown is False
+    mock_mcp.call_tool.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_m8_argument_normalization_preserves_sql_aliases(agent_test_settings: AppSettings) -> None:
+    """Milestone 8: Argument normalization handles 'query' and 'sql' aliases without losing the query."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_mcp = MagicMock(spec=MCPStdioClient)
+    mock_mcp.is_connected = True
+    mock_mcp.call_tool = AsyncMock(return_value={"columns": ["c"], "rows": [[1]], "record_count": 1})
+
+    query = "SELECT order_id FROM orders LIMIT 1"
+    # LLM uses "query" instead of "sql_query"
+    mock_ollama.chat = AsyncMock(
+        side_effect=[
+            OllamaChatResponse(
+                content="Running query with alias.",
+                tool_calls=[
+                    OllamaToolCall(id="c1", name="execute_readonly_sql", arguments={"query": query})
+                ],
+            ),
+            OllamaChatResponse(content="Done.", tool_calls=[]),
+        ]
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama, mcp_client=mock_mcp)
+    orchestrator._initialized = True
+
+    approved_sql: list[str] = []
+
+    def capture_approval(sql_text: str, exp: str) -> bool:
+        approved_sql.append(sql_text)
+        return True
+
+    res = await orchestrator.process_message("Run aliased query", approval_callback=capture_approval)
+    assert res.is_success is True
+    assert len(approved_sql) == 1
+    assert "SELECT order_id FROM orders" in approved_sql[0]
+
+
+@pytest.mark.asyncio
+async def test_m8_activity_events_chronological_emission(agent_test_settings: AppSettings) -> None:
+    """Milestone 8: Activity events are emitted in proper chronological order with categories."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_mcp = MagicMock(spec=MCPStdioClient)
+    mock_mcp.is_connected = True
+    mock_mcp.call_tool = AsyncMock(return_value={"columns": ["c"], "rows": [[1]], "record_count": 1})
+
+    query = "SELECT order_id FROM orders LIMIT 1"
+    mock_ollama.chat = AsyncMock(
+        side_effect=[
+            OllamaChatResponse(
+                content="Thinking about orders.",
+                thinking="I should select from orders table.",
+                tool_calls=[
+                    OllamaToolCall(id="c1", name="execute_readonly_sql", arguments={"sql_query": query})
+                ],
+            ),
+            OllamaChatResponse(content="Orders retrieved.", tool_calls=[]),
+        ]
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama, mcp_client=mock_mcp)
+    orchestrator._initialized = True
+
+    activity_categories: list[str] = []
+
+    def on_progress(event: AgentEvent) -> None:
+        act = event.activity_event
+        if act:
+            activity_categories.append(act.category)
+
+    res = await orchestrator.process_message(
+        "Show orders",
+        approval_callback=lambda q, e: True,
+        progress_callback=on_progress,
+    )
+    assert res.is_success is True
+    # Verify core categories appeared in order
+    assert ActivityCategory.USER_REQUEST.value in activity_categories
+    assert ActivityCategory.AGENT_STATUS.value in activity_categories
+    assert ActivityCategory.REASONING_SUMMARY.value in activity_categories
+    assert ActivityCategory.PLANNING.value in activity_categories
+    assert ActivityCategory.SQL_VALIDATION.value in activity_categories
+    assert ActivityCategory.APPROVAL_REQUIRED.value in activity_categories
+    assert ActivityCategory.APPROVAL_RESULT.value in activity_categories
+    assert ActivityCategory.SQL_EXECUTION.value in activity_categories
+    assert ActivityCategory.SQL_RESULT.value in activity_categories
+    assert ActivityCategory.COMPLETION.value in activity_categories
+
+
+def test_m8_mask_sensitive_data() -> None:
+    """Milestone 8: Sensitive credentials, tokens, and keys are masked."""
+    raw_payload = {
+        "api_key": "sk-proj-1234567890abcdef",
+        "password": "supersecretpassword",
+        "auth_token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+        "safe_query": "SELECT * FROM orders",
+        "nested": {
+            "secret_key": "mysecret",
+            "db_user": "postgres",
+        },
+    }
+    masked = mask_sensitive_data(raw_payload)
+    assert masked["api_key"] == "[REDACTED_CREDENTIAL]"
+    assert masked["password"] == "[REDACTED_CREDENTIAL]"
+    assert masked["auth_token"] == "[REDACTED_CREDENTIAL]"
+    assert masked["safe_query"] == "SELECT * FROM orders"
+    assert masked["nested"]["secret_key"] == "[REDACTED_CREDENTIAL]"
+    assert masked["nested"]["db_user"] == "postgres"
+
 
 

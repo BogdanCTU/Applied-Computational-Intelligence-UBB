@@ -46,28 +46,42 @@ def generate_pdf_report_impl(
     settings: AppSettings,
     *,
     title: str,
-    description: str,
-    sql_query: str,
-    columns: list[str],
-    rows: list[Any],
+    description: str = "",
+    sql_query: str = "",
+    columns: list[str] | None = None,
+    rows: list[Any] | None = None,
     summary: str | None = None,
     user_request: str | None = None,
+    report_spec: Any | None = None,
+    charts: list[Any] | None = None,
+    sections: list[Any] | None = None,
+    datasets: dict[str, Any] | None = None,
+    kpis: list[Any] | None = None,
+    findings: list[str] | None = None,
+    include_sql: bool | None = None,
 ) -> dict[str, Any]:
     """Generate a formatted PDF report in ``settings.output_dir``."""
     try:
+        inc_sql = settings.reports.include_sql_in_pdf if include_sql is None else bool(include_sql)
         meta = generate_pdf_file(
             title=title,
-            description=description,
-            sql_query=sql_query,
-            columns=columns,
-            rows=rows,
+            description=description or "",
+            sql_query=sql_query or "",
+            columns=columns or [],
+            rows=rows or [],
             output_dir=settings.output_dir,
             summary=summary,
             user_request=user_request or description or title,
             page_size_name=settings.reports.page_size,
             max_pdf_rows=settings.reports.max_pdf_rows,
-            include_sql=settings.reports.include_sql_in_pdf,
+            include_sql=inc_sql,
             record_history=True,
+            report_spec=report_spec,
+            charts=charts,
+            sections=sections,
+            datasets=datasets,
+            kpis=kpis,
+            findings=findings,
         )
         return _metadata_to_tool_response(meta)
     except ReportSecurityError as exc:
@@ -98,24 +112,26 @@ def generate_csv_report_impl(
     settings: AppSettings,
     *,
     title: str,
-    columns: list[str],
-    rows: list[Any],
+    columns: list[str] | None = None,
+    rows: list[Any] | None = None,
     description: str | None = None,
     sql_query: str | None = None,
     user_request: str | None = None,
+    datasets: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Generate a UTF-8 CSV report in ``settings.output_dir``."""
     try:
         meta = generate_csv_file(
             title=title,
-            columns=columns,
-            rows=rows,
+            columns=columns or [],
+            rows=rows or [],
             output_dir=settings.output_dir,
             description=description or "",
             sql_query=sql_query or "",
             user_request=user_request or description or title,
             max_rows=settings.reports.max_report_rows,
             record_history=True,
+            datasets=datasets,
         )
         return _metadata_to_tool_response(meta)
     except ReportSecurityError as exc:

@@ -15,6 +15,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from app.widgets.sql_highlighter import SqlSyntaxHighlighter
+
 
 class SqlPreviewWidget(QFrame):
     """Inline card displaying SQL statements with status, syntax styling, and copy action."""
@@ -72,6 +74,7 @@ class SqlPreviewWidget(QFrame):
         self.sql_box.setReadOnly(True)
         self.sql_box.setPlainText(self.sql_query)
         self.sql_box.setFont(QFont("JetBrains Mono, Menlo, Consolas, Courier New", 11))
+        self.highlighter = SqlSyntaxHighlighter(self.sql_box.document())
         # Dynamically size height based on line count, capped at 160px
         lines = len(self.sql_query.splitlines())
         calc_height = max(50, min(160, lines * 20 + 20))

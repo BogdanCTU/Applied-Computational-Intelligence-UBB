@@ -205,23 +205,106 @@ def generate_pdf_file(
     title: str,
     description: str = "",
     sql_query: str = "",
-    columns: Sequence[str],
-    rows: Sequence[Sequence[Any] | Mapping[str, Any]],
+    columns: Sequence[str] | None = None,
+    rows: Sequence[Sequence[Any] | Mapping[str, Any]] | None = None,
     output_dir: str | Path,
     summary: str | None = None,
     user_request: str = "",
     page_size_name: str = "A4",
     max_pdf_rows: int = 5_000,
-    include_sql: bool = True,
+    include_sql: bool = False,
     record_history: bool = True,
+    report_spec: Any | None = None,
+    charts: Sequence[Mapping[str, Any]] | None = None,
+    sections: Sequence[Mapping[str, Any]] | None = None,
+    datasets: Mapping[str, Any] | None = None,
+    kpis: Sequence[Mapping[str, Any]] | None = None,
+    findings: Sequence[str] | None = None,
 ) -> ReportMetadata:
     """Generate a professionally styled, paginated PDF report inside ``output_dir``."""
     clean_title = (title or "").strip()
     if not clean_title:
         raise ReportValidationError("Report title must not be empty")
+
+    # 1. Dynamic Report Specification branch
+    if report_spec is not None:
+        from .dynamic_pdf_composer import compose_dynamic_pdf
+        from .report_spec import ReportSpecification
+        spec_obj = report_spec if isinstance(report_spec, ReportSpecification) else ReportSpecification.from_dict(report_spec)
+        return compose_dynamic_pdf(spec_obj, output_dir=output_dir, record_history=record_history)
+
+    if (charts and len(charts) > 0) or (sections and len(sections) > 0) or (datasets and len(datasets) > 1):
+        from .dynamic_pdf_composer import compose_dynamic_pdf
+        from .report_spec import (
+            ChartConfiguration,
+            ReportComponent,
+            ReportSection,
+            ReportSpecification,
+            TableConfiguration,
+        )
+
+        all_datasets = dict(datasets or {})
+        if "primary" not in all_datasets and (columns or rows):
+            all_datasets["primary"] = {
+                "columns": list(columns or []),
+                "rows": list(rows or []),
+            }
+
+        sec_components: list[ReportComponent] = []
+        if charts:
+            for ch in charts:
+                ch_cfg = ChartConfiguration.from_dict(ch)
+                ds_id = ch_cfg.dataset_id or ("primary" if "primary" in all_datasets else (next(iter(all_datasets.keys())) if all_datasets else None))
+                ch_cfg.dataset_id = ds_id
+                sec_components.append(
+                    ReportComponent(
+                        component_type="chart",
+                        title=ch_cfg.title,
+                        chart_config=ch_cfg,
+                        dataset_id=ds_id,
+                    )
+                )
+
+        if columns or rows:
+            sec_components.append(
+                ReportComponent(
+                    component_type="table",
+                    title="Data Summary Table",
+                    table_config=TableConfiguration(columns=list(columns or [])),
+                    dataset_id="primary",
+                )
+            )
+
+        built_sections = [
+            ReportSection(
+                title="Analytical Overview",
+                description=description,
+                components=sec_components,
+            )
+        ]
+        if sections:
+            for s in sections:
+                built_sections.append(ReportSection.from_dict(s))
+
+        dyn_spec = ReportSpecification(
+            title=clean_title,
+            subtitle=description,
+            executive_summary=summary or "",
+            kpis=list(kpis or []),
+            findings=list(findings or []),
+            sections=built_sections,
+            datasets=all_datasets,
+            include_sql=include_sql,
+            sql_queries=[{"query": sql_query, "purpose": "Report source query"}] if (sql_query and include_sql) else [],
+            page_size=page_size_name,
+        )
+        return compose_dynamic_pdf(dyn_spec, output_dir=output_dir, record_history=record_history)
+
     if max_pdf_rows < 1:
         raise ReportValidationError("max_pdf_rows must be >= 1")
 
+    columns = columns or []
+    rows = rows or []
     total_input = len(rows) if isinstance(rows, (list, tuple)) else 0
     clean_cols, norm_rows, truncated = normalize_tabular_data(
         columns, rows, max_rows=max_pdf_rows
@@ -401,7 +484,7 @@ def generate_pdf_file(
     # 4. SQL Query block
     clean_sql = (sql_query or "").strip()
     if include_sql and clean_sql:
-        story.append(Paragraph("Executed SQL Query", section_heading))
+        story.append(Paragraph("Appendix: SQL Queries", section_heading))
         sql_box = Table(
             [[Paragraph(_safe_paragraph_markup(clean_sql), sql_style)]],
             colWidths=[available_width],

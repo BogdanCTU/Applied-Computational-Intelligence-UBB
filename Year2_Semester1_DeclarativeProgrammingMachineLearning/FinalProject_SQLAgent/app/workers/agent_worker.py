@@ -98,6 +98,11 @@ class AgentWorker(QThread):
             """Propagate fine-grained progress updates to Qt signals."""
             self.signals.progress_event.emit(event)
 
+            # Propagate structured activity event if attached
+            act = getattr(event, "activity_event", None) or event.data.get("activity_event")
+            if act is not None:
+                self.signals.activity_event.emit(act)
+
             if event.event_type == AgentEventType.THINKING:
                 thinking_text = event.data.get("thinking", "")
                 if thinking_text:

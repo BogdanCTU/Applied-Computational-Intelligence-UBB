@@ -203,6 +203,7 @@ class MainWindow(QMainWindow):
             lambda: self.chat_view.update_status_message("Analyzing request with Ollama...")
         )
         self.active_worker.signals.progress_event.connect(self._on_agent_progress_event)
+        self.active_worker.signals.activity_event.connect(self.chat_view.add_activity_event)
         self.active_worker.signals.approval_requested.connect(self._on_sql_approval_requested)
         self.active_worker.signals.report_generated.connect(self._on_report_generated)
         self.active_worker.signals.finished.connect(self._on_agent_finished)

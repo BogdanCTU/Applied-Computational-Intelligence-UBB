@@ -12,6 +12,7 @@ class WorkerSignals(QObject):
 
     started = Signal()
     progress_event = Signal(object)  # AgentEvent
+    activity_event = Signal(object)  # ActivityEvent
     thinking_update = Signal(str)  # Reasoning string
     sql_proposed = Signal(str, str)  # (sql_query, explanation)
     approval_requested = Signal(str, str, object)  # (sql_query, explanation, response_queue)

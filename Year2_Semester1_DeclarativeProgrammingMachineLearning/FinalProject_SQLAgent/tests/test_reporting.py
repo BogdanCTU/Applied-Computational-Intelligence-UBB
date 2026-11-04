@@ -209,3 +209,243 @@ def test_report_history_persistence_and_lookup(tmp_path: Path) -> None:
     with pytest.raises(ReportValidationError):
         generate_pdf_file(title="Bad Width", columns=["a", "b"], rows=[[1]], output_dir=out_dir)
 
+
+# ---------------------------------------------------------------------------
+# Milestone 8: Advanced Dynamic Reporting & Chart Engine Tests
+# ---------------------------------------------------------------------------
+
+
+def test_m8_all_11_vector_chart_types_build() -> None:
+    """Milestone 8: Build and verify all 11 ReportLab vector chart types."""
+    from reporting.chart_builder import build_chart
+    from reporting.report_spec import ChartConfiguration, ChartType
+
+    sample_rows = [
+        {"month": "2023-01", "sales": 100, "profit": 30, "cat": "Books"},
+        {"month": "2023-02", "sales": 150, "profit": 45, "cat": "Electronics"},
+        {"month": "2023-03", "sales": 120, "profit": 35, "cat": "Apparel"},
+        {"month": "2023-04", "sales": 200, "profit": 60, "cat": "Home"},
+    ]
+
+    all_chart_types = [
+        ChartType.LINE,
+        ChartType.MULTI_LINE,
+        ChartType.HISTORICAL_LINE,
+        ChartType.VERTICAL_BAR,
+        ChartType.GROUPED_BAR,
+        ChartType.STACKED_BAR,
+        ChartType.HORIZONTAL_BAR,
+        ChartType.PIE,
+        ChartType.DONUT,
+        ChartType.AREA,
+        ChartType.SCATTER,
+    ]
+
+    for ct in all_chart_types:
+        y_cols = ["sales", "profit"] if ct in {ChartType.MULTI_LINE, ChartType.GROUPED_BAR, ChartType.STACKED_BAR} else ["sales"]
+        config = ChartConfiguration(
+            chart_type=ct,
+            title=f"Test {ct.value}",
+            x_column="month",
+            y_columns=y_cols,
+        )
+        drawing = build_chart(config, sample_rows, width=450, height=200)
+        assert drawing is not None, f"Chart type {ct.value} failed to build"
+        assert drawing.width == 450
+        assert drawing.height == 200
+
+
+def test_m8_dynamic_pdf_composer_multi_dataset(tmp_path: Path) -> None:
+    """Milestone 8: Test compose_dynamic_pdf with multiple datasets, KPI cards, charts, and tables."""
+    from reporting.dynamic_pdf_composer import compose_dynamic_pdf
+    from reporting.report_spec import (
+        ChartConfiguration,
+        ChartType,
+        ReportComponent,
+        ReportSection,
+        ReportSpecification,
+        TableConfiguration,
+    )
+
+    out_dir = tmp_path / "reports"
+    spec = ReportSpecification(
+        title="Quarterly Performance Report",
+        subtitle="Multi-Dataset Analysis Q1-Q2",
+        executive_summary="Executive summary highlighting solid growth across major product sectors.",
+        kpis=[
+            {"label": "Total Revenue", "value": "$145,200", "delta": "+12.4%"},
+            {"label": "Total Orders", "value": "1,240", "delta": "+8.1%"},
+            {"label": "Avg Order Value", "value": "$117.10", "delta": "+4.0%"},
+        ],
+        key_findings=[
+            "Electronics category generated 48% of total gross sales.",
+            "Repeat customer order rate grew to 34% in Q2.",
+        ],
+        datasets={
+            "monthly_orders": {
+                "name": "monthly_orders",
+                "columns": ["month", "orders_count", "revenue"],
+                "rows": [
+                    ["2023-01", 310, 36270.0],
+                    ["2023-02", 290, 33930.0],
+                    ["2023-03", 350, 40950.0],
+                    ["2023-04", 290, 34050.0],
+                ],
+            },
+            "status_distribution": {
+                "name": "status_distribution",
+                "columns": ["status", "count"],
+                "rows": [
+                    ["delivered", 1120],
+                    ["shipped", 80],
+                    ["canceled", 40],
+                ],
+            },
+        },
+        sections=[
+            ReportSection(
+                title="1. Order Volume Trends",
+                description="Monthly order progression over the first two quarters.",
+                components=[
+                    ReportComponent(
+                        component_type="chart",
+                        dataset_name="monthly_orders",
+                        chart_config=ChartConfiguration(
+                            chart_type=ChartType.HISTORICAL_LINE,
+                            title="Monthly Orders",
+                            x_column="month",
+                            y_columns=["orders_count"],
+                        ),
+                    ),
+                    ReportComponent(
+                        component_type="table",
+                        dataset_name="monthly_orders",
+                        table_config=TableConfiguration(
+                            columns=["month", "orders_count", "revenue"],
+                            formatting={"revenue": "currency"},
+                        ),
+                    ),
+                ],
+            ),
+            ReportSection(
+                title="2. Fulfillment Status Distribution",
+                components=[
+                    ReportComponent(
+                        component_type="chart",
+                        dataset_name="status_distribution",
+                        chart_config=ChartConfiguration(
+                            chart_type=ChartType.DONUT,
+                            title="Orders by Status",
+                            x_column="status",
+                            y_columns=["count"],
+                        ),
+                    ),
+                ],
+            ),
+        ],
+        include_sql=False,
+    )
+
+    meta = compose_dynamic_pdf(spec, out_dir)
+    assert meta is not None
+    assert meta.file_size_bytes > 5_000
+    pdf_path = Path(meta.output_path)
+    assert pdf_path.is_file()
+    assert pdf_path.read_bytes().startswith(b"%PDF-")
+
+
+def _extract_pdf_text(pdf_path: Path) -> str:
+    """Helper to extract text from ReportLab PDF by decompressing streams."""
+    import base64
+    import zlib
+
+    data = pdf_path.read_bytes()
+    text_parts: list[str] = [data.decode("latin1", errors="ignore")]
+    idx = 0
+    while True:
+        s_idx = data.find(b"stream\n", idx)
+        if s_idx == -1:
+            s_idx = data.find(b"stream\r\n", idx)
+            if s_idx == -1:
+                break
+            s_idx += 8
+        else:
+            s_idx += 7
+        e_idx = data.find(b"endstream", s_idx)
+        if e_idx == -1:
+            break
+        raw_stream = data[s_idx:e_idx].strip()
+        try:
+            a85 = base64.a85decode(raw_stream, adobe=True)
+            text_parts.append(zlib.decompress(a85).decode("latin1", errors="ignore"))
+        except Exception:
+            try:
+                text_parts.append(zlib.decompress(raw_stream).decode("latin1", errors="ignore"))
+            except Exception:
+                text_parts.append(raw_stream.decode("latin1", errors="ignore"))
+        idx = e_idx + 9
+    return "\n".join(text_parts)
+
+
+def test_m8_sql_visibility_policy_in_pdf(tmp_path: Path) -> None:
+    """Milestone 8: SQL query is excluded by default and included in appendix only when requested."""
+    out_dir = tmp_path / "reports"
+    secret_sql = "SELECT order_id, secret_code FROM confidential_orders"
+
+    # 1. Default: include_sql=False -> SQL query must NOT appear in output
+    meta_no_sql = generate_pdf_file(
+        title="No SQL PDF Report",
+        columns=["order_id"],
+        rows=[[101]],
+        sql_query=secret_sql,
+        output_dir=out_dir,
+        include_sql=False,
+    )
+    pdf_text_no_sql = _extract_pdf_text(Path(meta_no_sql.output_path))
+    assert "confidential_orders" not in pdf_text_no_sql
+    assert "Appendix: SQL Queries" not in pdf_text_no_sql
+
+    # 2. Explicit: include_sql=True -> SQL query must appear in dedicated Appendix
+    meta_with_sql = generate_pdf_file(
+        title="With SQL PDF Report",
+        columns=["order_id"],
+        rows=[[101]],
+        sql_query=secret_sql,
+        output_dir=out_dir,
+        include_sql=True,
+    )
+    pdf_text_with_sql = _extract_pdf_text(Path(meta_with_sql.output_path))
+    assert "Appendix: SQL Queries" in pdf_text_with_sql
+    assert "confidential_orders" in pdf_text_with_sql
+
+
+def test_m8_multi_dataset_csv_generation(tmp_path: Path) -> None:
+    """Milestone 8: Multi-dataset CSV exports separate datasets with boundary headers."""
+    out_dir = tmp_path / "reports"
+    datasets = {
+        "monthly_revenue": {
+            "columns": ["month", "revenue"],
+            "rows": [["2023-01", 1000], ["2023-02", 1500]],
+        },
+        "order_statuses": {
+            "columns": ["status", "count"],
+            "rows": [["delivered", 50], ["pending", 5]],
+        },
+    }
+
+    meta = generate_csv_file(
+        title="Multi Dataset Export",
+        columns=["month", "revenue"],
+        rows=[["2023-01", 1000]],
+        datasets=datasets,
+        output_dir=out_dir,
+    )
+
+    csv_content = Path(meta.output_path).read_text(encoding="utf-8")
+    assert "# Dataset: monthly_revenue" in csv_content
+    assert "month,revenue" in csv_content
+    assert "# Dataset: order_statuses" in csv_content
+    assert "status,count" in csv_content
+    assert "delivered,50" in csv_content
+
+

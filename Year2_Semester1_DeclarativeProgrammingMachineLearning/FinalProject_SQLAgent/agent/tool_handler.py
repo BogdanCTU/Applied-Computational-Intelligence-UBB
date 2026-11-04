@@ -184,13 +184,24 @@ class ToolHandler:
                     args["sql_query"] = args.pop("sql")
             if "title" not in args and "name" in args:
                 args["title"] = args.pop("name")
-            for req in ("title", "description", "sql_query", "columns", "rows"):
-                if req not in args or args[req] is None:
-                    return False, f"Missing required argument '{req}' for generate_pdf_report", {}
-            if not isinstance(args["columns"], (list, tuple)):
-                return False, "columns must be a list of strings", {}
-            if not isinstance(args["rows"], (list, tuple)):
-                return False, "rows must be a list of table rows", {}
+
+            # Check if this is a dynamic report specification
+            has_spec = "report_spec" in args or ("charts" in args and ("datasets" in args or "rows" in args))
+            if has_spec:
+                if not args.get("title") or not str(args.get("title")).strip():
+                    return False, "title is required for generate_pdf_report", {}
+                args.setdefault("description", "")
+                args.setdefault("sql_query", "")
+                args.setdefault("columns", [])
+                args.setdefault("rows", [])
+            else:
+                for req in ("title", "description", "sql_query", "columns", "rows"):
+                    if req not in args or args[req] is None:
+                        return False, f"Missing required argument '{req}' for generate_pdf_report", {}
+                if not isinstance(args["columns"], (list, tuple)):
+                    return False, "columns must be a list of strings", {}
+                if not isinstance(args["rows"], (list, tuple)):
+                    return False, "rows must be a list of table rows", {}
 
         elif tool_name == "generate_csv_report":
             if "title" not in args and "name" in args:
@@ -232,10 +243,19 @@ class ToolHandler:
 
         timeout = float(timeout_s or self.default_tool_timeout_s)
         try:
-            return await asyncio.wait_for(
+            res = await asyncio.wait_for(
                 self.mcp_client.call_tool(tool_name, sanitized_args),
                 timeout=timeout,
             )
+            if isinstance(res, dict):
+                is_err = res.get("status") == "error"
+                return MCPToolCallResult(
+                    tool_name=tool_name,
+                    is_error=is_err,
+                    data=res,
+                    raw_text=str(res),
+                )
+            return res
         except asyncio.TimeoutError:
             err = f"MCP tool '{tool_name}' timed out after {timeout:.1f}s"
             log.error(err)

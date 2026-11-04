@@ -560,3 +560,114 @@ def test_message_widget_system_unsafe_tags_sanitized(qapp: QApplication) -> None
     assert "&lt;iframe" in rendered_text
     assert "onclick" not in rendered_text or "&lt;b onclick=" in rendered_text
 
+
+# ---------------------------------------------------------------------------
+# Milestone 8: GUI Transparency & Approval Dialog Tests
+# ---------------------------------------------------------------------------
+
+
+def test_sql_approval_dialog_with_valid_sql(qapp: QApplication) -> None:
+    """Milestone 8: SqlApprovalDialog renders query, explanation, badges, and highlighter."""
+    sql = "SELECT order_id, total_amount FROM orders WHERE status = 'delivered';"
+    dialog = SqlApprovalDialog(
+        sql_query=sql,
+        explanation="Analyzing delivered orders.",
+        database_name="ecommerce.db",
+    )
+    assert dialog.sql_query == sql
+    assert dialog.sql_edit.toPlainText() == sql
+    assert hasattr(dialog, "highlighter")
+    # Verify metadata badges
+    text_content = dialog.findChildren(type(dialog.findChild(type(dialog.sql_edit))))
+    # Approve and reject buttons exist
+    assert dialog.approve_btn is not None
+    assert dialog.reject_btn is not None
+    dialog.close()
+
+
+def test_sql_approval_dialog_empty_sql_safety(qapp: QApplication) -> None:
+    """Milestone 8: ask_approval immediately rejects empty or whitespace query without showing dialog."""
+    # Empty query
+    assert SqlApprovalDialog.ask_approval(None, "") is False
+    # Whitespace query
+    assert SqlApprovalDialog.ask_approval(None, "   \n\t  ") is False
+
+
+def test_sql_approval_dialog_actions(qapp: QApplication) -> None:
+    """Milestone 8: Test approve and reject button behaviors."""
+    sql = "SELECT count(*) FROM orders"
+    dialog = SqlApprovalDialog(sql_query=sql, explanation="Test")
+    dialog._on_approve()
+    assert dialog.is_approved is True
+
+    dialog2 = SqlApprovalDialog(sql_query=sql, explanation="Test")
+    dialog2._on_reject()
+    assert dialog2.is_approved is False
+
+
+def test_sql_syntax_highlighter(qapp: QApplication) -> None:
+    """Milestone 8: SqlSyntaxHighlighter applies syntax formatting to document."""
+    from PySide6.QtGui import QTextDocument
+    from app.widgets.sql_highlighter import SqlSyntaxHighlighter
+
+    doc = QTextDocument()
+    doc.setPlainText("SELECT order_id, 1234, 'delivered' -- comment\nFROM orders;")
+    highlighter = SqlSyntaxHighlighter(doc)
+    assert highlighter is not None
+    assert doc.toPlainText().startswith("SELECT")
+
+
+def test_activity_inspector_widget_card_addition_and_clear(qapp: QApplication) -> None:
+    """Milestone 8: AgentActivityInspectorWidget correctly adds cards, tracks counts, and clears."""
+    from agent.events import ActivityCategory, ActivityEvent
+    from app.widgets.activity_inspector_widget import AgentActivityInspectorWidget
+
+    inspector = AgentActivityInspectorWidget()
+    assert inspector.event_count() == 0
+
+    event1 = ActivityEvent.create(
+        ActivityCategory.USER_REQUEST,
+        title="User Query",
+        description="Top 10 products",
+    )
+    event2 = ActivityEvent.create(
+        ActivityCategory.SQL_EXECUTION,
+        title="Executing SQL",
+        description="SELECT * FROM products",
+        status="success",
+    )
+
+    inspector.add_activity_event(event1)
+    assert inspector.event_count() == 1
+    assert "1 events" in inspector.count_badge.text()
+
+    inspector.add_activity_event(event2)
+    assert inspector.event_count() == 2
+    assert "2 events" in inspector.count_badge.text()
+
+    inspector.clear_events()
+    assert inspector.event_count() == 0
+    assert "0 events" in inspector.count_badge.text()
+    inspector.close()
+
+
+def test_chat_view_activity_inspector_toggle(qapp: QApplication) -> None:
+    """Milestone 8: ChatView toggle button shows and hides activity inspector without breaking layout."""
+    chat = ChatView()
+    assert chat.activity_inspector.isHidden() is True
+    assert "Show Agent Activity" in chat.btn_activity_toggle.text()
+
+    # Toggle open
+    chat.btn_activity_toggle.setChecked(True)
+    chat._on_activity_toggle_clicked()
+    assert chat.activity_inspector.isHidden() is False
+    assert "Hide Agent Activity" in chat.btn_activity_toggle.text()
+
+    # Toggle closed
+    chat.btn_activity_toggle.setChecked(False)
+    chat._on_activity_toggle_clicked()
+    assert chat.activity_inspector.isHidden() is True
+    assert "Show Agent Activity" in chat.btn_activity_toggle.text()
+    chat.close()
+
+

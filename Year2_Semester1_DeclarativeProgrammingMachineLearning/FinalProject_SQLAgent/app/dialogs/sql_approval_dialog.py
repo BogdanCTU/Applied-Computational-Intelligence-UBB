@@ -18,6 +18,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from app.widgets.sql_highlighter import SqlSyntaxHighlighter
+
 log = logging.getLogger(__name__)
 
 
@@ -33,22 +35,22 @@ class SqlApprovalDialog(QDialog):
         parent: QWidget | None = None,
     ) -> None:
         super().__init__(parent)
-        self.sql_query = sql_query.strip()
-        self.explanation = explanation.strip()
-        self.database_name = database_name
+        self.sql_query = (sql_query or "").strip()
+        self.explanation = (explanation or "").strip()
+        self.database_name = database_name or "ecommerce.db"
         self.is_approved: bool = False
 
         self.setWindowTitle("SQL Execution Approval")
         self.setModal(True)
-        self.setMinimumSize(620, 480)
-        self.resize(700, 540)
+        self.setMinimumSize(660, 520)
+        self.resize(740, 580)
 
         self._init_ui()
 
     def _init_ui(self) -> None:
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(14)
+        layout.setSpacing(12)
 
         # 1. Header Banner
         header = QLabel("⚠️ SQL Query Approval Required")
@@ -58,22 +60,46 @@ class SqlApprovalDialog(QDialog):
         desc = QLabel(
             "The AI agent has prepared the following read-only SQL query and requests permission "
             f"to execute it against the local database: <b>{self.database_name}</b>.<br>"
-            "Please review the query statement and explanation before approving."
+            "Please review the exact statement, operation mode, and explanation before deciding."
         )
         desc.setWordWrap(True)
-        desc.setStyleSheet("color: #d1d5db; line-height: 1.4;")
+        desc.setStyleSheet("color: #d1d5db; line-height: 1.4; font-size: 12px;")
         layout.addWidget(desc)
 
-        # 2. SQL Query Display with Copy Button
+        # 2. Metadata / Parameters Bar (Database, Operation, Guards)
+        meta_frame = QFrame()
+        meta_frame.setStyleSheet(
+            "QFrame { background-color: #1a1a24; border: 1px solid #3b82f640; border-radius: 6px; padding: 6px; }"
+        )
+        meta_layout = QHBoxLayout(meta_frame)
+        meta_layout.setContentsMargins(10, 4, 10, 4)
+        meta_layout.setSpacing(16)
+
+        db_badge = QLabel(f"🗄️ <b>Database:</b> {self.database_name}")
+        db_badge.setStyleSheet("color: #93c5fd; font-size: 11px;")
+        meta_layout.addWidget(db_badge)
+
+        op_badge = QLabel("🛡️ <b>Operation:</b> Read-Only SELECT / CTE")
+        op_badge.setStyleSheet("color: #34d399; font-size: 11px;")
+        meta_layout.addWidget(op_badge)
+
+        guard_badge = QLabel("⏱️ <b>Timeout:</b> 120s  |  <b>Max Rows:</b> 1,000")
+        guard_badge.setStyleSheet("color: #9ca3af; font-size: 11px;")
+        meta_layout.addWidget(guard_badge)
+
+        meta_layout.addStretch()
+        layout.addWidget(meta_frame)
+
+        # 3. SQL Query Display with Copy Button & Syntax Highlighter
         sql_label_row = QHBoxLayout()
-        sql_title = QLabel("Proposed SQL Statement:")
+        sql_title = QLabel("Proposed SQL Statement (Exact Executable Query):")
         sql_title.setStyleSheet("font-weight: 600; color: #9ca3af; font-size: 12px;")
         sql_label_row.addWidget(sql_title)
 
         sql_label_row.addStretch()
 
         self.copy_btn = QPushButton("Copy SQL")
-        self.copy_btn.setToolTip("Copy SQL query to clipboard")
+        self.copy_btn.setToolTip("Copy exact SQL query to clipboard")
         self.copy_btn.setFixedWidth(80)
         self.copy_btn.clicked.connect(self._copy_sql_to_clipboard)
         sql_label_row.addWidget(self.copy_btn)
@@ -85,34 +111,41 @@ class SqlApprovalDialog(QDialog):
         self.sql_edit.setReadOnly(True)
         self.sql_edit.setPlainText(self.sql_query)
         self.sql_edit.setFont(QFont("JetBrains Mono, Menlo, Consolas, Courier New", 12))
+        self.sql_edit.setStyleSheet(
+            "QPlainTextEdit#sql_editor { background-color: #111116; color: #f3f4f6; "
+            "border: 1px solid #3e3e52; border-radius: 6px; padding: 8px; }"
+        )
+        # Attach SQL Syntax Highlighter
+        self.highlighter = SqlSyntaxHighlighter(self.sql_edit.document())
         layout.addWidget(self.sql_edit, stretch=2)
 
-        # 3. Agent Explanation
+        # 4. Agent Explanation / Purpose
         if self.explanation:
-            exp_label = QLabel("Agent Explanation / Purpose:")
+            exp_label = QLabel("Query Purpose / Agent Explanation:")
             exp_label.setStyleSheet("font-weight: 600; color: #9ca3af; font-size: 12px;")
             layout.addWidget(exp_label)
 
             self.exp_box = QPlainTextEdit()
             self.exp_box.setReadOnly(True)
             self.exp_box.setPlainText(self.explanation)
-            self.exp_box.setMaximumHeight(85)
+            self.exp_box.setMaximumHeight(75)
             self.exp_box.setStyleSheet(
-                "background-color: #22222b; color: #e5e7eb; border: 1px solid #3e3e52; border-radius: 6px;"
+                "background-color: #1a1a24; color: #e5e7eb; border: 1px solid #3e3e52; "
+                "border-radius: 6px; padding: 6px; font-size: 12px;"
             )
             layout.addWidget(self.exp_box)
 
-        # 4. Action Buttons
+        # 5. Action Buttons (Reject has default focus to prevent accidental approval)
         button_row = QHBoxLayout()
         button_row.setSpacing(12)
 
-        info_lbl = QLabel("🛡️ Enforced read-only mode with query timeout and row caps.")
+        info_lbl = QLabel("⚠️ The query will execute ONLY if you approve. Closing or rejecting cancels execution.")
         info_lbl.setStyleSheet("color: #9ca3af; font-size: 11px;")
         button_row.addWidget(info_lbl)
 
         button_row.addStretch()
 
-        # Reject Button (Default focus to guarantee accidental presses never approve)
+        # Reject Button (Default focus)
         self.reject_btn = QPushButton("Reject Execution")
         self.reject_btn.setObjectName("danger_button")
         self.reject_btn.setDefault(True)
@@ -146,12 +179,10 @@ class SqlApprovalDialog(QDialog):
         self.reject()
 
     def closeEvent(self, event: QCloseEvent) -> None:  # noqa: N802
-        # Closing the window is always treated as an explicit rejection
         self.is_approved = False
         super().closeEvent(event)
 
     def reject(self) -> None:
-        # Guarantee rejection flag is set on any escape or cancel
         self.is_approved = False
         super().reject()
 
@@ -163,9 +194,19 @@ class SqlApprovalDialog(QDialog):
         explanation: str = "",
         database_name: str = "ecommerce.db",
     ) -> bool:
-        """Convenience method displaying the modal dialog and returning approval status."""
+        """Convenience method displaying modal approval dialog and returning approval status.
+        
+        Strict Safety Invariant:
+        If sql_query is empty, missing, or whitespace, this method REJECTS immediately
+        without displaying any dialog.
+        """
+        cleaned_sql = (sql_query or "").strip()
+        if not cleaned_sql:
+            log.error("SqlApprovalDialog.ask_approval blocked: refusing to display dialog for empty SQL query")
+            return False
+
         dialog = cls(
-            sql_query=sql_query,
+            sql_query=cleaned_sql,
             explanation=explanation,
             database_name=database_name,
             parent=parent,

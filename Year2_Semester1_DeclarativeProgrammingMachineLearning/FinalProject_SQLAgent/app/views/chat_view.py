@@ -15,10 +15,13 @@ from PySide6.QtWidgets import (
     QProgressBar,
     QPushButton,
     QScrollArea,
+    QSplitter,
     QVBoxLayout,
     QWidget,
 )
 
+from agent.events import ActivityEvent
+from app.widgets.activity_inspector_widget import AgentActivityInspectorWidget
 from app.widgets.message_widget import MessageWidget
 from app.widgets.sql_preview_widget import SqlPreviewWidget
 
@@ -70,6 +73,14 @@ class ChatView(QWidget):
 
         header.addStretch()
 
+        self.btn_activity_toggle = QPushButton("📋 Show Agent Activity")
+        self.btn_activity_toggle.setCheckable(True)
+        self.btn_activity_toggle.setChecked(False)
+        self.btn_activity_toggle.setToolTip("Toggle live chronological agent execution timeline")
+        self.btn_activity_toggle.setStyleSheet("font-size: 11px; padding: 2px 8px;")
+        self.btn_activity_toggle.clicked.connect(self._on_activity_toggle_clicked)
+        header.addWidget(self.btn_activity_toggle)
+
         self.btn_clear = QPushButton("Clear Chat")
         self.btn_clear.setToolTip("Reset conversation history")
         self.btn_clear.setStyleSheet("font-size: 11px; padding: 2px 8px;")
@@ -79,8 +90,12 @@ class ChatView(QWidget):
         main_layout.addLayout(header)
 
         # -------------------------------------------------------------
-        # 2. Scrollable Message History Area
+        # 2. Split Messages & Agent Activity Inspector Area
         # -------------------------------------------------------------
+        self.chat_splitter = QSplitter(Qt.Orientation.Vertical)
+        self.chat_splitter.setStyleSheet("QSplitter::handle { background-color: #2d2d3d; height: 3px; }")
+
+        # Top Pane: Scrollable Message History Area
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -93,7 +108,17 @@ class ChatView(QWidget):
         self.messages_layout.addStretch()
 
         self.scroll_area.setWidget(self.messages_container)
-        main_layout.addWidget(self.scroll_area, stretch=1)
+        self.chat_splitter.addWidget(self.scroll_area)
+
+        # Bottom Pane: Collapsible Activity Inspector
+        self.activity_inspector = AgentActivityInspectorWidget()
+        self.activity_inspector.setVisible(False)
+        self.chat_splitter.addWidget(self.activity_inspector)
+
+        self.chat_splitter.setStretchFactor(0, 7)
+        self.chat_splitter.setStretchFactor(1, 3)
+
+        main_layout.addWidget(self.chat_splitter, stretch=1)
 
         # -------------------------------------------------------------
         # 3. Live Progress & Status Banner
@@ -255,6 +280,27 @@ class ChatView(QWidget):
             w = item.widget()
             if w:
                 w.deleteLater()
+        self.activity_inspector.clear_events()
+        self.btn_activity_toggle.setText("📋 Show Agent Activity")
+
+    def add_activity_event(self, event: ActivityEvent | dict[str, Any]) -> None:
+        """Add an execution timeline event to the activity inspector."""
+        self.activity_inspector.add_activity_event(event)
+        if not self.activity_inspector.isVisible():
+            count = self.activity_inspector.event_count()
+            self.btn_activity_toggle.setText(f"📋 Show Agent Activity ({count})")
+
+    def _on_activity_toggle_clicked(self) -> None:
+        is_visible = self.btn_activity_toggle.isChecked()
+        self.activity_inspector.setVisible(is_visible)
+        if is_visible:
+            self.btn_activity_toggle.setText("📋 Hide Agent Activity")
+            total_h = self.chat_splitter.height() or 600
+            self.chat_splitter.setSizes([int(total_h * 0.6), int(total_h * 0.4)])
+        else:
+            count = self.activity_inspector.event_count()
+            suffix = f" ({count})" if count > 0 else ""
+            self.btn_activity_toggle.setText(f"📋 Show Agent Activity{suffix}")
 
     # -----------------------------------------------------------------
     # Internal Slots

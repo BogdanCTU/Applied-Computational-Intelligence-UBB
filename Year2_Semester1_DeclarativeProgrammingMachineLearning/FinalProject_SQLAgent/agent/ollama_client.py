@@ -284,11 +284,15 @@ class OllamaClient:
                         )
                     )
 
-            # Fallback check: if native mode returned empty tool_calls but content has explicit JSON tool call
+            # Fallback check: if native mode returned empty tool_calls but content has explicit tool call
             if not tool_calls and content.strip():
                 extracted = self._extract_json_tool_call(content)
                 if extracted:
                     tool_calls.append(extracted)
+                else:
+                    fn_call = self._extract_text_function_call(content)
+                    if fn_call:
+                        tool_calls.append(fn_call)
 
         elif tool_mode == "json":
             # Parse structured JSON fallback response
@@ -296,9 +300,13 @@ class OllamaClient:
             if extracted:
                 tool_calls.append(extracted)
             else:
-                final_msg = self._extract_json_final_response(content)
-                if final_msg is not None:
-                    content = final_msg
+                fn_call = self._extract_text_function_call(content)
+                if fn_call:
+                    tool_calls.append(fn_call)
+                else:
+                    final_msg = self._extract_json_final_response(content)
+                    if final_msg is not None:
+                        content = final_msg
 
         return OllamaChatResponse(
             content=content,
@@ -423,8 +431,11 @@ class OllamaClient:
                     or data.get("parameters")
                     or data.get("params")
                     or data.get("args")
-                    or {}
                 )
+                if raw_args is None:
+                    # Model provided flat arguments at top level of JSON
+                    reserved = {"type", "tool", "name", "action", "function", "id", "thought", "thinking"}
+                    raw_args = {k: v for k, v in data.items() if k not in reserved}
                 if isinstance(raw_args, str):
                     try:
                         raw_args = json.loads(raw_args)
@@ -471,4 +482,43 @@ class OllamaClient:
                     return str(data[k])
 
         return None
+
+    @classmethod
+    def _extract_text_function_call(cls, text: str) -> OllamaToolCall | None:
+        """Parse pseudo function call syntax like inspect_database_schema() or execute_readonly_sql(...)."""
+        permitted = [
+            "inspect_database_schema",
+            "get_table_sample",
+            "prepare_sql_query",
+            "execute_readonly_sql",
+            "generate_pdf_report",
+            "generate_csv_report",
+        ]
+        pattern = r"\b(" + "|".join(permitted) + r")\s*\(([\s\S]*?)\)"
+        match = re.search(pattern, text)
+        if not match:
+            return None
+        tool_name = match.group(1)
+        args_str = match.group(2).strip()
+        args: dict[str, Any] = {}
+        if not args_str:
+            return OllamaToolCall(id=f"text_call_{tool_name}", name=tool_name, arguments=args)
+
+        if "=" in args_str:
+            kv_matches = re.finditer(r'(\w+)\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^,\s]+))', args_str)
+            for kv in kv_matches:
+                k = kv.group(1)
+                v = kv.group(2) if kv.group(2) is not None else (kv.group(3) if kv.group(3) is not None else kv.group(4))
+                args[k] = v
+        else:
+            str_match = re.match(r'^(?:"([^"]*)"|\'([^\']*)\')$', args_str, re.DOTALL)
+            if str_match:
+                val = str_match.group(1) if str_match.group(1) is not None else str_match.group(2)
+                if tool_name in {"prepare_sql_query", "execute_readonly_sql"}:
+                    args["sql_query"] = val
+                elif tool_name in {"inspect_database_schema", "get_table_sample"}:
+                    args["table_name"] = val
+
+        return OllamaToolCall(id=f"text_call_{tool_name}", name=tool_name, arguments=args)
+
 
