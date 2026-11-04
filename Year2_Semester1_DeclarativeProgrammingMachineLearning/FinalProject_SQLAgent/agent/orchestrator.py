@@ -127,10 +127,19 @@ def _synthesize_charts_from_intent(
         (
             c
             for c, cl in zip(columns, cols_lower)
-            if any(k in cl for k in ["status", "name", "category", "country", "type", "group", "product"])
+            if any(k in cl for k in ["status", "name", "category", "country", "type", "group", "product", "channel", "section", "method", "region", "city", "state", "brand"])
         ),
         None,
     )
+    if not cat_col and rows:
+        sample_row = rows[0]
+        for c in columns:
+            if c != date_col:
+                val = sample_row.get(c) if isinstance(sample_row, dict) else (sample_row[columns.index(c)] if len(sample_row) > columns.index(c) else None)
+                if isinstance(val, str) and not any(k in c.lower() for k in ["date", "month", "year", "time", "day", "period"]):
+                    cat_col = c
+                    break
+
     # Find candidate numeric columns
     num_cols = [
         c
@@ -152,17 +161,29 @@ def _synthesize_charts_from_intent(
             ]
 
     want_historical = any(
-        k in p_lower for k in ["historical", "trend", "timeline", "over time", "monthly", "daily"]
-    )
+        k in p_lower for k in ["historical", "trend over time", "timeline", "trend of", "trends over time"]
+    ) or ("trend" in p_lower and "multi" not in p_lower and "compare" not in p_lower)
     want_pie = any(k in p_lower for k in ["pie", "distribution", "share", "proportion", "breakdown"])
     want_donut = any(k in p_lower for k in ["donut", "doughnut"])
     want_multi = any(
         k in p_lower for k in ["multi-series", "multi series", "compare categories", "comparison across"]
     )
-    want_bar = any(k in p_lower for k in ["bar", "ranking", "top 10", "top 5", "compare"])
-    want_area = any(k in p_lower for k in ["area chart", "area graph"])
-    want_scatter = any(k in p_lower for k in ["scatter", "correlation"])
+    want_hbar = any(k in p_lower for k in ["top 10", "top 5", "ranking", "horizontal bar", "top products", "ranking by"])
+    want_stacked_bar = any(k in p_lower for k in ["stacked bar", "stacked column"])
+    want_grouped_bar = any(k in p_lower for k in ["grouped bar", "grouped column"])
+    want_bar = any(k in p_lower for k in ["bar", "compare", "comparison"])
+    want_stacked_area = any(k in p_lower for k in ["stacked area", "cumulative area"])
+    want_area = any(k in p_lower for k in ["area chart", "area graph", "area"])
+    want_histogram = any(k in p_lower for k in ["histogram", "order value distribution", "value distribution", "numerical distribution", "spending distribution", "frequency distribution"])
+    want_density = any(k in p_lower for k in ["density", "density plot", "density distribution", "kde"])
+    want_box = any(k in p_lower for k in ["box plot", "boxplot", "box and whisker"])
+    want_violin = any(k in p_lower for k in ["violin", "violin plot"])
+    want_bubble = any(k in p_lower for k in ["bubble", "bubble chart"])
+    want_scatter = any(k in p_lower for k in ["scatter", "scatter plot"])
+    want_corr = any(k in p_lower for k in ["correlation", "correlation heatmap", "correlation matrix"])
+    want_treemap = any(k in p_lower for k in ["treemap", "hierarchical", "tree map", "hierarchy", "subcategory"])
 
+    # 1. Historical & Trend
     if want_historical and date_col and num_cols:
         charts.append(
             {
@@ -173,27 +194,73 @@ def _synthesize_charts_from_intent(
             }
         )
 
-    if (want_pie or want_donut) and num_cols:
+    # 2. Treemap
+    if want_treemap and (cat_col or date_col) and num_cols:
+        l_col = cat_col or date_col
+        charts.append(
+            {
+                "chart_type": "treemap",
+                "title": f"Hierarchical Treemap by {l_col.replace('_', ' ').title()}",
+                "x_column": l_col,
+                "y_columns": [num_cols[0]],
+            }
+        )
+
+    # 3. Histogram & Density
+    if want_histogram and num_cols:
+        charts.append(
+            {
+                "chart_type": "histogram",
+                "title": f"Distribution Histogram ({num_cols[0].replace('_', ' ').title()})",
+                "x_column": num_cols[0],
+                "y_columns": [num_cols[0]],
+            }
+        )
+    elif want_density and num_cols:
+        charts.append(
+            {
+                "chart_type": "density",
+                "title": f"Density Estimate ({num_cols[0].replace('_', ' ').title()})",
+                "x_column": num_cols[0],
+                "y_columns": [num_cols[0]],
+            }
+        )
+
+    # 4. Box Plot & Violin Plot
+    if want_box and num_cols:
+        charts.append(
+            {
+                "chart_type": "box_plot",
+                "title": f"Box Plot Analysis ({num_cols[0].replace('_', ' ').title()})",
+                "x_column": cat_col or date_col or columns[0],
+                "y_columns": [num_cols[0]],
+            }
+        )
+    elif want_violin and num_cols:
+        charts.append(
+            {
+                "chart_type": "violin",
+                "title": f"Violin Density Plot ({num_cols[0].replace('_', ' ').title()})",
+                "x_column": cat_col or date_col or columns[0],
+                "y_columns": [num_cols[0]],
+            }
+        )
+
+    # 5. Pie & Donut
+    if (want_pie or want_donut) and num_cols and not want_histogram:
         c_type = "donut" if want_donut else "pie"
-        if cat_col:
+        pie_cat = cat_col or date_col
+        if pie_cat:
             charts.append(
                 {
                     "chart_type": c_type,
-                    "title": f"Distribution by {cat_col.replace('_', ' ').title()}",
-                    "x_column": cat_col,
-                    "y_columns": [num_cols[0]],
-                }
-            )
-        elif date_col and not want_historical:
-            charts.append(
-                {
-                    "chart_type": c_type,
-                    "title": f"Distribution by {date_col.replace('_', ' ').title()}",
-                    "x_column": date_col,
+                    "title": f"Distribution by {pie_cat.replace('_', ' ').title()}",
+                    "x_column": pie_cat,
                     "y_columns": [num_cols[0]],
                 }
             )
 
+    # 6. Multi-Series Line
     if want_multi and date_col and cat_col and num_cols:
         charts.append(
             {
@@ -214,7 +281,17 @@ def _synthesize_charts_from_intent(
             }
         )
 
-    if want_area and date_col and num_cols:
+    # 7. Area & Stacked Area
+    if want_stacked_area and date_col and num_cols:
+        charts.append(
+            {
+                "chart_type": "stacked_area",
+                "title": f"Stacked Area Trend ({num_cols[0].replace('_', ' ').title()})",
+                "x_column": date_col,
+                "y_columns": num_cols[:3],
+            }
+        )
+    elif want_area and date_col and num_cols and not want_stacked_area:
         charts.append(
             {
                 "chart_type": "area",
@@ -224,16 +301,72 @@ def _synthesize_charts_from_intent(
             }
         )
 
-    if want_scatter and len(num_cols) >= 2:
+    # 8. Correlation Heatmap
+    if want_corr and len(num_cols) >= 2:
+        charts.append(
+            {
+                "chart_type": "correlation_heatmap",
+                "title": "Correlation Matrix Heatmap",
+                "x_column": num_cols[0],
+                "y_columns": num_cols[:5],
+            }
+        )
+
+    # 9. Scatter & Bubble
+    if want_bubble and len(num_cols) >= 2:
+        charts.append(
+            {
+                "chart_type": "bubble",
+                "title": f"Bubble Analysis: {num_cols[0].replace('_', ' ').title()} vs {num_cols[1].replace('_', ' ').title()}",
+                "x_column": num_cols[0],
+                "y_columns": [num_cols[1]],
+            }
+        )
+    elif want_scatter and len(num_cols) >= 2 and not want_corr:
         charts.append(
             {
                 "chart_type": "scatter",
-                "title": f"Correlation: {num_cols[0].replace('_', ' ').title()} vs {num_cols[1].replace('_', ' ').title()}",
+                "title": f"Scatter Relationship: {num_cols[0].replace('_', ' ').title()} vs {num_cols[1].replace('_', ' ').title()}",
                 "x_column": num_cols[0],
                 "y_columns": [num_cols[1]],
             }
         )
 
+    # 10. Horizontal Bar (Rankings / Top 10)
+    if want_hbar and not charts and (cat_col or date_col) and num_cols:
+        l_col = cat_col or date_col
+        charts.append(
+            {
+                "chart_type": "horizontal_bar",
+                "title": f"Ranking by {l_col.replace('_', ' ').title()}",
+                "x_column": l_col,
+                "y_columns": [num_cols[0]],
+            }
+        )
+
+    # 11. Stacked & Grouped Bar
+    if want_stacked_bar and not charts and (cat_col or date_col) and num_cols:
+        l_col = cat_col or date_col
+        charts.append(
+            {
+                "chart_type": "stacked_bar",
+                "title": f"Stacked Comparison by {l_col.replace('_', ' ').title()}",
+                "x_column": l_col,
+                "y_columns": num_cols[:3],
+            }
+        )
+    elif want_grouped_bar and not charts and (cat_col or date_col) and num_cols:
+        l_col = cat_col or date_col
+        charts.append(
+            {
+                "chart_type": "grouped_bar",
+                "title": f"Grouped Comparison by {l_col.replace('_', ' ').title()}",
+                "x_column": l_col,
+                "y_columns": num_cols[:3],
+            }
+        )
+
+    # 12. Fallback Vertical Bar
     if want_bar and not charts and (cat_col or date_col) and num_cols:
         label_col = cat_col or date_col
         charts.append(

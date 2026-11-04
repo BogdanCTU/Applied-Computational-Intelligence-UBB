@@ -9,19 +9,44 @@ from typing import Any, Mapping, Sequence
 
 
 class ChartType(str, Enum):
-    LINE = "line"
-    MULTI_LINE = "multi_line"
-    HISTORICAL = "historical"
-    HISTORICAL_LINE = "historical"
+    # Comparison
     BAR = "bar"
     VERTICAL_BAR = "bar"
     GROUPED_BAR = "grouped_bar"
     STACKED_BAR = "stacked_bar"
     HORIZONTAL_BAR = "horizontal_bar"
+    GROUPED_HORIZONTAL_BAR = "grouped_horizontal_bar"
+    STACKED_HORIZONTAL_BAR = "stacked_horizontal_bar"
+
+    # Trend & Time-Series
+    LINE = "line"
+    MULTI_LINE = "multi_line"
+    HISTORICAL = "historical"
+    HISTORICAL_LINE = "historical"
+    AREA = "area"
+    STACKED_AREA = "stacked_area"
+
+    # Distribution
     PIE = "pie"
     DONUT = "donut"
-    AREA = "area"
+    HISTOGRAM = "histogram"
+    DENSITY = "density"
+    BOX_PLOT = "box_plot"
+    VIOLIN = "violin"
+
+    # Relationship
     SCATTER = "scatter"
+    BUBBLE = "bubble"
+    CORRELATION_HEATMAP = "correlation_heatmap"
+
+    # Hierarchical
+    TREEMAP = "treemap"
+    SUNBURST = "sunburst"
+
+    # Matrix & Tabular
+    MATRIX = "matrix"
+    HEATMAP = "heatmap"
+    PIVOT_TABLE = "pivot_table"
 
 
 @dataclass
@@ -30,8 +55,11 @@ class ChartConfiguration:
 
     chart_type: str = ChartType.BAR.value
     title: str = ""
+    subtitle: str = ""
     x_axis: str = ""
     y_axis: str | list[str] = ""
+    category_dimension: str | None = None
+    numerical_measure: str | None = None
     series: list[str] = field(default_factory=list)
     labels: list[str] = field(default_factory=list)
     legend: bool = True
@@ -39,6 +67,11 @@ class ChartConfiguration:
     dataset_id: str | None = None
     width: float = 460.0
     height: float = 190.0
+    date_grouping: str | None = None  # "day", "week", "month", "quarter", "year"
+    aggregation: str | None = None  # "sum", "avg", "count", "min", "max"
+    sorting: str | None = None  # "asc", "desc"
+    data_labels: bool = False
+    chart_options: dict[str, Any] = field(default_factory=dict)
 
     def __init__(
         self,
@@ -54,6 +87,14 @@ class ChartConfiguration:
         width: float = 460.0,
         height: float = 190.0,
         *,
+        subtitle: str = "",
+        category_dimension: str | None = None,
+        numerical_measure: str | None = None,
+        date_grouping: str | None = None,
+        aggregation: str | None = None,
+        sorting: str | None = None,
+        data_labels: bool = False,
+        chart_options: dict[str, Any] | None = None,
         x_column: str = "",
         y_columns: str | list[str] = "",
         series_column: str = "",
@@ -63,8 +104,11 @@ class ChartConfiguration:
             chart_type.value if isinstance(chart_type, ChartType) else str(chart_type).lower()
         )
         self.title = title
-        self.x_axis = x_axis or x_column
-        self.y_axis = y_axis or y_columns
+        self.subtitle = subtitle
+        self.category_dimension = category_dimension
+        self.numerical_measure = numerical_measure
+        self.x_axis = x_axis or x_column or category_dimension or ""
+        self.y_axis = y_axis or y_columns or (numerical_measure if numerical_measure else "")
         self.series = series or ([series_column] if series_column else [])
         self.labels = labels or []
         self.legend = legend
@@ -72,30 +116,54 @@ class ChartConfiguration:
         self.dataset_id = dataset_id
         self.width = width
         self.height = height
+        self.date_grouping = date_grouping
+        self.aggregation = aggregation
+        self.sorting = sorting
+        self.data_labels = data_labels
+        self.chart_options = dict(chart_options or {})
 
     @property
     def x_column(self) -> str:
-        return self.x_axis
+        return self.x_axis or self.category_dimension or ""
 
     @property
     def y_columns(self) -> list[str]:
         if isinstance(self.y_axis, list):
             return self.y_axis
-        return [self.y_axis] if self.y_axis else []
+        if self.y_axis:
+            return [self.y_axis]
+        if self.numerical_measure:
+            return [self.numerical_measure]
+        return []
 
     @classmethod
     def from_dict(cls, data: Mapping[str, Any]) -> "ChartConfiguration":
         t = str(data.get("chart_type") or data.get("type") or "bar").lower()
-        x_val = str(data.get("x_axis") or data.get("x") or data.get("x_column") or "")
-        y_val = data.get("y_axis") or data.get("y") or data.get("y_columns") or ""
+        x_val = str(
+            data.get("x_axis")
+            or data.get("x")
+            or data.get("x_column")
+            or data.get("category_dimension")
+            or ""
+        )
+        y_val = (
+            data.get("y_axis")
+            or data.get("y")
+            or data.get("y_columns")
+            or data.get("numerical_measure")
+            or ""
+        )
         s_val = list(
             data.get("series") or ([data["series_column"]] if "series_column" in data else [])
         )
         return cls(
             chart_type=t,
             title=str(data.get("title") or ""),
+            subtitle=str(data.get("subtitle") or ""),
             x_axis=x_val,
             y_axis=y_val,
+            category_dimension=data.get("category_dimension"),
+            numerical_measure=data.get("numerical_measure"),
             series=s_val,
             labels=list(data.get("labels") or []),
             legend=bool(data.get("legend", True)),
@@ -103,6 +171,11 @@ class ChartConfiguration:
             dataset_id=data.get("dataset_id"),
             width=float(data.get("width", 460.0)),
             height=float(data.get("height", 190.0)),
+            date_grouping=data.get("date_grouping"),
+            aggregation=data.get("aggregation"),
+            sorting=data.get("sorting"),
+            data_labels=bool(data.get("data_labels", False)),
+            chart_options=dict(data.get("chart_options") or {}),
         )
 
 
