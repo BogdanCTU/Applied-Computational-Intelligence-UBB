@@ -198,13 +198,13 @@ To strictly guarantee database integrity during LLM execution, SQLite is protect
 [ Natural Language Query from User ]
                  │
                  ▼
-     Layer 1: Lexical & AST Validation (database/sql_validator.py)
+     Layer 1: Lexical & Structural Token Validation (mcp_layer/tools/sql_tools.py)
      • Rejects non-SELECT / non-WITH statements
      • Scans for forbidden tokens (DROP, INSERT, UPDATE, PRAGMA, ATTACH)
                  │
                  ▼
      Layer 2: Pre-Execution Schema Validation
-     • Runs EXPLAIN QUERY PLAN without executing query
+     • Runs EXPLAIN QUERY PLAN on read-only authorizer connection without executing query
      • Rejects unknown tables/columns or syntax errors
                  │
                  ▼

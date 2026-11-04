@@ -64,7 +64,7 @@ Powered by a locally hosted Large Language Model (**Ollama `qwen3.5:4b`**), the 
              │   SQLite Database (ro)    │                 │   ReportLab / CSV Engine  │
              │   (data/ecommerce.db)     │                 │   • Styled Paginated PDF  │
              │   499,385 Relational Rows │                 │   • RFC-4180 UTF-8 CSV    │
-             │   7 Tables + Foreign Keys │                 │   • reports/history.json  │
+             │   7 Tables + Foreign Keys │                 │   • report_history.json   │
              └───────────────────────────┘                 └───────────────────────────┘
 ```
 

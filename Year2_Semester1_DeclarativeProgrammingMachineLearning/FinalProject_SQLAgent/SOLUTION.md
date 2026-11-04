@@ -95,7 +95,7 @@ graph TD
         OLLAMA["Local Ollama Service (http://localhost:11434)\nModel: qwen3.5:4b"]
         SQLITE["SQLite Database (Read-Only: data/ecommerce.db)\n499,385 Rows across 7 Tables"]
         REPLAB["Report Engine (ReportLab 5.1 & CSV)\nCentralized ChartRegistry (25 Chart Types)"]
-        REPDIR["Artifacts & Catalog\nreports/ & reports/history.json"]
+        REPDIR["Artifacts & Catalog\nreports/ & reports/report_history.json"]
     end
 
     %% UI to Core
@@ -301,7 +301,7 @@ The graphical user interface is constructed using PySide6 with an asymmetric two
 * **Agent Activity Inspector (`AgentActivityInspector`)**: A real-time timeline drawer displaying color-coded agent state transitions (planning, tool invocation, SQL execution, approval decisions, and report compilation).
 * **Modal SQL Approval Dialog (`SqlApprovalDialog`)**: Presents a syntax-highlighted SQL code viewer, natural language justification, and target table metadata when manual approval is active.
 * **Settings Dialog (`SettingsView`)**: Allows real-time toggling of SQL approval policy (`require_sql_approval`), Ollama endpoint URL, LLM model identifier, and query timeout thresholds.
-* **History Drawer (`HistoryView`)**: Displays persistent metadata from `reports/history.json` with direct one-click previewing and file revealing in the OS file manager.
+* **History Drawer (`HistoryView`)**: Displays persistent metadata from `reports/report_history.json` with direct one-click previewing and file revealing in the OS file manager.
 
 ---
 
@@ -458,8 +458,8 @@ A defense-in-depth security model guarantees that no unauthorized, destructive, 
 ```mermaid
 graph LR
     SQL["Raw SQL String from LLM"] --> L1["Layer 1: Lexical Whitelist\nOnly SELECT allowed. Blocks DROP, INSERT, etc."]
-    L1 --> L2["Layer 2: AST Analysis\nsqlglot AST visitor verifies single SELECT"]
-    L2 --> L3["Layer 3: Query Plan Validation\nEXPLAIN QUERY PLAN executed safely"]
+    L1 --> L2["Layer 2: Structural Token Validation\nCustom _tokenize_sql in mcp_layer/tools/sql_tools.py"]
+    L2 --> L3["Layer 3: Query Plan Validation\nEXPLAIN QUERY PLAN on read-only authorizer con"]
     L3 --> L4["Layer 4: Configurable Human Gate\nrequire_sql_approval: Dialog vs Auto-Approved"]
     L4 --> L5["Layer 5: OS / Connection Safety\nURI mode=ro, PRAGMA query_only = ON"]
     L5 --> L6["Layer 6: Low-Level C-Authorizer\nsqlite3.set_authorizer blocking all writes/DDL"]
@@ -468,8 +468,8 @@ graph LR
 
 ### 8.1 The Six Layers of Security
 1. **Layer 1: Lexical Inspection**: Rejects queries containing mutation keywords (`INSERT`, `UPDATE`, `DELETE`, `DROP`, `ALTER`, `TRUNCATE`, `REPLACE`, `CREATE`, `ATTACH`, `DETACH`, `VACUUM`).
-2. **Layer 2: Abstract Syntax Tree (AST) Verification**: Parses the statement via `sqlglot`. Verifies the root AST node is strictly a `Select` expression. Blocks stacked/multiple queries (semicolon injection).
-3. **Layer 3: Query Plan Pre-Validation**: Executes `EXPLAIN QUERY PLAN` on a temporary read-only connection to confirm query syntax and relational validity before execution.
+2. **Layer 2: Structural Token & Syntax Validation (`mcp_layer/tools/sql_tools.py`)**: Implements `validate_and_prepare_sql` using a custom pure-Python lexical tokenizer (`_tokenize_sql`). Verifies statement boundaries, parentheses nesting depth, subquery depth, and single-statement enforcement (blocking semicolon-stacked injection) without external dependencies.
+3. **Layer 3: Query Plan Pre-Validation**: Executes `EXPLAIN QUERY PLAN <sql_query>` against SQLite using an isolated read-only authorizer connection to confirm syntax and schema validity without executing the query or mutating data.
 4. **Layer 4: Configurable Human-in-the-Loop Approval**:
    - `require_sql_approval = False` (Default): Queries are automatically approved without user interruption. The action is logged with status `"auto_approved"` in the Activity Inspector.
    - `require_sql_approval = True`: Execution halts and pops up a modal `SqlApprovalDialog`. Execution proceeds only if the user explicitly clicks Approve. Rejection returns an execution error to the LLM.
@@ -579,7 +579,7 @@ To ensure complete explainability and auditability, every internal agent state t
 * **CSV Exports (`.csv`)**: Generated when the user explicitly requests raw data or tabular CSV export. Implements RFC-4180 standard formatting with UTF-8 encoding and Excel-friendly headers.
 
 ### 12.2 Catalog Persistence
-All generated documents are registered in `reports/history.json` with metadata including:
+All generated documents are registered in `reports/report_history.json` with metadata including:
 * `report_id`, `title`, `created_at`, `output_format`
 * `file_path`, `file_size_bytes`
 * `record_count`, `charts_rendered`, `tables_rendered`
@@ -591,6 +591,7 @@ All generated documents are registered in `reports/history.json` with metadata i
 
 ```
 FinalProject_SQLAgent/
+├── run_app.py                        # Desktop application launcher script
 ├── app/                              # PySide6 Desktop GUI Layer
 │   ├── views/                        # Main application views
 │   │   ├── main_window.py            # Main application window & layout splitter
@@ -618,14 +619,13 @@ FinalProject_SQLAgent/
 │   ├── client.py                     # Asynchronous MCP Stdio client
 │   └── tools/                        # Modular MCP tool implementations
 │       ├── database_tools.py         # inspect_database_schema, get_table_sample
-│       ├── sql_tools.py              # prepare_sql_query, execute_readonly_sql
+│       ├── sql_tools.py              # prepare_sql_query, execute_readonly_sql, validate_and_prepare_sql
 │       └── reporting_tools.py        # generate_pdf_report, generate_csv_report
 │
 ├── database/                         # Relational Data Engine & Security
 │   ├── connection.py                 # Read-only SQLite connection factory & authorizer
-│   ├── executor.py                   # Secure query executor with PRAGMA query_only
-│   ├── inspector.py                  # Database schema introspection utilities
-│   ├── validator.py                  # AST query visitor & lexical keyword scanner
+│   ├── query_executor.py             # Secure query executor with PRAGMA query_only & progress watchdog
+│   ├── schema_inspector.py           # Database schema introspection utilities
 │   └── importer.py                   # High-performance batch CSV dataset importer
 │
 ├── reporting/                        # Visualization & Report Generation
@@ -635,7 +635,7 @@ FinalProject_SQLAgent/
 │   ├── dynamic_pdf_composer.py       # Multi-component PDF composer with Page X of Y
 │   ├── pdf_generator.py              # Legacy PDF builder wrapper
 │   ├── csv_generator.py              # RFC-4180 CSV report generator
-│   └── report_manager.py             # Persistent catalog manager (reports/history.json)
+│   └── report_manager.py             # Persistent catalog manager (reports/report_history.json)
 │
 ├── config/                           # System Configuration
 │   ├── settings.py                   # AppSettings, AgentSettings (approval flag), Ollama
@@ -647,7 +647,7 @@ FinalProject_SQLAgent/
 │   ├── ecommerce.db                  # Verified SQLite database (499,385 rows)
 │   └── raw/                          # Original immutable CSV dataset archives
 │
-├── reports/                          # Generated Report Artifacts (.pdf, .csv, history.json)
+├── reports/                          # Generated Report Artifacts (.pdf, .csv, report_history.json)
 │
 ├── scripts/                          # Maintenance & Verification Scripts
 │   ├── verify_environment.py         # Environment, Ollama & database hash validator
@@ -711,7 +711,7 @@ FinalProject_SQLAgent/
 Activate your virtual environment and start the desktop application:
 ```bash
 source .venv/bin/activate
-python main.py
+python run_app.py
 ```
 
 ### 15.2 Interacting with the Agent

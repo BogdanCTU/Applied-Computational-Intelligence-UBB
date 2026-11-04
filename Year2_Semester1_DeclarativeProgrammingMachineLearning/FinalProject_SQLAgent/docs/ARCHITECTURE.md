@@ -283,13 +283,13 @@ flowchart LR
 ### 4. Protocol Layer (`mcp_layer/`)
 * **`mcp_layer/server.py`**: FastMCP stdio server registering the 6 tools and configuring process isolation and file-only logging (suppressing console output to prevent JSON-RPC pipe pollution).
 * **`mcp_layer/client.py` (`MCPStdioClient`)**: Manages the child subprocess lifecycle and executes JSON-RPC 2.0 tool calls over stdio. Automatically detects development mode (`python -m mcp_layer.server`) versus packaged executable mode (`sys.executable --mcp-server`).
-* **Tool Modules (`mcp_layer/tools/`)**: Separate, modular packages for `database_tools.py`, `sql_tools.py`, and `reporting_tools.py`.
+* **Tool Modules (`mcp_layer/tools/`)**: Modular packages for `database_tools.py`, `sql_tools.py` (housing `validate_and_prepare_sql`, the custom Python lexical tokenizer `_tokenize_sql`, and SQLite `EXPLAIN QUERY PLAN` validation using a read-only authorizer connection), and `reporting_tools.py`.
 
 ### 5. Storage & Database Layer (`database/`)
 * **`database/importer.py`**: Batch-streaming importer converting raw CSV/ZIP datasets into `data/ecommerce.db` with foreign key constraints, indexes, and transactional rollbacks.
-* **`database/inspector.py`**: Reusable introspection utility extracting table names, SQLite column affinities, primary keys, foreign keys, and row counts without hardcoded assumptions.
-* **`database/executor.py`**: Read-only query execution engine enforcing `mode=ro`, `PRAGMA query_only = ON`, hard row limits, query timeouts, and a low-level SQLite C-authorizer.
-* **`database/sql_validator.py`**: Multi-phase lexical and syntactic scanner validating that queries are strictly read-only `SELECT` or `WITH ... SELECT` queries before execution.
+* **`database/schema_inspector.py`**: Reusable introspection utility extracting table names, SQLite column affinities, primary keys, foreign keys, and row counts without hardcoded assumptions.
+* **`database/query_executor.py`**: Read-only query execution engine enforcing `mode=ro`, `PRAGMA query_only = ON`, hard row limits, query timeouts, and a low-level SQLite C-authorizer.
+* **`database/connection.py`**: SQLite connection helpers providing URI percent-encoding, `mode=ro`, and read-write connection factories.
 
 ### 6. Reporting Layer (`reporting/`)
 * **`reporting/pdf_generator.py`**: ReportLab engine generating paginated, publication-quality PDF documents with executive summary cards, KPI blocks, formatted tabular grids, auto-wrapping, and running headers/footers (`Page X of Y`).

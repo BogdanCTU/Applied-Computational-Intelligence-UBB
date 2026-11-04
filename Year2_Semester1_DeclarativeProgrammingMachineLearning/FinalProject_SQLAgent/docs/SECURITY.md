@@ -29,7 +29,7 @@ This document outlines the security architecture, local-only execution boundarie
                                         │
                                         ▼
   3. Pre-Execution SQL Inspection
-     • Lexical & AST token validation (sql_validator.py)
+     • Lexical & structural token validation (mcp_layer/tools/sql_tools.py)
      • Strictly allows SELECT and WITH ... SELECT
      • Blocks INSERT, UPDATE, DELETE, DROP, ALTER, PRAGMA, ATTACH, DETACH
      • EXPLAIN QUERY PLAN validation catches syntax & schema errors
@@ -77,15 +77,15 @@ The MCP server operates as an isolated child subprocess communicating through st
 
 The application employs four independent defensive barriers to guarantee that the database cannot be modified or corrupted by model hallucination or prompt injection:
 
-### Layer 1: Lexical & Structural AST Validation (`database/sql_validator.py`)
-Before any query reaches SQLite, a static analyzer inspects the SQL text:
+### Layer 1: Lexical & Structural Token Validation (`mcp_layer/tools/sql_tools.py`)
+Before any query reaches SQLite, `validate_and_prepare_sql` (using custom tokenizer `_tokenize_sql`) inspects the SQL text:
 * **Token Scanning**: Scans for prohibited keywords (`INSERT`, `UPDATE`, `DELETE`, `DROP`, `ALTER`, `CREATE`, `REPLACE`, `ATTACH`, `DETACH`, `PRAGMA`, `VACUUM`, `BEGIN`, `COMMIT`, `EXPLAIN`).
 * **Statement Whitelisting**: Verifies that the statement begins strictly with `SELECT` or `WITH`.
 * **Single Statement Enforcement**: Blocks statement stacking (`SELECT 1; DROP TABLE users;`) by disallowing semicolons outside string literals.
 * **Prohibited SQLite Functions**: Blocks dangerous SQLite extensions and administrative functions (e.g., `load_extension`, `writefile`, `readfile`).
 
 ### Layer 2: Pre-Execution Schema Validation
-The `prepare_sql_query` tool runs `EXPLAIN QUERY PLAN <sql_query>` against SQLite:
+The `prepare_sql_query` tool runs `EXPLAIN QUERY PLAN <sql_query>` against SQLite using a read-only authorizer connection:
 * Confirms the query is syntactically valid and all referenced tables and columns exist.
 * Does **not** execute the query or fetch records.
 * Provides structured feedback to the LLM if a table name was misspelled, enabling automated correction without executing invalid SQL.
