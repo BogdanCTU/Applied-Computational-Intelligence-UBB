@@ -116,13 +116,14 @@ class MessageWidget(QFrame):
             return ""
 
         import html
+        import re
 
-        escaped = html.escape(raw_text)
+        # Strip raw <think>...</think> tags so internal CoT is never displayed in message body
+        cleaned = re.sub(r"<think>[\s\S]*?</think>", "", raw_text).strip()
+        escaped = html.escape(cleaned)
 
         # Basic markdown-like formatting for display
         # Bold **text**
-        import re
-
         escaped = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", escaped)
         # Inline code `code`
         escaped = re.sub(

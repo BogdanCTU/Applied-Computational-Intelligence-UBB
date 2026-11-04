@@ -232,6 +232,14 @@ class OllamaClient:
         raw_msg = data.get("message", {})
         content = raw_msg.get("content", "") or ""
         thinking = raw_msg.get("thinking")
+
+        # Strip inline <think>...</think> tags if present in content
+        if "<think>" in content and "</think>" in content:
+            think_match = re.search(r"<think>([\s\S]*?)</think>", content)
+            if think_match and not thinking:
+                thinking = think_match.group(1).strip()
+            content = re.sub(r"<think>[\s\S]*?</think>", "", content).strip()
+
         finish_reason = data.get("done_reason")
         total_duration = data.get("total_duration")
         duration_s = (

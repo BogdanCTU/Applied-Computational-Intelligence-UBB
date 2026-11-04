@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-from .paths import app_root, resolve_path
+from .paths import app_root, is_frozen, resolve_path, user_data_root
 
 log = logging.getLogger(__name__)
 
@@ -193,6 +193,8 @@ def _apply_env(settings: AppSettings) -> None:
 
 
 def settings_file() -> Path:
+    if is_frozen():
+        return user_data_root() / SETTINGS_FILENAME
     return app_root() / SETTINGS_FILENAME
 
 

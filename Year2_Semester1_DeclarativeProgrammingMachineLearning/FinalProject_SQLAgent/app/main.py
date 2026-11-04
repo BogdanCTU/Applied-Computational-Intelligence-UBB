@@ -17,14 +17,19 @@ log = logging.getLogger(__name__)
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Launch the Report SQL Agent desktop graphical interface."""
+    """Launch the Report SQL Agent desktop graphical interface or child MCP server."""
     args = sys.argv if argv is None else argv
+
+    # Handle MCP server subprocess execution mode (used when running as packaged app)
+    if "--mcp-server" in args:
+        from mcp_layer.server import run_stdio_server
+        return run_stdio_server()
 
     # 1. Load application configuration
     settings = load_settings()
 
     # 2. Configure logging
-    setup_logging(settings.logging)
+    setup_logging(settings)
     log.info("Starting Report SQL Agent Desktop Application...")
 
     # 3. Initialize PySide6 Application

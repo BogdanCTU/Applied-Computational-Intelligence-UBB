@@ -86,18 +86,43 @@ def check_ollama(host: str, model: str) -> tuple[bool, bool]:
     return True, False
 
 
+EXPECTED_DB_SHA256 = "c5a5965e000becdb75d0802897cb047dc2f827d1fdc7bacdf9d53ef7a46b6934"
+
+
 def check_database(path: Path) -> bool:
     if not path.exists():
         print(f"{WARN} Database not found at {path} (run scripts/import_dataset.py)")
         return False
+
+    import hashlib
+
+    hasher = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(65536), b""):
+            hasher.update(chunk)
+    actual_hash = hasher.hexdigest()
+
     con = sqlite3.connect(f"file:{path.as_posix()}?mode=ro", uri=True)
     try:
-        tables = [r[0] for r in con.execute(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")]
-        print(f"{OK} Database {path.name}: {len(tables)} tables")
+        tables = [
+            r[0]
+            for r in con.execute(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+            )
+        ]
+        row_count = sum(
+            con.execute(f"SELECT COUNT(*) FROM [{t}]").fetchone()[0] for t in tables
+        )
+        print(f"{OK} Database {path.name}: {len(tables)} tables, {row_count:,} total records")
     finally:
         con.close()
-    return True
+
+    if actual_hash == EXPECTED_DB_SHA256:
+        print(f"{OK} SHA-256 integrity verified: {actual_hash[:16]}...")
+        return True
+    else:
+        print(f"{WARN} SHA-256 checksum mismatch: {actual_hash} (expected {EXPECTED_DB_SHA256})")
+        return False
 
 
 def main() -> int:
