@@ -61,6 +61,18 @@ Powered by a locally hosted Large Language Model (**Ollama `qwen3.5:4b`**), the 
              └───────────────────────────┘                 └───────────────────────────┘
 ```
 
+### Technical Documentation Index (`docs/`)
+
+Comprehensive technical and academic documentation is available in the [`docs/`](docs/) directory:
+
+* [**`docs/ARCHITECTURE.md`**](docs/ARCHITECTURE.md): High-level system architecture, component responsibilities, concurrency model, and 4 detailed Mermaid flow/sequence diagrams.
+* [**`docs/DATABASE.md`**](docs/DATABASE.md): Relational data model, Entity-Relationship diagram, 7-table specifications (499,385 records), and multi-layer read-only SQLite security.
+* [**`docs/AGENT_WORKFLOW.md`**](docs/AGENT_WORKFLOW.md): Natural language request lifecycle, format steering (PDF default vs explicit CSV), Ollama integration, and mandatory human approval gate.
+* [**`docs/SECURITY.md`**](docs/SECURITY.md): Local-only boundary, defense-in-depth SQL protections (lexical, AST, query-only pragma, C-authorizer), path traversal defenses, and privacy guarantees.
+* [**`docs/TESTING.md`**](docs/TESTING.md): Testing architecture, full 106-test breakdown across 7 test suites, manual acceptance test checklist, and known limitations.
+* [**`docs/DEMO_GUIDE.md`**](docs/DEMO_GUIDE.md): Step-by-step 5–10 minute demonstration script with exact prompts, expected dialogs, and presenter talking points.
+* [**`docs/PROJECT_SUMMARY.md`**](docs/PROJECT_SUMMARY.md): Academic project summary, functional/non-functional requirements compliance matrix, technology stack, and conclusions.
+
 ### Module Responsibilities
 
 | Directory | Core Role & Responsibilities |
