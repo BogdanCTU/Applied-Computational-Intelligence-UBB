@@ -130,8 +130,8 @@ class AppSettings:
             errors.append("Maximum SQL result rows must be between 1 and 100000")
         if not 0.5 <= self.database.query_timeout_s <= 600:
             errors.append("SQL execution timeout must be between 0.5 and 600 seconds")
-        if not 1 <= self.agent.max_iterations <= 50:
-            errors.append("Maximum agent iterations must be between 1 and 50")
+        if not 1 <= self.agent.max_iterations <= 100:
+            errors.append("Maximum agent iterations must be between 1 and 100")
         if not self.reports.output_dir.strip():
             errors.append("Reports output directory must not be empty")
         if self.reports.page_size.upper() not in {"A4", "LETTER"}:

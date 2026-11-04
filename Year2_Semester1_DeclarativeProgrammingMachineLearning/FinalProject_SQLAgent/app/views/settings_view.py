@@ -124,7 +124,7 @@ class SettingsView(QDialog):
         form_db.addRow("", self.chk_require_approval)
 
         self.spin_max_iterations = QSpinBox()
-        self.spin_max_iterations.setRange(2, 25)
+        self.spin_max_iterations.setRange(2, 100)
         form_db.addRow("Max Agent Iterations:", self.spin_max_iterations)
 
         layout.addWidget(grp_db)
