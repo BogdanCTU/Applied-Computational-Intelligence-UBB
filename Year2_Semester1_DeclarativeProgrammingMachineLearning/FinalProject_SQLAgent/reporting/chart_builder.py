@@ -11,6 +11,7 @@ from reportlab.graphics.charts.linecharts import HorizontalLineChart
 from reportlab.graphics.charts.lineplots import LinePlot
 from reportlab.graphics.charts.piecharts import Pie
 from reportlab.graphics.shapes import Drawing, Group, Line, Rect, String
+from reportlab.graphics.widgets.markers import makeMarker
 from reportlab.lib import colors
 
 from .report_spec import ChartConfiguration, ChartType
@@ -92,6 +93,61 @@ def extract_chart_data(
                 break
         if not x_col:
             x_col = columns[0]
+
+    # Check for long-format data pivoting:
+    series_group_col: str | None = None
+    y_metric_col: str | None = None
+
+    if config.series and len(config.series) == 1 and config.series[0] in columns and config.series[0] != x_col:
+        cand = config.series[0]
+        if (isinstance(config.y_axis, str) and config.y_axis in columns and config.y_axis != cand) or \
+           any(isinstance(r.get(cand), str) for r in dict_rows[:10]):
+            series_group_col = cand
+            if isinstance(config.y_axis, str) and config.y_axis in columns and config.y_axis != cand:
+                y_metric_col = config.y_axis
+            else:
+                for c in columns:
+                    if c != x_col and c != series_group_col:
+                        y_metric_col = c
+                        break
+    elif hasattr(config, "series_column") and getattr(config, "series_column") in columns and getattr(config, "series_column") != x_col:
+        series_group_col = getattr(config, "series_column")
+        if isinstance(config.y_axis, str) and config.y_axis in columns and config.y_axis != series_group_col:
+            y_metric_col = config.y_axis
+        else:
+            for c in columns:
+                if c != x_col and c != series_group_col:
+                    y_metric_col = c
+                    break
+
+    if series_group_col and y_metric_col:
+        # Pivot long-format rows
+        categories: list[str] = []
+        for r in dict_rows:
+            xv = str(r.get(x_col, ""))
+            if xv not in categories:
+                categories.append(xv)
+
+        series_names: list[str] = []
+        for r in dict_rows:
+            sv = str(r.get(series_group_col, ""))
+            if sv and sv not in series_names:
+                series_names.append(sv)
+
+        # Lookup table
+        lookup: dict[tuple[str, str], float] = {}
+        for r in dict_rows:
+            xv = str(r.get(x_col, ""))
+            sv = str(r.get(series_group_col, ""))
+            val = _safe_float(r.get(y_metric_col), 0.0)
+            lookup[(xv, sv)] = val
+
+        data_series: list[list[float]] = []
+        for s in series_names:
+            s_vals = [lookup.get((cat, s), 0.0) for cat in categories]
+            data_series.append(s_vals)
+
+        return categories, data_series, series_names
 
     categories = [str(r.get(x_col, "")) for r in dict_rows]
 
@@ -202,7 +258,31 @@ def build_chart(
             has_legend=config.legend and len(series_names) > 1,
         )
 
-    # Default to Line / Time-series / Multi-line / Area / Scatter
+    if chart_type == ChartType.SCATTER.value:
+        return _build_scatter_chart(
+            width=w,
+            height=h,
+            title=title,
+            categories=categories,
+            data_series=data_series,
+            series_names=series_names,
+            fmt=config.format,
+            has_legend=config.legend and len(series_names) > 1,
+        )
+
+    if chart_type == ChartType.AREA.value:
+        return _build_area_chart(
+            width=w,
+            height=h,
+            title=title,
+            categories=categories,
+            data_series=data_series,
+            series_names=series_names,
+            fmt=config.format,
+            has_legend=config.legend and len(series_names) > 1,
+        )
+
+    # Default to Line / Time-series / Multi-line / Historical
     return _build_line_chart(
         width=w,
         height=h,
@@ -451,6 +531,144 @@ def _build_line_chart(
     for idx in range(len(data_series)):
         chart.lines[idx].strokeColor = PALETTE[idx % len(PALETTE)]
         chart.lines[idx].strokeWidth = 2.0
+        chart.lines[idx].symbol = makeMarker(
+            "FilledCircle",
+            size=3.5,
+            fillColor=PALETTE[idx % len(PALETTE)],
+            strokeColor=colors.white,
+            strokeWidth=0.5,
+        )
+
+    d.add(chart)
+
+    if has_legend:
+        leg = Legend()
+        leg.x = chart.x + chart.width + 12
+        leg.y = height - top_margin
+        leg.dx = 12
+        leg.dy = 6
+        leg.fontName = "Helvetica"
+        leg.fontSize = 8
+        leg.boxAnchor = "nw"
+        leg.colorNamePairs = [
+            (PALETTE[i % len(PALETTE)], series_names[i][:18])
+            for i in range(len(series_names))
+        ]
+        d.add(leg)
+
+    return d
+
+
+def _build_scatter_chart(
+    *,
+    width: float,
+    height: float,
+    title: str,
+    categories: list[str],
+    data_series: list[list[float]],
+    series_names: list[str],
+    fmt: str,
+    has_legend: bool,
+) -> Drawing:
+    d = Drawing(width, height)
+    d.add(Rect(0, 0, width, height, fillColor=colors.HexColor("#FFFFFF"), strokeColor=colors.HexColor("#E2E8F0"), strokeWidth=0.5, rx=6, ry=6))
+
+    top_margin = 32 if title else 16
+    bottom_margin = 35
+    left_margin = 52
+    right_margin = 110 if has_legend else 24
+
+    if title:
+        d.add(String(16, height - 18, title, fontName="Helvetica-Bold", fontSize=11, fillColor=colors.HexColor("#0F172A")))
+
+    chart = HorizontalLineChart()
+    chart.x = left_margin
+    chart.y = bottom_margin
+    chart.width = max(100, width - left_margin - right_margin)
+    chart.height = max(60, height - top_margin - bottom_margin)
+    chart.data = data_series
+    chart.categoryAxis.categoryNames = [c[:12] for c in categories]
+    chart.categoryAxis.labels.fontSize = 7.5
+    chart.categoryAxis.labels.fontName = "Helvetica"
+    chart.categoryAxis.labels.dy = -10
+    chart.valueAxis.labels.fontSize = 7.5
+    chart.valueAxis.labels.fontName = "Helvetica"
+
+    for idx in range(len(data_series)):
+        chart.lines[idx].strokeColor = colors.transparent
+        chart.lines[idx].symbol = makeMarker(
+            "FilledCircle",
+            size=5.0,
+            fillColor=PALETTE[idx % len(PALETTE)],
+            strokeColor=colors.white,
+            strokeWidth=0.5,
+        )
+
+    d.add(chart)
+
+    if has_legend:
+        leg = Legend()
+        leg.x = chart.x + chart.width + 12
+        leg.y = height - top_margin
+        leg.dx = 12
+        leg.dy = 6
+        leg.fontName = "Helvetica"
+        leg.fontSize = 8
+        leg.boxAnchor = "nw"
+        leg.colorNamePairs = [
+            (PALETTE[i % len(PALETTE)], series_names[i][:18])
+            for i in range(len(series_names))
+        ]
+        d.add(leg)
+
+    return d
+
+
+def _build_area_chart(
+    *,
+    width: float,
+    height: float,
+    title: str,
+    categories: list[str],
+    data_series: list[list[float]],
+    series_names: list[str],
+    fmt: str,
+    has_legend: bool,
+) -> Drawing:
+    d = Drawing(width, height)
+    d.add(Rect(0, 0, width, height, fillColor=colors.HexColor("#FFFFFF"), strokeColor=colors.HexColor("#E2E8F0"), strokeWidth=0.5, rx=6, ry=6))
+
+    top_margin = 32 if title else 16
+    bottom_margin = 35
+    left_margin = 52
+    right_margin = 110 if has_legend else 24
+
+    if title:
+        d.add(String(16, height - 18, title, fontName="Helvetica-Bold", fontSize=11, fillColor=colors.HexColor("#0F172A")))
+
+    chart = HorizontalLineChart()
+    chart.x = left_margin
+    chart.y = bottom_margin
+    chart.width = max(100, width - left_margin - right_margin)
+    chart.height = max(60, height - top_margin - bottom_margin)
+    chart.data = data_series
+    chart.categoryAxis.categoryNames = [c[:12] for c in categories]
+    chart.categoryAxis.labels.fontSize = 7.5
+    chart.categoryAxis.labels.fontName = "Helvetica"
+    chart.categoryAxis.labels.dy = -10
+    chart.valueAxis.labels.fontSize = 7.5
+    chart.valueAxis.labels.fontName = "Helvetica"
+
+    for idx in range(len(data_series)):
+        chart.lines[idx].strokeColor = PALETTE[idx % len(PALETTE)]
+        chart.lines[idx].strokeWidth = 2.5
+        chart.lines[idx].symbol = makeMarker(
+            "FilledDiamond",
+            size=4.0,
+            fillColor=PALETTE[idx % len(PALETTE)],
+            strokeColor=colors.white,
+            strokeWidth=0.5,
+        )
 
     d.add(chart)
 

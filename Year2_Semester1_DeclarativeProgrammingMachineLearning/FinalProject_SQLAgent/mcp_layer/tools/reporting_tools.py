@@ -39,6 +39,17 @@ def _metadata_to_tool_response(meta: ReportMetadata) -> dict[str, Any]:
         "file_size_bytes": meta.file_size_bytes,
         "created_at": meta.created_at,
         "title": meta.title,
+        "page_count": meta.page_count,
+        "sections_count": meta.sections_count,
+        "charts_requested": meta.charts_requested,
+        "charts_rendered": meta.charts_rendered,
+        "tables_requested": meta.tables_requested,
+        "tables_rendered": meta.tables_rendered,
+        "datasets_count": meta.datasets_count,
+        "dataset_details": meta.dataset_details,
+        "failed_components": meta.failed_components,
+        "completion_status": meta.completion_status,
+        "warnings": meta.warnings,
     }
 
 
@@ -180,6 +191,13 @@ def register_reporting_tools(
         rows: list[Any],
         summary: str | None = None,
         user_request: str | None = None,
+        charts: list[Any] | None = None,
+        sections: list[Any] | None = None,
+        datasets: dict[str, Any] | None = None,
+        kpis: list[Any] | None = None,
+        findings: list[str] | None = None,
+        include_sql: bool | None = None,
+        report_spec: Any | None = None,
     ) -> dict[str, Any]:
         return generate_pdf_report_impl(
             get_settings(),
@@ -190,6 +208,13 @@ def register_reporting_tools(
             rows=rows,
             summary=summary,
             user_request=user_request,
+            charts=charts,
+            sections=sections,
+            datasets=datasets,
+            kpis=kpis,
+            findings=findings,
+            include_sql=include_sql,
+            report_spec=report_spec,
         )
 
     @mcp.tool(
@@ -207,6 +232,7 @@ def register_reporting_tools(
         description: str | None = None,
         sql_query: str | None = None,
         user_request: str | None = None,
+        datasets: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         return generate_csv_report_impl(
             get_settings(),
@@ -216,5 +242,6 @@ def register_reporting_tools(
             description=description,
             sql_query=sql_query,
             user_request=user_request,
+            datasets=datasets,
         )
 

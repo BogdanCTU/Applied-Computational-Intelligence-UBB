@@ -312,6 +312,7 @@ class MainWindow(QMainWindow):
 
     def _on_settings_saved(self, updated_settings: AppSettings) -> None:
         self.settings = updated_settings
+        self.orchestrator.settings = updated_settings
         self._check_ollama_status()
 
     # -----------------------------------------------------------------

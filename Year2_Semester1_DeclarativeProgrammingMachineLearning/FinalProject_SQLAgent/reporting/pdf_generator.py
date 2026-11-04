@@ -254,7 +254,15 @@ def generate_pdf_file(
         if charts:
             for ch in charts:
                 ch_cfg = ChartConfiguration.from_dict(ch)
-                ds_id = ch_cfg.dataset_id or ("primary" if "primary" in all_datasets else (next(iter(all_datasets.keys())) if all_datasets else None))
+                ds_id = ch_cfg.dataset_id
+                if not ds_id or ds_id not in all_datasets:
+                    # Match dataset by x_axis column
+                    for candidate_id, cand_ds in all_datasets.items():
+                        if ch_cfg.x_axis in cand_ds.get("columns", []):
+                            ds_id = candidate_id
+                            break
+                if not ds_id:
+                    ds_id = "primary" if "primary" in all_datasets else (next(iter(all_datasets.keys())) if all_datasets else None)
                 ch_cfg.dataset_id = ds_id
                 sec_components.append(
                     ReportComponent(
@@ -265,12 +273,28 @@ def generate_pdf_file(
                     )
                 )
 
-        if columns or rows:
+        is_matrix_req = any(k in (user_request or "").lower() for k in ["matrix", "crosstab", "totals", "total"])
+        if len(all_datasets) > 1:
+            for ds_name, ds_info in all_datasets.items():
+                if ds_info.get("columns"):
+                    sec_components.append(
+                        ReportComponent(
+                            component_type="table",
+                            title=f"Data Summary: {ds_name.replace('_', ' ').title()}",
+                            table_config=TableConfiguration(
+                                columns=list(ds_info.get("columns", [])),
+                                show_totals=is_matrix_req,
+                                dataset_id=ds_name,
+                            ),
+                            dataset_id=ds_name,
+                        )
+                    )
+        elif columns or rows:
             sec_components.append(
                 ReportComponent(
                     component_type="table",
                     title="Data Summary Table",
-                    table_config=TableConfiguration(columns=list(columns or [])),
+                    table_config=TableConfiguration(columns=list(columns or []), show_totals=is_matrix_req),
                     dataset_id="primary",
                 )
             )

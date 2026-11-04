@@ -25,7 +25,7 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from .chart_builder import build_chart
+from .chart_builder import _format_val, _safe_float, build_chart
 from .pdf_generator import _compute_column_widths, _ensure_fonts_registered, _format_display_value, _is_numeric_column, _make_numbered_canvas
 from .report_manager import ReportMetadata, resolve_safe_report_path
 from .report_spec import ChartConfiguration, ReportComponent, ReportSection, ReportSpecification, TableConfiguration
@@ -273,6 +273,19 @@ def compose_dynamic_pdf(
         story.append(Spacer(1, 8))
 
     # 5. Dynamic Sections & Components
+    sections_count = len(spec.sections)
+    charts_requested = 0
+    charts_rendered = 0
+    tables_requested = 0
+    tables_rendered = 0
+    failed_components: list[dict[str, Any]] = []
+    warnings: list[str] = []
+
+    datasets_count = len(spec.datasets)
+    dataset_details: dict[str, int] = {
+        ds_id: len(ds.get("rows", [])) for ds_id, ds in spec.datasets.items()
+    }
+
     for sec_idx, section in enumerate(spec.sections, start=1):
         story.append(Paragraph(f"{sec_idx}. {_safe_markup(section.title)}", section_title_style))
         if section.description:
@@ -298,26 +311,42 @@ def compose_dynamic_pdf(
             rows = ds_data.get("rows", [])
 
             # Render Component by Type
-            if comp.component_type == "chart" and comp.chart_config:
-                cfg = comp.chart_config
-                cfg.width = available_width
-                chart_drawing = build_chart(cfg, cols, rows)
-                story.append(chart_drawing)
-                story.append(Spacer(1, 8))
+            if comp.component_type == "chart":
+                charts_requested += 1
+                try:
+                    if comp.chart_config:
+                        cfg = comp.chart_config
+                        cfg.width = available_width
+                        chart_drawing = build_chart(cfg, cols, rows)
+                        story.append(chart_drawing)
+                        story.append(Spacer(1, 8))
+                        charts_rendered += 1
+                    else:
+                        failed_components.append({"type": "chart", "title": comp.title, "error": "Missing chart configuration"})
+                        warnings.append(f"Chart '{comp.title}' missing configuration.")
+                except Exception as e:
+                    failed_components.append({"type": "chart", "title": comp.title, "error": str(e)})
+                    warnings.append(f"Failed to render chart '{comp.title}': {e}")
 
             elif comp.component_type == "table":
-                t_cfg = comp.table_config or TableConfiguration()
-                tbl_flowable = _build_table_flowable(
-                    t_cfg,
-                    cols,
-                    rows,
-                    available_width,
-                    table_header_style,
-                    table_cell_left,
-                    table_cell_right,
-                )
-                story.append(tbl_flowable)
-                story.append(Spacer(1, 8))
+                tables_requested += 1
+                try:
+                    t_cfg = comp.table_config or TableConfiguration()
+                    tbl_flowable = _build_table_flowable(
+                        t_cfg,
+                        cols,
+                        rows,
+                        available_width,
+                        table_header_style,
+                        table_cell_left,
+                        table_cell_right,
+                    )
+                    story.append(tbl_flowable)
+                    story.append(Spacer(1, 8))
+                    tables_rendered += 1
+                except Exception as e:
+                    failed_components.append({"type": "table", "title": comp.title, "error": str(e)})
+                    warnings.append(f"Failed to render table '{comp.title}': {e}")
 
             elif comp.component_type == "text" and comp.content:
                 story.append(Paragraph(_safe_markup(str(comp.content)), body_style))
@@ -370,7 +399,15 @@ def compose_dynamic_pdf(
     )
 
     NumberedCanvas = _make_numbered_canvas(spec.title, generated_str)
-    doc.build(story, canvasmaker=NumberedCanvas)
+    page_counter = {"count": 1}
+
+    class CountingCanvas(NumberedCanvas):  # type: ignore[valid-type, misc]
+        def save(self) -> None:
+            page_counter["count"] = max(1, len(self._saved_page_states))
+            super().save()
+
+    doc.build(story, canvasmaker=CountingCanvas)
+    page_count = page_counter["count"]
 
     # Atomic move
     tmp_path.replace(output_path)
@@ -378,6 +415,8 @@ def compose_dynamic_pdf(
 
     total_records = sum(len(d.get("rows", [])) for d in spec.datasets.values())
     primary_cols = next(iter(spec.datasets.values())).get("columns", []) if spec.datasets else []
+
+    completion_status = "complete" if not failed_components else ("partial" if (charts_rendered > 0 or tables_rendered > 0) else "failed")
 
     metadata = ReportMetadata(
         report_id=str(uuid.uuid4())[:8],
@@ -395,6 +434,17 @@ def compose_dynamic_pdf(
         file_size_bytes=file_size,
         created_at=generated_str,
         status="completed",
+        page_count=page_count,
+        sections_count=sections_count,
+        charts_requested=charts_requested,
+        charts_rendered=charts_rendered,
+        tables_requested=tables_requested,
+        tables_rendered=tables_rendered,
+        datasets_count=datasets_count,
+        dataset_details=dataset_details,
+        failed_components=failed_components,
+        completion_status=completion_status,
+        warnings=warnings,
     )
 
     if record_history:
@@ -430,6 +480,12 @@ def _build_table_flowable(
     if config.limit and len(dict_rows) > config.limit:
         dict_rows = dict_rows[:config.limit]
 
+    # Optional sorting
+    if config.sort_by and dict_rows and config.sort_by in dict_rows[0]:
+        dict_rows.sort(
+            key=lambda r: (r.get(config.sort_by) is None, r.get(config.sort_by) or 0)
+        )
+
     # Numeric alignment
     numeric_flags = []
     for c in display_cols:
@@ -437,41 +493,74 @@ def _build_table_flowable(
         is_num = all(isinstance(v, (int, float)) or (v is None) for v in sample_vals) if sample_vals else False
         numeric_flags.append(is_num)
 
+    # Row totals for matrix/crosstab or when show_totals is True with >=2 numeric columns
+    add_row_total = config.show_totals and sum(numeric_flags) >= 2 and "Total" not in [c.title() for c in display_cols]
+    if add_row_total:
+        orig_cols = list(display_cols)
+        orig_num = list(numeric_flags)
+        display_cols = orig_cols + ["Total"]
+        numeric_flags = orig_num + [True]
+        for r in dict_rows:
+            r["Total"] = sum(_safe_float(r.get(c), 0.0) for idx, c in enumerate(orig_cols) if orig_num[idx])
+
+    # Summary row for column totals
+    total_row_idx = -1
+    if config.show_totals and dict_rows:
+        total_row: dict[str, Any] = {}
+        for idx, c in enumerate(display_cols):
+            if idx == 0:
+                total_row[c] = "Total"
+            elif numeric_flags[idx]:
+                total_row[c] = sum(_safe_float(r.get(c), 0.0) for r in dict_rows)
+            else:
+                total_row[c] = ""
+        dict_rows.append(total_row)
+        total_row_idx = len(dict_rows)
+
     col_widths = _compute_column_widths(display_cols, [[r.get(c) for c in display_cols] for r in dict_rows], available_width)
 
     header_cells = [Paragraph(_safe_markup(c.replace("_", " ").title()), header_style) for c in display_cols]
     table_data: list[list[Any]] = [header_cells]
 
     if dict_rows:
-        for r in dict_rows:
+        for r_idx, r in enumerate(dict_rows, start=1):
             row_cells: list[Paragraph] = []
+            is_tot_row = (config.show_totals and r_idx == len(dict_rows))
             for idx, c in enumerate(display_cols):
                 style = cell_right_style if numeric_flags[idx] else cell_left_style
                 val = r.get(c)
                 fmt = config.formatting.get(c, "")
                 if fmt:
-                    from .chart_builder import _format_val
                     val_str = _format_val(val, fmt)
                 else:
                     val_str = _format_display_value(val)
+                if is_tot_row or (add_row_total and idx == len(display_cols) - 1):
+                    val_str = f"<b>{val_str}</b>"
                 row_cells.append(Paragraph(_safe_markup(val_str), style))
             table_data.append(row_cells)
     else:
         table_data.append([Paragraph("No records found.", cell_left_style)] + ["" for _ in range(len(display_cols) - 1)])
 
+    table_cmds: list[tuple[Any, ...]] = [
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1E3A8A")),
+        ("BOTTOMPADDING", (0, 0), (-1, 0), 4),
+        ("TOPPADDING", (0, 0), (-1, 0), 4),
+        ("LEFTPADDING", (0, 0), (-1, -1), 4),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.HexColor("#FFFFFF"), colors.HexColor("#F8FAFC")]),
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#E2E8F0")),
+    ]
+
+    if config.show_totals and total_row_idx > 0:
+        table_cmds.append(("BACKGROUND", (0, total_row_idx), (-1, total_row_idx), colors.HexColor("#E2E8F0")))
+        table_cmds.append(("FONTNAME", (0, total_row_idx), (-1, total_row_idx), "Helvetica-Bold"))
+        table_cmds.append(("LINEABOVE", (0, total_row_idx), (-1, total_row_idx), 1.0, colors.HexColor("#64748B")))
+
+    if add_row_total:
+        table_cmds.append(("FONTNAME", (-1, 1), (-1, -1), "Helvetica-Bold"))
+        table_cmds.append(("BACKGROUND", (-1, 1), (-1, -1), colors.HexColor("#F1F5F9")))
+
     # LongTable supports clean multi-page pagination with repeatRows=1
     tbl = LongTable(table_data, colWidths=col_widths, repeatRows=1)
-    tbl.setStyle(
-        TableStyle(
-            [
-                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1E3A8A")),
-                ("BOTTOMPADDING", (0, 0), (-1, 0), 4),
-                ("TOPPADDING", (0, 0), (-1, 0), 4),
-                ("LEFTPADDING", (0, 0), (-1, -1), 4),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 4),
-                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.HexColor("#FFFFFF"), colors.HexColor("#F8FAFC")]),
-                ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#E2E8F0")),
-            ]
-        )
-    )
+    tbl.setStyle(TableStyle(table_cmds))
     return tbl

@@ -13,7 +13,7 @@ import logging
 import re
 import threading
 import uuid
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Mapping, Sequence
@@ -158,6 +158,17 @@ class ReportMetadata:
     created_at: str
     status: str  # "completed" or "failed"
     error_message: str | None = None
+    page_count: int = 1
+    sections_count: int = 1
+    charts_requested: int = 0
+    charts_rendered: int = 0
+    tables_requested: int = 1
+    tables_rendered: int = 1
+    datasets_count: int = 1
+    dataset_details: dict[str, int] = field(default_factory=dict)
+    failed_components: list[dict[str, str]] = field(default_factory=list)
+    completion_status: str = "complete"  # "complete" or "incomplete"
+    warnings: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         data = asdict(self)
@@ -191,6 +202,17 @@ class ReportMetadata:
                 if raw.get("error_message") is not None
                 else None
             ),
+            page_count=int(raw.get("page_count") or 1),
+            sections_count=int(raw.get("sections_count") or 1),
+            charts_requested=int(raw.get("charts_requested") or 0),
+            charts_rendered=int(raw.get("charts_rendered") or 0),
+            tables_requested=int(raw.get("tables_requested") or 1),
+            tables_rendered=int(raw.get("tables_rendered") or 1),
+            datasets_count=int(raw.get("datasets_count") or 1),
+            dataset_details=dict(raw.get("dataset_details") or {}),
+            failed_components=list(raw.get("failed_components") or []),
+            completion_status=str(raw.get("completion_status") or "complete"),
+            warnings=[str(w) for w in (raw.get("warnings") or [])],
         )
 
 

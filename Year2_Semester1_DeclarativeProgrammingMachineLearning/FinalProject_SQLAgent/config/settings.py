@@ -60,7 +60,7 @@ class AgentSettings:
     max_tool_calls: int = 40
     max_sql_retries: int = 3
     max_history_messages: int = 30
-    require_sql_approval: bool = True
+    require_sql_approval: bool = False
     system_prompt_override: str = ""
 
 

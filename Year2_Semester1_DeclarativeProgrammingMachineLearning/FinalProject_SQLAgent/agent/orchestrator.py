@@ -155,42 +155,46 @@ def _synthesize_charts_from_intent(
         k in p_lower for k in ["historical", "trend", "timeline", "over time", "monthly", "daily"]
     )
     want_pie = any(k in p_lower for k in ["pie", "distribution", "share", "proportion", "breakdown"])
+    want_donut = any(k in p_lower for k in ["donut", "doughnut"])
     want_multi = any(
         k in p_lower for k in ["multi-series", "multi series", "compare categories", "comparison across"]
     )
     want_bar = any(k in p_lower for k in ["bar", "ranking", "top 10", "top 5", "compare"])
+    want_area = any(k in p_lower for k in ["area chart", "area graph"])
+    want_scatter = any(k in p_lower for k in ["scatter", "correlation"])
 
     if want_historical and date_col and num_cols:
         charts.append(
             {
                 "chart_type": "historical_line",
-                "title": "Historical Trend",
+                "title": f"Historical Trend ({num_cols[0].replace('_', ' ').title()})",
                 "x_column": date_col,
                 "y_columns": [num_cols[0]],
             }
         )
 
-    if want_pie and (cat_col or date_col) and num_cols:
-        label_c = cat_col or date_col
-        charts.append(
-            {
-                "chart_type": "pie",
-                "title": f"Distribution by {label_c.replace('_', ' ').title()}",
-                "x_column": label_c,
-                "y_columns": [num_cols[0]],
-            }
-        )
+    if (want_pie or want_donut) and num_cols:
+        c_type = "donut" if want_donut else "pie"
+        if cat_col:
+            charts.append(
+                {
+                    "chart_type": c_type,
+                    "title": f"Distribution by {cat_col.replace('_', ' ').title()}",
+                    "x_column": cat_col,
+                    "y_columns": [num_cols[0]],
+                }
+            )
+        elif date_col and not want_historical:
+            charts.append(
+                {
+                    "chart_type": c_type,
+                    "title": f"Distribution by {date_col.replace('_', ' ').title()}",
+                    "x_column": date_col,
+                    "y_columns": [num_cols[0]],
+                }
+            )
 
-    if want_multi and date_col and len(num_cols) >= 2:
-        charts.append(
-            {
-                "chart_type": "multi_line",
-                "title": "Multi-Series Metric Comparison",
-                "x_column": date_col,
-                "y_columns": num_cols[:3],
-            }
-        )
-    elif want_multi and date_col and cat_col and num_cols:
+    if want_multi and date_col and cat_col and num_cols:
         charts.append(
             {
                 "chart_type": "multi_line",
@@ -200,13 +204,43 @@ def _synthesize_charts_from_intent(
                 "series_column": cat_col,
             }
         )
+    elif want_multi and date_col and len(num_cols) >= 2:
+        charts.append(
+            {
+                "chart_type": "multi_line",
+                "title": "Multi-Series Metric Comparison",
+                "x_column": date_col,
+                "y_columns": num_cols[:3],
+            }
+        )
+
+    if want_area and date_col and num_cols:
+        charts.append(
+            {
+                "chart_type": "area",
+                "title": f"Cumulative Trend ({num_cols[0].replace('_', ' ').title()})",
+                "x_column": date_col,
+                "y_columns": [num_cols[0]],
+            }
+        )
+
+    if want_scatter and len(num_cols) >= 2:
+        charts.append(
+            {
+                "chart_type": "scatter",
+                "title": f"Correlation: {num_cols[0].replace('_', ' ').title()} vs {num_cols[1].replace('_', ' ').title()}",
+                "x_column": num_cols[0],
+                "y_columns": [num_cols[1]],
+            }
+        )
 
     if want_bar and not charts and (cat_col or date_col) and num_cols:
+        label_col = cat_col or date_col
         charts.append(
             {
                 "chart_type": "vertical_bar",
-                "title": f"Comparison by {(cat_col or date_col).replace('_', ' ').title()}",
-                "x_column": cat_col or date_col,
+                "title": f"Comparison by {label_col.replace('_', ' ').title()}",
+                "x_column": label_col,
                 "y_columns": [num_cols[0]],
             }
         )
@@ -289,7 +323,10 @@ class AgentOrchestrator:
         """Clear conversation history, session datasets, and reset tool mode."""
         self.conversation.clear()
         self.session_datasets.clear()
-        self.active_tool_mode = "native"
+        if self.settings.ollama.tool_mode in {"native", "json"}:
+            self.active_tool_mode = self.settings.ollama.tool_mode
+        elif not self.active_tool_mode or self.active_tool_mode == "auto":
+            self.active_tool_mode = "native"
 
     async def _emit_event(
         self,
@@ -811,6 +848,23 @@ class AgentOrchestrator:
                                 legacy_type=AgentEventType.SQL_APPROVED,
                                 extra_data={"sql_query": validated_sql},
                             )
+                    else:
+                        # Automatic approval when require_sql_approval is False (default)
+                        approved_queries.add(validated_sql)
+                        log.info("SQL automatically approved — manual approval is disabled in settings.")
+                        await self._emit_activity(
+                            ActivityCategory.APPROVAL_RESULT,
+                            title="SQL Auto-Approved",
+                            description="SQL automatically approved — manual approval is disabled in settings.",
+                            status="auto_approved",
+                            metadata={
+                                "sql_query": validated_sql,
+                                "auto_approved": True,
+                            },
+                            callback=progress_callback,
+                            legacy_type=AgentEventType.SQL_APPROVED,
+                            extra_data={"sql_query": validated_sql, "auto_approved": True},
+                        )
 
                     # 11. Emit SQL_EXECUTION event
                     await self._emit_activity(
@@ -850,11 +904,24 @@ class AgentOrchestrator:
 
                     # Auto-synthesize vector chart specifications if user requested charts and none supplied
                     if not t_args.get("charts"):
-                        synth_charts = _synthesize_charts_from_intent(
-                            cleaned_user_msg,
-                            t_args.get("columns", sql_columns),
-                            t_args.get("rows", sql_rows),
-                        )
+                        synth_charts: list[dict[str, Any]] = []
+                        if self.session_datasets:
+                            for ds_name, ds_info in self.session_datasets.items():
+                                ds_charts = _synthesize_charts_from_intent(
+                                    cleaned_user_msg,
+                                    ds_info.get("columns", []),
+                                    ds_info.get("rows", []),
+                                )
+                                for ch in ds_charts:
+                                    ch["dataset_id"] = ds_name
+                                    if not any(existing.get("chart_type") == ch.get("chart_type") for existing in synth_charts):
+                                        synth_charts.append(ch)
+                        if not synth_charts:
+                            synth_charts = _synthesize_charts_from_intent(
+                                cleaned_user_msg,
+                                t_args.get("columns", sql_columns),
+                                t_args.get("rows", sql_rows),
+                            )
                         if synth_charts:
                             t_args["charts"] = synth_charts
 
@@ -931,12 +998,24 @@ class AgentOrchestrator:
                     generated_reports.append(tool_res.data)
                     rep_path = tool_res.data.get("output_path", "")
                     rep_size = tool_res.data.get("file_size_bytes", 0)
+                    pages = tool_res.data.get("page_count", 1)
+                    charts_ren = tool_res.data.get("charts_rendered", 0)
+                    charts_req = tool_res.data.get("charts_requested", 0)
+                    tables_ren = tool_res.data.get("tables_rendered", 1)
+                    tables_req = tool_res.data.get("tables_requested", 1)
+                    ds_cnt = tool_res.data.get("datasets_count", 1)
+                    status_c = tool_res.data.get("completion_status", "complete")
                     # 14. Emit REPORT_GENERATION event
                     await self._emit_activity(
                         ActivityCategory.REPORT_GENERATION,
                         title="Report Generated",
-                        description=f"Generated {Path(rep_path).name} ({rep_size} bytes)",
-                        result_summary=f"File: {rep_path}\nSize: {rep_size} bytes\nRecords: {tool_res.data.get('record_count', 0)}",
+                        description=f"Generated {Path(rep_path).name} ({rep_size} bytes, {pages} pg, {charts_ren} chart(s))",
+                        result_summary=(
+                            f"File: {rep_path}\n"
+                            f"Size: {rep_size} bytes | Pages: {pages}\n"
+                            f"Charts: {charts_ren}/{charts_req} | Tables: {tables_ren}/{tables_req}\n"
+                            f"Datasets: {ds_cnt} | Status: {status_c}"
+                        ),
                         duration_ms=duration_ms,
                         status="success",
                         metadata=tool_res.data,

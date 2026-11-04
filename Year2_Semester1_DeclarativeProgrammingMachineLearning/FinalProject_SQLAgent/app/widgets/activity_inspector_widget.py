@@ -49,6 +49,7 @@ CATEGORY_STYLES: dict[str, tuple[str, str, str]] = {
 STATUS_ICONS: dict[str, str] = {
     "in_progress": "⏳",
     "success": "🟢",
+    "auto_approved": "🟢",
     "waiting_approval": "⚠️",
     "rejected": "⛔",
     "failed": "❌",
