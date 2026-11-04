@@ -64,6 +64,7 @@ class OllamaChatResponse:
     finish_reason: str | None = None
     raw_message: dict[str, Any] = field(default_factory=dict)
     total_duration_s: float | None = None
+    used_fallback: bool = False
 
     @property
     def has_tool_calls(self) -> bool:
@@ -220,6 +221,20 @@ class OllamaClient:
                 f"Model '{self.model}' not found in Ollama. Run: ollama pull {self.model}"
             )
         if resp.status_code != 200:
+            # Check for native tool-calling XML parse failure in Ollama (HTTP 500 / XML syntax error)
+            if tool_mode == "native" and tools and (
+                resp.status_code == 500
+                or "XML syntax error" in resp.text
+                or "element <function>" in resp.text
+                or "element " in resp.text
+            ):
+                log.warning(
+                    "Ollama native tool calling failed with HTTP %d (%s); automatically falling back to structured JSON mode",
+                    resp.status_code,
+                    resp.text.strip(),
+                )
+                return await self._fallback_chat_json(messages)
+
             raise OllamaResponseError(
                 f"Ollama error (HTTP {resp.status_code}): {resp.text}"
             )
@@ -294,55 +309,166 @@ class OllamaClient:
             total_duration_s=duration_s,
         )
 
-    @staticmethod
-    def _extract_json_tool_call(text: str) -> OllamaToolCall | None:
-        """Parse structured tool call JSON from text if present."""
+    async def _fallback_chat_json(
+        self,
+        messages: Sequence[Mapping[str, Any]],
+    ) -> OllamaChatResponse:
+        """Fallback to structured JSON mode when native tool calling fails."""
+        from config.prompts import JSON_FALLBACK_INSTRUCTIONS
+
+        fallback_messages: list[dict[str, Any]] = []
+        has_system = False
+        for m in messages:
+            m_copy = dict(m)
+            if m_copy.get("role") == "system":
+                has_system = True
+                content = str(m_copy.get("content", ""))
+                if "IMPORTANT OUTPUT FORMAT" not in content:
+                    m_copy["content"] = content.rstrip() + "\n\n" + JSON_FALLBACK_INSTRUCTIONS.strip()
+            fallback_messages.append(m_copy)
+
+        if not has_system:
+            fallback_messages.insert(
+                0,
+                {
+                    "role": "system",
+                    "content": JSON_FALLBACK_INSTRUCTIONS.strip(),
+                },
+            )
+
+        resp = await self.chat(
+            messages=fallback_messages,
+            tools=None,
+            tool_mode="json",
+        )
+        resp.used_fallback = True
+        return resp
+
+    @classmethod
+    def _extract_json_tool_call(cls, text: str) -> OllamaToolCall | None:
+        """Parse structured tool call JSON from text if present across various format variations."""
         cleaned = text.strip()
-        match = _JSON_BLOCK_RE.search(cleaned)
-        candidate = match.group(1) if match else cleaned
+        candidates: list[str] = []
 
-        try:
-            data = json.loads(candidate)
-        except json.JSONDecodeError:
-            # Try to find the first { and last }
-            first = candidate.find("{")
-            last = candidate.rfind("}")
-            if first != -1 and last > first:
-                try:
-                    data = json.loads(candidate[first : last + 1])
-                except json.JSONDecodeError:
-                    return None
-            else:
-                return None
+        # 1. Search for markdown ```json ... ``` blocks
+        for match in _JSON_BLOCK_RE.finditer(cleaned):
+            candidates.append(match.group(1).strip())
 
-        if isinstance(data, dict) and data.get("type") == "tool_call":
-            tool_name = data.get("tool") or data.get("name")
-            if tool_name and isinstance(tool_name, str):
-                raw_args = data.get("arguments", {})
+        # 2. Search for bracketed candidates
+        first = cleaned.find("{")
+        last = cleaned.rfind("}")
+        if first != -1 and last > first:
+            candidates.append(cleaned[first : last + 1].strip())
+
+        candidates.append(cleaned)
+
+        for cand in candidates:
+            try:
+                data = json.loads(cand)
+            except json.JSONDecodeError:
+                continue
+
+            if not isinstance(data, dict):
+                continue
+
+            # Case A: {"tool_calls": [{"function": {"name": ..., "arguments": ...}}]}
+            if "tool_calls" in data and isinstance(data["tool_calls"], list) and data["tool_calls"]:
+                first_call = data["tool_calls"][0]
+                if isinstance(first_call, dict):
+                    fn = first_call.get("function", first_call)
+                    t_name = fn.get("name") or fn.get("tool")
+                    raw_args = fn.get("arguments", {})
+                    if isinstance(raw_args, str):
+                        try:
+                            raw_args = json.loads(raw_args)
+                        except json.JSONDecodeError:
+                            raw_args = {}
+                    if t_name and isinstance(t_name, str):
+                        return OllamaToolCall(
+                            id=f"json_call_{t_name}",
+                            name=t_name,
+                            arguments=raw_args if isinstance(raw_args, dict) else {},
+                        )
+
+            # Case B: {"function": {"name": ..., "arguments": ...}}
+            if "function" in data and isinstance(data["function"], dict):
+                t_name = data["function"].get("name")
+                raw_args = data["function"].get("arguments", {})
+                if isinstance(raw_args, str):
+                    try:
+                        raw_args = json.loads(raw_args)
+                    except json.JSONDecodeError:
+                        raw_args = {}
+                if t_name and isinstance(t_name, str):
+                    return OllamaToolCall(
+                        id=f"json_call_{t_name}",
+                        name=t_name,
+                        arguments=raw_args if isinstance(raw_args, dict) else {},
+                    )
+
+            # Case C: Direct tool call dict (type="tool_call" or explicit tool / name / action key)
+            t_name = None
+            if data.get("type") == "tool_call":
+                t_name = data.get("tool") or data.get("name")
+            elif "tool" in data and isinstance(data["tool"], str):
+                t_name = data["tool"]
+            elif "action" in data and isinstance(data["action"], str) and data["action"] != "final_response":
+                t_name = data["action"]
+            elif "name" in data and isinstance(data["name"], str) and data["name"] not in {"assistant", "user", "system"}:
+                t_name = data["name"]
+
+            if t_name and isinstance(t_name, str):
+                raw_args = (
+                    data.get("arguments")
+                    or data.get("parameters")
+                    or data.get("params")
+                    or data.get("args")
+                    or {}
+                )
                 if isinstance(raw_args, str):
                     try:
                         raw_args = json.loads(raw_args)
                     except json.JSONDecodeError:
                         raw_args = {}
                 return OllamaToolCall(
-                    id=f"json_call_{tool_name}",
-                    name=tool_name,
+                    id=f"json_call_{t_name}",
+                    name=t_name,
                     arguments=raw_args if isinstance(raw_args, dict) else {},
                 )
+
         return None
 
-    @staticmethod
-    def _extract_json_final_response(text: str) -> str | None:
-        """Extract message from a structured JSON final_response payload."""
+    @classmethod
+    def _extract_json_final_response(cls, text: str) -> str | None:
+        """Extract message from a structured JSON final_response payload across schema variants."""
         cleaned = text.strip()
-        match = _JSON_BLOCK_RE.search(cleaned)
-        candidate = match.group(1) if match else cleaned
+        candidates: list[str] = []
 
-        try:
-            data = json.loads(candidate)
-            if isinstance(data, dict) and data.get("type") == "final_response":
-                return str(data.get("message", ""))
-        except json.JSONDecodeError:
-            pass
+        for match in _JSON_BLOCK_RE.finditer(cleaned):
+            candidates.append(match.group(1).strip())
+
+        first = cleaned.find("{")
+        last = cleaned.rfind("}")
+        if first != -1 and last > first:
+            candidates.append(cleaned[first : last + 1].strip())
+
+        candidates.append(cleaned)
+
+        for cand in candidates:
+            try:
+                data = json.loads(cand)
+            except json.JSONDecodeError:
+                continue
+
+            if not isinstance(data, dict):
+                continue
+
+            if data.get("type") == "final_response":
+                msg = data.get("message") or data.get("content") or data.get("response") or ""
+                return str(msg)
+            for k in ("final_response", "response", "message", "answer"):
+                if k in data and isinstance(data[k], str):
+                    return str(data[k])
+
         return None
 

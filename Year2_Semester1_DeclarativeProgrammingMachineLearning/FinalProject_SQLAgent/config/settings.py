@@ -38,7 +38,7 @@ class OllamaSettings:
     temperature: float = 0.1
     top_p: float = 0.9
     num_ctx: int = 8192
-    request_timeout_s: float = 300.0
+    request_timeout_s: float = 600.0
     stream: bool = True
     keep_alive: str = "10m"
     # "auto" = probe native tool calling and fall back to JSON protocol,
@@ -51,13 +51,13 @@ class DatabaseSettings:
     path: str = "data/ecommerce.db"
     max_result_rows: int = 1000
     llm_preview_rows: int = 50
-    query_timeout_s: float = 15.0
+    query_timeout_s: float = 120.0
 
 
 @dataclass
 class AgentSettings:
-    max_iterations: int = 8
-    max_tool_calls: int = 16
+    max_iterations: int = 12
+    max_tool_calls: int = 24
     max_sql_retries: int = 3
     max_history_messages: int = 30
     require_sql_approval: bool = True
@@ -144,6 +144,7 @@ ENV_OVERRIDES: dict[str, tuple[str, str]] = {
     "REPORT_AGENT_OLLAMA_HOST": ("ollama", "host"),
     "REPORT_AGENT_OLLAMA_MODEL": ("ollama", "model"),
     "REPORT_AGENT_TOOL_MODE": ("ollama", "tool_mode"),
+    "REPORT_AGENT_REQUEST_TIMEOUT": ("ollama", "request_timeout_s"),
     "REPORT_AGENT_DB_PATH": ("database", "path"),
     "REPORT_AGENT_OUTPUT_DIR": ("reports", "output_dir"),
     "REPORT_AGENT_MAX_ROWS": ("database", "max_result_rows"),

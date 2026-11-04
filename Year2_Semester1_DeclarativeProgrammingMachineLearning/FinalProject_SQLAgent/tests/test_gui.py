@@ -466,3 +466,97 @@ def test_main_window_structure_and_safe_shutdown(
     # Test closing window triggers cleanup
     window.close()
     mock_orchestrator.close.assert_called_once()
+
+
+# ---------------------------------------------------------------------------
+# 9. Milestone 7 GUI Rendering Regression Tests
+# ---------------------------------------------------------------------------
+
+
+def test_message_widget_welcome_rendering(qapp: QApplication) -> None:
+    """Milestone 7: Verify welcome and system messages preserve safe <b> and <br> tags."""
+    raw_welcome = (
+        "👋 Welcome to the <b>Local Report SQL Agent</b>.<br>"
+        "Ask for sales summaries, product comparisons, or customer reports in natural language.<br>"
+        "Reports are generated in <b>PDF format by default</b> (or CSV upon explicit request)."
+    )
+    widget = MessageWidget(role="system", content=raw_welcome)
+    rendered_text = widget.body_label.text()
+
+    # Must preserve real <b> and <br> tags for Qt RichText rendering
+    assert "<b>Local Report SQL Agent</b>" in rendered_text
+    assert "<br>" in rendered_text
+    assert "<b>PDF format by default</b>" in rendered_text
+
+    # Must NOT render literal escaped HTML entities for safe tags
+    assert "&lt;b&gt;" not in rendered_text
+    assert "&lt;br&gt;" not in rendered_text
+    assert widget.body_label.textFormat() == Qt.TextFormat.RichText
+
+
+def test_message_widget_assistant_markdown(qapp: QApplication) -> None:
+    """Milestone 7: Verify assistant messages render markdown bold, italic, and code."""
+    raw_assistant = (
+        "Here is the summary of **Quarterly Revenue**:\n"
+        "The highest month was *December*.\n"
+        "Executed query: `SELECT strftime('%Y-%m', order_date), sum(total_amount) FROM orders;`\n"
+        "```sql\nSELECT count(*) FROM orders;\n```"
+    )
+    widget = MessageWidget(role="assistant", content=raw_assistant)
+    rendered_text = widget.body_label.text()
+
+    # Markdown **text** converted to <b>
+    assert "<b>Quarterly Revenue</b>" in rendered_text
+    # Markdown *text* converted to <i>
+    assert "<i>December</i>" in rendered_text
+    # Markdown inline `code` converted to <code>
+    assert "<code style=" in rendered_text
+    assert "SELECT strftime" in rendered_text
+    # Code block converted to <pre><code>
+    assert "<pre style=" in rendered_text
+    assert "SELECT count(*) FROM orders;" in rendered_text
+    # Newlines converted to <br>
+    assert "<br>" in rendered_text
+
+
+def test_message_widget_user_xss_escaped(qapp: QApplication) -> None:
+    """Milestone 7: Verify user input is strictly HTML-escaped to prevent HTML injection."""
+    malicious_input = (
+        "Can you show me <b>all orders</b>?<script>alert('xss')</script>"
+        "<img src=x onerror=alert(1)> and & signs"
+    )
+    widget = MessageWidget(role="user", content=malicious_input)
+    rendered_text = widget.body_label.text()
+
+    # User HTML must be escaped into literal entity text, NEVER rendered as active tags
+    assert "&lt;script&gt;alert(&#x27;xss&#x27;)&lt;/script&gt;" in rendered_text or "&lt;script&gt;alert('xss')&lt;/script&gt;" in rendered_text
+    assert "&lt;b&gt;all orders&lt;/b&gt;" in rendered_text
+    assert "&lt;img" in rendered_text
+    assert "<script>" not in rendered_text
+    assert "<b>" not in rendered_text
+    assert "<img" not in rendered_text
+
+
+def test_message_widget_system_unsafe_tags_sanitized(qapp: QApplication) -> None:
+    """Milestone 7: Verify system messages preserve safe tags while neutralizing unsafe tags."""
+    mixed_content = (
+        "Status: <b>OK</b>.<br>"
+        "Execution completed with <code>zero errors</code>.<br>"
+        "<script>steal_cookies()</script><iframe src='https://evil.com'></iframe>"
+        "<b onclick='evil()'>Click me</b>"
+    )
+    widget = MessageWidget(role="system", content=mixed_content)
+    rendered_text = widget.body_label.text()
+
+    # Safe tags are kept
+    assert "<b>OK</b>" in rendered_text
+    assert "<br>" in rendered_text
+    assert "<code>zero errors</code>" in rendered_text
+
+    # Dangerous tags and event handlers are strictly escaped/neutralized
+    assert "<script>" not in rendered_text
+    assert "&lt;script&gt;" in rendered_text
+    assert "<iframe>" not in rendered_text
+    assert "&lt;iframe" in rendered_text
+    assert "onclick" not in rendered_text or "&lt;b onclick=" in rendered_text
+

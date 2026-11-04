@@ -20,6 +20,10 @@ from .ollama_client import (
     OllamaChatResponse,
     OllamaClient,
     OllamaClientError,
+    OllamaConnectionError,
+    OllamaModelNotFoundError,
+    OllamaResponseError,
+    OllamaTimeoutError,
     OllamaToolCall,
 )
 from .system_prompt import build_system_prompt
@@ -250,13 +254,51 @@ class AgentOrchestrator:
                     tool_mode=self.active_tool_mode,
                 )
             except OllamaClientError as exc:
-                overall_status = "error"
-                error_msg = f"Ollama error: {exc}"
-                final_message = error_msg
-                await self._emit_event(
-                    AgentEventType.ERROR, {"error": error_msg}, progress_callback
-                )
-                break
+                if self.active_tool_mode == "native" and (
+                    "XML" in str(exc)
+                    or "500" in str(exc)
+                    or "element <function>" in str(exc)
+                    or "syntax" in str(exc).lower()
+                ):
+                    log.warning(
+                        "Ollama native tool calling failed (%s); switching to structured JSON mode",
+                        exc,
+                    )
+                    self.active_tool_mode = "json"
+                    system_prompt = build_system_prompt(self.settings, tool_mode="json")
+                    ollama_tools = None
+                    messages_for_llm = self.conversation.get_messages_for_llm(
+                        system_prompt=system_prompt
+                    )
+                    try:
+                        response = await self.ollama_client.chat(
+                            messages=messages_for_llm,
+                            tools=None,
+                            tool_mode="json",
+                        )
+                    except Exception as retry_exc:
+                        overall_status = "error"
+                        error_msg = self._format_friendly_error(retry_exc)
+                        final_message = error_msg
+                        await self._emit_event(
+                            AgentEventType.ERROR, {"error": error_msg}, progress_callback
+                        )
+                        break
+                else:
+                    overall_status = "error"
+                    error_msg = self._format_friendly_error(exc)
+                    final_message = error_msg
+                    await self._emit_event(
+                        AgentEventType.ERROR, {"error": error_msg}, progress_callback
+                    )
+                    break
+
+            # If client automatically used JSON fallback, switch orchestrator to json mode
+            if response.used_fallback:
+                log.info("Switching orchestrator active_tool_mode to 'json' following client fallback")
+                self.active_tool_mode = "json"
+                system_prompt = build_system_prompt(self.settings, tool_mode="json")
+                ollama_tools = None
 
             # Emit thinking reasoning if provided by model
             if response.thinking:
@@ -421,6 +463,13 @@ class AgentOrchestrator:
                 # Execute permitted tool through MCP handler
                 tool_res = await self.tool_handler.execute_tool(t_name, t_args)
 
+                if tool_res.is_error and tool_res.data.get("error_code") == "QUERY_TIMEOUT":
+                    timeout_msg = (
+                        f"The database query exceeded the execution timeout ({int(self.settings.database.query_timeout_s)} seconds). "
+                        "The query took too long to complete. Please try simplifying your query or filtering by a narrower date range."
+                    )
+                    tool_res.data["error"] = timeout_msg
+
                 # Capture executed SQL results
                 if t_name == "execute_readonly_sql" and not tool_res.is_error:
                     executed_sql = t_args.get("sql_query")
@@ -472,4 +521,28 @@ class AgentOrchestrator:
             total_duration_s=total_duration,
             error=error_msg,
         )
+
+    def _format_friendly_error(self, exc: Exception) -> str:
+        """Translate runtime exceptions into clean, actionable user-facing messages."""
+        if isinstance(exc, OllamaConnectionError):
+            return "Cannot connect to Ollama. Please ensure Ollama is running (`ollama serve`)."
+        if isinstance(exc, OllamaTimeoutError):
+            return (
+                f"Request to local Ollama timed out after {int(self.settings.ollama.request_timeout_s)} seconds. "
+                "The model may be busy or processing an extensive prompt. Please try again or simplify your query."
+            )
+        if isinstance(exc, OllamaModelNotFoundError):
+            return (
+                f"Model '{self.settings.ollama.model}' is not available locally. "
+                f"Please run `ollama pull {self.settings.ollama.model}` in your terminal."
+            )
+        err = str(exc)
+        if "QUERY_TIMEOUT" in err or ("timed out" in err.lower() and "query" in err.lower()):
+            return (
+                f"The database query exceeded the execution timeout ({int(self.settings.database.query_timeout_s)} seconds). "
+                "The query took too long to complete. Please try simplifying your query or filtering by a narrower date range."
+            )
+        if "ConnectError" in err or "Connection refused" in err:
+            return "Cannot connect to Ollama. Please ensure Ollama is running (`ollama serve`)."
+        return f"An error occurred during agent execution: {exc}"
 

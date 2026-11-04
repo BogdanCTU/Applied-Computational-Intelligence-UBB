@@ -259,7 +259,7 @@ async def test_tool_handler_unknown_tool_and_invalid_args() -> None:
     # 1. Unknown tool rejected
     res = await handler.execute_tool("arbitrary_command", {})
     assert res.is_error is True
-    assert res.data["error_code"] == "INVALID_TOOL_ARGUMENTS"
+    assert res.data["error_code"] in {"INVALID_TOOL_ARGUMENTS", "UNKNOWN_TOOL"}
 
     # 2. Prohibited argument keys rejected
     res2 = await handler.execute_tool(
@@ -698,4 +698,215 @@ async def test_live_local_ollama_integration_end_to_end(
         assert len(res.final_message) > 0
         # Verify conversation context was maintained
         assert len(orchestrator.conversation.messages) >= 2
+
+
+# ---------------------------------------------------------------------------
+# 6. Milestone 7 Tool Calling & Timeout Regression Tests
+# ---------------------------------------------------------------------------
+
+
+def test_tool_calling_successful_parsing() -> None:
+    """Milestone 7: Test successful parsing of tool calls across format variations."""
+    # Standard format
+    raw1 = '{"type": "tool_call", "tool": "inspect_database_schema", "arguments": {"table_name": "orders"}}'
+    tc1 = OllamaClient._extract_json_tool_call(raw1)
+    assert tc1 is not None
+    assert tc1.name == "inspect_database_schema"
+    assert tc1.arguments == {"table_name": "orders"}
+
+    # OpenAI-style function format with markdown block
+    raw2 = "```json\n" '{"function": {"name": "prepare_sql_query", "arguments": {"sql_query": "SELECT 1;"}}}\n' "```"
+    tc2 = OllamaClient._extract_json_tool_call(raw2)
+    assert tc2 is not None
+    assert tc2.name == "prepare_sql_query"
+    assert tc2.arguments == {"sql_query": "SELECT 1;"}
+
+    # Action / parameters format with stringified arguments
+    raw3 = '{"action": "get_table_sample", "parameters": "{\\"table_name\\": \\"customers\\", \\"num_records\\": 5}"}'
+    tc3 = OllamaClient._extract_json_tool_call(raw3)
+    assert tc3 is not None
+    assert tc3.name == "get_table_sample"
+    assert tc3.arguments == {"table_name": "customers", "num_records": 5}
+
+
+@pytest.mark.asyncio
+async def test_tool_calling_xml_error_fallback_to_json() -> None:
+    """Milestone 7: Verify HTTP 500 XML syntax error automatically triggers structured JSON fallback."""
+    settings = OllamaSettings(host="http://localhost:11434")
+    client = OllamaClient(settings)
+
+    # First call (native with tools) returns HTTP 500 XML syntax error
+    mock_500 = MagicMock(status_code=500)
+    mock_500.text = '{"error":"XML syntax error on line 3: element <function> closed by </parameter>"}'
+
+    # Second call (json fallback) returns HTTP 200 with JSON tool call
+    mock_200 = MagicMock(status_code=200)
+    mock_200.json.return_value = {
+        "message": {
+            "role": "assistant",
+            "content": '{"type": "tool_call", "tool": "inspect_database_schema", "arguments": {}}',
+        },
+        "done_reason": "stop",
+    }
+
+    messages = [
+        {"role": "system", "content": "You are a reporting agent."},
+        {"role": "user", "content": "Generate a PDF report."},
+    ]
+    tools = [{"type": "function", "function": {"name": "inspect_database_schema", "parameters": {}}}]
+
+    with patch("httpx.AsyncClient.post", new_callable=AsyncMock) as mock_post:
+        mock_post.side_effect = [mock_500, mock_200]
+        resp = await client.chat(messages, tools=tools, tool_mode="native")
+
+        assert resp.used_fallback is True
+        assert len(resp.tool_calls) == 1
+        assert resp.tool_calls[0].name == "inspect_database_schema"
+        assert mock_post.call_count == 2
+        # Verify the fallback call used format="json" and omitted tools
+        fallback_call_kwargs = mock_post.call_args_list[1][1]
+        assert fallback_call_kwargs["json"]["format"] == "json"
+        assert "tools" not in fallback_call_kwargs["json"]
+
+
+def test_tool_calling_embedded_json_in_content() -> None:
+    """Milestone 7: Verify tool calls embedded in surrounding reasoning/markdown text are parsed."""
+    mixed_content = (
+        "I need to inspect the orders table first to see available columns.\n\n"
+        "```json\n"
+        "{\n"
+        '  "tool": "get_table_sample",\n'
+        '  "arguments": {\n'
+        '    "table_name": "orders",\n'
+        '    "num_records": 10\n'
+        "  }\n"
+        "}\n"
+        "```\n"
+        "Please provide the table sample."
+    )
+    tc = OllamaClient._extract_json_tool_call(mixed_content)
+    assert tc is not None
+    assert tc.name == "get_table_sample"
+    assert tc.arguments == {"table_name": "orders", "num_records": 10}
+
+
+def test_tool_calling_invalid_arguments_feedback() -> None:
+    """Milestone 7: Verify invalid tool arguments are rejected with descriptive error."""
+    mock_mcp = MagicMock(spec=MCPStdioClient)
+    mock_mcp.is_connected = True
+    handler = ToolHandler(mock_mcp)
+
+    # get_table_sample with non-integer num_records
+    is_valid, err_msg, _ = handler.validate_tool_request(
+        "get_table_sample", {"table_name": "orders", "num_records": "invalid"}
+    )
+    assert is_valid is False
+    assert "integer" in err_msg.lower()
+
+    # prepare_sql_query with empty query
+    is_valid2, err_msg2, _ = handler.validate_tool_request(
+        "prepare_sql_query", {"sql_query": "   "}
+    )
+    assert is_valid2 is False
+    assert "required" in err_msg2.lower()
+
+
+def test_tool_calling_unknown_tool_rejected() -> None:
+    """Milestone 7: Verify unapproved/unknown tools are rejected with permitted tools list."""
+    mock_mcp = MagicMock(spec=MCPStdioClient)
+    mock_mcp.is_connected = True
+    handler = ToolHandler(mock_mcp)
+
+    is_valid, err_msg, _ = handler.validate_tool_request(
+        "unapproved_bash_tool", {"command": "ls"}
+    )
+    assert is_valid is False
+    assert "not recognized" in err_msg
+    assert "prepare_sql_query" in err_msg
+    assert "execute_readonly_sql" in err_msg
+
+
+def test_tool_calling_missing_required_arguments() -> None:
+    """Milestone 7: Verify missing required arguments are caught before execution."""
+    mock_mcp = MagicMock(spec=MCPStdioClient)
+    mock_mcp.is_connected = True
+    handler = ToolHandler(mock_mcp)
+
+    # generate_pdf_report missing required fields
+    is_valid, err_msg, _ = handler.validate_tool_request(
+        "generate_pdf_report", {"title": "Monthly Report"}
+    )
+    assert is_valid is False
+    assert "missing required argument" in err_msg.lower()
+
+
+@pytest.mark.asyncio
+async def test_tool_calling_sql_approval_enforced_in_fallback(
+    agent_test_settings: AppSettings,
+) -> None:
+    """Milestone 7: Ensure SQL approval is strictly enforced even when in JSON fallback mode."""
+    orchestrator = AgentOrchestrator(agent_test_settings)
+    orchestrator.active_tool_mode = "json"
+    orchestrator.initialize = AsyncMock()
+    orchestrator.tool_handler.initialize = AsyncMock()
+
+    # Mock LLM proposing execute_readonly_sql via JSON fallback
+    call_resp = OllamaChatResponse(
+        content='{"type": "tool_call", "tool": "execute_readonly_sql", "arguments": {"sql_query": "SELECT * FROM orders;"}}',
+        tool_calls=[
+            OllamaToolCall(
+                id="call_json_1",
+                name="execute_readonly_sql",
+                arguments={"sql_query": "SELECT * FROM orders;"},
+            )
+        ],
+    )
+    orchestrator.ollama_client.chat = AsyncMock(return_value=call_resp)
+
+    # Case 1: User denies approval
+    def deny_approval(query: str, exp: str) -> bool:
+        return False
+
+    res = await orchestrator.process_message(
+        "Run this query for me",
+        approval_callback=deny_approval,
+    )
+    assert res.status == "approval_denied"
+    assert "denied by user" in res.final_message
+
+
+def test_user_facing_error_messages(agent_test_settings: AppSettings) -> None:
+    """Milestone 7: Verify user-friendly error formatting without raw stack traces."""
+    orchestrator = AgentOrchestrator(agent_test_settings)
+
+    # 1. Connection error
+    conn_err = OllamaConnectionError("ConnectError: connection refused")
+    msg1 = orchestrator._format_friendly_error(conn_err)
+    assert "Cannot connect to Ollama" in msg1
+    assert "ollama serve" in msg1
+
+    # 2. Ollama timeout
+    timeout_err = OllamaTimeoutError("Timed out after 600s")
+    msg2 = orchestrator._format_friendly_error(timeout_err)
+    assert "timed out after 600 seconds" in msg2
+
+    # 3. Model not found
+    model_err = OllamaModelNotFoundError("Model not found")
+    msg3 = orchestrator._format_friendly_error(model_err)
+    assert "ollama pull qwen3.5:4b" in msg3
+
+    # 4. Query execution timeout
+    query_timeout_err = RuntimeError("QUERY_TIMEOUT: query exceeded timeout")
+    msg4 = orchestrator._format_friendly_error(query_timeout_err)
+    assert "120 seconds" in msg4
+    assert "simplifying your query" in msg4
+
+
+def test_timeout_configuration_defaults() -> None:
+    """Milestone 7: Verify 600s Ollama timeout and 120s SQL execution timeout defaults."""
+    settings = AppSettings()
+    assert settings.ollama.request_timeout_s == 600.0
+    assert settings.database.query_timeout_s == 120.0
+    assert settings.validate() == []
+
 

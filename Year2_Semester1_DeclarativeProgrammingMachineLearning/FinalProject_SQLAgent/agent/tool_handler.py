@@ -40,11 +40,19 @@ class ToolExecutionTimeoutError(ToolHandlerError):
 
 
 def _clean_schema_for_ollama(schema: Any) -> Any:
-    """Normalize JSON schema for Ollama Go template compatibility (e.g. flatten nullable anyOf)."""
+    """Normalize JSON schema for Ollama Go template compatibility.
+    
+    Flattens nullable anyOf, strips null defaults, and assigns concrete item types to bare arrays.
+    """
     if not isinstance(schema, dict):
         return schema
     cleaned: dict[str, Any] = {}
     for k, v in schema.items():
+        if k == "default" and v is None:
+            continue
+        if k == "items" and v == {}:
+            cleaned[k] = {"type": "string"}
+            continue
         if k == "anyOf" and isinstance(v, list):
             non_null = [
                 item for item in v if isinstance(item, dict) and item.get("type") != "null"
@@ -156,9 +164,10 @@ class ToolHandler:
                     return False, "num_records must be an integer", {}
 
         elif tool_name in {"prepare_sql_query", "execute_readonly_sql"}:
-            sql = args.get("sql_query")
+            sql = args.get("sql_query") or args.get("query") or args.get("sql")
             if not sql or not isinstance(sql, str) or not sql.strip():
                 return False, "sql_query is required and must be a non-empty string", {}
+            args["sql_query"] = sql.strip()
             if tool_name == "execute_readonly_sql" and "row_limit" in args and args["row_limit"] is not None:
                 try:
                     args["row_limit"] = int(args["row_limit"])
@@ -168,6 +177,13 @@ class ToolHandler:
                     return False, "row_limit must be an integer", {}
 
         elif tool_name == "generate_pdf_report":
+            if "sql_query" not in args:
+                if "query" in args:
+                    args["sql_query"] = args.pop("query")
+                elif "sql" in args:
+                    args["sql_query"] = args.pop("sql")
+            if "title" not in args and "name" in args:
+                args["title"] = args.pop("name")
             for req in ("title", "description", "sql_query", "columns", "rows"):
                 if req not in args or args[req] is None:
                     return False, f"Missing required argument '{req}' for generate_pdf_report", {}
@@ -177,6 +193,8 @@ class ToolHandler:
                 return False, "rows must be a list of table rows", {}
 
         elif tool_name == "generate_csv_report":
+            if "title" not in args and "name" in args:
+                args["title"] = args.pop("name")
             for req in ("title", "columns", "rows"):
                 if req not in args or args[req] is None:
                     return False, f"Missing required argument '{req}' for generate_csv_report", {}
@@ -200,12 +218,13 @@ class ToolHandler:
         )
         if not is_valid:
             log.warning("Tool validation rejected '%s': %s", tool_name, err_msg)
+            code = "UNKNOWN_TOOL" if (not tool_name or tool_name not in PERMITTED_TOOLS) else "INVALID_TOOL_ARGUMENTS"
             return MCPToolCallResult(
                 tool_name=tool_name,
                 is_error=True,
                 data={
                     "status": "error",
-                    "error_code": "INVALID_TOOL_ARGUMENTS",
+                    "error_code": code,
                     "error": err_msg or "Invalid tool arguments",
                 },
                 raw_text=err_msg or "Invalid tool arguments",

@@ -147,7 +147,7 @@ if not str(target_path).startswith(str(output_dir)):
 
 To prevent runaway queries or memory exhaustion:
 * **Row Cap**: Results are limited to `max_result_rows` (default: 1,000, capped at 100,000 max).
-* **Execution Timeout**: Query execution is monitored against `query_timeout_s` (default: 15.0s). If exceeded, `connection.interrupt()` is called immediately to terminate the running statement.
+* **Execution Timeout**: Query execution is monitored against `query_timeout_s` (default: 120.0s). If exceeded, `connection.interrupt()` is called immediately to terminate the running statement.
 * **Agent Iteration Cap**: Multi-turn tool execution is strictly capped at `max_iterations` (default: 8, max: 50) to prevent infinite loops.
 
 ---

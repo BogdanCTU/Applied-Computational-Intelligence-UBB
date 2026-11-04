@@ -98,7 +98,7 @@ def execute_readonly_query(
     params: tuple[Any, ...] | list[Any] = (),
     *,
     max_rows: int = 1000,
-    timeout_s: float = 15.0,
+    timeout_s: float = 120.0,
     cancel_event: threading.Event | None = None,
 ) -> QueryResult:
     """Execute a single read-only SQL query against ``db_path`` safely."""

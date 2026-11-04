@@ -241,7 +241,7 @@ To strictly guarantee database integrity during LLM execution, SQLite is protect
 
 4. **Resource Caps & Execution Timeouts**:
    - **Row Limit (Default: 1,000, Max: 100,000)**: Query fetching uses cursor slicing (`cursor.fetchmany(max_rows + 1)`). If the result exceeds the threshold, the result set is truncated safely with a metadata warning flag `truncated: True`.
-   - **Timeout (Default: 15.0s)**: Query execution runs on a monitored timer. If a runaway query exceeds the configured timeout, `connection.interrupt()` is called immediately to abort execution and free thread resources.
+   - **Timeout (Default: 120.0s)**: Query execution runs on a monitored timer. If a runaway query exceeds the configured timeout, `connection.interrupt()` is called immediately to abort execution and free thread resources.
 
 ---
 

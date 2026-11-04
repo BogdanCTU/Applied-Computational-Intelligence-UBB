@@ -45,7 +45,7 @@ The project set out to design and engineer a complete, production-quality local 
 | **FR-04** | Table sampling with row bounding | **Implemented** | FastMCP tool `get_table_sample` caps records at 50 max. |
 | **FR-05** | SQL preparation and query plan validation | **Implemented** | FastMCP tool `prepare_sql_query` executes `EXPLAIN QUERY PLAN` without running SQL. |
 | **FR-06** | Mandatory modal SQL approval gate | **Implemented** | `SqlApprovalDialog` pauses worker thread; default button is strictly Reject. |
-| **FR-07** | Bounded read-only query execution | **Implemented** | `execute_readonly_sql` enforces row caps (1,000) and query timeouts (15.0s). |
+| **FR-07** | Bounded read-only query execution | **Implemented** | `execute_readonly_sql` enforces row caps (1,000) and query timeouts (120.0s). |
 | **FR-08** | Automatic PDF report generation (default format) | **Implemented** | FastMCP tool `generate_pdf_report` builds styled ReportLab PDFs with KPI cards. |
 | **FR-09** | Explicit CSV export generation | **Implemented** | Intent steering routes requests containing `"csv"` to `generate_csv_report`. |
 | **FR-10** | Embedded native PDF viewer in GUI workspace | **Implemented** | `QPdfView` / `QPdfDocument` embedded with zoom, fit-to-width, and page jump. |

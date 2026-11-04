@@ -111,27 +111,81 @@ class MessageWidget(QFrame):
         self.think_btn.setText("💡 Hide reasoning process" if checked else "💡 Show reasoning process")
 
     def _format_content(self, raw_text: str) -> str:
-        """Lightweight conversion of text to HTML with paragraph, code, and newline formatting."""
+        """Format message content to HTML according to role and security rules."""
         if not raw_text:
             return ""
 
         import html
         import re
 
-        # Strip raw <think>...</think> tags so internal CoT is never displayed in message body
+        # Strip internal reasoning tags so CoT is never leaked into message body
         cleaned = re.sub(r"<think>[\s\S]*?</think>", "", raw_text).strip()
-        escaped = html.escape(cleaned)
 
-        # Basic markdown-like formatting for display
-        # Bold **text**
-        escaped = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", escaped)
-        # Inline code `code`
-        escaped = re.sub(
-            r"`([^`]+)`",
-            r"<code style='background-color: #111116; color: #67e8f9; padding: 2px 4px; border-radius: 3px; font-family: monospace;'>\1</code>",
-            escaped,
-        )
-        # Convert newlines to breaks
-        escaped = escaped.replace("\n", "<br>")
-        return escaped
+        # 1. User messages: strictly escape all HTML to prevent injection
+        if self.role == "user":
+            return html.escape(cleaned).replace("\n", "<br>")
+
+        # 2. Assistant messages: support markdown formatting (code blocks, inline code, bold, italic)
+        if self.role == "assistant":
+            # Code blocks
+            def _replace_code_block(match: re.Match[str]) -> str:
+                code_content = html.escape(match.group(2).strip())
+                return (
+                    f"<pre style='background-color: #17171e; border: 1px solid #3e3e52; "
+                    f"border-radius: 4px; padding: 8px; font-family: monospace; "
+                    f"color: #67e8f9; overflow-x: auto;'><code>{code_content}</code></pre>"
+                )
+
+            cleaned = re.sub(r"```([a-zA-Z0-9_-]*)\n([\s\S]*?)```", _replace_code_block, cleaned)
+
+            # Inline code
+            def _replace_inline_code(match: re.Match[str]) -> str:
+                inline_content = html.escape(match.group(1))
+                return (
+                    f"<code style='background-color: #111116; color: #67e8f9; "
+                    f"padding: 2px 4px; border-radius: 3px; font-family: monospace;'>{inline_content}</code>"
+                )
+
+            cleaned = re.sub(r"`([^`\n]+)`", _replace_inline_code, cleaned)
+
+            # Markdown bold **text**
+            cleaned = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", cleaned)
+            # Markdown italic *text* (when not within a word or tag)
+            cleaned = re.sub(r"(?<![a-zA-Z0-9])\*([^*]+?)\*(?![a-zA-Z0-9])", r"<i>\1</i>", cleaned)
+
+        # 3. Sanitize HTML tags for system and assistant roles:
+        # Allow safe tags (b, strong, i, em, code, br, span, p, ul, ol, li, pre) while escaping unsafe ones
+        safe_tags = {"b", "strong", "i", "em", "code", "br", "span", "p", "ul", "ol", "li", "pre"}
+        tag_re = re.compile(r"(</?[a-zA-Z0-9]+(?: [^>]*)?>)")
+        parts = tag_re.split(cleaned)
+        out: list[str] = []
+
+        for part in parts:
+            m = re.fullmatch(r"<(/)?([a-zA-Z0-9]+)([^>]*)>", part)
+            if m:
+                is_closing = m.group(1) == "/"
+                tag_name = m.group(2).lower()
+                attrs = m.group(3) or ""
+                if tag_name in safe_tags:
+                    if is_closing:
+                        out.append(f"</{tag_name}>")
+                        continue
+                    lower_attrs = attrs.lower()
+                    # Block scripts, events, and dangerous URI schemes in attributes
+                    if any(bad in lower_attrs for bad in ("javascript:", "onerror", "onload", "onclick", "onmouse", "eval")):
+                        out.append(html.escape(part))
+                    elif tag_name == "br":
+                        out.append("<br>")
+                    else:
+                        out.append(f"<{tag_name}{attrs}>")
+                    continue
+                # Unsafe or unrecognized tag: escape it
+                out.append(html.escape(part))
+            else:
+                # Plain text: escape angle brackets and ampersands
+                # If part already has converted newlines, preserve them
+                text_part = html.escape(part).replace("\n", "<br>")
+                out.append(text_part)
+
+        return "".join(out)
 

@@ -1,5 +1,28 @@
 [
   {
+    "report_id": "107d2db833684f2e9d087cedf6d8a0f9",
+    "title": "Order Analytics Report: Historical Trends & Distribution",
+    "description": "Comprehensive report containing historical monthly order trends with revenue metrics, order status distribution analysis, and top customer spending data.",
+    "user_request": "Produce me a report output PDF, containing an historical chart of orders, a pie of order distribution and some tables regarding order data.",
+    "sql_query": "-- Historical orders chart: Monthly order counts and totals\nSELECT \n  strftime('%Y-%m', order_date) AS month,\n  COUNT(*) AS order_count,\n  SUM(total_amount) AS total_revenue\nFROM orders\nWHERE order_date >= '2023-01-01'\nGROUP BY month\nORDER BY month;\n\n-- Order distribution pie: Count by order status with percentage\nWITH status_counts AS (\n  SELECT \n    status,\n    COUNT(*) AS order_count\n  FROM orders\n  GROUP BY status\n)\nSELECT \n  status,\n  order_count,\n  ROUND(order_count * 100.0 / (SELECT SUM(order_count) FROM status_counts), 2) AS percentage\nFROM status_counts\nORDER BY order_count DESC;\n\n-- Top customers by total order amount\nSELECT \n  c.customer_id,\n  c.first_name || ' ' || c.last_name AS customer_name,\n  COUNT(o.order_id) AS order_count,\n  SUM(o.total_amount) AS total_spent\nFROM customers c\nINNER JOIN orders o ON c.customer_id = o.customer_id\nWHERE o.status IN ('completed', 'delivered')\nGROUP BY c.customer_id, c.first_name, c.last_name\nORDER BY total_spent DESC\nLIMIT 20;",
+    "output_format": "PDF",
+    "file_name": "order_analytics_report_historical_trends_distribution_20261104_134213_9840df.pdf",
+    "output_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reports/order_analytics_report_historical_trends_distribution_20261104_134213_9840df.pdf",
+    "record_count": 20,
+    "total_input_records": 20,
+    "truncated": false,
+    "column_names": [
+      "customer_id",
+      "customer_name",
+      "order_count",
+      "total_spent"
+    ],
+    "file_size_bytes": 46209,
+    "created_at": "2026-11-04T13:42:13",
+    "status": "completed",
+    "error_message": null
+  },
+  {
     "report_id": "814f4244ffb04c9881449df38a9e319d",
     "title": "Product Category CSV",
     "description": "Category breakdown CSV",

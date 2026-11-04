@@ -271,7 +271,14 @@ class MainWindow(QMainWindow):
     def _on_agent_error(self, err_msg: str) -> None:
         self.chat_view.set_processing_state(False)
         self.active_worker = None
-        self.chat_view.add_system_message(f"❌ <b>Worker Error:</b> {err_msg}")
+        lower = err_msg.lower()
+        if "cannot connect to ollama" in lower or "connection refused" in lower or "connecterror" in lower:
+            friendly = "Cannot connect to Ollama. Please ensure Ollama is running (<code>ollama serve</code>)."
+        elif "timed out" in lower:
+            friendly = "The request timed out. Please try again or simplify your query."
+        else:
+            friendly = err_msg
+        self.chat_view.add_system_message(f"❌ <b>Error:</b> {friendly}")
 
     def _on_agent_cancelled(self) -> None:
         self.chat_view.set_processing_state(False)
