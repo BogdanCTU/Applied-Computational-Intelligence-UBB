@@ -126,12 +126,12 @@ def register_database_tools(
         name="inspect_database_schema",
         description=(
             "Inspect the SQLite database schema. Optionally pass 'table_name' to inspect "
-            "a single table; omit 'table_name' to list all tables, columns, SQLite types, "
-            "primary keys, foreign keys, indexes, row counts, and table relationships."
+            "a single table; omit 'table_name' or pass empty string '' to list all tables, "
+            "columns, SQLite types, primary keys, foreign keys, indexes, row counts, and table relationships."
         ),
     )
-    def inspect_database_schema(table_name: str | None = None) -> dict[str, Any]:
-        return inspect_database_schema_impl(get_settings(), table_name=table_name)
+    def inspect_database_schema(table_name: str = "") -> dict[str, Any]:
+        return inspect_database_schema_impl(get_settings(), table_name=table_name or None)
 
     @mcp.tool(
         name="get_table_sample",

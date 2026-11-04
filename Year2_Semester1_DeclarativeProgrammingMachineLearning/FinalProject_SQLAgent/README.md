@@ -91,13 +91,89 @@ Defaults live in `config/settings.py`; the GUI Settings page writes
 `settings.json`. Environment overrides are listed in `.env.example`.
 The Ollama host must be local (`localhost`/`127.0.0.1`); remote hosts are rejected.
 
+## Agent Architecture & Tool Orchestration
+
+The agent package (`agent/`) implements an autonomous reasoning and report generation pipeline running strictly against the local Ollama instance (`qwen3.5:4b`):
+
+* **`OllamaClient` (`agent/ollama_client.py`)**: Asynchronous HTTP client communicating exclusively with `http://localhost:11434`. Enforces local-only host validation, extracts native tool calls and reasoning chains (`thinking`), supports automatic tool capability detection, and provides controlled structured-JSON fallback (`format: "json"`).
+* **`ToolHandler` (`agent/tool_handler.py`)**: Strict whitelist dispatcher for permitted MCP tools (`inspect_database_schema`, `get_table_sample`, `prepare_sql_query`, `execute_readonly_sql`, `generate_pdf_report`, `generate_csv_report`). Normalizes parameter schemas for Ollama compatibility, sanitizes arguments, blocks dangerous injections, and enforces execution timeouts.
+* **`ConversationManager` (`agent/conversation.py`)**: Manages conversation history within context limits while guaranteeing that tool call invocations and their corresponding tool execution results are never split across context compaction boundaries.
+* **`AgentOrchestrator` (`agent/orchestrator.py`)**: Coordinates the multi-turn analytical loop:
+  1. Natural-language intent analysis and format steering (PDF by default, CSV when explicitly requested).
+  2. Schema inspection and table sampling when needed.
+  3. Pre-execution query validation via `prepare_sql_query`.
+  4. **Mandatory User Approval Gate**: Execution of `execute_readonly_sql` is strictly gated by an explicit approval callback. If approval is denied or no callback is provided, execution is refused.
+  5. Report generation via MCP tools (`generate_pdf_report` or `generate_csv_report`) with full structured result injection.
+  6. Real-time event streaming (`AgentEvent`: thinking, tool calls, SQL proposals, approvals, progress, errors).
+
+## Running the Application
+
+To launch the desktop GUI application:
+
+macOS / Linux:
+```bash
+.venv/bin/python run_app.py
+```
+
+Windows (PowerShell):
+```powershell
+.\.venv\Scripts\python.exe run_app.py
+```
+
+## GUI Architecture & Layout
+
+The desktop interface (`app/`) is built using **PySide6** and styled with a centralized, modern dark dashboard theme (`app/style.py`):
+
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│ Report SQL Agent              ● Ollama Online (qwen3.5:4b)  History  ⚙ │
+├────────────────────────────────────────┬───────────────────────────────┤
+│                                        │                               │
+│          REPORT WORKSPACE              │     AI Report Assistant       │
+│                                        │                               │
+│  [Format: PDF] report.pdf              │  👤 You                       │
+│  ◀ Page 1 of 4 ▶  [-] [+] Fit Width    │  Show revenue by country      │
+│  ────────────────────────────────────  │                               │
+│                                        │  📄 Proposed SQL Query        │
+│          Embedded Native PDF           │  [Copy] SELECT ...            │
+│         (QPdfView / QtPdf)             │                               │
+│                                        │  🤖 Report Agent              │
+│                  OR                    │  💡 Thinking process          │
+│                                        │  Here is the summary table... │
+│         Embedded Tabular CSV           │                               │
+│        (QTableView / CsvModel)         │  ───────────────────────────  │
+│                                        │  Ask a question...            │
+│                                        │  [Cancel]              [Send] │
+└────────────────────────────────────────┴───────────────────────────────┘
+```
+
+* **Main Window (`app/main_window.py`)**: Asymmetric split layout (`QSplitter`: ~65% Report Workspace, ~35% Lateral Chat). Live Ollama health status pill in header ("● Ollama Online" / "● Ollama Offline") checked asynchronously without freezing the UI.
+* **Report Workspace (`app/widgets/report_preview_widget.py`)**:
+  - Native **PDF Viewer** utilizing Qt 6's official `QPdfView` and `QPdfDocument`. Features single-page mode, page jump navigation (`◀` / `▶`), page counter (`Page X of Y`), zoom controls (`+` / `-`), fit-to-width, fit-to-page, and external launch in default viewer.
+  - Tabular **CSV Viewer** utilizing `QTableView` and custom `CsvTableModel` (`app/models/csv_table_model.py`) with column headers, formatted numbers, null representation (`—`), and memory-safe preview caps.
+  - Informative placeholder and error states.
+* **Conversational Chat (`app/views/chat_view.py`)**:
+  - Visual message bubbles (`app/widgets/message_widget.py`) differentiating user requests, assistant technical responses, and collapsible thinking reasoning accordions (`<think>` CoT).
+  - Inline SQL cards (`app/widgets/sql_preview_widget.py`) with copy button and status badges.
+  - Multiline editor (`ChatInputEdit`) where Enter sends and Shift+Enter inserts a newline.
+  - Real-time progress bar and status indicator with cooperative cancellation button.
+* **Dedicated SQL Approval Dialog (`app/dialogs/sql_approval_dialog.py`)**:
+  - Modal review dialog triggered before any SQL execution. Displays full proposed SQL, explanation, database name, and safety notices.
+  - Default action is **Reject**. Esc, closing ('X'), and cancel all strictly guarantee query rejection.
+* **Report History View (`app/views/history_view.py`)**: Displays all generated reports recorded in `report_history.json`. Allows instant preview loading into workspace, opening in system apps, or opening containing folders.
+* **Settings View (`app/views/settings_view.py`)**: Inspects and persists local Ollama settings, database timeouts, max rows, approval requirements, and report directories. Features an interactive "Test Connection" tool that queries live local Ollama models.
+* **Worker & Threading Decoupling (`app/workers/agent_worker.py`)**:
+  - `AgentWorker` runs on a dedicated `QThread` with its own `asyncio` event loop.
+  - Qt GUI thread never blocks during Ollama inference or MCP tool runs.
+  - Synchronous cross-thread approval bridge via `queue.Queue` delivers modal approval without deadlocks.
+
 ## Milestones
 
 1. Environment and project initialisation ✅
 2. Dataset import and SQLite ✅
 3. MCP server and report generation ✅
-4. Ollama agent
-5. GUI
-6. Integration
+4. Local Ollama agent and orchestration ✅
+5. PySide6 Desktop GUI ✅
+6. Integration and end-to-end verification
 7. QA and packaging
 
