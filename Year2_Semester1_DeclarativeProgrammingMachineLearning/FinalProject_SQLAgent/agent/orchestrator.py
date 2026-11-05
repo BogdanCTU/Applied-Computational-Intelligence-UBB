@@ -25,6 +25,11 @@ from .ollama_client import (
     OllamaClient,
     OllamaClientError,
     OllamaConnectionError,
+    OllamaConnectionRefusedError,
+    OllamaDisconnectError,
+    OllamaEmptyResponseError,
+    OllamaHTTPError,
+    OllamaInvalidJSONError,
     OllamaModelNotFoundError,
     OllamaResponseError,
     OllamaTimeoutError,
@@ -754,13 +759,15 @@ class AgentOrchestrator:
                 )
             except OllamaClientError as exc:
                 if self.active_tool_mode == "native" and (
-                    "XML" in str(exc)
+                    isinstance(exc, (OllamaDisconnectError, OllamaHTTPError))
+                    or "XML" in str(exc)
                     or "500" in str(exc)
                     or "element <function>" in str(exc)
                     or "syntax" in str(exc).lower()
+                    or "disconnect" in str(exc).lower()
                 ):
                     log.warning(
-                        "Ollama native tool calling failed (%s); switching to structured JSON mode",
+                        "Ollama native tool calling encountered error or disconnect (%s); automatically switching to structured JSON mode",
                         exc,
                     )
                     self.active_tool_mode = "json"
@@ -1568,8 +1575,18 @@ class AgentOrchestrator:
 
     def _format_friendly_error(self, exc: Exception) -> str:
         """Translate runtime exceptions into clean, actionable user-facing messages."""
-        if isinstance(exc, OllamaConnectionError):
-            return "Cannot connect to Ollama. Please ensure Ollama is running (`ollama serve`)."
+        if isinstance(exc, OllamaConnectionRefusedError):
+            return (
+                f"Cannot connect to Ollama at {self.settings.ollama.host}. "
+                "The Ollama service is not running or the port is inaccessible. "
+                "Please start the service in your terminal (`ollama serve`)."
+            )
+        if isinstance(exc, OllamaDisconnectError):
+            return (
+                "Ollama disconnected abruptly without sending a response. "
+                "The local model runner may have crashed, run out of memory, or dropped the socket. "
+                "Try restarting Ollama (`ollama serve`), reducing context length, or switching tool mode."
+            )
         if isinstance(exc, OllamaTimeoutError):
             return (
                 f"Request to local Ollama timed out after {int(self.settings.ollama.request_timeout_s)} seconds. "
@@ -1580,12 +1597,40 @@ class AgentOrchestrator:
                 f"Model '{self.settings.ollama.model}' is not available locally. "
                 f"Please run `ollama pull {self.settings.ollama.model}` in your terminal."
             )
+        if isinstance(exc, OllamaEmptyResponseError):
+            return (
+                "Ollama returned an empty response with no content or tool calls. "
+                "The model may have encountered an internal generation issue. Please try rephrasing your request."
+            )
+        if isinstance(exc, OllamaInvalidJSONError):
+            return (
+                "Ollama returned an invalid or unparseable JSON response. "
+                "The model output could not be decoded. Please try again."
+            )
+        if isinstance(exc, OllamaHTTPError):
+            return (
+                f"Ollama returned an error (HTTP {exc.status_code}): {exc.message}. "
+                "Please verify the Ollama service status."
+            )
+        if isinstance(exc, OllamaConnectionError):
+            err_lower = str(exc).lower()
+            if "refused" in err_lower or "10061" in err_lower:
+                return "Cannot connect to Ollama. Please ensure Ollama is running (`ollama serve`)."
+            return (
+                f"Cannot connect to Ollama at {self.settings.ollama.host}. "
+                f"Details: {exc}. Please ensure Ollama is running."
+            )
         err = str(exc)
         if "QUERY_TIMEOUT" in err or ("timed out" in err.lower() and "query" in err.lower()):
             return (
                 f"The database query exceeded the execution timeout ({int(self.settings.database.query_timeout_s)} seconds). "
                 "The query took too long to complete. Please try simplifying your query or filtering by a narrower date range."
             )
-        if "ConnectError" in err or "Connection refused" in err:
+        if "ConnectError" in err or "Connection refused" in err or "10061" in err:
             return "Cannot connect to Ollama. Please ensure Ollama is running (`ollama serve`)."
+        if "RemoteProtocolError" in err or "disconnected without sending a response" in err or "10054" in err:
+            return (
+                "Ollama disconnected abruptly without sending a response. "
+                "The local model runner may have crashed, run out of memory, or dropped the socket."
+            )
         return f"An error occurred during agent execution: {exc}"

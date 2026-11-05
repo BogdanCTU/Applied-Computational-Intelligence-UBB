@@ -72,21 +72,27 @@ class MainWindow(QMainWindow):
         # -------------------------------------------------------------
         self.header_bar = QFrame()
         self.header_bar.setObjectName("header_bar")
-        self.header_bar.setFixedHeight(54)
+        self.header_bar.setFixedHeight(60)
 
         header_layout = QHBoxLayout(self.header_bar)
-        header_layout.setContentsMargins(16, 8, 16, 8)
-        header_layout.setSpacing(12)
+        header_layout.setContentsMargins(18, 10, 18, 10)
+        header_layout.setSpacing(14)
 
         # Title & database info
+        brand_icon = QLabel("📊")
+        brand_icon.setStyleSheet("font-size: 22px;")
+        header_layout.addWidget(brand_icon)
+
         title_box = QVBoxLayout()
-        title_box.setSpacing(2)
+        title_box.setContentsMargins(0, 0, 0, 0)
+        title_box.setSpacing(1)
+
         title_lbl = QLabel("Report SQL Agent")
         title_lbl.setObjectName("app_title")
         title_box.addWidget(title_lbl)
 
         db_name = Path(self.settings.database_path).name
-        sub_lbl = QLabel(f"Local SQLite Database: {db_name} (Read-Only Mode)")
+        sub_lbl = QLabel(f"Database: {db_name}  •  Read-Only Mode")
         sub_lbl.setObjectName("app_subtitle")
         title_box.addWidget(sub_lbl)
         header_layout.addLayout(title_box)
@@ -94,17 +100,17 @@ class MainWindow(QMainWindow):
         header_layout.addStretch()
 
         # Status indicator pill
-        self.status_pill = QLabel("Checking Ollama...")
+        self.status_pill = QLabel("● Checking Ollama...")
         self.status_pill.setObjectName("status_pill_offline")
         self.status_pill.setAlignment(Qt.AlignmentFlag.AlignCenter)
         header_layout.addWidget(self.status_pill)
 
         # Action Buttons
-        self.btn_history = QPushButton("Report History")
+        self.btn_history = QPushButton("📚 Report History")
         self.btn_history.setToolTip("View and export previously generated reports")
         header_layout.addWidget(self.btn_history)
 
-        self.btn_settings = QPushButton("Settings")
+        self.btn_settings = QPushButton("⚙️ Settings")
         self.btn_settings.setToolTip("Configure local Ollama, database query limits, and reports")
         header_layout.addWidget(self.btn_settings)
 
@@ -114,19 +120,21 @@ class MainWindow(QMainWindow):
         # 2. Split Workspace Layout (Left: Report, Right: Chat)
         # -------------------------------------------------------------
         self.splitter = QSplitter(Qt.Orientation.Horizontal)
-        self.splitter.setContentsMargins(8, 8, 8, 8)
+        self.splitter.setContentsMargins(10, 10, 10, 10)
 
         # Left Pane: Report Workspace
         self.report_workspace = ReportPreviewWidget(parent=self.splitter)
+        self.report_workspace.setMinimumWidth(540)
         self.splitter.addWidget(self.report_workspace)
 
         # Right Pane: Lateral Chat Interface
         self.chat_view = ChatView(parent=self.splitter)
+        self.chat_view.setMinimumWidth(360)
         self.splitter.addWidget(self.chat_view)
 
         # Set stretch factors (~65% workspace, ~35% chat)
-        self.splitter.setStretchFactor(0, 65)
-        self.splitter.setStretchFactor(1, 35)
+        self.splitter.setStretchFactor(0, 68)
+        self.splitter.setStretchFactor(1, 32)
         self.splitter.setCollapsible(0, False)
         self.splitter.setCollapsible(1, False)
 
@@ -273,7 +281,13 @@ class MainWindow(QMainWindow):
         self.chat_view.set_processing_state(False)
         self.active_worker = None
         lower = err_msg.lower()
-        if "cannot connect to ollama" in lower or "connection refused" in lower or "connecterror" in lower:
+        if "disconnected abruptly" in lower or "disconnected without sending a response" in lower:
+            friendly = (
+                "Ollama disconnected abruptly without sending a response. "
+                "The local model runner may have crashed, run out of memory, or dropped the socket. "
+                "Try restarting Ollama (<code>ollama serve</code>) or switching tool mode."
+            )
+        elif "cannot connect to ollama" in lower or "connection refused" in lower or "connecterror" in lower:
             friendly = "Cannot connect to Ollama. Please ensure Ollama is running (<code>ollama serve</code>)."
         elif "timed out" in lower:
             friendly = "The request timed out. Please try again or simplify your query."

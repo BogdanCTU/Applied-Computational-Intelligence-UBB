@@ -69,22 +69,22 @@ class SqlApprovalDialog(QDialog):
         # 2. Metadata / Parameters Bar (Database, Operation, Guards)
         meta_frame = QFrame()
         meta_frame.setStyleSheet(
-            "QFrame { background-color: #1a1a24; border: 1px solid #3b82f640; border-radius: 6px; padding: 6px; }"
+            "QFrame { background-color: #171b26; border: 1px solid rgba(59, 130, 246, 0.25); border-radius: 6px; padding: 4px; }"
         )
         meta_layout = QHBoxLayout(meta_frame)
-        meta_layout.setContentsMargins(10, 4, 10, 4)
+        meta_layout.setContentsMargins(12, 6, 12, 6)
         meta_layout.setSpacing(16)
 
         db_badge = QLabel(f"🗄️ <b>Database:</b> {self.database_name}")
-        db_badge.setStyleSheet("color: #93c5fd; font-size: 11px;")
+        db_badge.setStyleSheet("color: #93c5fd; font-size: 12px;")
         meta_layout.addWidget(db_badge)
 
         op_badge = QLabel("🛡️ <b>Operation:</b> Read-Only SELECT / CTE")
-        op_badge.setStyleSheet("color: #34d399; font-size: 11px;")
+        op_badge.setStyleSheet("color: #34d399; font-size: 12px;")
         meta_layout.addWidget(op_badge)
 
         guard_badge = QLabel("⏱️ <b>Timeout:</b> 120s  |  <b>Max Rows:</b> 1,000")
-        guard_badge.setStyleSheet("color: #9ca3af; font-size: 11px;")
+        guard_badge.setStyleSheet("color: #94a3b8; font-size: 12px;")
         meta_layout.addWidget(guard_badge)
 
         meta_layout.addStretch()
@@ -93,14 +93,16 @@ class SqlApprovalDialog(QDialog):
         # 3. SQL Query Display with Copy Button & Syntax Highlighter
         sql_label_row = QHBoxLayout()
         sql_title = QLabel("Proposed SQL Statement (Exact Executable Query):")
-        sql_title.setStyleSheet("font-weight: 600; color: #9ca3af; font-size: 12px;")
+        sql_title.setStyleSheet("font-weight: 600; color: #cbd5e1; font-size: 12px;")
         sql_label_row.addWidget(sql_title)
 
         sql_label_row.addStretch()
 
         self.copy_btn = QPushButton("Copy SQL")
+        self.copy_btn.setProperty("compact", True)
         self.copy_btn.setToolTip("Copy exact SQL query to clipboard")
-        self.copy_btn.setFixedWidth(80)
+        self.copy_btn.setFixedHeight(28)
+        self.copy_btn.setMinimumWidth(88)
         self.copy_btn.clicked.connect(self._copy_sql_to_clipboard)
         sql_label_row.addWidget(self.copy_btn)
 
@@ -112,8 +114,8 @@ class SqlApprovalDialog(QDialog):
         self.sql_edit.setPlainText(self.sql_query)
         self.sql_edit.setFont(QFont("JetBrains Mono, Menlo, Consolas, Courier New", 12))
         self.sql_edit.setStyleSheet(
-            "QPlainTextEdit#sql_editor { background-color: #111116; color: #f3f4f6; "
-            "border: 1px solid #3e3e52; border-radius: 6px; padding: 8px; }"
+            "QPlainTextEdit#sql_editor { background-color: #0d0f15; color: #f8fafc; "
+            "border: 1px solid #2e3549; border-radius: 6px; padding: 10px; font-size: 12px; }"
         )
         # Attach SQL Syntax Highlighter
         self.highlighter = SqlSyntaxHighlighter(self.sql_edit.document())
@@ -122,16 +124,16 @@ class SqlApprovalDialog(QDialog):
         # 4. Agent Explanation / Purpose
         if self.explanation:
             exp_label = QLabel("Query Purpose / Agent Explanation:")
-            exp_label.setStyleSheet("font-weight: 600; color: #9ca3af; font-size: 12px;")
+            exp_label.setStyleSheet("font-weight: 600; color: #cbd5e1; font-size: 12px;")
             layout.addWidget(exp_label)
 
             self.exp_box = QPlainTextEdit()
             self.exp_box.setReadOnly(True)
             self.exp_box.setPlainText(self.explanation)
-            self.exp_box.setMaximumHeight(75)
+            self.exp_box.setMaximumHeight(70)
             self.exp_box.setStyleSheet(
-                "background-color: #1a1a24; color: #e5e7eb; border: 1px solid #3e3e52; "
-                "border-radius: 6px; padding: 6px; font-size: 12px;"
+                "background-color: #171b26; color: #e2e8f0; border: 1px solid #2e3549; "
+                "border-radius: 6px; padding: 8px; font-size: 12px;"
             )
             layout.addWidget(self.exp_box)
 
@@ -139,23 +141,26 @@ class SqlApprovalDialog(QDialog):
         button_row = QHBoxLayout()
         button_row.setSpacing(12)
 
-        info_lbl = QLabel("⚠️ The query will execute ONLY if you approve. Closing or rejecting cancels execution.")
-        info_lbl.setStyleSheet("color: #9ca3af; font-size: 11px;")
-        button_row.addWidget(info_lbl)
-
-        button_row.addStretch()
+        info_lbl = QLabel("⚠️ Requires explicit approval before query executes. Rejecting halts workflow.")
+        info_lbl.setWordWrap(True)
+        info_lbl.setStyleSheet("color: #94a3b8; font-size: 11px;")
+        button_row.addWidget(info_lbl, stretch=1)
 
         # Reject Button (Default focus)
         self.reject_btn = QPushButton("Reject Execution")
         self.reject_btn.setObjectName("danger_button")
+        self.reject_btn.setFixedHeight(34)
+        self.reject_btn.setMinimumWidth(130)
         self.reject_btn.setDefault(True)
         self.reject_btn.setFocus()
         self.reject_btn.clicked.connect(self._on_reject)
         button_row.addWidget(self.reject_btn)
 
         # Approve Button
-        self.approve_btn = QPushButton("Approve & Execute")
+        self.approve_btn = QPushButton("Approve && Execute")
         self.approve_btn.setObjectName("success_button")
+        self.approve_btn.setFixedHeight(34)
+        self.approve_btn.setMinimumWidth(150)
         self.approve_btn.clicked.connect(self._on_approve)
         button_row.addWidget(self.approve_btn)
 

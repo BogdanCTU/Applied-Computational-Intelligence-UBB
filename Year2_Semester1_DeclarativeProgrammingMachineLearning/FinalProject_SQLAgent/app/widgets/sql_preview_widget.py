@@ -41,7 +41,7 @@ class SqlPreviewWidget(QFrame):
     def _init_ui(self) -> None:
         self.setObjectName("card_frame")
         self.setStyleSheet(
-            "QFrame#card_frame { background-color: #1a1a24; border: 1px solid #3b82f640; border-radius: 8px; }"
+            "QFrame#card_frame { background-color: #171b26; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; }"
         )
 
         layout = QVBoxLayout(self)
@@ -50,6 +50,7 @@ class SqlPreviewWidget(QFrame):
 
         # Header bar
         header = QHBoxLayout()
+        header.setSpacing(8)
         title_lbl = QLabel(f"📄 {self.title}")
         title_lbl.setStyleSheet("font-weight: 700; color: #93c5fd; font-size: 12px;")
         header.addWidget(title_lbl)
@@ -60,9 +61,10 @@ class SqlPreviewWidget(QFrame):
 
         header.addStretch()
 
-        self.copy_btn = QPushButton("Copy")
-        self.copy_btn.setFixedWidth(60)
-        self.copy_btn.setStyleSheet("font-size: 11px; padding: 2px 6px;")
+        self.copy_btn = QPushButton("Copy SQL")
+        self.copy_btn.setProperty("compact", True)
+        self.copy_btn.setFixedHeight(26)
+        self.copy_btn.setMinimumWidth(76)
         self.copy_btn.clicked.connect(self._copy_sql)
         header.addWidget(self.copy_btn)
 
@@ -77,7 +79,7 @@ class SqlPreviewWidget(QFrame):
         self.highlighter = SqlSyntaxHighlighter(self.sql_box.document())
         # Dynamically size height based on line count, capped at 160px
         lines = len(self.sql_query.splitlines())
-        calc_height = max(50, min(160, lines * 20 + 20))
+        calc_height = max(52, min(160, lines * 20 + 24))
         self.sql_box.setFixedHeight(calc_height)
         layout.addWidget(self.sql_box)
 
@@ -85,7 +87,7 @@ class SqlPreviewWidget(QFrame):
         if self.explanation:
             exp_lbl = QLabel(self.explanation)
             exp_lbl.setWordWrap(True)
-            exp_lbl.setStyleSheet("color: #9ca3af; font-size: 11px; font-style: italic;")
+            exp_lbl.setStyleSheet("color: #94a3b8; font-size: 12px; font-style: italic;")
             layout.addWidget(exp_lbl)
 
     def _copy_sql(self) -> None:

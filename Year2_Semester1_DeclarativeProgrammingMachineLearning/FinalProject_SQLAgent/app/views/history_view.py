@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from PySide6.QtCore import Qt, QUrl, Signal
-from PySide6.QtGui import QDesktopServices
+from PySide6.QtGui import QColor, QDesktopServices
 from PySide6.QtWidgets import (
     QDialog,
     QFrame,
@@ -50,34 +50,47 @@ class HistoryView(QDialog):
         self._reports: list[ReportMetadata] = []
 
         self.setWindowTitle("Generated Report History")
-        self.setMinimumSize(780, 480)
-        self.resize(850, 520)
+        self.setMinimumSize(840, 520)
+        self.resize(880, 540)
 
         self._init_ui()
         self.refresh_history()
 
     def _init_ui(self) -> None:
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(16, 16, 16, 16)
-        layout.setSpacing(12)
+        layout.setContentsMargins(18, 18, 18, 18)
+        layout.setSpacing(14)
 
         # Header bar
-        header = QHBoxLayout()
-        title_lbl = QLabel("📚 Report Generation History")
-        title_lbl.setStyleSheet("font-size: 16px; font-weight: 700; color: #f3f4f6;")
-        header.addWidget(title_lbl)
+        header_box = QVBoxLayout()
+        header_box.setSpacing(4)
 
-        header.addStretch()
+        top_row = QHBoxLayout()
+        title_lbl = QLabel("📚 Generated Report History")
+        title_lbl.setStyleSheet("font-size: 16px; font-weight: 700; color: #f8fafc;")
+        top_row.addWidget(title_lbl)
+
+        top_row.addStretch()
 
         self.btn_refresh = QPushButton("Refresh")
+        self.btn_refresh.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_refresh.setMinimumHeight(32)
         self.btn_refresh.clicked.connect(self.refresh_history)
-        header.addWidget(self.btn_refresh)
+        top_row.addWidget(self.btn_refresh)
 
         self.btn_open_folder = QPushButton("Open Reports Folder")
+        self.btn_open_folder.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_open_folder.setMinimumHeight(32)
         self.btn_open_folder.clicked.connect(self._open_reports_dir)
-        header.addWidget(self.btn_open_folder)
+        top_row.addWidget(self.btn_open_folder)
 
-        layout.addLayout(header)
+        header_box.addLayout(top_row)
+
+        desc_lbl = QLabel("Browse previously generated analytical reports. Double-click or select to preview in workspace.")
+        desc_lbl.setStyleSheet("font-size: 12px; color: #94a3b8;")
+        header_box.addWidget(desc_lbl)
+
+        layout.addLayout(header_box)
 
         # History Table
         self.table = QTableWidget()
@@ -96,10 +109,13 @@ class HistoryView(QDialog):
         self.table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
         self.table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
         self.table.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)
+        self.table.verticalHeader().setVisible(False)
+        self.table.verticalHeader().setDefaultSectionSize(36)
         self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.table.setAlternatingRowColors(True)
+        self.table.setShowGrid(False)
         self.table.itemSelectionChanged.connect(self._on_selection_changed)
         self.table.doubleClicked.connect(self._on_row_double_clicked)
         layout.addWidget(self.table)
@@ -107,7 +123,7 @@ class HistoryView(QDialog):
         # Bottom Action Bar
         bottom_row = QHBoxLayout()
         self.summary_label = QLabel("0 reports recorded")
-        self.summary_label.setStyleSheet("color: #9ca3af; font-size: 12px;")
+        self.summary_label.setStyleSheet("color: #94a3b8; font-size: 12px;")
         bottom_row.addWidget(self.summary_label)
 
         bottom_row.addStretch()
@@ -115,16 +131,22 @@ class HistoryView(QDialog):
         self.btn_preview = QPushButton("Preview in Workspace")
         self.btn_preview.setObjectName("primary_button")
         self.btn_preview.setProperty("primary", True)
+        self.btn_preview.setMinimumHeight(34)
+        self.btn_preview.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_preview.setEnabled(False)
         self.btn_preview.clicked.connect(self._on_preview_clicked)
         bottom_row.addWidget(self.btn_preview)
 
         self.btn_open_file = QPushButton("Open in App")
+        self.btn_open_file.setMinimumHeight(34)
+        self.btn_open_file.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_open_file.setEnabled(False)
         self.btn_open_file.clicked.connect(self._on_open_file_clicked)
         bottom_row.addWidget(self.btn_open_file)
 
         btn_close = QPushButton("Close")
+        btn_close.setMinimumHeight(34)
+        btn_close.setCursor(Qt.CursorShape.PointingHandCursor)
         btn_close.clicked.connect(self.close)
         bottom_row.addWidget(btn_close)
 
@@ -166,13 +188,13 @@ class HistoryView(QDialog):
 
             # 5. Availability
             exists = p.is_file()
-            status_text = "Available" if exists else "Missing"
+            status_text = "● Available" if exists else "✕ Missing"
             item_status = QTableWidgetItem(status_text)
             item_status.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             if not exists:
-                item_status.setForeground(Qt.GlobalColor.red)
+                item_status.setForeground(QColor("#f87171"))
             else:
-                item_status.setForeground(Qt.GlobalColor.green)
+                item_status.setForeground(QColor("#34d399"))
             self.table.setItem(row_idx, 5, item_status)
 
         self.summary_label.setText(f"{len(self._reports)} reports recorded in history")

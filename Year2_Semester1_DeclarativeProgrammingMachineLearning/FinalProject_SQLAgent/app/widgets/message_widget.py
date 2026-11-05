@@ -72,12 +72,12 @@ class MessageWidget(QFrame):
             self.think_btn = QPushButton("💡 Show reasoning process")
             self.think_btn.setCheckable(True)
             self.think_btn.setChecked(False)
-            self.think_btn.setFixedWidth(180)
+            self.think_btn.setFixedWidth(190)
             self.think_btn.setStyleSheet(
-                "QPushButton { background-color: rgba(245, 158, 11, 0.15); "
+                "QPushButton { background-color: rgba(245, 158, 11, 0.12); "
                 "color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); "
-                "font-size: 11px; padding: 2px 8px; border-radius: 4px; } "
-                "QPushButton:hover { background-color: rgba(245, 158, 11, 0.25); }"
+                "font-size: 11px; padding: 3px 8px; border-radius: 4px; } "
+                "QPushButton:hover { background-color: rgba(245, 158, 11, 0.22); }"
             )
 
             self.think_box = QTextEdit()
@@ -86,8 +86,8 @@ class MessageWidget(QFrame):
             self.think_box.setVisible(False)
             self.think_box.setMaximumHeight(130)
             self.think_box.setStyleSheet(
-                "background-color: #17171e; color: #fbbf24; font-size: 11px; "
-                "border: 1px solid #3e3e52; border-radius: 4px; padding: 6px;"
+                "background-color: #0d0f15; color: #fbbf24; font-size: 11px; "
+                "border: 1px solid #2e3549; border-radius: 4px; padding: 6px;"
             )
 
             self.think_btn.toggled.connect(self._toggle_thinking)

@@ -25,6 +25,11 @@ from agent import (
     OllamaChatResponse,
     OllamaClient,
     OllamaConnectionError,
+    OllamaConnectionRefusedError,
+    OllamaDisconnectError,
+    OllamaEmptyResponseError,
+    OllamaHTTPError,
+    OllamaInvalidJSONError,
     OllamaModelNotFoundError,
     OllamaResponseError,
     OllamaTimeoutError,
@@ -882,11 +887,16 @@ def test_user_facing_error_messages(agent_test_settings: AppSettings) -> None:
     """Milestone 7: Verify user-friendly error formatting without raw stack traces."""
     orchestrator = AgentOrchestrator(agent_test_settings)
 
-    # 1. Connection error
+    # 1. Connection error / refused
     conn_err = OllamaConnectionError("ConnectError: connection refused")
     msg1 = orchestrator._format_friendly_error(conn_err)
     assert "Cannot connect to Ollama" in msg1
     assert "ollama serve" in msg1
+
+    refused_err = OllamaConnectionRefusedError("Connection refused")
+    msg1b = orchestrator._format_friendly_error(refused_err)
+    assert "Cannot connect to Ollama" in msg1b
+    assert "ollama serve" in msg1b
 
     # 2. Ollama timeout
     timeout_err = OllamaTimeoutError("Timed out after 600s")
@@ -898,11 +908,163 @@ def test_user_facing_error_messages(agent_test_settings: AppSettings) -> None:
     msg3 = orchestrator._format_friendly_error(model_err)
     assert "ollama pull qwen3.5:4b" in msg3
 
-    # 4. Query execution timeout
+    # 4. Disconnect / runner crash
+    disc_err = OllamaDisconnectError("Server disconnected without sending a response.")
+    msg4 = orchestrator._format_friendly_error(disc_err)
+    assert "disconnected abruptly" in msg4
+    assert "runner may have crashed" in msg4
+
+    # 5. Empty assistant response
+    empty_err = OllamaEmptyResponseError("Empty response")
+    msg5 = orchestrator._format_friendly_error(empty_err)
+    assert "empty response" in msg5
+
+    # 6. Invalid JSON response
+    json_err = OllamaInvalidJSONError("Invalid JSON")
+    msg6 = orchestrator._format_friendly_error(json_err)
+    assert "invalid or unparseable JSON" in msg6
+
+    # 7. HTTP Error response
+    http_err = OllamaHTTPError(status_code=500, message="Internal Server Error")
+    msg7 = orchestrator._format_friendly_error(http_err)
+    assert "HTTP 500" in msg7
+    assert "Internal Server Error" in msg7
+
+    # 8. Query execution timeout
     query_timeout_err = RuntimeError("QUERY_TIMEOUT: query exceeded timeout")
-    msg4 = orchestrator._format_friendly_error(query_timeout_err)
-    assert "120 seconds" in msg4
-    assert "simplifying your query" in msg4
+    msg8 = orchestrator._format_friendly_error(query_timeout_err)
+    assert "120 seconds" in msg8
+    assert "simplifying your query" in msg8
+
+
+@pytest.mark.asyncio
+async def test_ollama_client_remote_protocol_disconnect_with_retry() -> None:
+    """Verify httpx.RemoteProtocolError triggers bounded retry and then raises OllamaDisconnectError."""
+    import json
+    settings = OllamaSettings(host="http://localhost:11434")
+    client = OllamaClient(settings)
+
+    # Case A: Fails on attempt 0, succeeds on attempt 1 (retry succeeds)
+    success_resp = MagicMock(status_code=200)
+    success_resp.json.return_value = {
+        "message": {"role": "assistant", "content": "Hello!"},
+        "done": True,
+    }
+    with patch("httpx.AsyncClient.post", new_callable=AsyncMock) as mock_post:
+        mock_post.side_effect = [
+            httpx.RemoteProtocolError("Server disconnected without sending a response."),
+            success_resp,
+        ]
+        res = await client.chat(messages=[{"role": "user", "content": "hi"}])
+        assert res.content == "Hello!"
+        assert mock_post.call_count == 2
+
+    # Case B: Fails on all attempts -> raises OllamaDisconnectError
+    with patch("httpx.AsyncClient.post", new_callable=AsyncMock) as mock_post:
+        mock_post.side_effect = httpx.RemoteProtocolError("Server disconnected without sending a response.")
+        with pytest.raises(OllamaDisconnectError) as exc_info:
+            await client.chat(messages=[{"role": "user", "content": "hi"}])
+        assert "disconnected without sending a response" in str(exc_info.value)
+        assert mock_post.call_count == 2  # exactly 2 attempts, bounded retry
+
+
+@pytest.mark.asyncio
+async def test_ollama_client_connection_refused_error() -> None:
+    """Verify connection refused raises OllamaConnectionRefusedError."""
+    settings = OllamaSettings(host="http://localhost:11434")
+    client = OllamaClient(settings)
+
+    with patch("httpx.AsyncClient.post", new_callable=AsyncMock) as mock_post:
+        mock_post.side_effect = httpx.ConnectError("[WinError 10061] No connection could be made because the target machine actively refused it")
+        with pytest.raises(OllamaConnectionRefusedError) as exc_info:
+            await client.chat(messages=[{"role": "user", "content": "hi"}])
+        assert "connection refused" in str(exc_info.value).lower()
+
+
+@pytest.mark.asyncio
+async def test_ollama_client_invalid_json_error() -> None:
+    """Verify invalid JSON payload raises OllamaInvalidJSONError."""
+    import json
+    settings = OllamaSettings(host="http://localhost:11434")
+    client = OllamaClient(settings)
+
+    bad_resp = MagicMock(status_code=200, text="not-valid-json")
+    bad_resp.json.side_effect = json.JSONDecodeError("Expecting value", "doc", 0)
+
+    with patch("httpx.AsyncClient.post", new_callable=AsyncMock) as mock_post:
+        mock_post.return_value = bad_resp
+        with pytest.raises(OllamaInvalidJSONError) as exc_info:
+            await client.chat(messages=[{"role": "user", "content": "hi"}])
+        assert "invalid JSON" in str(exc_info.value)
+
+
+@pytest.mark.asyncio
+async def test_ollama_client_empty_response_error() -> None:
+    """Verify empty assistant response (no text, no tool calls) raises OllamaEmptyResponseError."""
+    settings = OllamaSettings(host="http://localhost:11434")
+    client = OllamaClient(settings)
+
+    empty_resp = MagicMock(status_code=200)
+    empty_resp.json.return_value = {
+        "message": {"role": "assistant", "content": ""},
+        "done": True,
+    }
+
+    with patch("httpx.AsyncClient.post", new_callable=AsyncMock) as mock_post:
+        mock_post.return_value = empty_resp
+        with pytest.raises(OllamaEmptyResponseError) as exc_info:
+            await client.chat(messages=[{"role": "user", "content": "hi"}])
+        assert "empty response" in str(exc_info.value).lower()
+
+
+@pytest.mark.asyncio
+async def test_orchestrator_native_mode_disconnect_recovers_via_json_fallback(
+    agent_test_settings: AppSettings,
+) -> None:
+    """Verify that if Ollama disconnects during native tool calling, orchestrator falls back to JSON mode and recovers."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    # First call in native mode disconnects
+    # Second call in json fallback mode succeeds
+    json_call = '{"type": "tool_call", "tool": "inspect_database_schema", "arguments": {}}'
+    mock_ollama.chat = AsyncMock(
+        side_effect=[
+            OllamaDisconnectError("Server disconnected without sending a response."),
+            OllamaChatResponse(
+                content=json_call,
+                tool_calls=[
+                    OllamaToolCall(id="c1", name="inspect_database_schema", arguments={})
+                ],
+            ),
+            OllamaChatResponse(
+                content="Found tables: customers, orders.",
+                tool_calls=[],
+            ),
+        ]
+    )
+
+    mock_mcp = MagicMock(spec=MCPStdioClient)
+    mock_mcp.is_connected = True
+    mock_mcp.call_tool = AsyncMock(
+        return_value=MCPToolCallResult(
+            tool_name="inspect_database_schema",
+            is_error=False,
+            data={"status": "ok", "tables": ["customers", "orders"]},
+            raw_text="customers, orders",
+        )
+    )
+
+    orchestrator = AgentOrchestrator(
+        agent_test_settings,
+        ollama_client=mock_ollama,
+        mcp_client=mock_mcp,
+    )
+    orchestrator._initialized = True
+    orchestrator.active_tool_mode = "native"
+
+    res = await orchestrator.process_message("Show tables")
+    assert res.is_success is True
+    assert "Found tables" in res.final_message
+    assert orchestrator.active_tool_mode == "json"
 
 
 def test_timeout_configuration_defaults() -> None:
