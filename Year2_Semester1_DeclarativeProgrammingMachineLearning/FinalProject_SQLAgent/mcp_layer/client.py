@@ -23,7 +23,7 @@ from typing import Any, Mapping
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import get_default_environment, stdio_client
 
-from config.paths import app_root, is_frozen
+from config.paths import app_root, is_frozen, user_data_root
 from config.settings import AppSettings
 
 log = logging.getLogger(__name__)
@@ -130,6 +130,33 @@ def _build_subprocess_env(
     env_overrides: Mapping[str, str] | None = None,
 ) -> dict[str, str]:
     env = get_default_environment()
+
+    # Pass critical Windows and cross-platform runtime environment variables
+    # (Without SYSTEMROOT, Python on Windows cannot initialize sockets or load C-extensions)
+    inherited_keys = [
+        "SYSTEMROOT",
+        "SystemRoot",
+        "WINDIR",
+        "windir",
+        "COMSPEC",
+        "PATHEXT",
+        "TEMP",
+        "TMP",
+        "LOCALAPPDATA",
+        "APPDATA",
+        "USERPROFILE",
+        "PROGRAMFILES",
+        "PROGRAMFILES(X86)",
+        "COMMONPROGRAMFILES",
+    ]
+    for k in inherited_keys:
+        if k in os.environ and k not in env:
+            env[k] = os.environ[k]
+
+    # Force standard streams to use UTF-8 encoding across all platforms
+    env["PYTHONIOENCODING"] = "utf-8"
+    env["PYTHONUTF8"] = "1"
+
     if not is_frozen():
         root_str = str(app_root())
         existing_py = os.environ.get("PYTHONPATH", "")
@@ -171,7 +198,7 @@ def build_stdio_server_params(
         command=command,
         args=args,
         env=_build_subprocess_env(settings=settings, env_overrides=env_overrides),
-        cwd=str(app_root()),
+        cwd=str(user_data_root() if is_frozen() else app_root()),
     )
 
 

@@ -20,7 +20,13 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-from .paths import app_root, is_frozen, resolve_path, user_data_root
+from .paths import (
+    app_root,
+    ensure_writable_database,
+    is_frozen,
+    resolve_path,
+    user_data_root,
+)
 
 log = logging.getLogger(__name__)
 
@@ -91,7 +97,7 @@ class AppSettings:
     # ------------------------------------------------------------------ paths
     @property
     def database_path(self) -> Path:
-        return resolve_path(self.database.path)
+        return ensure_writable_database(self.database.path)
 
     @property
     def output_dir(self) -> Path:

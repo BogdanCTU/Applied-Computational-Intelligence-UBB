@@ -34,6 +34,8 @@ class ConversationMessage:
             d["tool_calls"] = self.tool_calls
         if self.name:
             d["name"] = self.name
+        if self.tool_call_id:
+            d["tool_call_id"] = self.tool_call_id
         return d
 
 

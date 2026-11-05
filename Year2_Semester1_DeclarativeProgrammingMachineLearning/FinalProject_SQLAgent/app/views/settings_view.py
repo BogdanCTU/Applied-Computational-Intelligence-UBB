@@ -14,12 +14,14 @@ from PySide6.QtWidgets import (
     QDialog,
     QFileDialog,
     QFormLayout,
+    QFrame,
     QGroupBox,
     QHBoxLayout,
     QLabel,
     QLineEdit,
     QMessageBox,
     QPushButton,
+    QScrollArea,
     QSpinBox,
     QVBoxLayout,
     QWidget,
@@ -47,125 +49,182 @@ class SettingsView(QDialog):
         self._check_worker: OllamaCheckWorker | None = None
 
         self.setWindowTitle("Application Settings")
-        self.setMinimumSize(600, 560)
-        self.resize(650, 600)
+        self.setMinimumSize(660, 560)
+        self.resize(700, 720)
 
         self._init_ui()
         self._load_from_settings()
 
     def _init_ui(self) -> None:
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(18, 18, 18, 18)
+        layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(14)
+
+        # Header banner
+        header_box = QVBoxLayout()
+        header_box.setSpacing(4)
+        title_lbl = QLabel("⚙️ Application Settings")
+        title_lbl.setStyleSheet("font-size: 16px; font-weight: 700; color: #f8fafc;")
+        desc_lbl = QLabel("Configure local Ollama connectivity, SQL governance rules, and report storage.")
+        desc_lbl.setStyleSheet("font-size: 12px; color: #94a3b8;")
+        header_box.addWidget(title_lbl)
+        header_box.addWidget(desc_lbl)
+        layout.addLayout(header_box)
+
+        # -------------------------------------------------------------
+        # Scrollable Configuration Container
+        # -------------------------------------------------------------
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.Shape.NoFrame)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+
+        content_widget = QWidget()
+        content_layout = QVBoxLayout(content_widget)
+        content_layout.setContentsMargins(0, 0, 6, 0)
+        content_layout.setSpacing(16)
 
         # -------------------------------------------------------------
         # 1. Local Ollama Settings Group
         # -------------------------------------------------------------
         grp_ollama = QGroupBox("Local Ollama Configuration")
         form_ollama = QFormLayout(grp_ollama)
-        form_ollama.setSpacing(10)
+        form_ollama.setContentsMargins(14, 20, 14, 14)
+        form_ollama.setVerticalSpacing(12)
+        form_ollama.setHorizontalSpacing(16)
+        form_ollama.setLabelAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
 
         # Host input
         self.edit_host = QLineEdit()
+        self.edit_host.setMinimumHeight(32)
         self.edit_host.setPlaceholderText("http://localhost:11434")
         form_ollama.addRow("Ollama Endpoint:", self.edit_host)
 
         # Model input & detection
         model_row = QHBoxLayout()
+        model_row.setSpacing(8)
         self.combo_model = QComboBox()
         self.combo_model.setEditable(True)
+        self.combo_model.setMinimumHeight(32)
         self.combo_model.addItem("qwen3.5:4b")
         model_row.addWidget(self.combo_model, stretch=1)
 
         self.btn_test_conn = QPushButton("Test Connection")
+        self.btn_test_conn.setMinimumHeight(32)
+        self.btn_test_conn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_test_conn.clicked.connect(self._on_test_connection)
         model_row.addWidget(self.btn_test_conn)
         form_ollama.addRow("Model Name:", model_row)
 
         # Connection status feedback label
         self.lbl_conn_status = QLabel("Click 'Test Connection' to verify local Ollama.")
-        self.lbl_conn_status.setStyleSheet("color: #9ca3af; font-size: 11px;")
+        self.lbl_conn_status.setStyleSheet("color: #94a3b8; font-size: 12px;")
         form_ollama.addRow("", self.lbl_conn_status)
 
         # Timeout & Keep-alive
         self.spin_request_timeout = QSpinBox()
+        self.spin_request_timeout.setMinimumHeight(32)
         self.spin_request_timeout.setRange(5, 600)
         self.spin_request_timeout.setSuffix(" seconds")
         form_ollama.addRow("Request Timeout:", self.spin_request_timeout)
 
         self.combo_tool_mode = QComboBox()
+        self.combo_tool_mode.setMinimumHeight(32)
         self.combo_tool_mode.addItems(["auto", "native", "json"])
         form_ollama.addRow("Tool Mode Protocol:", self.combo_tool_mode)
 
-        layout.addWidget(grp_ollama)
+        content_layout.addWidget(grp_ollama)
 
         # -------------------------------------------------------------
         # 2. Database & SQL Governance Group
         # -------------------------------------------------------------
-        grp_db = QGroupBox("Database & Security Controls")
+        grp_db = QGroupBox("Database && Security Controls")
         form_db = QFormLayout(grp_db)
-        form_db.setSpacing(10)
+        form_db.setContentsMargins(14, 20, 14, 14)
+        form_db.setVerticalSpacing(12)
+        form_db.setHorizontalSpacing(16)
+        form_db.setLabelAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
 
         self.edit_db_path = QLineEdit()
+        self.edit_db_path.setMinimumHeight(32)
         self.edit_db_path.setReadOnly(True)
         form_db.addRow("Database Path:", self.edit_db_path)
 
         self.spin_query_timeout = QSpinBox()
+        self.spin_query_timeout.setMinimumHeight(32)
         self.spin_query_timeout.setRange(1, 120)
         self.spin_query_timeout.setSuffix(" seconds")
         form_db.addRow("Query Timeout:", self.spin_query_timeout)
 
         self.spin_max_rows = QSpinBox()
+        self.spin_max_rows.setMinimumHeight(32)
         self.spin_max_rows.setRange(10, 50000)
         self.spin_max_rows.setSingleStep(50)
         form_db.addRow("Max Query Rows:", self.spin_max_rows)
 
         self.chk_require_approval = QCheckBox("Mandatory SQL Approval (Prompts user before query execution)")
+        self.chk_require_approval.setCursor(Qt.CursorShape.PointingHandCursor)
         form_db.addRow("", self.chk_require_approval)
 
         self.spin_max_iterations = QSpinBox()
+        self.spin_max_iterations.setMinimumHeight(32)
         self.spin_max_iterations.setRange(2, 100)
         form_db.addRow("Max Agent Iterations:", self.spin_max_iterations)
 
-        layout.addWidget(grp_db)
+        content_layout.addWidget(grp_db)
 
         # -------------------------------------------------------------
         # 3. Reports & Storage Group
         # -------------------------------------------------------------
         grp_reports = QGroupBox("Reports Storage")
         form_reports = QFormLayout(grp_reports)
-        form_reports.setSpacing(10)
+        form_reports.setContentsMargins(14, 20, 14, 14)
+        form_reports.setVerticalSpacing(12)
+        form_reports.setHorizontalSpacing(16)
+        form_reports.setLabelAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
 
         dir_row = QHBoxLayout()
+        dir_row.setSpacing(8)
         self.edit_output_dir = QLineEdit()
+        self.edit_output_dir.setMinimumHeight(32)
         dir_row.addWidget(self.edit_output_dir, stretch=1)
 
         btn_browse_dir = QPushButton("Browse...")
+        btn_browse_dir.setMinimumHeight(32)
+        btn_browse_dir.setCursor(Qt.CursorShape.PointingHandCursor)
         btn_browse_dir.clicked.connect(self._on_browse_output_dir)
         dir_row.addWidget(btn_browse_dir)
         form_reports.addRow("Reports Output Directory:", dir_row)
 
         self.combo_page_size = QComboBox()
+        self.combo_page_size.setMinimumHeight(32)
         self.combo_page_size.addItems(["A4", "LETTER"])
         form_reports.addRow("PDF Page Size:", self.combo_page_size)
 
-        layout.addWidget(grp_reports)
+        content_layout.addWidget(grp_reports)
+        content_layout.addStretch()
 
-        layout.addStretch()
+        scroll.setWidget(content_widget)
+        layout.addWidget(scroll)
 
         # -------------------------------------------------------------
         # 4. Action Buttons
         # -------------------------------------------------------------
         btn_row = QHBoxLayout()
+        btn_row.setSpacing(10)
         btn_row.addStretch()
 
         btn_cancel = QPushButton("Cancel")
+        btn_cancel.setMinimumHeight(34)
+        btn_cancel.setCursor(Qt.CursorShape.PointingHandCursor)
         btn_cancel.clicked.connect(self.reject)
         btn_row.addWidget(btn_cancel)
 
         self.btn_save = QPushButton("Save Settings")
         self.btn_save.setObjectName("primary_button")
         self.btn_save.setProperty("primary", True)
+        self.btn_save.setMinimumHeight(34)
+        self.btn_save.setCursor(Qt.CursorShape.PointingHandCursor)
         self.btn_save.clicked.connect(self._on_save_clicked)
         btn_row.addWidget(self.btn_save)
 

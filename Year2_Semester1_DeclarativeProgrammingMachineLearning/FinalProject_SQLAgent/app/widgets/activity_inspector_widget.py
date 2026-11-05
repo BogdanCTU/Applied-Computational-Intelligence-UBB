@@ -46,13 +46,13 @@ CATEGORY_STYLES: dict[str, tuple[str, str, str]] = {
     ActivityCategory.ERROR.value: ("❌", "#dc262625", "#f87171"),
 }
 
-STATUS_ICONS: dict[str, str] = {
-    "in_progress": "⏳",
-    "success": "🟢",
-    "auto_approved": "🟢",
-    "waiting_approval": "⚠️",
-    "rejected": "⛔",
-    "failed": "❌",
+STATUS_CONFIG: dict[str, tuple[str, str]] = {
+    "in_progress": ("⏳", "#38bdf8"),
+    "success": ("●", "#34d399"),
+    "auto_approved": ("●", "#34d399"),
+    "waiting_approval": ("▲", "#fbbf24"),
+    "rejected": ("■", "#f87171"),
+    "failed": ("✕", "#f87171"),
 }
 
 
@@ -68,7 +68,7 @@ class ActivityEventCard(QFrame):
     def _init_ui(self) -> None:
         self.setObjectName("activity_event_card")
         self.setStyleSheet(
-            "QFrame#activity_event_card { background-color: #1a1a24; border: 1px solid #2d2d3d; "
+            "QFrame#activity_event_card { background-color: #171b26; border: 1px solid #282f42; "
             "border-radius: 6px; padding: 6px; }"
         )
 
@@ -81,14 +81,15 @@ class ActivityEventCard(QFrame):
         header_row.setSpacing(6)
 
         # Status icon
-        status_sym = STATUS_ICONS.get(self.activity_event.status, "•")
+        status_sym, status_color = STATUS_CONFIG.get(self.activity_event.status, ("•", "#94a3b8"))
         self.status_lbl = QLabel(status_sym)
         self.status_lbl.setFixedWidth(16)
+        self.status_lbl.setStyleSheet(f"color: {status_color}; font-size: 11px; font-weight: 700;")
         header_row.addWidget(self.status_lbl)
 
         # Timestamp
         time_lbl = QLabel(self.activity_event.timestamp)
-        time_lbl.setStyleSheet("color: #64748b; font-size: 10px; font-family: monospace;")
+        time_lbl.setStyleSheet("color: #94a3b8; font-size: 11px; font-family: monospace;")
         header_row.addWidget(time_lbl)
 
         # Category Pill
@@ -103,7 +104,7 @@ class ActivityEventCard(QFrame):
 
         # Title
         title_lbl = QLabel(self.activity_event.title or "")
-        title_lbl.setStyleSheet("color: #f1f5f9; font-weight: 600; font-size: 11px;")
+        title_lbl.setStyleSheet("color: #f8fafc; font-weight: 600; font-size: 12px;")
         header_row.addWidget(title_lbl, stretch=1)
 
         # Duration badge if available
@@ -241,13 +242,13 @@ class AgentActivityInspectorWidget(QWidget):
         header.setContentsMargins(4, 2, 4, 2)
         header.setSpacing(8)
 
-        title = QLabel("🔍 Agent Activity Inspector")
-        title.setStyleSheet("font-weight: 700; font-size: 12px; color: #f3f4f6;")
+        title = QLabel("📋 Execution Timeline")
+        title.setStyleSheet("font-weight: 700; font-size: 13px; color: #f8fafc;")
         header.addWidget(title)
 
         self.count_badge = QLabel("0 events")
         self.count_badge.setStyleSheet(
-            "background-color: #3b82f620; color: #60a5fa; border: 1px solid #3b82f640; "
+            "background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); "
             "border-radius: 10px; padding: 1px 8px; font-size: 10px; font-weight: 600;"
         )
         header.addWidget(self.count_badge)
@@ -260,8 +261,9 @@ class AgentActivityInspectorWidget(QWidget):
         header.addWidget(self.chk_autoscroll)
 
         self.btn_clear = QPushButton("Clear")
+        self.btn_clear.setProperty("compact", True)
+        self.btn_clear.setFixedHeight(24)
         self.btn_clear.setToolTip("Clear activity timeline")
-        self.btn_clear.setStyleSheet("font-size: 11px; padding: 2px 8px;")
         self.btn_clear.clicked.connect(self.clear_events)
         header.addWidget(self.btn_clear)
 
@@ -272,7 +274,7 @@ class AgentActivityInspectorWidget(QWidget):
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.scroll_area.setStyleSheet(
-            "QScrollArea { background-color: #111116; border: 1px solid #2d2d3d; border-radius: 6px; }"
+            "QScrollArea { background-color: #11141c; border: 1px solid #232838; border-radius: 6px; }"
         )
 
         # Scrollbar detection for auto-scroll pause

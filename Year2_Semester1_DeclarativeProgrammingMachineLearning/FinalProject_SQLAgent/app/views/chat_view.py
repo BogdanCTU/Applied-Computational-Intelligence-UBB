@@ -66,24 +66,27 @@ class ChatView(QWidget):
         # -------------------------------------------------------------
         header = QHBoxLayout()
         header.setContentsMargins(4, 2, 4, 2)
+        header.setSpacing(8)
 
-        chat_title = QLabel("💬 AI Report Assistant")
-        chat_title.setStyleSheet("font-weight: 700; font-size: 14px; color: #f3f4f6;")
+        chat_title = QLabel("💬 AI Assistant")
+        chat_title.setStyleSheet("font-weight: 700; font-size: 14px; color: #f8fafc;")
         header.addWidget(chat_title)
 
         header.addStretch()
 
         self.btn_activity_toggle = QPushButton("📋 Show Agent Activity")
+        self.btn_activity_toggle.setProperty("compact", True)
+        self.btn_activity_toggle.setFixedHeight(28)
         self.btn_activity_toggle.setCheckable(True)
         self.btn_activity_toggle.setChecked(False)
         self.btn_activity_toggle.setToolTip("Toggle live chronological agent execution timeline")
-        self.btn_activity_toggle.setStyleSheet("font-size: 11px; padding: 2px 8px;")
         self.btn_activity_toggle.clicked.connect(self._on_activity_toggle_clicked)
         header.addWidget(self.btn_activity_toggle)
 
-        self.btn_clear = QPushButton("Clear Chat")
+        self.btn_clear = QPushButton("Clear")
+        self.btn_clear.setProperty("compact", True)
+        self.btn_clear.setFixedHeight(28)
         self.btn_clear.setToolTip("Reset conversation history")
-        self.btn_clear.setStyleSheet("font-size: 11px; padding: 2px 8px;")
         self.btn_clear.clicked.connect(self._on_clear_clicked)
         header.addWidget(self.btn_clear)
 
@@ -93,18 +96,19 @@ class ChatView(QWidget):
         # 2. Split Messages & Agent Activity Inspector Area
         # -------------------------------------------------------------
         self.chat_splitter = QSplitter(Qt.Orientation.Vertical)
-        self.chat_splitter.setStyleSheet("QSplitter::handle { background-color: #2d2d3d; height: 3px; }")
+        self.chat_splitter.setStyleSheet("QSplitter::handle { background-color: #232838; height: 3px; }")
 
         # Top Pane: Scrollable Message History Area
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setMinimumHeight(180)
         self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.scroll_area.setStyleSheet("QScrollArea { border: 1px solid #3e3e52; border-radius: 6px; }")
+        self.scroll_area.setStyleSheet("QScrollArea { background-color: transparent; border: 1px solid #2e3549; border-radius: 8px; }")
 
         self.messages_container = QWidget()
         self.messages_layout = QVBoxLayout(self.messages_container)
-        self.messages_layout.setContentsMargins(10, 10, 10, 10)
-        self.messages_layout.setSpacing(10)
+        self.messages_layout.setContentsMargins(8, 8, 8, 8)
+        self.messages_layout.setSpacing(8)
         self.messages_layout.addStretch()
 
         self.scroll_area.setWidget(self.messages_container)
@@ -112,11 +116,14 @@ class ChatView(QWidget):
 
         # Bottom Pane: Collapsible Activity Inspector
         self.activity_inspector = AgentActivityInspectorWidget()
+        self.activity_inspector.setMinimumHeight(140)
         self.activity_inspector.setVisible(False)
         self.chat_splitter.addWidget(self.activity_inspector)
 
-        self.chat_splitter.setStretchFactor(0, 7)
-        self.chat_splitter.setStretchFactor(1, 3)
+        self.chat_splitter.setStretchFactor(0, 70)
+        self.chat_splitter.setStretchFactor(1, 30)
+        self.chat_splitter.setCollapsible(0, False)
+        self.chat_splitter.setCollapsible(1, False)
 
         main_layout.addWidget(self.chat_splitter, stretch=1)
 
@@ -126,25 +133,26 @@ class ChatView(QWidget):
         self.progress_frame = QFrame()
         self.progress_frame.setObjectName("card_frame")
         self.progress_frame.setStyleSheet(
-            "QFrame#card_frame { background-color: #1f2937; border: 1px solid #374151; "
-            "border-radius: 6px; padding: 4px; }"
+            "QFrame#card_frame { background-color: #171c28; border: 1px solid #2e3549; "
+            "border-radius: 6px; padding: 2px; }"
         )
         prog_layout = QVBoxLayout(self.progress_frame)
-        prog_layout.setContentsMargins(8, 6, 8, 6)
-        prog_layout.setSpacing(4)
+        prog_layout.setContentsMargins(10, 8, 10, 8)
+        prog_layout.setSpacing(6)
 
         prog_header = QHBoxLayout()
         self.status_icon = QLabel("⏳")
         prog_header.addWidget(self.status_icon)
 
         self.status_label = QLabel("Analyzing request...")
-        self.status_label.setStyleSheet("font-weight: 600; color: #60a5fa; font-size: 12px;")
+        self.status_label.setStyleSheet("font-weight: 600; color: #38bdf8; font-size: 12px;")
         prog_header.addWidget(self.status_label, stretch=1)
 
         self.btn_cancel = QPushButton("Cancel")
         self.btn_cancel.setObjectName("danger_button")
+        self.btn_cancel.setProperty("compact", True)
+        self.btn_cancel.setFixedHeight(26)
         self.btn_cancel.setToolTip("Cancel running agent workflow")
-        self.btn_cancel.setStyleSheet("font-size: 11px; padding: 2px 8px;")
         self.btn_cancel.clicked.connect(self._on_cancel_clicked)
         prog_header.addWidget(self.btn_cancel)
 
@@ -152,11 +160,11 @@ class ChatView(QWidget):
 
         self.progress_bar = QProgressBar()
         self.progress_bar.setRange(0, 0)  # Indeterminate pulsing progress
-        self.progress_bar.setFixedHeight(4)
+        self.progress_bar.setFixedHeight(3)
         self.progress_bar.setTextVisible(False)
         self.progress_bar.setStyleSheet(
-            "QProgressBar { background-color: #374151; border: none; border-radius: 2px; } "
-            "QProgressBar::chunk { background-color: #3b82f6; border-radius: 2px; }"
+            "QProgressBar { background-color: #232838; border: none; border-radius: 1px; } "
+            "QProgressBar::chunk { background-color: #3b82f6; border-radius: 1px; }"
         )
         prog_layout.addWidget(self.progress_bar)
 
@@ -173,22 +181,24 @@ class ChatView(QWidget):
         input_layout.setSpacing(6)
 
         self.input_edit = ChatInputEdit()
-        self.input_edit.setPlaceholderText("Ask a question or request a report (e.g., 'Revenue by country as PDF')...")
-        self.input_edit.setMaximumHeight(85)
+        self.input_edit.setPlaceholderText("Ask a question or request a report (e.g. 'Last month sales as PDF')...")
+        self.input_edit.setMaximumHeight(74)
+        self.input_edit.setMinimumHeight(44)
         self.input_edit.send_requested.connect(self._on_send_clicked)
         input_layout.addWidget(self.input_edit)
 
         btn_row = QHBoxLayout()
         hint_lbl = QLabel("Enter to send • Shift+Enter for newline")
-        hint_lbl.setStyleSheet("color: #9ca3af; font-size: 11px;")
+        hint_lbl.setStyleSheet("color: #94a3b8; font-size: 11px;")
         btn_row.addWidget(hint_lbl)
 
         btn_row.addStretch()
 
-        self.btn_send = QPushButton("Send")
+        self.btn_send = QPushButton("Send ➔")
         self.btn_send.setObjectName("primary_button")
         self.btn_send.setProperty("primary", True)
-        self.btn_send.setFixedWidth(80)
+        self.btn_send.setFixedHeight(30)
+        self.btn_send.setMinimumWidth(80)
         self.btn_send.clicked.connect(self._on_send_clicked)
         btn_row.addWidget(self.btn_send)
 

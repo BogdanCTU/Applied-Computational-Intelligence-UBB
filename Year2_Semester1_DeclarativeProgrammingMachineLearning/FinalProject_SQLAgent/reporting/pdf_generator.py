@@ -260,6 +260,26 @@ def generate_pdf_file(
                 "rows": list(rows or []),
             }
 
+        from .canonical_data import CanonicalSQLDataset, ChartSpecification, ReportConsistencyValidator
+
+        # 1. Establish authoritative canonical SQL datasets
+        canonical_datasets: dict[str, CanonicalSQLDataset] = {}
+        for ds_name, ds_info in all_datasets.items():
+            if isinstance(ds_info, dict):
+                canonical_datasets[ds_name] = CanonicalSQLDataset(
+                    ds_info.get("columns", []),
+                    ds_info.get("rows", []),
+                    name=ds_name,
+                    sql_query=ds_info.get("sql_query", sql_query),
+                )
+        if "primary" in canonical_datasets:
+            primary_ds = canonical_datasets["primary"]
+        elif canonical_datasets:
+            primary_ds = next(iter(canonical_datasets.values()))
+        else:
+            primary_ds = CanonicalSQLDataset(columns or [], rows or [], name="primary", sql_query=sql_query)
+            canonical_datasets["primary"] = primary_ds
+
         sec_components: list[ReportComponent] = []
         if charts:
             for ch in charts:
@@ -296,6 +316,23 @@ def generate_pdf_file(
                 if not ds_id:
                     ds_id = "primary" if "primary" in all_datasets else (next(iter(all_datasets.keys())) if all_datasets else None)
                 ch_cfg.dataset_id = ds_id
+
+                # Validate chart against authoritative dataset
+                ch_ds = canonical_datasets.get(ds_id or "primary", primary_ds)
+                chart_spec = ChartSpecification(
+                    title=ch_cfg.title,
+                    chart_type=ch_cfg.chart_type,
+                    x_axis=ch_cfg.x_axis or ch_cfg.category_dimension or "",
+                    y_axis=ch_cfg.y_axis or ch_cfg.numerical_measure or (ch_cfg.series if ch_cfg.series else ""),
+                    aggregation_method=ch_cfg.aggregation,
+                    sorting=ch_cfg.sorting,
+                )
+                trans = ch_ds.extract_and_transform_chart(chart_spec)
+                if not trans.is_valid:
+                    findings = list(findings or [])
+                    findings.append(f"Chart '{ch_cfg.title}' omitted: {trans.error_message}")
+                    continue
+
                 sec_components.append(
                     ReportComponent(
                         component_type="chart",
@@ -349,16 +386,33 @@ def generate_pdf_file(
                 elif s:
                     built_sections.append(ReportSection.from_dict(s))
 
+        # 2. Deterministic KPI calculation from authoritative Single Source of Truth
         norm_kpis: list[dict[str, Any]] = []
-        for k in (kpis or []):
-            if isinstance(k, str):
-                if ":" in k:
-                    parts = k.split(":", 1)
-                    norm_kpis.append({"label": parts[0].strip(), "value": parts[1].strip()})
-                else:
-                    norm_kpis.append({"label": "Metric", "value": k})
-            elif isinstance(k, Mapping):
-                norm_kpis.append(dict(k))
+        if not primary_ds.is_empty:
+            computed_kpis = primary_ds.compute_deterministic_kpis()
+            if not kpis:
+                norm_kpis = computed_kpis
+            else:
+                computed_map = {k["label"].lower(): k["value"] for k in computed_kpis}
+                for k in kpis:
+                    if isinstance(k, str):
+                        parts = k.split(":", 1) if ":" in k else [k, ""]
+                        lbl = parts[0].strip()
+                        val = parts[1].strip() if len(parts) > 1 else ""
+                    elif isinstance(k, Mapping):
+                        lbl = str(k.get("label", "Metric"))
+                        val = str(k.get("value", ""))
+                    else:
+                        lbl = "Metric"
+                        val = str(k)
+
+                    if lbl.lower() in computed_map:
+                        val = computed_map[lbl.lower()]
+                    norm_kpis.append({"label": lbl, "value": val or "—"})
+        elif primary_ds.is_empty:
+            findings = list(findings or [])
+            if not any("zero rows" in f.lower() or "no matching" in f.lower() for f in findings):
+                findings.append("No matching records returned from database query (0 rows).")
 
         dyn_spec = ReportSpecification(
             title=clean_title,

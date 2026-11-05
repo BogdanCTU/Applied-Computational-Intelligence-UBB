@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import re
+import time
 from dataclasses import dataclass, field
 from typing import Any, Mapping, Sequence
 from urllib.parse import urlparse
@@ -16,7 +18,8 @@ from config.settings import LOCAL_HOSTS, OllamaSettings
 log = logging.getLogger(__name__)
 
 # Regular expressions for cleaning and isolating JSON in fallback responses
-_JSON_BLOCK_RE = re.compile(r"```(?:json)?\s*(\{.*?\})\s*```", re.DOTALL)
+_JSON_BLOCK_RE = re.compile(r"```(?:json)?\s*(\{.*?\}|\[.*?\])\s*```", re.DOTALL)
+_TOOL_CALL_TAG_RE = re.compile(r"<tool_call>\s*([\s\S]*?)\s*</tool_call>", re.IGNORECASE)
 
 
 class OllamaClientError(RuntimeError):
@@ -27,8 +30,12 @@ class OllamaConnectionError(OllamaClientError):
     """Raised when the local Ollama server cannot be reached."""
 
 
-class OllamaModelNotFoundError(OllamaClientError):
-    """Raised when the specified model is not available locally."""
+class OllamaConnectionRefusedError(OllamaConnectionError):
+    """Raised when connection is actively refused (e.g. Ollama daemon not running)."""
+
+
+class OllamaDisconnectError(OllamaClientError):
+    """Raised when Ollama abruptly disconnects, resets connection, or closes socket without responding."""
 
 
 class OllamaTimeoutError(OllamaClientError):
@@ -36,7 +43,34 @@ class OllamaTimeoutError(OllamaClientError):
 
 
 class OllamaResponseError(OllamaClientError):
-    """Raised when Ollama returns an HTTP error or malformed payload."""
+    """Raised when Ollama returns an HTTP error, malformed, or invalid response."""
+
+
+class OllamaHTTPError(OllamaResponseError):
+    """Raised when Ollama returns an HTTP error status code (e.g. 4xx, 5xx)."""
+
+    def __init__(self, status_code: int, message: str, raw_text: str = "") -> None:
+        super().__init__(f"Ollama HTTP {status_code}: {message}")
+        self.status_code = status_code
+        self.message = message
+        self.raw_text = raw_text
+
+
+class OllamaModelNotFoundError(OllamaHTTPError):
+    """Raised when the specified model is not available locally."""
+
+    def __init__(self, model_name: str, message: str = "") -> None:
+        msg = message or f"Model '{model_name}' not found in Ollama. Run: ollama pull {model_name}"
+        super().__init__(status_code=404, message=msg, raw_text=msg)
+        self.model_name = model_name
+
+
+class OllamaInvalidJSONError(OllamaResponseError):
+    """Raised when Ollama returns invalid, unparseable, or malformed JSON."""
+
+
+class OllamaEmptyResponseError(OllamaResponseError):
+    """Raised when Ollama returns an empty response with no content and no tool calls."""
 
 
 @dataclass
@@ -65,6 +99,12 @@ class OllamaChatResponse:
     raw_message: dict[str, Any] = field(default_factory=dict)
     total_duration_s: float | None = None
     used_fallback: bool = False
+    http_status: int = 200
+    role: str = "assistant"
+    content_exists: bool = True
+    content_is_empty: bool = False
+    done: bool | None = None
+    done_reason: str | None = None
 
     @property
     def has_tool_calls(self) -> bool:
@@ -95,10 +135,23 @@ class OllamaClient:
             )
         return cleaned
 
-    def _create_http_client(self) -> httpx.AsyncClient:
+    def _create_http_client(self, *, force_close: bool = False) -> httpx.AsyncClient:
+        headers = {"Connection": "close"} if force_close else None
         return httpx.AsyncClient(
             base_url=self.base_url,
-            timeout=httpx.Timeout(self.timeout_s, connect=5.0),
+            headers=headers,
+            timeout=httpx.Timeout(
+                timeout=self.timeout_s,
+                connect=10.0,
+                read=self.timeout_s,
+                write=30.0,
+                pool=10.0,
+            ),
+            limits=httpx.Limits(
+                max_keepalive_connections=5,
+                max_connections=10,
+                keepalive_expiry=30.0,
+            ),
         )
 
     async def check_connection(self) -> tuple[bool, str]:
@@ -112,8 +165,10 @@ class OllamaClient:
                 return False, f"HTTP {resp.status_code}: {resp.text}"
         except httpx.TimeoutException:
             return False, f"Connection timed out after {self.timeout_s}s"
-        except (httpx.ConnectError, httpx.RequestError) as exc:
+        except httpx.ConnectError as exc:
             return False, f"Failed to connect to {self.base_url}: {exc}"
+        except httpx.RequestError as exc:
+            return False, f"Request error communicating with {self.base_url}: {exc}"
 
     async def list_installed_models(self) -> list[str]:
         """Return list of locally installed model tags."""
@@ -121,14 +176,25 @@ class OllamaClient:
             async with self._create_http_client() as client:
                 resp = await client.get("/api/tags")
                 if resp.status_code != 200:
-                    raise OllamaResponseError(
-                        f"Failed to query /api/tags: HTTP {resp.status_code}"
+                    raise OllamaHTTPError(
+                        status_code=resp.status_code,
+                        message=f"Failed to query /api/tags: HTTP {resp.status_code}",
+                        raw_text=resp.text,
                     )
                 models = resp.json().get("models", [])
                 return [m.get("name", "") for m in models if m.get("name")]
         except httpx.TimeoutException as exc:
             raise OllamaTimeoutError("Timed out listing Ollama models") from exc
-        except (httpx.ConnectError, httpx.RequestError) as exc:
+        except httpx.RemoteProtocolError as exc:
+            raise OllamaDisconnectError(f"Ollama disconnected while querying models: {exc}") from exc
+        except httpx.ConnectError as exc:
+            err_lower = str(exc).lower()
+            if "refused" in err_lower or "10061" in err_lower or "econnrefused" in err_lower:
+                raise OllamaConnectionRefusedError(
+                    f"Connection refused at {self.base_url}. Ensure Ollama is running (`ollama serve`)."
+                ) from exc
+            raise OllamaConnectionError(f"Cannot connect to Ollama: {exc}") from exc
+        except httpx.RequestError as exc:
             raise OllamaConnectionError(f"Cannot connect to Ollama: {exc}") from exc
 
     async def check_model_availability(self, model_name: str | None = None) -> bool:
@@ -186,7 +252,7 @@ class OllamaClient:
         tools: Sequence[Mapping[str, Any]] | None = None,
         tool_mode: str = "native",
     ) -> OllamaChatResponse:
-        """Send a chat request to Ollama `/api/chat`."""
+        """Send a chat request to Ollama `/api/chat` with bounded retry and strict error classification."""
         payload: dict[str, Any] = {
             "model": self.model,
             "messages": list(messages),
@@ -204,21 +270,106 @@ class OllamaClient:
         elif tool_mode == "json":
             payload["format"] = "json"
 
-        try:
-            async with self._create_http_client() as client:
-                resp = await client.post("/api/chat", json=payload)
-        except httpx.TimeoutException as exc:
-            raise OllamaTimeoutError(
-                f"Ollama chat request timed out after {self.timeout_s}s"
-            ) from exc
-        except (httpx.ConnectError, httpx.RequestError) as exc:
-            raise OllamaConnectionError(
-                f"Failed to communicate with Ollama at {self.base_url}: {exc}"
-            ) from exc
+        payload_bytes = len(json.dumps(payload))
+        start_ts = time.perf_counter()
+        MAX_RETRIES = 1
+        resp = None
+
+        for attempt in range(MAX_RETRIES + 1):
+            is_retry = attempt > 0
+            try:
+                log.info(
+                    "Ollama chat request [attempt %d/%d] endpoint=%s/api/chat model=%s mode=%s msgs=%d tools=%d payload_size=%d bytes",
+                    attempt + 1,
+                    MAX_RETRIES + 1,
+                    self.base_url,
+                    self.model,
+                    tool_mode,
+                    len(messages),
+                    len(tools) if tools else 0,
+                    payload_bytes,
+                )
+                async with self._create_http_client(force_close=is_retry) as client:
+                    resp = await client.post("/api/chat", json=payload)
+                break  # Request completed (may still be non-200, handled below)
+            except httpx.RemoteProtocolError as exc:
+                elapsed = time.perf_counter() - start_ts
+                log.warning(
+                    "Ollama remote protocol disconnect on attempt %d/%d (duration=%.2fs, payload=%d bytes): %s",
+                    attempt + 1,
+                    MAX_RETRIES + 1,
+                    elapsed,
+                    payload_bytes,
+                    exc,
+                )
+                if attempt < MAX_RETRIES:
+                    await asyncio.sleep(0.5)
+                    continue
+                raise OllamaDisconnectError(
+                    f"Ollama server disconnected without sending a response: {exc}. "
+                    "The local model runner may have crashed, run out of memory, or dropped the socket."
+                ) from exc
+            except (ConnectionResetError, BrokenPipeError) as exc:
+                elapsed = time.perf_counter() - start_ts
+                log.warning(
+                    "Ollama connection reset on attempt %d/%d (duration=%.2fs): %s",
+                    attempt + 1,
+                    MAX_RETRIES + 1,
+                    elapsed,
+                    exc,
+                )
+                if attempt < MAX_RETRIES:
+                    await asyncio.sleep(0.5)
+                    continue
+                raise OllamaDisconnectError(f"Connection to Ollama was reset: {exc}") from exc
+            except httpx.TimeoutException as exc:
+                elapsed = time.perf_counter() - start_ts
+                log.error(
+                    "Ollama request timed out after %.2fs (configured timeout=%.1fs): %s",
+                    elapsed,
+                    self.timeout_s,
+                    exc,
+                )
+                raise OllamaTimeoutError(
+                    f"Ollama chat request timed out after {self.timeout_s}s"
+                ) from exc
+            except httpx.ConnectError as exc:
+                err_str = str(exc).lower()
+                is_refused = "refused" in err_str or "10061" in err_str or "econnrefused" in err_str
+                log.error(
+                    "Ollama connection error (refused=%s): %s",
+                    is_refused,
+                    exc,
+                )
+                if is_refused:
+                    raise OllamaConnectionRefusedError(
+                        f"Cannot connect to Ollama at {self.base_url}: connection refused. "
+                        "Please ensure the Ollama daemon is running (`ollama serve`)."
+                    ) from exc
+                raise OllamaConnectionError(
+                    f"Failed to connect to Ollama at {self.base_url}: {exc}"
+                ) from exc
+            except httpx.ProtocolError as exc:
+                log.error("Ollama HTTP protocol error: %s", exc)
+                raise OllamaDisconnectError(f"HTTP protocol error communicating with Ollama: {exc}") from exc
+            except httpx.RequestError as exc:
+                err_str = str(exc).lower()
+                if "reset" in err_str or "10054" in err_str or "disconnected" in err_str:
+                    if attempt < MAX_RETRIES:
+                        await asyncio.sleep(0.5)
+                        continue
+                    raise OllamaDisconnectError(f"Ollama disconnected during request: {exc}") from exc
+                raise OllamaConnectionError(
+                    f"Failed to communicate with Ollama at {self.base_url}: {exc}"
+                ) from exc
+
+        if resp is None:
+            raise OllamaDisconnectError("No response received from Ollama after all attempts.")
 
         if resp.status_code == 404:
             raise OllamaModelNotFoundError(
-                f"Model '{self.model}' not found in Ollama. Run: ollama pull {self.model}"
+                self.model,
+                f"Model '{self.model}' not found in Ollama. Run: ollama pull {self.model}",
             )
         if resp.status_code != 200:
             # Check for native tool-calling XML parse failure in Ollama (HTTP 500 / XML syntax error)
@@ -235,17 +386,29 @@ class OllamaClient:
                 )
                 return await self._fallback_chat_json(messages)
 
-            raise OllamaResponseError(
-                f"Ollama error (HTTP {resp.status_code}): {resp.text}"
+            raise OllamaHTTPError(
+                status_code=resp.status_code,
+                message=resp.text.strip(),
+                raw_text=resp.text,
             )
 
         try:
             data = resp.json()
-        except json.JSONDecodeError as exc:
-            raise OllamaResponseError("Ollama returned invalid JSON response") from exc
+        except (json.JSONDecodeError, ValueError) as exc:
+            raise OllamaInvalidJSONError(f"Ollama returned invalid JSON response: {exc}") from exc
 
-        raw_msg = data.get("message", {})
-        content = raw_msg.get("content", "") or ""
+        raw_msg = data.get("message", {}) or {}
+        raw_role = raw_msg.get("role", "assistant")
+        content_field_present = "content" in raw_msg and raw_msg["content"] is not None
+        raw_content_val = str(raw_msg.get("content", "") or "")
+        content_is_empty = not raw_content_val.strip()
+        raw_tool_calls = raw_msg.get("tool_calls")
+        has_tool_calls_field = bool(raw_tool_calls)
+        num_tool_calls = len(raw_tool_calls) if isinstance(raw_tool_calls, list) else 0
+        done_val = data.get("done")
+        done_reason_val = data.get("done_reason")
+
+        content = raw_content_val
         thinking = raw_msg.get("thinking")
 
         # Strip inline <think>...</think> tags if present in content
@@ -255,10 +418,27 @@ class OllamaClient:
                 thinking = think_match.group(1).strip()
             content = re.sub(r"<think>[\s\S]*?</think>", "", content).strip()
 
-        finish_reason = data.get("done_reason")
+        finish_reason = done_reason_val or data.get("done_reason")
         total_duration = data.get("total_duration")
         duration_s = (
             round(total_duration / 1e9, 3) if total_duration is not None else None
+        )
+
+        log.info(
+            "Ollama /api/chat response diagnostics: status=%d role=%s content_present=%s "
+            "content_empty=%s content_bytes=%d tool_calls_present=%s tool_calls_count=%d "
+            "done=%s done_reason=%s thinking_present=%s duration_s=%s",
+            resp.status_code,
+            raw_role,
+            content_field_present,
+            content_is_empty,
+            len(raw_content_val.encode("utf-8")),
+            has_tool_calls_field,
+            num_tool_calls,
+            done_val,
+            done_reason_val,
+            bool(thinking or raw_msg.get("thinking")),
+            duration_s,
         )
 
         tool_calls: list[OllamaToolCall] = []
@@ -284,29 +464,31 @@ class OllamaClient:
                         )
                     )
 
-            # Fallback check: if native mode returned empty tool_calls but content has explicit tool call
-            if not tool_calls and content.strip():
-                extracted = self._extract_json_tool_call(content)
-                if extracted:
-                    tool_calls.append(extracted)
-                else:
-                    fn_call = self._extract_text_function_call(content)
-                    if fn_call:
-                        tool_calls.append(fn_call)
+            # Fallback check: if native mode returned empty tool_calls
+            if not tool_calls:
+                for candidate_src in [content, raw_content_val, thinking or ""]:
+                    if candidate_src and candidate_src.strip():
+                        extracted = self._extract_all_tool_calls(candidate_src)
+                        if extracted:
+                            tool_calls.extend(extracted)
+                            log.info("Extracted %d tool call(s) from assistant response fallback", len(extracted))
+                            break
 
         elif tool_mode == "json":
             # Parse structured JSON fallback response
-            extracted = self._extract_json_tool_call(content)
+            extracted = self._extract_all_tool_calls(content)
             if extracted:
-                tool_calls.append(extracted)
+                tool_calls.extend(extracted)
             else:
-                fn_call = self._extract_text_function_call(content)
-                if fn_call:
-                    tool_calls.append(fn_call)
-                else:
-                    final_msg = self._extract_json_final_response(content)
-                    if final_msg is not None:
-                        content = final_msg
+                final_msg = self._extract_json_final_response(content)
+                if final_msg is not None:
+                    content = final_msg
+
+        # Empty assistant response check
+        if not content.strip() and not tool_calls and not thinking:
+            raise OllamaEmptyResponseError(
+                "Ollama returned an empty response containing no content, tool calls, or reasoning."
+            )
 
         return OllamaChatResponse(
             content=content,
@@ -315,6 +497,12 @@ class OllamaClient:
             finish_reason=finish_reason,
             raw_message=raw_msg,
             total_duration_s=duration_s,
+            http_status=resp.status_code,
+            role=raw_role,
+            content_exists=content_field_present,
+            content_is_empty=content_is_empty,
+            done=done_val,
+            done_reason=done_reason_val,
         )
 
     async def _fallback_chat_json(
@@ -351,6 +539,119 @@ class OllamaClient:
         )
         resp.used_fallback = True
         return resp
+
+    @classmethod
+    def _extract_single_tool_call_from_dict(cls, data: Any) -> OllamaToolCall | None:
+        if not isinstance(data, dict):
+            return None
+        # Case A: {"function": {"name": ..., "arguments": ...}}
+        if "function" in data and isinstance(data["function"], dict):
+            t_name = data["function"].get("name")
+            raw_args = data["function"].get("arguments", {})
+            if isinstance(raw_args, str):
+                try:
+                    raw_args = json.loads(raw_args)
+                except json.JSONDecodeError:
+                    raw_args = {}
+            if t_name and isinstance(t_name, str):
+                return OllamaToolCall(
+                    id=f"json_call_{t_name}",
+                    name=t_name,
+                    arguments=raw_args if isinstance(raw_args, dict) else {},
+                )
+
+        # Case B: {"type": "tool_call", "tool": ..., "arguments": ...}
+        t_name = None
+        if data.get("type") == "tool_call":
+            t_name = data.get("tool") or data.get("name")
+        elif "tool" in data and isinstance(data["tool"], str):
+            t_name = data["tool"]
+        elif "action" in data and isinstance(data["action"], str) and data["action"] != "final_response":
+            t_name = data["action"]
+        elif "name" in data and isinstance(data["name"], str) and data["name"] not in {"assistant", "user", "system"}:
+            t_name = data["name"]
+
+        if t_name and isinstance(t_name, str):
+            raw_args = (
+                data.get("arguments")
+                or data.get("parameters")
+                or data.get("params")
+                or data.get("args")
+            )
+            if raw_args is None:
+                reserved = {"type", "tool", "name", "action", "function", "id", "thought", "thinking"}
+                raw_args = {k: v for k, v in data.items() if k not in reserved}
+            if isinstance(raw_args, str):
+                try:
+                    raw_args = json.loads(raw_args)
+                except json.JSONDecodeError:
+                    raw_args = {}
+            return OllamaToolCall(
+                id=f"json_call_{t_name}",
+                name=t_name,
+                arguments=raw_args if isinstance(raw_args, dict) else {},
+            )
+        return None
+
+    @classmethod
+    def _extract_all_tool_calls(cls, text: str) -> list[OllamaToolCall]:
+        """Extract all valid tool calls from response text across JSON, XML tags, or markdown blocks."""
+        cleaned = text.strip()
+        calls: list[OllamaToolCall] = []
+
+        # 1. Search for <tool_call> tags
+        for match in _TOOL_CALL_TAG_RE.finditer(cleaned):
+            inner = match.group(1).strip()
+            try:
+                data = json.loads(inner)
+                if isinstance(data, list):
+                    for item in data:
+                        tc = cls._extract_single_tool_call_from_dict(item)
+                        if tc:
+                            calls.append(tc)
+                elif isinstance(data, dict):
+                    tc = cls._extract_single_tool_call_from_dict(data)
+                    if tc:
+                        calls.append(tc)
+            except json.JSONDecodeError:
+                pass
+
+        # 2. Search for markdown ```json ... ``` blocks
+        for match in _JSON_BLOCK_RE.finditer(cleaned):
+            inner = match.group(1).strip()
+            try:
+                data = json.loads(inner)
+                if isinstance(data, list):
+                    for item in data:
+                        tc = cls._extract_single_tool_call_from_dict(item)
+                        if tc:
+                            calls.append(tc)
+                elif isinstance(data, dict):
+                    if "tool_calls" in data and isinstance(data["tool_calls"], list):
+                        for item in data["tool_calls"]:
+                            tc = cls._extract_single_tool_call_from_dict(item)
+                            if tc:
+                                calls.append(tc)
+                    else:
+                        tc = cls._extract_single_tool_call_from_dict(data)
+                        if tc:
+                            calls.append(tc)
+            except json.JSONDecodeError:
+                pass
+
+        # 3. Direct JSON or bracketed if not found yet
+        if not calls:
+            single = cls._extract_json_tool_call(cleaned)
+            if single:
+                calls.append(single)
+
+        # 4. Text function calls
+        if not calls:
+            fn_call = cls._extract_text_function_call(cleaned)
+            if fn_call:
+                calls.append(fn_call)
+
+        return calls
 
     @classmethod
     def _extract_json_tool_call(cls, text: str) -> OllamaToolCall | None:
