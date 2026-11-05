@@ -212,7 +212,18 @@ def compose_dynamic_pdf(
         cols_per_row = min(4, num_kpis)
         card_w = available_width / cols_per_row
 
-        for k in spec.kpis:
+        for raw_k in spec.kpis:
+            if isinstance(raw_k, str):
+                if ":" in raw_k:
+                    parts = raw_k.split(":", 1)
+                    k = {"label": parts[0].strip(), "value": parts[1].strip()}
+                else:
+                    k = {"label": "Metric", "value": raw_k}
+            elif isinstance(raw_k, Mapping):
+                k = dict(raw_k)
+            else:
+                k = {"label": "Metric", "value": str(raw_k)}
+
             lbl = _safe_markup(str(k.get("label", "Metric")))
             val = _safe_markup(str(k.get("value", "—")))
             sub = _safe_markup(str(k.get("note", k.get("change", ""))))
@@ -283,16 +294,19 @@ def compose_dynamic_pdf(
 
     datasets_count = len(spec.datasets)
     dataset_details: dict[str, int] = {
-        ds_id: len(ds.get("rows", [])) for ds_id, ds in spec.datasets.items()
+        ds_id: (len(ds.get("rows", [])) if isinstance(ds, dict) else len(ds) if isinstance(ds, (list, tuple)) else 0)
+        for ds_id, ds in spec.datasets.items()
     }
 
-    for sec_idx, section in enumerate(spec.sections, start=1):
+    for sec_idx, raw_sec in enumerate(spec.sections, start=1):
+        section = raw_sec if isinstance(raw_sec, ReportSection) else ReportSection.from_dict(raw_sec)
         story.append(Paragraph(f"{sec_idx}. {_safe_markup(section.title)}", section_title_style))
         if section.description:
             story.append(Paragraph(_safe_markup(section.description), body_style))
             story.append(Spacer(1, 4))
 
-        for comp in section.components:
+        for raw_comp in section.components:
+            comp = raw_comp if isinstance(raw_comp, ReportComponent) else ReportComponent.from_dict(raw_comp)
             if comp.title:
                 story.append(Paragraph(_safe_markup(comp.title), component_title_style))
             if comp.description:
@@ -302,10 +316,11 @@ def compose_dynamic_pdf(
             # Resolve dataset for component
             ds_data: dict[str, Any] = {}
             if comp.dataset_id and comp.dataset_id in spec.datasets:
-                ds_data = spec.datasets[comp.dataset_id]
+                raw_ds = spec.datasets[comp.dataset_id]
+                ds_data = raw_ds if isinstance(raw_ds, dict) else {"columns": [], "rows": list(raw_ds) if isinstance(raw_ds, (list, tuple)) else []}
             elif spec.datasets:
-                # Default to first available dataset
-                ds_data = next(iter(spec.datasets.values()))
+                raw_ds = next(iter(spec.datasets.values()))
+                ds_data = raw_ds if isinstance(raw_ds, dict) else {"columns": [], "rows": list(raw_ds) if isinstance(raw_ds, (list, tuple)) else []}
 
             cols = ds_data.get("columns", [])
             rows = ds_data.get("rows", [])
@@ -369,17 +384,21 @@ def compose_dynamic_pdf(
             q_text = sq.get("query", sq.get("sql", ""))
             q_purpose = sq.get("purpose", sq.get("explanation", f"Query {idx}"))
             story.append(Paragraph(f"<b>Query {idx}:</b> {_safe_markup(q_purpose)}", component_title_style))
+            sql_lines = [line for line in q_text.strip().splitlines() if line.strip()] or [q_text.strip()]
+            table_data = [[Paragraph(_safe_markup(line), sql_code_style)] for line in sql_lines]
             sql_box = Table(
-                [[Paragraph(_safe_markup(q_text), sql_code_style)]],
+                table_data,
                 colWidths=[available_width],
+                repeatRows=0,
+                splitByRow=1,
             )
             sql_box.setStyle(
                 TableStyle(
                     [
                         ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
                         ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
-                        ("TOPPADDING", (0, 0), (-1, -1), 5),
-                        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+                        ("TOPPADDING", (0, 0), (-1, -1), 1.5),
+                        ("BOTTOMPADDING", (0, 0), (-1, -1), 1.5),
                         ("LEFTPADDING", (0, 0), (-1, -1), 7),
                         ("RIGHTPADDING", (0, 0), (-1, -1), 7),
                     ]

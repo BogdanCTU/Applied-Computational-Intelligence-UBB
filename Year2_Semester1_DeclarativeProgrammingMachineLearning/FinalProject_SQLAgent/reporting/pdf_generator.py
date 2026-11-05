@@ -226,14 +226,24 @@ def generate_pdf_file(
     if not clean_title:
         raise ReportValidationError("Report title must not be empty")
 
+    if max_pdf_rows < 1:
+        raise ReportValidationError("max_pdf_rows must be >= 1")
+
     # 1. Dynamic Report Specification branch
     if report_spec is not None:
         from .dynamic_pdf_composer import compose_dynamic_pdf
         from .report_spec import ReportSpecification
         spec_obj = report_spec if isinstance(report_spec, ReportSpecification) else ReportSpecification.from_dict(report_spec)
-        return compose_dynamic_pdf(spec_obj, output_dir=output_dir, record_history=record_history)
+        if spec_obj.sections or (spec_obj.datasets and any(d.get("rows") for d in spec_obj.datasets.values())):
+            return compose_dynamic_pdf(spec_obj, output_dir=output_dir, record_history=record_history)
 
-    if (charts and len(charts) > 0) or (sections and len(sections) > 0) or (datasets and len(datasets) > 1):
+    if (
+        (charts and len(charts) > 0)
+        or (sections and len(sections) > 0)
+        or (datasets and len(datasets) > 1)
+        or (kpis and len(kpis) > 0)
+        or (findings and len(findings) > 0)
+    ):
         from .dynamic_pdf_composer import compose_dynamic_pdf
         from .report_spec import (
             ChartConfiguration,
@@ -253,12 +263,34 @@ def generate_pdf_file(
         sec_components: list[ReportComponent] = []
         if charts:
             for ch in charts:
+                if isinstance(ch, str):
+                    chart_str = ch.lower()
+                    ct = "vertical_bar"
+                    if any(w in chart_str for w in ["bar", "column"]):
+                        ct = "vertical_bar"
+                    elif any(w in chart_str for w in ["pie", "donut", "distribution"]):
+                        ct = "pie"
+                    elif any(w in chart_str for w in ["matrix", "heatmap"]):
+                        ct = "matrix"
+                    elif any(w in chart_str for w in ["line", "trend"]):
+                        ct = "historical_line"
+                    
+                    x_col = columns[0] if columns else "dimension"
+                    y_cols = [c for c in (columns or []) if c != x_col]
+                    if not y_cols and columns:
+                        y_cols = [columns[0]]
+                    ch = {
+                        "chart_type": ct,
+                        "title": ch.strip(),
+                        "x_column": x_col,
+                        "y_columns": y_cols,
+                    }
                 ch_cfg = ChartConfiguration.from_dict(ch)
                 ds_id = ch_cfg.dataset_id
                 if not ds_id or ds_id not in all_datasets:
                     # Match dataset by x_axis column
                     for candidate_id, cand_ds in all_datasets.items():
-                        if ch_cfg.x_axis in cand_ds.get("columns", []):
+                        if isinstance(cand_ds, dict) and ch_cfg.x_axis in cand_ds.get("columns", []):
                             ds_id = candidate_id
                             break
                 if not ds_id:
@@ -276,7 +308,7 @@ def generate_pdf_file(
         is_matrix_req = any(k in (user_request or "").lower() for k in ["matrix", "crosstab", "totals", "total"])
         if len(all_datasets) > 1:
             for ds_name, ds_info in all_datasets.items():
-                if ds_info.get("columns"):
+                if isinstance(ds_info, dict) and ds_info.get("columns"):
                     sec_components.append(
                         ReportComponent(
                             component_type="table",
@@ -308,13 +340,31 @@ def generate_pdf_file(
         ]
         if sections:
             for s in sections:
-                built_sections.append(ReportSection.from_dict(s))
+                if isinstance(s, ReportSection):
+                    built_sections.append(s)
+                elif isinstance(s, Mapping):
+                    built_sections.append(ReportSection.from_dict(s))
+                elif isinstance(s, str):
+                    built_sections.append(ReportSection(title=s, description="", components=[]))
+                elif s:
+                    built_sections.append(ReportSection.from_dict(s))
+
+        norm_kpis: list[dict[str, Any]] = []
+        for k in (kpis or []):
+            if isinstance(k, str):
+                if ":" in k:
+                    parts = k.split(":", 1)
+                    norm_kpis.append({"label": parts[0].strip(), "value": parts[1].strip()})
+                else:
+                    norm_kpis.append({"label": "Metric", "value": k})
+            elif isinstance(k, Mapping):
+                norm_kpis.append(dict(k))
 
         dyn_spec = ReportSpecification(
             title=clean_title,
             subtitle=description,
             executive_summary=summary or "",
-            kpis=list(kpis or []),
+            kpis=norm_kpis,
             findings=list(findings or []),
             sections=built_sections,
             datasets=all_datasets,
@@ -509,17 +559,21 @@ def generate_pdf_file(
     clean_sql = (sql_query or "").strip()
     if include_sql and clean_sql:
         story.append(Paragraph("Appendix: SQL Queries", section_heading))
+        sql_lines = [line for line in clean_sql.splitlines() if line.strip()] or [clean_sql]
+        sql_table_data = [[Paragraph(_safe_paragraph_markup(line), sql_style)] for line in sql_lines]
         sql_box = Table(
-            [[Paragraph(_safe_paragraph_markup(clean_sql), sql_style)]],
+            sql_table_data,
             colWidths=[available_width],
+            repeatRows=0,
+            splitByRow=1,
         )
         sql_box.setStyle(
             TableStyle(
                 [
                     ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
                     ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
-                    ("TOPPADDING", (0, 0), (-1, -1), 6),
-                    ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                    ("TOPPADDING", (0, 0), (-1, -1), 1.5),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 1.5),
                     ("LEFTPADDING", (0, 0), (-1, -1), 8),
                     ("RIGHTPADDING", (0, 0), (-1, -1), 8),
                 ]

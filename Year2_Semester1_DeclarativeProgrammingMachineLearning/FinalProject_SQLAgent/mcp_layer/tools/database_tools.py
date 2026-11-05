@@ -54,6 +54,56 @@ def inspect_database_schema_impl(
         }
 
     payload = schema.to_dict()
+
+    # Discover date/time columns, ranges, and business entity profiles
+    date_columns: list[dict[str, Any]] = []
+    business_entities: dict[str, dict[str, Any]] = {}
+
+    try:
+        from database.connection import connect_readonly
+        with connect_readonly(settings.database_path) as conn:
+            cur = conn.cursor()
+            for t in schema.tables:
+                candidates = [
+                    c for c in t.columns
+                    if any(k in c.name.lower() for k in ["date", "time", "created", "paid", "shipped", "requested", "at", "signup"])
+                    or (c.affinity in {"TEXT", "NUMERIC"} and any(k in c.name.lower() for k in ["day", "month", "year"]))
+                ]
+                for dc in candidates:
+                    try:
+                        row = cur.execute(
+                            f'SELECT MIN("{dc.name}"), MAX("{dc.name}") FROM "{t.name}" WHERE "{dc.name}" IS NOT NULL'
+                        ).fetchone()
+                        if row:
+                            date_columns.append({
+                                "table": t.name,
+                                "column": dc.name,
+                                "data_type": dc.data_type,
+                                "min_value": row[0],
+                                "max_value": row[1],
+                            })
+                    except Exception:
+                        pass
+
+                metrics = [
+                    c.name for c in t.columns
+                    if any(k in c.name.lower() for k in ["amount", "total", "subtotal", "price", "fee", "cost", "revenue", "quantity", "discount", "refund"])
+                ]
+                categories = [
+                    c.name for c in t.columns
+                    if any(k in c.name.lower() for k in ["status", "channel", "category", "method", "tier", "country", "city", "brand", "carrier", "reason"])
+                ]
+                business_entities[t.name] = {
+                    "row_count": t.row_count,
+                    "date_columns": [dc.name for dc in candidates],
+                    "metric_columns": metrics,
+                    "dimension_columns": categories,
+                }
+    except Exception as exc:  # noqa: BLE001
+        log.debug("Non-critical error inspecting date columns and entities: %s", exc)
+
+    payload["date_columns"] = date_columns
+    payload["business_entities"] = business_entities
     payload["status"] = "ok"
     return payload
 

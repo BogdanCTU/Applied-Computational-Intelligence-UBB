@@ -137,7 +137,22 @@ class ChartConfiguration:
         return []
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, Any]) -> "ChartConfiguration":
+    def from_dict(cls, data: Any) -> "ChartConfiguration":
+        if isinstance(data, str):
+            chart_str = data.lower()
+            ct = "vertical_bar"
+            if any(w in chart_str for w in ["bar", "column"]):
+                ct = "vertical_bar"
+            elif any(w in chart_str for w in ["pie", "donut", "distribution"]):
+                ct = "pie"
+            elif any(w in chart_str for w in ["matrix", "heatmap"]):
+                ct = "matrix"
+            elif any(w in chart_str for w in ["line", "trend"]):
+                ct = "historical_line"
+            data = {"chart_type": ct, "title": data.strip()}
+        elif not isinstance(data, Mapping):
+            data = {}
+
         t = str(data.get("chart_type") or data.get("type") or "bar").lower()
         x_val = str(
             data.get("x_axis")
@@ -192,7 +207,11 @@ class TableConfiguration:
     dataset_id: str | None = None
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, Any]) -> "TableConfiguration":
+    def from_dict(cls, data: Any) -> "TableConfiguration":
+        if isinstance(data, (list, tuple)):
+            return cls(columns=[str(c) for c in data])
+        if not isinstance(data, Mapping):
+            return cls()
         return cls(
             title=str(data.get("title") or ""),
             columns=list(data.get("columns") or []),
@@ -242,7 +261,11 @@ class ReportComponent:
         return self.dataset_id
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, Any]) -> "ReportComponent":
+    def from_dict(cls, data: Any) -> "ReportComponent":
+        if isinstance(data, str):
+            return cls(component_type="text", title="", description="", content=data)
+        if not isinstance(data, Mapping):
+            return cls(component_type="text", title=str(data), description="", content="")
         c_type = str(data.get("component_type") or data.get("type") or "text").lower()
         chart_cfg = None
         if c_type == "chart" or "chart_config" in data or "chart_type" in data:
@@ -277,9 +300,13 @@ class ReportSection:
     components: list[ReportComponent] = field(default_factory=list)
 
     @classmethod
-    def from_dict(cls, data: Mapping[str, Any]) -> "ReportSection":
+    def from_dict(cls, data: Any) -> "ReportSection":
+        if isinstance(data, str):
+            return cls(title=data, description="", components=[])
+        if not isinstance(data, Mapping):
+            return cls(title=str(data or "Section"), description="", components=[])
         raw_comps = data.get("components") or []
-        components = [ReportComponent.from_dict(c) for c in raw_comps if isinstance(c, dict)]
+        components = [ReportComponent.from_dict(c) for c in raw_comps if isinstance(c, (dict, Mapping, str))]
         return cls(
             title=str(data.get("title") or "Section"),
             description=str(data.get("description") or ""),

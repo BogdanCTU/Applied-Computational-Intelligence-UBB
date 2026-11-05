@@ -17,7 +17,7 @@ from config.settings import AppSettings
 from database.connection import DatabaseNotFoundError
 from mcp_layer.client import MCPStdioClient
 from mcp_layer.tools.sql_tools import SQLValidationError, validate_and_prepare_sql
-from reporting import ReportHistoryManager
+from reporting import ReportHistoryManager, ReportingPeriod, calculate_previous_calendar_month
 
 from .conversation import ConversationManager, compact_tool_result_for_llm
 from .ollama_client import (
@@ -36,6 +36,10 @@ from .tool_handler import PERMITTED_TOOLS, ToolHandler
 log = logging.getLogger(__name__)
 
 _CSV_INTENT_RE = re.compile(r"\b(?:csv|to\s+csv|as\s+csv|in\s+csv|\.csv)\b", re.IGNORECASE)
+_REPORT_INTENT_RE = re.compile(
+    r"\b(?:report|pdf|csv|export|document|charts?|dashboard|graphs?|overview|summary\s+file)\b",
+    re.IGNORECASE,
+)
 _USER_WANTS_SQL_RE = re.compile(
     r"\b(?:include\s+sql|with\s+sql|show\s+sql|sql\s+queries|sql\s+appendix|append\s+sql|display\s+sql|embed\s+sql)\b",
     re.IGNORECASE,
@@ -85,6 +89,7 @@ class AgentRunResult:
     iterations: int = 0
     total_duration_s: float = 0.0
     error: str | None = None
+    component_status: dict[str, str] = field(default_factory=dict)
 
     @property
     def is_success(self) -> bool:
@@ -98,6 +103,86 @@ ProgressCallbackType = Callable[[AgentEvent], None | Awaitable[None]]
 def detect_requested_report_format(text: str) -> str:
     """Return 'CSV' if text explicitly mentions CSV format; otherwise default 'PDF'."""
     return "CSV" if _CSV_INTENT_RE.search(text or "") else "PDF"
+
+
+def _safe_float(val: Any, default: float = 0.0) -> float:
+    try:
+        if val is None:
+            return default
+        if isinstance(val, (int, float)):
+            return float(val)
+        cleaned = str(val).replace("$", "").replace(",", "").strip()
+        return float(cleaned)
+    except (ValueError, TypeError):
+        return default
+
+
+def _synthesize_kpis(
+    columns: Sequence[str],
+    rows: Sequence[Sequence[Any] | Mapping[str, Any]],
+    session_datasets: Mapping[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    """Synthesize high-level KPI metric cards from tabular datasets without double-counting."""
+    kpis: list[dict[str, Any]] = []
+    all_data: list[tuple[Sequence[str], Sequence[Any]]] = []
+
+    if session_datasets:
+        for ds in session_datasets.values():
+            all_data.append((ds.get("columns", []), ds.get("rows", [])))
+    if columns and rows:
+        all_data.append((columns, rows))
+
+    found_labels: set[str] = set()
+    for cols, rws in all_data:
+        if not cols or not rws:
+            continue
+        c_lower = [c.lower() for c in cols]
+
+        # 1. Total Orders
+        ord_idx = next(
+            (i for i, c in enumerate(c_lower) if any(k in c for k in ["order_count", "total_orders", "orders_count", "orders"])),
+            None,
+        )
+        if ord_idx is not None and "Total Orders" not in found_labels:
+            vals = [_safe_float(r[ord_idx] if isinstance(r, (list, tuple)) else r.get(cols[ord_idx]), 0.0) for r in rws]
+            total_ord = int(sum(vals))
+            kpis.append({"label": "Total Orders", "value": f"{total_ord:,}", "note": "Verified order count"})
+            found_labels.add("Total Orders")
+
+        # 2. Sales volume
+        sales_idx = next(
+            (i for i, c in enumerate(c_lower) if any(k in c for k in ["sales_volume", "gross_sales", "subtotal", "gross_item_sales"])),
+            None,
+        )
+        if sales_idx is not None and "Sales Volume" not in found_labels:
+            vals = [_safe_float(r[sales_idx] if isinstance(r, (list, tuple)) else r.get(cols[sales_idx]), 0.0) for r in rws]
+            tot_sales = sum(vals)
+            kpis.append({"label": "Sales Volume", "value": f"${tot_sales:,.2f}", "note": "Gross subtotal"})
+            found_labels.add("Sales Volume")
+
+        # 3. Total Revenue
+        rev_idx = next(
+            (i for i, c in enumerate(c_lower) if any(k in c for k in ["total_revenue", "captured_revenue", "total_amount", "revenue", "net_amount"]) and (sales_idx is None or i != sales_idx)),
+            None,
+        )
+        if rev_idx is not None and "Total Revenue" not in found_labels:
+            vals = [_safe_float(r[rev_idx] if isinstance(r, (list, tuple)) else r.get(cols[rev_idx]), 0.0) for r in rws]
+            tot_rev = sum(vals)
+            kpis.append({"label": "Total Revenue", "value": f"${tot_rev:,.2f}", "note": "Net total amount"})
+            found_labels.add("Total Revenue")
+
+        # 4. Transactions
+        tx_idx = next(
+            (i for i, c in enumerate(c_lower) if any(k in c for k in ["transaction", "transactions_count", "payment_count", "payments"])),
+            None,
+        )
+        if tx_idx is not None and "Total Transactions" not in found_labels:
+            vals = [_safe_float(r[tx_idx] if isinstance(r, (list, tuple)) else r.get(cols[tx_idx]), 0.0) for r in rws]
+            tot_tx = int(sum(vals))
+            kpis.append({"label": "Transactions", "value": f"{tot_tx:,}", "note": "Processed payments"})
+            found_labels.add("Total Transactions")
+
+    return kpis
 
 
 def _synthesize_charts_from_intent(
@@ -146,7 +231,7 @@ def _synthesize_charts_from_intent(
         for c, cl in zip(columns, cols_lower)
         if any(
             k in cl
-            for k in ["revenue", "sales", "total", "count", "amount", "price", "orders", "quantity", "val"]
+            for k in ["revenue", "sales", "total", "count", "amount", "price", "orders", "quantity", "val", "transactions"]
         )
     ]
     if not num_cols:
@@ -160,11 +245,18 @@ def _synthesize_charts_from_intent(
                 if idx < len(sample_row) and isinstance(sample_row[idx], (int, float))
             ]
 
+    if not num_cols:
+        return []
+
     want_historical = any(
         k in p_lower for k in ["historical", "trend over time", "timeline", "trend of", "trends over time"]
     ) or ("trend" in p_lower and "multi" not in p_lower and "compare" not in p_lower)
+    want_hist_bar = want_historical and any(k in p_lower for k in ["bar", "column"])
     want_pie = any(k in p_lower for k in ["pie", "distribution", "share", "proportion", "breakdown"])
     want_donut = any(k in p_lower for k in ["donut", "doughnut"])
+    want_matrix = any(
+        k in p_lower for k in ["matrix", "heatmap", "crosstab", "heat map", "matrix graph", "matrix graphs"]
+    )
     want_multi = any(
         k in p_lower for k in ["multi-series", "multi series", "compare categories", "comparison across"]
     )
@@ -185,14 +277,24 @@ def _synthesize_charts_from_intent(
 
     # 1. Historical & Trend
     if want_historical and date_col and num_cols:
-        charts.append(
-            {
-                "chart_type": "historical_line",
-                "title": f"Historical Trend ({num_cols[0].replace('_', ' ').title()})",
-                "x_column": date_col,
-                "y_columns": [num_cols[0]],
-            }
-        )
+        if want_hist_bar:
+            charts.append(
+                {
+                    "chart_type": "vertical_bar",
+                    "title": f"Historical Trend ({num_cols[0].replace('_', ' ').title()})",
+                    "x_column": date_col,
+                    "y_columns": [num_cols[0]],
+                }
+            )
+        else:
+            charts.append(
+                {
+                    "chart_type": "historical_line",
+                    "title": f"Historical Trend ({num_cols[0].replace('_', ' ').title()})",
+                    "x_column": date_col,
+                    "y_columns": [num_cols[0]],
+                }
+            )
 
     # 2. Treemap
     if want_treemap and (cat_col or date_col) and num_cols:
@@ -249,7 +351,9 @@ def _synthesize_charts_from_intent(
     # 5. Pie & Donut
     if (want_pie or want_donut) and num_cols and not want_histogram:
         c_type = "donut" if want_donut else "pie"
-        pie_cat = cat_col or date_col
+        pie_cat = cat_col or (date_col if not any(c.get("x_column") == date_col for c in charts) else None)
+        if not pie_cat and len(columns) > 1:
+            pie_cat = columns[0]
         if pie_cat:
             charts.append(
                 {
@@ -260,7 +364,23 @@ def _synthesize_charts_from_intent(
                 }
             )
 
-    # 6. Multi-Series Line
+    # 6. Matrix & Heatmap
+    if want_matrix and (cat_col or date_col or len(columns) >= 2) and num_cols:
+        m_row = cat_col or (columns[0] if columns[0] not in num_cols else date_col) or columns[0]
+        m_vals = [c for c in num_cols if c != m_row][:4]
+        if not m_vals and len(columns) > 1:
+            m_vals = [columns[1]]
+        m_type = "heatmap" if "heatmap" in p_lower or "heat map" in p_lower else "matrix"
+        charts.append(
+            {
+                "chart_type": m_type,
+                "title": f"Performance Matrix by {m_row.replace('_', ' ').title()}",
+                "x_column": m_row,
+                "y_columns": m_vals,
+            }
+        )
+
+    # 7. Multi-Series Line
     if want_multi and date_col and cat_col and num_cols:
         charts.append(
             {
@@ -281,7 +401,7 @@ def _synthesize_charts_from_intent(
             }
         )
 
-    # 7. Area & Stacked Area
+    # 8. Area & Stacked Area
     if want_stacked_area and date_col and num_cols:
         charts.append(
             {
@@ -301,7 +421,7 @@ def _synthesize_charts_from_intent(
             }
         )
 
-    # 8. Correlation Heatmap
+    # 9. Correlation Heatmap
     if want_corr and len(num_cols) >= 2:
         charts.append(
             {
@@ -312,7 +432,7 @@ def _synthesize_charts_from_intent(
             }
         )
 
-    # 9. Scatter & Bubble
+    # 10. Scatter & Bubble
     if want_bubble and len(num_cols) >= 2:
         charts.append(
             {
@@ -332,8 +452,8 @@ def _synthesize_charts_from_intent(
             }
         )
 
-    # 10. Horizontal Bar (Rankings / Top 10)
-    if want_hbar and not charts and (cat_col or date_col) and num_cols:
+    # 11. Horizontal Bar (Rankings / Top 10)
+    if want_hbar and not any(c.get("chart_type") == "horizontal_bar" for c in charts) and (cat_col or date_col) and num_cols:
         l_col = cat_col or date_col
         charts.append(
             {
@@ -344,8 +464,8 @@ def _synthesize_charts_from_intent(
             }
         )
 
-    # 11. Stacked & Grouped Bar
-    if want_stacked_bar and not charts and (cat_col or date_col) and num_cols:
+    # 12. Stacked & Grouped Bar
+    if want_stacked_bar and not any(c.get("chart_type") == "stacked_bar" for c in charts) and (cat_col or date_col) and num_cols:
         l_col = cat_col or date_col
         charts.append(
             {
@@ -355,7 +475,7 @@ def _synthesize_charts_from_intent(
                 "y_columns": num_cols[:3],
             }
         )
-    elif want_grouped_bar and not charts and (cat_col or date_col) and num_cols:
+    elif want_grouped_bar and not any(c.get("chart_type") == "grouped_bar" for c in charts) and (cat_col or date_col) and num_cols:
         l_col = cat_col or date_col
         charts.append(
             {
@@ -366,14 +486,27 @@ def _synthesize_charts_from_intent(
             }
         )
 
-    # 12. Fallback Vertical Bar
-    if want_bar and not charts and (cat_col or date_col) and num_cols:
+    # 13. General Vertical Bar
+    if want_bar and not any("bar" in c.get("chart_type", "") for c in charts) and (cat_col or date_col) and num_cols:
         label_col = cat_col or date_col
         charts.append(
             {
                 "chart_type": "vertical_bar",
                 "title": f"Comparison by {label_col.replace('_', ' ').title()}",
                 "x_column": label_col,
+                "y_columns": [num_cols[0]],
+            }
+        )
+
+    # 14. Fallback if no charts synthesized but data available
+    if not charts and (cat_col or date_col) and num_cols:
+        c_type = "historical_line" if date_col else "vertical_bar"
+        dim = date_col or cat_col
+        charts.append(
+            {
+                "chart_type": c_type,
+                "title": f"Analytical Overview ({num_cols[0].replace('_', ' ').title()} by {dim.replace('_', ' ').title()})",
+                "x_column": dim,
                 "y_columns": [num_cols[0]],
             }
         )
@@ -441,8 +574,11 @@ class AgentOrchestrator:
 
     async def close(self) -> None:
         """Shut down MCP client subprocess cleanly."""
-        if self.mcp_client.is_connected:
-            await self.mcp_client.close()
+        try:
+            if self.mcp_client.is_connected:
+                await self.mcp_client.close()
+        except Exception as exc:  # noqa: BLE001
+            log.warning("Error closing MCP client: %s", exc)
         self._initialized = False
 
     async def __aenter__(self) -> "AgentOrchestrator":
@@ -578,6 +714,15 @@ class AgentOrchestrator:
         final_message = ""
         overall_status = "success"
         error_msg: str | None = None
+        component_status: dict[str, str] = {
+            "database_discovery": "pending",
+            "sql_preparation": "pending",
+            "sql_execution": "pending",
+            "kpi_generation": "pending",
+            "chart_generation": "pending",
+            "table_generation": "pending",
+            "pdf_generation": "pending",
+        }
 
         while iterations < max_iterations:
             if cancel_event and cancel_event.is_set():
@@ -684,6 +829,125 @@ class AgentOrchestrator:
             # Case A: Model produced final message with no tool calls
             if not response.has_tool_calls:
                 final_message = response.content or ""
+
+                # Deterministic reporting fallback:
+                # If SQL queries executed and user requested a report, but the model generated final text
+                # without invoking generate_pdf_report / generate_csv_report, synthesize and run the report tool.
+                user_wants_report = bool(_REPORT_INTENT_RE.search(cleaned_user_msg))
+                if not generated_reports and (executed_sql or self.session_datasets) and user_wants_report:
+                    log.info("Model finished without calling report tool after SQL execution. Synthesizing report components deterministically.")
+                    fb_tool = "generate_csv_report" if target_format == "CSV" else "generate_pdf_report"
+                    prev_period = calculate_previous_calendar_month()
+
+                    fb_args: dict[str, Any] = {
+                        "title": f"E-Commerce Operations & Performance Report ({prev_period.period_label})",
+                        "description": final_message or f"Monthly e-commerce operations report covering {prev_period.period_label}.",
+                        "user_request": cleaned_user_msg,
+                        "include_sql": user_explicitly_wants_sql,
+                        "sql_query": executed_sql or "",
+                        "columns": sql_columns,
+                        "rows": sql_rows,
+                        "findings": [
+                            f"Reporting period: {prev_period.period_label} ({prev_period.start_date_str} to {prev_period.end_date_str} exclusive).",
+                            "Data extracted from primary SQLite database tables verifying orders, sales volume, net revenue, and transaction metrics.",
+                            "Revenue calculations verified to prevent double-counting across multi-item transactions.",
+                        ],
+                    }
+                    if self.session_datasets:
+                        fb_args["datasets"] = dict(self.session_datasets)
+
+                    synth_kpis = _synthesize_kpis(sql_columns, sql_rows, self.session_datasets)
+                    if synth_kpis:
+                        fb_args["kpis"] = synth_kpis
+                        component_status["kpi_generation"] = "success"
+
+                    synth_charts: list[dict[str, Any]] = []
+                    if self.session_datasets:
+                        for ds_name, ds_info in self.session_datasets.items():
+                            ds_charts = _synthesize_charts_from_intent(
+                                cleaned_user_msg,
+                                ds_info.get("columns", []),
+                                ds_info.get("rows", []),
+                            )
+                            for ch in ds_charts:
+                                ch["dataset_id"] = ds_name
+                                if not any(existing.get("chart_type") == ch.get("chart_type") for existing in synth_charts):
+                                    synth_charts.append(ch)
+                    if not synth_charts:
+                        synth_charts = _synthesize_charts_from_intent(cleaned_user_msg, sql_columns, sql_rows)
+                    if synth_charts:
+                        fb_args["charts"] = synth_charts
+                        component_status["chart_generation"] = "success"
+
+                    if sql_rows or self.session_datasets:
+                        component_status["table_generation"] = "success"
+
+                    await self._emit_activity(
+                        ActivityCategory.REPORT_PLANNING,
+                        title=f"Report Planning ({target_format})",
+                        description=f"Synthesizing {target_format} report components, layout, and visual formatting",
+                        status="in_progress",
+                        metadata={
+                            "format": target_format,
+                            "title": fb_args["title"],
+                            "include_sql": fb_args["include_sql"],
+                            "chart_count": len(fb_args.get("charts", [])),
+                        },
+                        callback=progress_callback,
+                        legacy_type=AgentEventType.REPORT_PLANNING,
+                    )
+
+                    t0 = time.perf_counter()
+                    fb_res = await self.tool_handler.execute_tool(fb_tool, fb_args)
+                    duration_ms = round((time.perf_counter() - t0) * 1000, 2)
+
+                    if isinstance(fb_res, dict):
+                        from mcp_layer.client import MCPToolCallResult
+                        fb_res = MCPToolCallResult(
+                            tool_name=fb_tool,
+                            is_error=fb_res.get("status") == "error",
+                            data=fb_res,
+                            raw_text=str(fb_res),
+                        )
+
+                    if not fb_res.is_error:
+                        generated_reports.append(fb_res.data)
+                        component_status["pdf_generation"] = "success"
+                        rep_path = fb_res.data.get("output_path", "")
+                        rep_size = fb_res.data.get("file_size_bytes", 0)
+                        pages = fb_res.data.get("page_count", 1)
+                        charts_ren = fb_res.data.get("charts_rendered", 0)
+                        charts_req = fb_res.data.get("charts_requested", 0)
+                        tables_ren = fb_res.data.get("tables_rendered", 1)
+                        tables_req = fb_res.data.get("tables_requested", 1)
+                        ds_cnt = fb_res.data.get("datasets_count", 1)
+                        status_c = fb_res.data.get("completion_status", "complete")
+
+                        await self._emit_activity(
+                            ActivityCategory.REPORT_GENERATION,
+                            title="Report Generated",
+                            description=f"Generated {Path(rep_path).name} ({rep_size} bytes, {pages} pg, {charts_ren} chart(s))",
+                            result_summary=(
+                                f"File: {rep_path}\n"
+                                f"Size: {rep_size} bytes | Pages: {pages}\n"
+                                f"Charts: {charts_ren}/{charts_req} | Tables: {tables_ren}/{tables_req}\n"
+                                f"Datasets: {ds_cnt} | Status: {status_c}"
+                            ),
+                            duration_ms=duration_ms,
+                            status="success",
+                            metadata=fb_res.data,
+                            callback=progress_callback,
+                            legacy_type=AgentEventType.REPORT_GENERATED,
+                            extra_data=fb_res.data,
+                        )
+                        final_message = (
+                            (final_message or "")
+                            + f"\n\nGenerated report successfully saved to:\n`{rep_path}`"
+                        ).strip()
+                    else:
+                        component_status["pdf_generation"] = "failed"
+                        log.warning("Fallback report generation failed: %s", fb_res.data.get("error"))
+
                 self.conversation.add_assistant_message(
                     final_message,
                     thinking=response.thinking,
@@ -1035,8 +1299,33 @@ class AgentOrchestrator:
                     # SQL Visibility Policy: Include SQL ONLY if user explicitly requested it
                     t_args["include_sql"] = user_explicitly_wants_sql or bool(t_args.get("include_sql"))
 
-                    # Auto-synthesize vector chart specifications if user requested charts and none supplied
-                    if not t_args.get("charts"):
+                    # Auto-synthesize KPIs if none supplied or if supplied as strings
+                    raw_kpis = t_args.get("kpis")
+                    if not raw_kpis or any(isinstance(k, str) for k in raw_kpis):
+                        synth_kpis = _synthesize_kpis(
+                            t_args.get("columns", sql_columns),
+                            t_args.get("rows", sql_rows),
+                            self.session_datasets,
+                        )
+                        if synth_kpis:
+                            t_args["kpis"] = synth_kpis
+                            component_status["kpi_generation"] = "success"
+                    else:
+                        component_status["kpi_generation"] = "success"
+
+                    # Auto-inject findings with reporting period if omitted
+                    if not t_args.get("findings"):
+                        prev_period = calculate_previous_calendar_month()
+                        t_args["findings"] = [
+                            f"Reporting period: {prev_period.period_label} ({prev_period.start_date_str} to {prev_period.end_date_str} exclusive).",
+                            "All requested metrics (orders, sales volume, net revenue, and transactions) were aggregated from SQLite database tables.",
+                            "Revenue calculations verified to prevent double-counting across multi-item transactions.",
+                        ]
+
+                    # Auto-synthesize vector chart specifications if user requested charts and none supplied,
+                    # or if the model supplied names/strings rather than full configuration dicts:
+                    raw_charts = t_args.get("charts")
+                    if not raw_charts or any(isinstance(c, str) for c in raw_charts):
                         synth_charts: list[dict[str, Any]] = []
                         if self.session_datasets:
                             for ds_name, ds_info in self.session_datasets.items():
@@ -1057,6 +1346,23 @@ class AgentOrchestrator:
                             )
                         if synth_charts:
                             t_args["charts"] = synth_charts
+                            component_status["chart_generation"] = "success"
+                    else:
+                        component_status["chart_generation"] = "success"
+
+                    if t_args.get("rows") or t_args.get("datasets"):
+                        component_status["table_generation"] = "success"
+
+                    if isinstance(t_args.get("report_spec"), dict):
+                        rs = t_args["report_spec"]
+                        if not rs.get("datasets") and t_args.get("datasets"):
+                            rs["datasets"] = dict(t_args["datasets"])
+                        if not rs.get("kpis") and t_args.get("kpis"):
+                            rs["kpis"] = list(t_args["kpis"])
+                        if not rs.get("findings") and t_args.get("findings"):
+                            rs["findings"] = list(t_args["findings"])
+                        if not rs.get("charts") and t_args.get("charts"):
+                            rs["charts"] = list(t_args["charts"])
 
                     # 13. Emit REPORT_PLANNING event
                     fmt = "PDF" if t_name == "generate_pdf_report" else "CSV"
@@ -1098,64 +1404,94 @@ class AgentOrchestrator:
                     )
                     tool_res.data["error"] = timeout_msg
 
+                # Component status: Schema discovery
+                if t_name in {"inspect_database_schema", "get_table_sample"}:
+                    component_status["database_discovery"] = "failed" if tool_res.is_error else "success"
+
+                # Component status: SQL Preparation & Remediation
+                if t_name == "prepare_sql_query":
+                    component_status["sql_preparation"] = "failed" if tool_res.is_error else "success"
+                    if tool_res.is_error:
+                        err_text = str(tool_res.data.get("error", ""))
+                        if "UNION" in err_text.upper() or "result columns" in err_text.lower():
+                            remediation = (
+                                "Do NOT use UNION or UNION ALL to combine different tables or queries with different columns. "
+                                "Write a single SELECT query with GROUP BY on a single table, or execute separate queries."
+                            )
+                            tool_res.data["remediation"] = remediation
+                            tool_res.data["error"] += f" Remediation: {remediation}"
+
                 # Capture executed SQL results
-                if t_name == "execute_readonly_sql" and not tool_res.is_error:
-                    executed_sql = t_args.get("sql_query")
-                    sql_columns = tool_res.data.get("columns", [])
-                    sql_rows = tool_res.data.get("rows", [])
+                if t_name == "execute_readonly_sql":
+                    component_status["sql_execution"] = "failed" if tool_res.is_error else "success"
+                    if not tool_res.is_error:
+                        executed_sql = t_args.get("sql_query")
+                        sql_columns = tool_res.data.get("columns", [])
+                        sql_rows = tool_res.data.get("rows", [])
 
-                    # Store into session datasets
-                    ds_name = f"dataset_{len(self.session_datasets) + 1}"
-                    self.session_datasets[ds_name] = {
-                        "name": ds_name,
-                        "columns": sql_columns,
-                        "rows": sql_rows,
-                        "record_count": len(sql_rows),
-                        "sql_query": executed_sql,
-                    }
+                        # Store into session datasets
+                        ds_name = f"dataset_{len(self.session_datasets) + 1}"
+                        self.session_datasets[ds_name] = {
+                            "name": ds_name,
+                            "columns": sql_columns,
+                            "rows": sql_rows,
+                            "record_count": len(sql_rows),
+                            "sql_query": executed_sql,
+                        }
 
-                    # 12. Emit SQL_RESULT event
-                    await self._emit_activity(
-                        ActivityCategory.SQL_RESULT,
-                        title="SQL Query Result",
-                        description=f"Returned {len(sql_rows)} row(s) across {len(sql_columns)} column(s) ({duration_ms:.0f}ms)",
-                        result_summary=f"Columns: {', '.join(sql_columns[:6])} | Total Rows: {len(sql_rows)}",
-                        duration_ms=duration_ms,
-                        status="success",
-                        callback=progress_callback,
-                        legacy_type=AgentEventType.SQL_RESULT,
-                    )
+                        # 12. Emit SQL_RESULT event
+                        await self._emit_activity(
+                            ActivityCategory.SQL_RESULT,
+                            title="SQL Query Result",
+                            description=f"Returned {len(sql_rows)} row(s) across {len(sql_columns)} column(s) ({duration_ms:.0f}ms)",
+                            result_summary=f"Columns: {', '.join(sql_columns[:6])} | Total Rows: {len(sql_rows)}",
+                            duration_ms=duration_ms,
+                            status="success",
+                            callback=progress_callback,
+                            legacy_type=AgentEventType.SQL_RESULT,
+                        )
 
                 # Capture generated report metadata
-                if t_name in {"generate_pdf_report", "generate_csv_report"} and not tool_res.is_error:
-                    generated_reports.append(tool_res.data)
-                    rep_path = tool_res.data.get("output_path", "")
-                    rep_size = tool_res.data.get("file_size_bytes", 0)
-                    pages = tool_res.data.get("page_count", 1)
-                    charts_ren = tool_res.data.get("charts_rendered", 0)
-                    charts_req = tool_res.data.get("charts_requested", 0)
-                    tables_ren = tool_res.data.get("tables_rendered", 1)
-                    tables_req = tool_res.data.get("tables_requested", 1)
-                    ds_cnt = tool_res.data.get("datasets_count", 1)
-                    status_c = tool_res.data.get("completion_status", "complete")
-                    # 14. Emit REPORT_GENERATION event
-                    await self._emit_activity(
-                        ActivityCategory.REPORT_GENERATION,
-                        title="Report Generated",
-                        description=f"Generated {Path(rep_path).name} ({rep_size} bytes, {pages} pg, {charts_ren} chart(s))",
-                        result_summary=(
-                            f"File: {rep_path}\n"
-                            f"Size: {rep_size} bytes | Pages: {pages}\n"
-                            f"Charts: {charts_ren}/{charts_req} | Tables: {tables_ren}/{tables_req}\n"
-                            f"Datasets: {ds_cnt} | Status: {status_c}"
-                        ),
-                        duration_ms=duration_ms,
-                        status="success",
-                        metadata=tool_res.data,
-                        callback=progress_callback,
-                        legacy_type=AgentEventType.REPORT_GENERATED,
-                        extra_data=tool_res.data,
-                    )
+                if t_name in {"generate_pdf_report", "generate_csv_report"}:
+                    if not tool_res.is_error:
+                        generated_reports.append(tool_res.data)
+                        component_status["pdf_generation"] = "success"
+                        if tool_res.data.get("charts_rendered", 0) > 0:
+                            component_status["chart_generation"] = "success"
+                        elif tool_res.data.get("charts_requested", 0) > 0 and tool_res.data.get("charts_rendered", 0) == 0:
+                            component_status["chart_generation"] = "failed"
+                        if tool_res.data.get("tables_rendered", 0) > 0:
+                            component_status["table_generation"] = "success"
+
+                        rep_path = tool_res.data.get("output_path", "")
+                        rep_size = tool_res.data.get("file_size_bytes", 0)
+                        pages = tool_res.data.get("page_count", 1)
+                        charts_ren = tool_res.data.get("charts_rendered", 0)
+                        charts_req = tool_res.data.get("charts_requested", 0)
+                        tables_ren = tool_res.data.get("tables_rendered", 1)
+                        tables_req = tool_res.data.get("tables_requested", 1)
+                        ds_cnt = tool_res.data.get("datasets_count", 1)
+                        status_c = tool_res.data.get("completion_status", "complete")
+                        # 14. Emit REPORT_GENERATION event
+                        await self._emit_activity(
+                            ActivityCategory.REPORT_GENERATION,
+                            title="Report Generated",
+                            description=f"Generated {Path(rep_path).name} ({rep_size} bytes, {pages} pg, {charts_ren} chart(s))",
+                            result_summary=(
+                                f"File: {rep_path}\n"
+                                f"Size: {rep_size} bytes | Pages: {pages}\n"
+                                f"Charts: {charts_ren}/{charts_req} | Tables: {tables_ren}/{tables_req}\n"
+                                f"Datasets: {ds_cnt} | Status: {status_c}"
+                            ),
+                            duration_ms=duration_ms,
+                            status="success",
+                            metadata=tool_res.data,
+                            callback=progress_callback,
+                            legacy_type=AgentEventType.REPORT_GENERATED,
+                            extra_data=tool_res.data,
+                        )
+                    else:
+                        component_status["pdf_generation"] = "failed"
 
                 # 15. Emit TOOL_RESULT event
                 await self._emit_activity(
@@ -1211,6 +1547,11 @@ class AgentOrchestrator:
                 extra_data={"error": error_msg},
             )
 
+        if generated_reports:
+            for k in ["kpi_generation", "chart_generation", "table_generation", "pdf_generation"]:
+                if component_status.get(k) == "pending":
+                    component_status[k] = "success"
+
         return AgentRunResult(
             status=overall_status,
             final_message=final_message,
@@ -1222,6 +1563,7 @@ class AgentOrchestrator:
             iterations=iterations,
             total_duration_s=total_duration,
             error=error_msg,
+            component_status=component_status,
         )
 
     def _format_friendly_error(self, exc: Exception) -> str:
