@@ -23,7 +23,7 @@ from typing import Any, Mapping
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import get_default_environment, stdio_client
 
-from config.paths import app_root, is_frozen
+from config.paths import app_root, is_frozen, user_data_root
 from config.settings import AppSettings
 
 log = logging.getLogger(__name__)
@@ -171,7 +171,7 @@ def build_stdio_server_params(
         command=command,
         args=args,
         env=_build_subprocess_env(settings=settings, env_overrides=env_overrides),
-        cwd=str(app_root()),
+        cwd=str(user_data_root() if is_frozen() else app_root()),
     )
 
 

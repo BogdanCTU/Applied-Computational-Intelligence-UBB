@@ -125,14 +125,25 @@ def check_database(path: Path) -> bool:
         return False
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
+    args = sys.argv[1:] if argv is None else argv
+    is_build_mode = any(arg in args for arg in ("--build", "--skip-ollama", "--offline"))
+
     settings = load_settings()
     print("== Local Report SQL Agent: environment verification ==")
     py = check_python()
     pk = check_packages()
     ol, model = check_ollama(settings.ollama.host.rstrip("/"), settings.ollama.model)
     check_database(settings.database_path)  # warning only
-    required_ok = py and pk and ol and model
+
+    if is_build_mode:
+        # During packaging, Ollama is an external runtime service that can be started post-install
+        required_ok = py and pk
+        if not (ol and model):
+            print(f"{WARN} Note: Ollama is not currently active. Standalone binary connects to Ollama at runtime.")
+    else:
+        required_ok = py and pk and ol and model
+
     print("== RESULT:", "PASS" if required_ok else "FAIL", "==")
     return 0 if required_ok else 1
 

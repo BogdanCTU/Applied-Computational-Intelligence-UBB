@@ -82,13 +82,66 @@ def user_data_root() -> Path:
     return path
 
 
+def ensure_writable_database(
+    rel_or_abs_path: str | os.PathLike[str] = "data/ecommerce.db",
+) -> Path:
+    """Ensure the SQLite database lives in a persistent, writable user data directory when frozen.
+
+    When frozen:
+      1. Absolute paths are respected as-is.
+      2. If relative, destination is user_data_root() / rel_or_abs_path
+         (e.g., ~/Library/Application Support/ReportSQLAgent/data/ecommerce.db on macOS,
+          %APPDATA%/ReportSQLAgent/data/ecommerce.db on Windows).
+      3. If the destination already exists, return it immediately (never overwrite user data).
+      4. If destination does not exist, look for a bundled template in resource_root()
+         or app_root(). If found, copy it to the user data directory.
+      5. Ensure destination directory exists and return destination.
+
+    When running from source (not frozen):
+      Resolves against app_root() (or custom override).
+    """
+    p = Path(rel_or_abs_path).expanduser()
+    if p.is_absolute():
+        return p.resolve()
+
+    if not is_frozen():
+        return (app_root() / p).resolve()
+
+    user_db_path = (user_data_root() / p).resolve()
+    if user_db_path.exists():
+        return user_db_path
+
+    # First run in packaged mode: seed user database from bundled template if available
+    user_db_path.parent.mkdir(parents=True, exist_ok=True)
+    template_candidates = [
+        resource_root() / p,
+        app_root() / p,
+    ]
+    for candidate in template_candidates:
+        if candidate.exists() and candidate.is_file():
+            try:
+                import shutil
+                shutil.copy2(candidate, user_db_path)
+                try:
+                    os.chmod(user_db_path, 0o666)
+                except OSError:
+                    pass
+                break
+            except Exception:
+                pass
+
+    return user_db_path
+
+
 def resolve_path(value: str | os.PathLike[str], base: Path | None = None) -> Path:
     """Resolve a (possibly relative) path against appropriate directory.
 
-    When frozen:
-    1. If `value` exists in resource_root() (such as data/ecommerce.db), return that.
-    2. Otherwise, resolve against user_data_root() (for reports, logs, settings).
-    When running from source, resolves against app_root().
+    When running from source:
+      - Resolves against base or app_root().
+    When running as a PyInstaller executable:
+      - If an explicit base is provided, resolves against base.
+      - If value is a database, delegates to ensure_writable_database.
+      - Otherwise, resolves against user_data_root() for writable outputs (reports, logs).
     """
     p = Path(value).expanduser()
     if p.is_absolute():
@@ -96,11 +149,7 @@ def resolve_path(value: str | os.PathLike[str], base: Path | None = None) -> Pat
     if base is not None:
         return (base / p).resolve()
     if is_frozen():
-        bundled = resource_root() / p
-        if bundled.exists():
-            return bundled.resolve()
-        next_to_app = app_root() / p
-        if next_to_app.exists():
-            return next_to_app.resolve()
+        if p.suffix.lower() in {".db", ".sqlite", ".sqlite3"}:
+            return ensure_writable_database(p)
         return (user_data_root() / p).resolve()
     return (app_root() / p).resolve()
