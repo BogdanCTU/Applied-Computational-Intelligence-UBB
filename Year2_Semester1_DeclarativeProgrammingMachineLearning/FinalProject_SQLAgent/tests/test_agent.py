@@ -1408,4 +1408,415 @@ def test_m8_mask_sensitive_data() -> None:
     assert masked["nested"]["db_user"] == "postgres"
 
 
+# ---------------------------------------------------------------------------
+# 7. Milestone 12 Orchestration Robustness & Empty Response Regression Tests
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_regression_scenario_1_normal_assistant_text(
+    agent_test_settings: AppSettings,
+) -> None:
+    """Scenario 1: Normal assistant text response without tool calls."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_ollama.check_connection = AsyncMock(return_value=(True, "0.40.14"))
+    mock_ollama.probe_tool_capability = AsyncMock(return_value="native")
+    mock_ollama.chat = AsyncMock(
+        return_value=OllamaChatResponse(
+            content="Hello! I am ready to analyze your e-commerce data.",
+            tool_calls=[],
+        )
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama)
+    orchestrator._initialized = True
+
+    res = await orchestrator.process_message("Hello assistant")
+    assert res.status == "success"
+    assert res.final_message == "Hello! I am ready to analyze your e-commerce data."
+    assert res.iterations == 1
+    assert res.executed_sql is None
+    assert bool(res.final_message.strip())
+
+
+@pytest.mark.asyncio
+async def test_regression_scenario_2_one_tool_call_followed_by_final_text(
+    agent_test_settings: AppSettings,
+) -> None:
+    """Scenario 2: One MCP tool call followed by final assistant text."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_ollama.check_connection = AsyncMock(return_value=(True, "0.40.14"))
+    mock_ollama.probe_tool_capability = AsyncMock(return_value="native")
+    mock_ollama.chat = AsyncMock(
+        side_effect=[
+            OllamaChatResponse(
+                content="Inspecting database schema...",
+                tool_calls=[
+                    OllamaToolCall(id="c1", name="inspect_database_schema", arguments={})
+                ],
+            ),
+            OllamaChatResponse(
+                content="The database schema has 5 verified tables: customers, orders, order_items, payments, and products.",
+                tool_calls=[],
+            ),
+        ]
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama)
+    res = await orchestrator.process_message("What tables exist in the database?")
+
+    assert res.status == "success"
+    assert res.iterations == 2
+    assert "5 verified tables" in res.final_message
+    assert res.component_status["database_discovery"] == "success"
+    assert bool(res.final_message.strip())
+
+
+@pytest.mark.asyncio
+async def test_regression_scenario_3_multiple_consecutive_tool_calling_rounds(
+    agent_test_settings: AppSettings,
+) -> None:
+    """Scenario 3: Multiple consecutive MCP tool-calling rounds across iterations."""
+    sql = "SELECT country, COUNT(*) AS cnt FROM customers GROUP BY country LIMIT 5"
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_ollama.check_connection = AsyncMock(return_value=(True, "0.40.14"))
+    mock_ollama.probe_tool_capability = AsyncMock(return_value="native")
+    mock_ollama.chat = AsyncMock(
+        side_effect=[
+            # Round 1
+            OllamaChatResponse(
+                content="Step 1: Check schema",
+                tool_calls=[
+                    OllamaToolCall(id="c1", name="inspect_database_schema", arguments={})
+                ],
+            ),
+            # Round 2
+            OllamaChatResponse(
+                content="Step 2: Prepare SQL",
+                tool_calls=[
+                    OllamaToolCall(id="c2", name="prepare_sql_query", arguments={"sql_query": sql})
+                ],
+            ),
+            # Round 3: Final text
+            OllamaChatResponse(
+                content="Query was formulated and verified against the customers table.",
+                tool_calls=[],
+            ),
+        ]
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama)
+    res = await orchestrator.process_message("Show customer countries")
+
+    assert res.status == "success"
+    assert res.iterations == 3
+    assert res.proposed_sql == sql
+    assert res.component_status["database_discovery"] == "success"
+    assert res.component_status["sql_preparation"] == "success"
+    assert bool(res.final_message.strip())
+
+
+@pytest.mark.asyncio
+async def test_regression_scenario_4_multiple_tool_calls_in_one_response(
+    agent_test_settings: AppSettings,
+) -> None:
+    """Scenario 4: Multiple tool calls returned in a single assistant response."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_ollama.check_connection = AsyncMock(return_value=(True, "0.40.14"))
+    mock_ollama.probe_tool_capability = AsyncMock(return_value="native")
+    mock_ollama.chat = AsyncMock(
+        side_effect=[
+            OllamaChatResponse(
+                content="Inspecting schema and fetching sample simultaneously.",
+                tool_calls=[
+                    OllamaToolCall(id="c1", name="inspect_database_schema", arguments={}),
+                    OllamaToolCall(id="c2", name="get_table_sample", arguments={"table_name": "customers", "num_records": 2}),
+                ],
+            ),
+            OllamaChatResponse(
+                content="Completed both schema inspection and sample retrieval.",
+                tool_calls=[],
+            ),
+        ]
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama)
+    res = await orchestrator.process_message("Inspect schema and sample customers")
+
+    assert res.status == "success"
+    assert res.iterations == 2
+    assert res.final_message == "Completed both schema inspection and sample retrieval."
+
+    # Verify both tool results exist in conversation history with matching tool_call_ids
+    tool_msgs = [m for m in orchestrator.conversation.messages if m.role == "tool"]
+    assert len(tool_msgs) == 2
+    assert tool_msgs[0].tool_call_id == "c1"
+    assert tool_msgs[1].tool_call_id == "c2"
+
+
+@pytest.mark.asyncio
+async def test_regression_scenario_5_empty_assistant_response_after_successful_mcp(
+    agent_test_settings: AppSettings,
+) -> None:
+    """Scenario 5: Empty assistant response after MCP execution triggers deterministic synthesis."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_ollama.check_connection = AsyncMock(return_value=(True, "0.40.14"))
+    mock_ollama.probe_tool_capability = AsyncMock(return_value="native")
+    # Simulate Windows Ollama behavior: Turn 2 returns empty content with thinking
+    mock_ollama.chat = AsyncMock(
+        side_effect=[
+            OllamaChatResponse(
+                content="",
+                tool_calls=[
+                    OllamaToolCall(id="c1", name="inspect_database_schema", arguments={})
+                ],
+            ),
+            OllamaChatResponse(
+                content="",  # EMPTY content!
+                thinking="The database schema has tables: customers, orders, order_items, payments, products.",
+                tool_calls=[],
+            ),
+        ]
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama)
+    res = await orchestrator.process_message("Please check the database schema and tell me what tables exist.")
+
+    assert res.status == "success"
+    assert res.iterations == 2
+    assert len(res.final_message) > 0
+    assert bool(res.final_message.strip())
+    # Verify deterministic synthesis from actual verified MCP schema
+    assert "customers" in res.final_message
+    assert "orders" in res.final_message
+    assert "records" in res.final_message
+    assert res.component_status["database_discovery"] == "success"
+
+
+@pytest.mark.asyncio
+async def test_regression_scenario_6_empty_assistant_response_without_tool_calls(
+    agent_test_settings: AppSettings,
+) -> None:
+    """Scenario 6: Empty assistant response without tool calls does NOT report success."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_ollama.check_connection = AsyncMock(return_value=(True, "0.40.14"))
+    mock_ollama.probe_tool_capability = AsyncMock(return_value="native")
+    # Both initial and recovery prompt return empty content
+    mock_ollama.chat = AsyncMock(
+        side_effect=[
+            OllamaChatResponse(content="", thinking="", tool_calls=[]),
+            OllamaChatResponse(content="", thinking="", tool_calls=[]),
+        ]
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama)
+    orchestrator._initialized = True
+
+    res = await orchestrator.process_message("Hello")
+
+    assert res.status == "error"
+    assert res.error is not None
+    assert len(res.final_message) > 0
+    assert bool(res.final_message.strip())
+
+
+@pytest.mark.asyncio
+async def test_regression_scenario_7_malformed_assistant_response(
+    agent_test_settings: AppSettings,
+) -> None:
+    """Scenario 7: Malformed assistant response raises OllamaInvalidJSONError and fails gracefully."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_ollama.check_connection = AsyncMock(return_value=(True, "0.40.14"))
+    mock_ollama.probe_tool_capability = AsyncMock(return_value="native")
+    mock_ollama.chat = AsyncMock(
+        side_effect=OllamaInvalidJSONError("Ollama returned invalid JSON response: Unterminated string at line 1")
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama)
+    orchestrator._initialized = True
+
+    res = await orchestrator.process_message("Generate report")
+
+    assert res.status == "error"
+    assert res.error is not None
+    assert "invalid or unparseable JSON" in res.final_message or "invalid" in res.final_message.lower()
+
+
+@pytest.mark.asyncio
+async def test_regression_scenario_8_tool_call_parsing_and_validation_failure(
+    agent_test_settings: AppSettings,
+) -> None:
+    """Scenario 8: Unauthorized tool call is rejected by security policy and fed back to conversation."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_ollama.check_connection = AsyncMock(return_value=(True, "0.40.14"))
+    mock_ollama.probe_tool_capability = AsyncMock(return_value="native")
+    mock_ollama.chat = AsyncMock(
+        side_effect=[
+            OllamaChatResponse(
+                content="Attempting unauthorized action",
+                tool_calls=[
+                    OllamaToolCall(id="c_bad", name="drop_table_customers", arguments={})
+                ],
+            ),
+            OllamaChatResponse(
+                content="Understood. That tool is not permitted by policy.",
+                tool_calls=[],
+            ),
+        ]
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama)
+    res = await orchestrator.process_message("Drop customers")
+
+    assert res.status == "success"
+    assert res.iterations == 2
+    assert "not permitted" in res.final_message
+
+    # Verify tool error was appended to conversation
+    tool_msgs = [m for m in orchestrator.conversation.messages if m.role == "tool"]
+    assert len(tool_msgs) == 1
+    assert "not permitted" in str(tool_msgs[0].content)
+
+
+@pytest.mark.asyncio
+async def test_regression_scenario_9_mcp_execution_failure(
+    agent_test_settings: AppSettings,
+) -> None:
+    """Scenario 9: MCP tool execution failure returns structured error and updates component status."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_ollama.check_connection = AsyncMock(return_value=(True, "0.40.14"))
+    mock_ollama.probe_tool_capability = AsyncMock(return_value="native")
+    mock_ollama.chat = AsyncMock(
+        side_effect=[
+            OllamaChatResponse(
+                content="Sampling non-existent table",
+                tool_calls=[
+                    OllamaToolCall(id="c_missing", name="get_table_sample", arguments={"table_name": "non_existent_xyz"})
+                ],
+            ),
+            OllamaChatResponse(
+                content="Table non_existent_xyz was not found in the database.",
+                tool_calls=[],
+            ),
+        ]
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama)
+    res = await orchestrator.process_message("Sample non_existent_xyz")
+
+    assert res.status == "success"
+    assert res.iterations == 2
+    assert res.component_status["database_discovery"] == "failed"
+    assert "not found" in res.final_message.lower()
+
+
+@pytest.mark.asyncio
+async def test_regression_scenario_10_maximum_iteration_limit(
+    agent_test_settings: AppSettings,
+) -> None:
+    """Scenario 10: Model repeating tool calls halts strictly at max_iterations limit."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_ollama.check_connection = AsyncMock(return_value=(True, "0.40.14"))
+    mock_ollama.probe_tool_capability = AsyncMock(return_value="native")
+    mock_ollama.chat = AsyncMock(
+        return_value=OllamaChatResponse(
+            content="Looping...",
+            tool_calls=[
+                OllamaToolCall(id="c_loop", name="inspect_database_schema", arguments={})
+            ],
+        )
+    )
+
+    agent_test_settings.agent.max_iterations = 3
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama)
+    res = await orchestrator.process_message("Infinite loop query")
+
+    assert res.status == "error"
+    assert res.iterations == 3
+    assert "maximum tool iterations limit" in res.final_message
+
+
+@pytest.mark.asyncio
+async def test_regression_scenario_11_correct_conversation_history(
+    agent_test_settings: AppSettings,
+) -> None:
+    """Scenario 11: Conversation history preserves complete sequence and tool pairing."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_ollama.check_connection = AsyncMock(return_value=(True, "0.40.14"))
+    mock_ollama.probe_tool_capability = AsyncMock(return_value="native")
+    mock_ollama.chat = AsyncMock(
+        side_effect=[
+            OllamaChatResponse(
+                content="Step 1: Check schema",
+                tool_calls=[
+                    OllamaToolCall(id="call_inspect_1", name="inspect_database_schema", arguments={})
+                ],
+            ),
+            OllamaChatResponse(
+                content="Done inspecting schema.",
+                tool_calls=[],
+            ),
+        ]
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama)
+    res = await orchestrator.process_message("Check schema please")
+
+    assert res.status == "success"
+    messages = orchestrator.conversation.messages
+    # Sequence in conversation manager: user, assistant (with tool_calls), tool, assistant (final)
+    assert len(messages) == 4
+    assert messages[0].role == "user"
+    assert messages[1].role == "assistant"
+    assert messages[1].tool_calls is not None
+    assert messages[2].role == "tool"
+    assert messages[2].tool_call_id == "call_inspect_1"
+    assert messages[3].role == "assistant"
+    assert messages[3].content == "Done inspecting schema."
+
+    # When formatted for LLM with system prompt, system prompt is prepended:
+    llm_msgs = orchestrator.conversation.get_messages_for_llm(system_prompt="You are an analyst.")
+    assert len(llm_msgs) == 5
+    assert llm_msgs[0]["role"] == "system"
+    assert llm_msgs[1]["role"] == "user"
+    assert llm_msgs[2]["role"] == "assistant"
+    assert llm_msgs[3]["role"] == "tool"
+    assert llm_msgs[4]["role"] == "assistant"
+
+
+@pytest.mark.asyncio
+async def test_regression_scenario_12_agent_run_result_construction_and_invariant(
+    agent_test_settings: AppSettings,
+) -> None:
+    """Scenario 12: AgentRunResult structure and invariant `if status == 'success': assert final_message.strip()`."""
+    mock_ollama = MagicMock(spec=OllamaClient)
+    mock_ollama.check_connection = AsyncMock(return_value=(True, "0.40.14"))
+    mock_ollama.probe_tool_capability = AsyncMock(return_value="native")
+    mock_ollama.chat = AsyncMock(
+        return_value=OllamaChatResponse(
+            content="Analytical workflow concluded.",
+            tool_calls=[],
+        )
+    )
+
+    orchestrator = AgentOrchestrator(agent_test_settings, ollama_client=mock_ollama)
+    orchestrator._initialized = True
+    res = await orchestrator.process_message("Run analysis")
+
+    # Invariant assertion
+    if res.status == "success":
+        assert bool(res.final_message.strip())
+
+    # Full structure verification
+    assert res.status == "success"
+    assert isinstance(res.final_message, str)
+    assert res.iterations == 1
+    assert isinstance(res.total_duration_s, float)
+    assert res.error is None
+    assert isinstance(res.component_status, dict)
+    assert "database_discovery" in res.component_status
+    assert "sql_execution" in res.component_status
+    assert "pdf_generation" in res.component_status
+
+
 

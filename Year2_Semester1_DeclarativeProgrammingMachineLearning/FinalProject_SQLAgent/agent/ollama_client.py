@@ -98,6 +98,12 @@ class OllamaChatResponse:
     raw_message: dict[str, Any] = field(default_factory=dict)
     total_duration_s: float | None = None
     used_fallback: bool = False
+    http_status: int = 200
+    role: str = "assistant"
+    content_exists: bool = True
+    content_is_empty: bool = False
+    done: bool | None = None
+    done_reason: str | None = None
 
     @property
     def has_tool_calls(self) -> bool:
@@ -390,8 +396,18 @@ class OllamaClient:
         except (json.JSONDecodeError, ValueError) as exc:
             raise OllamaInvalidJSONError(f"Ollama returned invalid JSON response: {exc}") from exc
 
-        raw_msg = data.get("message", {})
-        content = raw_msg.get("content", "") or ""
+        raw_msg = data.get("message", {}) or {}
+        raw_role = raw_msg.get("role", "assistant")
+        content_field_present = "content" in raw_msg and raw_msg["content"] is not None
+        raw_content_val = str(raw_msg.get("content", "") or "")
+        content_is_empty = not raw_content_val.strip()
+        raw_tool_calls = raw_msg.get("tool_calls")
+        has_tool_calls_field = bool(raw_tool_calls)
+        num_tool_calls = len(raw_tool_calls) if isinstance(raw_tool_calls, list) else 0
+        done_val = data.get("done")
+        done_reason_val = data.get("done_reason")
+
+        content = raw_content_val
         thinking = raw_msg.get("thinking")
 
         # Strip inline <think>...</think> tags if present in content
@@ -401,10 +417,27 @@ class OllamaClient:
                 thinking = think_match.group(1).strip()
             content = re.sub(r"<think>[\s\S]*?</think>", "", content).strip()
 
-        finish_reason = data.get("done_reason")
+        finish_reason = done_reason_val or data.get("done_reason")
         total_duration = data.get("total_duration")
         duration_s = (
             round(total_duration / 1e9, 3) if total_duration is not None else None
+        )
+
+        log.info(
+            "Ollama /api/chat response diagnostics: status=%d role=%s content_present=%s "
+            "content_empty=%s content_bytes=%d tool_calls_present=%s tool_calls_count=%d "
+            "done=%s done_reason=%s thinking_present=%s duration_s=%s",
+            resp.status_code,
+            raw_role,
+            content_field_present,
+            content_is_empty,
+            len(raw_content_val.encode("utf-8")),
+            has_tool_calls_field,
+            num_tool_calls,
+            done_val,
+            done_reason_val,
+            bool(thinking or raw_msg.get("thinking")),
+            duration_s,
         )
 
         tool_calls: list[OllamaToolCall] = []
@@ -467,6 +500,12 @@ class OllamaClient:
             finish_reason=finish_reason,
             raw_message=raw_msg,
             total_duration_s=duration_s,
+            http_status=resp.status_code,
+            role=raw_role,
+            content_exists=content_field_present,
+            content_is_empty=content_is_empty,
+            done=done_val,
+            done_reason=done_reason_val,
         )
 
     async def _fallback_chat_json(

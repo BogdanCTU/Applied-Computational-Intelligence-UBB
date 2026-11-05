@@ -519,6 +519,72 @@ def _synthesize_charts_from_intent(
     return charts
 
 
+def _synthesize_schema_summary(schema_data: dict[str, Any]) -> str:
+    """Format verified database schema inspection results into a readable user-facing response.
+
+    Never invents tables or schema information; only formats verified MCP return data.
+    """
+    tables = schema_data.get("tables", [])
+    if not tables:
+        return "Database schema inspection completed. No tables were found in the database."
+
+    lines: list[str] = [
+        f"The database contains {len(tables)} table{'s' if len(tables) != 1 else ''}:",
+        "",
+    ]
+
+    for t in tables:
+        if isinstance(t, dict):
+            t_name = t.get("name", "unknown")
+            row_count = t.get("row_count")
+            rc_str = f" ({row_count:,} records)" if row_count is not None else ""
+            cols = t.get("columns", [])
+            col_names: list[str] = []
+            for c in cols:
+                if isinstance(c, dict) and c.get("name"):
+                    col_names.append(c["name"])
+                elif isinstance(c, str):
+                    col_names.append(c)
+            col_str = f"\n  - Columns: {', '.join(col_names)}" if col_names else ""
+            lines.append(f"- **{t_name}**{rc_str}{col_str}")
+        elif isinstance(t, str):
+            lines.append(f"- **{t}**")
+
+    return "\n".join(lines)
+
+
+def _synthesize_table_sample_summary(sample_data: dict[str, Any]) -> str:
+    """Format verified table sample data into a readable user-facing response."""
+    table_name = sample_data.get("table_name", "the requested table")
+    rows = sample_data.get("rows", [])
+    columns = sample_data.get("columns", [])
+    lines: list[str] = [
+        f"Retrieved {len(rows)} sample row{'s' if len(rows) != 1 else ''} from table `{table_name}`:",
+        "",
+    ]
+    if columns:
+        lines.append(f"Columns: {', '.join(columns)}")
+    return "\n".join(lines)
+
+
+def _synthesize_sql_execution_summary(
+    sql: str | None,
+    columns: list[str],
+    rows: list[Any],
+) -> str:
+    """Format verified SQL execution results into a readable user-facing response."""
+    count = len(rows)
+    lines: list[str] = [
+        f"Executed SQL query successfully returning {count} record{'s' if count != 1 else ''}:",
+        "",
+    ]
+    if sql:
+        lines.append(f"```sql\n{sql.strip()}\n```\n")
+    if columns:
+        lines.append(f"Columns ({len(columns)}): {', '.join(columns)}")
+    return "\n".join(lines)
+
+
 class AgentOrchestrator:
     """Central orchestrator coordinating Ollama, conversation state, and MCP tools."""
 
@@ -716,6 +782,10 @@ class AgentOrchestrator:
         sql_rows: list[Any] = []
         approved_queries: set[str] = set()
         generated_reports: list[dict[str, Any]] = []
+        last_schema_result: dict[str, Any] | None = None
+        last_sample_result: dict[str, Any] | None = None
+        attempted_recovery = False
+        termination_reason = "unknown"
         final_message = ""
         overall_status = "success"
         error_msg: str | None = None
@@ -733,6 +803,7 @@ class AgentOrchestrator:
             if cancel_event and cancel_event.is_set():
                 overall_status = "cancelled"
                 final_message = "Agent execution was cancelled by user."
+                termination_reason = "cancelled_by_user"
                 break
 
             iterations += 1
@@ -758,6 +829,75 @@ class AgentOrchestrator:
                     tool_mode=self.active_tool_mode,
                 )
             except OllamaClientError as exc:
+                if isinstance(exc, OllamaEmptyResponseError):
+                    if last_schema_result:
+                        final_message = _synthesize_schema_summary(last_schema_result)
+                        overall_status = "success"
+                        termination_reason = "deterministic_schema_synthesis_after_empty_error"
+                        log.info(
+                            "Caught OllamaEmptyResponseError after MCP schema inspection. "
+                            "Deterministically synthesized response from verified MCP schema data (%d tables).",
+                            len(last_schema_result.get("tables", [])),
+                        )
+                        self.conversation.add_assistant_message(final_message)
+                        await self._emit_activity(
+                            ActivityCategory.COMPLETION,
+                            title="Final Response Ready",
+                            description=final_message[:150] + ("..." if len(final_message) > 150 else ""),
+                            status="success",
+                            callback=progress_callback,
+                            legacy_type=AgentEventType.FINAL_ANSWER,
+                            extra_data={"message": final_message},
+                        )
+                        break
+                    elif last_sample_result:
+                        final_message = _synthesize_table_sample_summary(last_sample_result)
+                        overall_status = "success"
+                        termination_reason = "deterministic_sample_synthesis_after_empty_error"
+                        self.conversation.add_assistant_message(final_message)
+                        await self._emit_activity(
+                            ActivityCategory.COMPLETION,
+                            title="Final Response Ready",
+                            description=final_message[:150] + ("..." if len(final_message) > 150 else ""),
+                            status="success",
+                            callback=progress_callback,
+                            legacy_type=AgentEventType.FINAL_ANSWER,
+                            extra_data={"message": final_message},
+                        )
+                        break
+                    elif executed_sql and (sql_rows or sql_columns):
+                        final_message = _synthesize_sql_execution_summary(executed_sql, sql_columns, sql_rows)
+                        overall_status = "success"
+                        termination_reason = "deterministic_sql_synthesis_after_empty_error"
+                        self.conversation.add_assistant_message(final_message)
+                        await self._emit_activity(
+                            ActivityCategory.COMPLETION,
+                            title="Final Response Ready",
+                            description=final_message[:150] + ("..." if len(final_message) > 150 else ""),
+                            status="success",
+                            callback=progress_callback,
+                            legacy_type=AgentEventType.FINAL_ANSWER,
+                            extra_data={"message": final_message},
+                        )
+                        break
+                    elif generated_reports:
+                        rep = generated_reports[-1]
+                        rep_path = rep.get("output_path", "")
+                        final_message = f"Report successfully generated and saved to:\n`{rep_path}`"
+                        overall_status = "success"
+                        termination_reason = "deterministic_report_synthesis_after_empty_error"
+                        self.conversation.add_assistant_message(final_message)
+                        await self._emit_activity(
+                            ActivityCategory.COMPLETION,
+                            title="Final Response Ready",
+                            description=final_message[:150] + ("..." if len(final_message) > 150 else ""),
+                            status="success",
+                            callback=progress_callback,
+                            legacy_type=AgentEventType.FINAL_ANSWER,
+                            extra_data={"message": final_message},
+                        )
+                        break
+
                 if self.active_tool_mode == "native" and (
                     isinstance(exc, (OllamaDisconnectError, OllamaHTTPError))
                     or "XML" in str(exc)
@@ -786,6 +926,7 @@ class AgentOrchestrator:
                         overall_status = "error"
                         error_msg = self._format_friendly_error(retry_exc)
                         final_message = error_msg
+                        termination_reason = f"llm_error_after_fallback: {type(retry_exc).__name__}"
                         await self._emit_activity(
                             ActivityCategory.ERROR,
                             title="LLM Connection Error",
@@ -800,6 +941,7 @@ class AgentOrchestrator:
                     overall_status = "error"
                     error_msg = self._format_friendly_error(exc)
                     final_message = error_msg
+                    termination_reason = f"llm_error: {type(exc).__name__}"
                     await self._emit_activity(
                         ActivityCategory.ERROR,
                         title="LLM Connection Error",
@@ -810,6 +952,24 @@ class AgentOrchestrator:
                         extra_data={"error": error_msg},
                     )
                     break
+
+            # Diagnostic evaluation of Ollama response
+            is_final_response = not response.has_tool_calls
+            log.info(
+                "Ollama response evaluated: iteration=%d/%d is_final=%s role=%s "
+                "has_tool_calls=%s tool_calls_count=%d content_empty=%s "
+                "thinking_present=%s finish_reason=%s done=%s",
+                iterations,
+                max_iterations,
+                is_final_response,
+                getattr(response, "role", "assistant"),
+                response.has_tool_calls,
+                len(response.tool_calls),
+                not bool(response.content and response.content.strip()),
+                bool(response.thinking and response.thinking.strip()),
+                getattr(response, "finish_reason", None),
+                getattr(response, "done", None),
+            )
 
             # If client automatically used JSON fallback, switch orchestrator to json mode
             if response.used_fallback:
@@ -835,7 +995,62 @@ class AgentOrchestrator:
 
             # Case A: Model produced final message with no tool calls
             if not response.has_tool_calls:
-                final_message = response.content or ""
+                candidate_content = (response.content or "").strip()
+
+                if candidate_content:
+                    final_message = candidate_content
+                    termination_reason = "final_assistant_text_received"
+                else:
+                    # Model returned empty text without tool calls
+                    # Check if verified MCP results exist from earlier tool execution in this session
+                    if last_schema_result:
+                        final_message = _synthesize_schema_summary(last_schema_result)
+                        termination_reason = "deterministic_schema_synthesis"
+                        log.info(
+                            "Model returned empty text after MCP schema inspection. "
+                            "Deterministically synthesized response from verified MCP schema data (%d tables).",
+                            len(last_schema_result.get("tables", [])),
+                        )
+                    elif last_sample_result:
+                        final_message = _synthesize_table_sample_summary(last_sample_result)
+                        termination_reason = "deterministic_sample_synthesis"
+                        log.info("Model returned empty text after MCP table sampling. Synthesized response from verified sample.")
+                    elif executed_sql and (sql_rows or sql_columns):
+                        final_message = _synthesize_sql_execution_summary(executed_sql, sql_columns, sql_rows)
+                        termination_reason = "deterministic_sql_synthesis"
+                        log.info("Model returned empty text after SQL execution. Synthesized response from query results.")
+                    elif generated_reports:
+                        rep = generated_reports[-1]
+                        rep_path = rep.get("output_path", "")
+                        final_message = f"Report successfully generated and saved to:\n`{rep_path}`"
+                        termination_reason = "deterministic_report_synthesis"
+                        log.info("Model returned empty text after report generation. Formatted report path.")
+                    elif not attempted_recovery and iterations < max_iterations:
+                        attempted_recovery = True
+                        log.info("Model returned empty response without tool calls or verified data. Attempting bounded recovery prompt.")
+                        self.conversation.add_user_message(
+                            "Please provide a direct, meaningful answer to the request above."
+                        )
+                        continue
+                    else:
+                        overall_status = "error"
+                        error_msg = (
+                            "The AI assistant returned an empty response with no content or tool calls. "
+                            "Please try rephrasing your request."
+                        )
+                        final_message = error_msg
+                        termination_reason = "empty_response_without_tools"
+                        log.warning("Agent encountered empty assistant response without tool calls or verified data.")
+                        await self._emit_activity(
+                            ActivityCategory.ERROR,
+                            title="Empty Response",
+                            description=error_msg,
+                            status="failed",
+                            callback=progress_callback,
+                            legacy_type=AgentEventType.ERROR,
+                            extra_data={"error": error_msg},
+                        )
+                        break
 
                 # Deterministic reporting fallback:
                 # If SQL queries executed and user requested a report, but the model generated final text
@@ -1414,6 +1629,11 @@ class AgentOrchestrator:
                 # Component status: Schema discovery
                 if t_name in {"inspect_database_schema", "get_table_sample"}:
                     component_status["database_discovery"] = "failed" if tool_res.is_error else "success"
+                    if not tool_res.is_error:
+                        if t_name == "inspect_database_schema":
+                            last_schema_result = tool_res.data
+                        elif t_name == "get_table_sample":
+                            last_sample_result = tool_res.data
 
                 # Component status: SQL Preparation & Remediation
                 if t_name == "prepare_sql_query":
@@ -1529,6 +1749,22 @@ class AgentOrchestrator:
             overall_status = "error"
             error_msg = f"Agent reached maximum tool iterations limit ({max_iterations})."
             final_message = error_msg
+            termination_reason = "max_iterations_reached"
+
+        # Enforce invariant: if overall_status == "success", final_message must be non-empty
+        if overall_status == "success" and not (final_message and final_message.strip()):
+            overall_status = "error"
+            error_msg = "Agent completed execution but failed to produce a user-facing response."
+            final_message = error_msg
+            termination_reason = "empty_final_message_invariant_failure"
+
+        log.info(
+            "Orchestration loop terminating: reason='%s' iterations=%d status=%s final_msg_len=%d",
+            termination_reason,
+            iterations,
+            overall_status,
+            len(final_message),
+        )
 
         total_duration = round(time.perf_counter() - start_time, 2)
 
