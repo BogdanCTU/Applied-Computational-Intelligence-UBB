@@ -130,6 +130,33 @@ def _build_subprocess_env(
     env_overrides: Mapping[str, str] | None = None,
 ) -> dict[str, str]:
     env = get_default_environment()
+
+    # Pass critical Windows and cross-platform runtime environment variables
+    # (Without SYSTEMROOT, Python on Windows cannot initialize sockets or load C-extensions)
+    inherited_keys = [
+        "SYSTEMROOT",
+        "SystemRoot",
+        "WINDIR",
+        "windir",
+        "COMSPEC",
+        "PATHEXT",
+        "TEMP",
+        "TMP",
+        "LOCALAPPDATA",
+        "APPDATA",
+        "USERPROFILE",
+        "PROGRAMFILES",
+        "PROGRAMFILES(X86)",
+        "COMMONPROGRAMFILES",
+    ]
+    for k in inherited_keys:
+        if k in os.environ and k not in env:
+            env[k] = os.environ[k]
+
+    # Force standard streams to use UTF-8 encoding across all platforms
+    env["PYTHONIOENCODING"] = "utf-8"
+    env["PYTHONUTF8"] = "1"
+
     if not is_frozen():
         root_str = str(app_root())
         existing_py = os.environ.get("PYTHONPATH", "")

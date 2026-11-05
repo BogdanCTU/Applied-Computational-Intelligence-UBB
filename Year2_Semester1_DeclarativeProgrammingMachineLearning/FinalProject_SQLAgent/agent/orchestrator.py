@@ -128,66 +128,23 @@ def _synthesize_kpis(
     session_datasets: Mapping[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     """Synthesize high-level KPI metric cards from tabular datasets without double-counting."""
-    kpis: list[dict[str, Any]] = []
-    all_data: list[tuple[Sequence[str], Sequence[Any]]] = []
+    from reporting.canonical_data import CanonicalSQLDataset
+
+    if columns or rows:
+        ds = CanonicalSQLDataset(columns, rows)
+        computed = ds.compute_deterministic_kpis()
+        if computed:
+            return computed
 
     if session_datasets:
-        for ds in session_datasets.values():
-            all_data.append((ds.get("columns", []), ds.get("rows", [])))
-    if columns and rows:
-        all_data.append((columns, rows))
+        for ds_name, ds_info in session_datasets.items():
+            if isinstance(ds_info, dict) and (ds_info.get("columns") or ds_info.get("rows")):
+                ds = CanonicalSQLDataset(ds_info.get("columns", []), ds_info.get("rows", []))
+                computed = ds.compute_deterministic_kpis()
+                if computed:
+                    return computed
 
-    found_labels: set[str] = set()
-    for cols, rws in all_data:
-        if not cols or not rws:
-            continue
-        c_lower = [c.lower() for c in cols]
-
-        # 1. Total Orders
-        ord_idx = next(
-            (i for i, c in enumerate(c_lower) if any(k in c for k in ["order_count", "total_orders", "orders_count", "orders"])),
-            None,
-        )
-        if ord_idx is not None and "Total Orders" not in found_labels:
-            vals = [_safe_float(r[ord_idx] if isinstance(r, (list, tuple)) else r.get(cols[ord_idx]), 0.0) for r in rws]
-            total_ord = int(sum(vals))
-            kpis.append({"label": "Total Orders", "value": f"{total_ord:,}", "note": "Verified order count"})
-            found_labels.add("Total Orders")
-
-        # 2. Sales volume
-        sales_idx = next(
-            (i for i, c in enumerate(c_lower) if any(k in c for k in ["sales_volume", "gross_sales", "subtotal", "gross_item_sales"])),
-            None,
-        )
-        if sales_idx is not None and "Sales Volume" not in found_labels:
-            vals = [_safe_float(r[sales_idx] if isinstance(r, (list, tuple)) else r.get(cols[sales_idx]), 0.0) for r in rws]
-            tot_sales = sum(vals)
-            kpis.append({"label": "Sales Volume", "value": f"${tot_sales:,.2f}", "note": "Gross subtotal"})
-            found_labels.add("Sales Volume")
-
-        # 3. Total Revenue
-        rev_idx = next(
-            (i for i, c in enumerate(c_lower) if any(k in c for k in ["total_revenue", "captured_revenue", "total_amount", "revenue", "net_amount"]) and (sales_idx is None or i != sales_idx)),
-            None,
-        )
-        if rev_idx is not None and "Total Revenue" not in found_labels:
-            vals = [_safe_float(r[rev_idx] if isinstance(r, (list, tuple)) else r.get(cols[rev_idx]), 0.0) for r in rws]
-            tot_rev = sum(vals)
-            kpis.append({"label": "Total Revenue", "value": f"${tot_rev:,.2f}", "note": "Net total amount"})
-            found_labels.add("Total Revenue")
-
-        # 4. Transactions
-        tx_idx = next(
-            (i for i, c in enumerate(c_lower) if any(k in c for k in ["transaction", "transactions_count", "payment_count", "payments"])),
-            None,
-        )
-        if tx_idx is not None and "Total Transactions" not in found_labels:
-            vals = [_safe_float(r[tx_idx] if isinstance(r, (list, tuple)) else r.get(cols[tx_idx]), 0.0) for r in rws]
-            tot_tx = int(sum(vals))
-            kpis.append({"label": "Transactions", "value": f"{tot_tx:,}", "note": "Processed payments"})
-            found_labels.add("Total Transactions")
-
-    return kpis
+    return []
 
 
 def _synthesize_charts_from_intent(
@@ -830,7 +787,16 @@ class AgentOrchestrator:
                 )
             except OllamaClientError as exc:
                 if isinstance(exc, OllamaEmptyResponseError):
-                    if last_schema_result:
+                    user_wants_report = bool(_REPORT_INTENT_RE.search(cleaned_user_msg))
+                    if user_wants_report and not executed_sql and not self.session_datasets and not attempted_recovery and iterations < max_iterations:
+                        attempted_recovery = True
+                        log.info("Caught OllamaEmptyResponseError after schema inspection; prompting for SQL query.")
+                        self.conversation.add_user_message(
+                            "Database schema inspected. Please proceed with constructing and executing the read-only SQL query for the requested report using 'prepare_sql_query' and 'execute_readonly_sql'."
+                        )
+                        continue
+
+                    if last_schema_result and not user_wants_report:
                         final_message = _synthesize_schema_summary(last_schema_result)
                         overall_status = "success"
                         termination_reason = "deterministic_schema_synthesis_after_empty_error"
@@ -1002,16 +968,27 @@ class AgentOrchestrator:
                     termination_reason = "final_assistant_text_received"
                 else:
                     # Model returned empty text without tool calls
+                    user_wants_report = bool(_REPORT_INTENT_RE.search(cleaned_user_msg))
+                    if user_wants_report and not executed_sql and not self.session_datasets and not attempted_recovery and iterations < max_iterations:
+                        attempted_recovery = True
+                        log.info(
+                            "Model returned empty text after schema inspection but user requested a report. Prompting for SQL construction."
+                        )
+                        self.conversation.add_user_message(
+                            "Database schema inspected. Please proceed with constructing and executing the read-only SQL query for the requested report using 'prepare_sql_query' and 'execute_readonly_sql'."
+                        )
+                        continue
+
                     # Check if verified MCP results exist from earlier tool execution in this session
-                    if last_schema_result:
+                    if last_schema_result and not user_wants_report:
                         final_message = _synthesize_schema_summary(last_schema_result)
                         termination_reason = "deterministic_schema_synthesis"
                         log.info(
-                            "Model returned empty text after MCP schema inspection. "
+                            "Model returned empty text after MCP schema inspection for schema request. "
                             "Deterministically synthesized response from verified MCP schema data (%d tables).",
                             len(last_schema_result.get("tables", [])),
                         )
-                    elif last_sample_result:
+                    elif last_sample_result and not user_wants_report:
                         final_message = _synthesize_table_sample_summary(last_sample_result)
                         termination_reason = "deterministic_sample_synthesis"
                         log.info("Model returned empty text after MCP table sampling. Synthesized response from verified sample.")
@@ -1032,6 +1009,9 @@ class AgentOrchestrator:
                             "Please provide a direct, meaningful answer to the request above."
                         )
                         continue
+                    elif last_schema_result:
+                        final_message = _synthesize_schema_summary(last_schema_result)
+                        termination_reason = "deterministic_schema_synthesis"
                     else:
                         overall_status = "error"
                         error_msg = (
@@ -1521,18 +1501,16 @@ class AgentOrchestrator:
                     # SQL Visibility Policy: Include SQL ONLY if user explicitly requested it
                     t_args["include_sql"] = user_explicitly_wants_sql or bool(t_args.get("include_sql"))
 
-                    # Auto-synthesize KPIs if none supplied or if supplied as strings
-                    raw_kpis = t_args.get("kpis")
-                    if not raw_kpis or any(isinstance(k, str) for k in raw_kpis):
-                        synth_kpis = _synthesize_kpis(
-                            t_args.get("columns", sql_columns),
-                            t_args.get("rows", sql_rows),
-                            self.session_datasets,
-                        )
-                        if synth_kpis:
-                            t_args["kpis"] = synth_kpis
-                            component_status["kpi_generation"] = "success"
-                    else:
+                    # Deterministic KPI calculation from authoritative SQL dataset (Single Source of Truth)
+                    synth_kpis = _synthesize_kpis(
+                        t_args.get("columns", sql_columns),
+                        t_args.get("rows", sql_rows),
+                        self.session_datasets,
+                    )
+                    if synth_kpis:
+                        t_args["kpis"] = synth_kpis
+                        component_status["kpi_generation"] = "success"
+                    elif t_args.get("kpis"):
                         component_status["kpi_generation"] = "success"
 
                     # Auto-inject findings with reporting period if omitted
@@ -1753,10 +1731,19 @@ class AgentOrchestrator:
 
         # Enforce invariant: if overall_status == "success", final_message must be non-empty
         if overall_status == "success" and not (final_message and final_message.strip()):
-            overall_status = "error"
-            error_msg = "Agent completed execution but failed to produce a user-facing response."
-            final_message = error_msg
-            termination_reason = "empty_final_message_invariant_failure"
+            if generated_reports:
+                rep = generated_reports[-1]
+                rep_path = rep.get("output_path", "")
+                final_message = f"Report successfully generated and saved to:\n`{rep_path}`"
+                termination_reason = "report_delivery_response_synthesized"
+            elif executed_sql and (sql_rows or sql_columns):
+                final_message = _synthesize_sql_execution_summary(executed_sql, sql_columns, sql_rows)
+                termination_reason = "sql_summary_response_synthesized"
+            else:
+                overall_status = "error"
+                error_msg = "Agent completed execution but failed to produce a user-facing response."
+                final_message = error_msg
+                termination_reason = "empty_final_message_invariant_failure"
 
         log.info(
             "Orchestration loop terminating: reason='%s' iterations=%d status=%s final_msg_len=%d",

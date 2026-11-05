@@ -134,6 +134,33 @@ def extract_chart_data(
     if not columns or not rows:
         return [], [], []
 
+    try:
+        from .canonical_data import CanonicalSQLDataset, ChartSpecification
+
+        ds = CanonicalSQLDataset(columns, rows)
+        group_candidate = getattr(config, "series_column", None)
+        if not group_candidate and config.series and len(config.series) == 1:
+            if config.series[0] in columns and config.series[0] != (config.x_axis or config.category_dimension):
+                group_candidate = config.series[0]
+
+        spec = ChartSpecification(
+            title=config.title or "Chart",
+            chart_type=config.chart_type,
+            x_axis=config.x_axis or config.category_dimension or "",
+            y_axis=config.y_axis or config.numerical_measure or (config.series if config.series else ""),
+            aggregation_method=config.aggregation,
+            sorting=config.sorting,
+            grouping=group_candidate,
+            chart_settings=config.chart_options,
+        )
+        transformed = ds.extract_and_transform_chart(spec)
+        if transformed.is_valid and transformed.categories:
+            if transformed.percentages:
+                setattr(config, "_percentages", transformed.percentages)
+            return transformed.categories, transformed.data_series, transformed.series_names
+    except Exception as exc:
+        log.warning("Canonical chart transformation fallback: %s", exc)
+
     # Normalize rows to list of dicts
     dict_rows: list[dict[str, Any]] = []
     if isinstance(rows[0], Mapping):
@@ -260,16 +287,16 @@ def render_pie_or_donut(
     values = data_series[0]
     filtered_cats: list[str] = []
     filtered_vals: list[float] = []
-    total = sum(v for v in values if v > 0) or 1.0
 
     for c, v in zip(categories, values):
-        if v > 0:
+        if v >= 0:
             filtered_cats.append(c)
             filtered_vals.append(v)
 
-    if not filtered_vals:
+    if not filtered_vals or sum(filtered_vals) <= 0:
         return _empty_chart_drawing(w, h, title, "All values are zero or negative.")
 
+    total = sum(filtered_vals)
     d = Drawing(w, h)
     d.add(Rect(0, 0, w, h, fillColor=colors.white, strokeColor=colors.HexColor("#E2E8F0"), strokeWidth=0.5, rx=6, ry=6))
     if title:
@@ -293,6 +320,13 @@ def render_pie_or_donut(
         pie.slices[idx].fillColor = PALETTE[idx % len(PALETTE)]
     d.add(pie)
 
+    # Precalculated exact percentages from CanonicalSQLDataset if available
+    precalc_pcts = getattr(config, "_percentages", None)
+    if precalc_pcts and len(precalc_pcts) == len(filtered_vals):
+        pct_strs = [f"{p:.1f}%" for p in precalc_pcts]
+    else:
+        pct_strs = [f"{v * 100.0 / total:.1f}%" for v in filtered_vals]
+
     # Legend
     leg = Legend()
     leg.x = pie.x + pie.width + 20
@@ -306,8 +340,8 @@ def render_pie_or_donut(
     leg.strokeWidth = 0.5
     leg.strokeColor = colors.transparent
     leg.colorNamePairs = [
-        (PALETTE[i % len(PALETTE)], f"{filtered_cats[i][:18]} ({filtered_vals[i] * 100.0 / total:.1f}%)")
-        for i in range(min(8, len(filtered_vals)))
+        (PALETTE[i % len(PALETTE)], f"{filtered_cats[i][:18]} ({pct_strs[i]})")
+        for i in range(len(filtered_vals))
     ]
     d.add(leg)
     return d

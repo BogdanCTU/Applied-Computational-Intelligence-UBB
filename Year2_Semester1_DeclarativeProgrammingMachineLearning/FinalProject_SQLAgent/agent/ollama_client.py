@@ -18,7 +18,8 @@ from config.settings import LOCAL_HOSTS, OllamaSettings
 log = logging.getLogger(__name__)
 
 # Regular expressions for cleaning and isolating JSON in fallback responses
-_JSON_BLOCK_RE = re.compile(r"```(?:json)?\s*(\{.*?\})\s*```", re.DOTALL)
+_JSON_BLOCK_RE = re.compile(r"```(?:json)?\s*(\{.*?\}|\[.*?\])\s*```", re.DOTALL)
+_TOOL_CALL_TAG_RE = re.compile(r"<tool_call>\s*([\s\S]*?)\s*</tool_call>", re.IGNORECASE)
 
 
 class OllamaClientError(RuntimeError):
@@ -463,29 +464,25 @@ class OllamaClient:
                         )
                     )
 
-            # Fallback check: if native mode returned empty tool_calls but content has explicit tool call
-            if not tool_calls and content.strip():
-                extracted = self._extract_json_tool_call(content)
-                if extracted:
-                    tool_calls.append(extracted)
-                else:
-                    fn_call = self._extract_text_function_call(content)
-                    if fn_call:
-                        tool_calls.append(fn_call)
+            # Fallback check: if native mode returned empty tool_calls
+            if not tool_calls:
+                for candidate_src in [content, raw_content_val, thinking or ""]:
+                    if candidate_src and candidate_src.strip():
+                        extracted = self._extract_all_tool_calls(candidate_src)
+                        if extracted:
+                            tool_calls.extend(extracted)
+                            log.info("Extracted %d tool call(s) from assistant response fallback", len(extracted))
+                            break
 
         elif tool_mode == "json":
             # Parse structured JSON fallback response
-            extracted = self._extract_json_tool_call(content)
+            extracted = self._extract_all_tool_calls(content)
             if extracted:
-                tool_calls.append(extracted)
+                tool_calls.extend(extracted)
             else:
-                fn_call = self._extract_text_function_call(content)
-                if fn_call:
-                    tool_calls.append(fn_call)
-                else:
-                    final_msg = self._extract_json_final_response(content)
-                    if final_msg is not None:
-                        content = final_msg
+                final_msg = self._extract_json_final_response(content)
+                if final_msg is not None:
+                    content = final_msg
 
         # Empty assistant response check
         if not content.strip() and not tool_calls and not thinking:
@@ -542,6 +539,119 @@ class OllamaClient:
         )
         resp.used_fallback = True
         return resp
+
+    @classmethod
+    def _extract_single_tool_call_from_dict(cls, data: Any) -> OllamaToolCall | None:
+        if not isinstance(data, dict):
+            return None
+        # Case A: {"function": {"name": ..., "arguments": ...}}
+        if "function" in data and isinstance(data["function"], dict):
+            t_name = data["function"].get("name")
+            raw_args = data["function"].get("arguments", {})
+            if isinstance(raw_args, str):
+                try:
+                    raw_args = json.loads(raw_args)
+                except json.JSONDecodeError:
+                    raw_args = {}
+            if t_name and isinstance(t_name, str):
+                return OllamaToolCall(
+                    id=f"json_call_{t_name}",
+                    name=t_name,
+                    arguments=raw_args if isinstance(raw_args, dict) else {},
+                )
+
+        # Case B: {"type": "tool_call", "tool": ..., "arguments": ...}
+        t_name = None
+        if data.get("type") == "tool_call":
+            t_name = data.get("tool") or data.get("name")
+        elif "tool" in data and isinstance(data["tool"], str):
+            t_name = data["tool"]
+        elif "action" in data and isinstance(data["action"], str) and data["action"] != "final_response":
+            t_name = data["action"]
+        elif "name" in data and isinstance(data["name"], str) and data["name"] not in {"assistant", "user", "system"}:
+            t_name = data["name"]
+
+        if t_name and isinstance(t_name, str):
+            raw_args = (
+                data.get("arguments")
+                or data.get("parameters")
+                or data.get("params")
+                or data.get("args")
+            )
+            if raw_args is None:
+                reserved = {"type", "tool", "name", "action", "function", "id", "thought", "thinking"}
+                raw_args = {k: v for k, v in data.items() if k not in reserved}
+            if isinstance(raw_args, str):
+                try:
+                    raw_args = json.loads(raw_args)
+                except json.JSONDecodeError:
+                    raw_args = {}
+            return OllamaToolCall(
+                id=f"json_call_{t_name}",
+                name=t_name,
+                arguments=raw_args if isinstance(raw_args, dict) else {},
+            )
+        return None
+
+    @classmethod
+    def _extract_all_tool_calls(cls, text: str) -> list[OllamaToolCall]:
+        """Extract all valid tool calls from response text across JSON, XML tags, or markdown blocks."""
+        cleaned = text.strip()
+        calls: list[OllamaToolCall] = []
+
+        # 1. Search for <tool_call> tags
+        for match in _TOOL_CALL_TAG_RE.finditer(cleaned):
+            inner = match.group(1).strip()
+            try:
+                data = json.loads(inner)
+                if isinstance(data, list):
+                    for item in data:
+                        tc = cls._extract_single_tool_call_from_dict(item)
+                        if tc:
+                            calls.append(tc)
+                elif isinstance(data, dict):
+                    tc = cls._extract_single_tool_call_from_dict(data)
+                    if tc:
+                        calls.append(tc)
+            except json.JSONDecodeError:
+                pass
+
+        # 2. Search for markdown ```json ... ``` blocks
+        for match in _JSON_BLOCK_RE.finditer(cleaned):
+            inner = match.group(1).strip()
+            try:
+                data = json.loads(inner)
+                if isinstance(data, list):
+                    for item in data:
+                        tc = cls._extract_single_tool_call_from_dict(item)
+                        if tc:
+                            calls.append(tc)
+                elif isinstance(data, dict):
+                    if "tool_calls" in data and isinstance(data["tool_calls"], list):
+                        for item in data["tool_calls"]:
+                            tc = cls._extract_single_tool_call_from_dict(item)
+                            if tc:
+                                calls.append(tc)
+                    else:
+                        tc = cls._extract_single_tool_call_from_dict(data)
+                        if tc:
+                            calls.append(tc)
+            except json.JSONDecodeError:
+                pass
+
+        # 3. Direct JSON or bracketed if not found yet
+        if not calls:
+            single = cls._extract_json_tool_call(cleaned)
+            if single:
+                calls.append(single)
+
+        # 4. Text function calls
+        if not calls:
+            fn_call = cls._extract_text_function_call(cleaned)
+            if fn_call:
+                calls.append(fn_call)
+
+        return calls
 
     @classmethod
     def _extract_json_tool_call(cls, text: str) -> OllamaToolCall | None:
