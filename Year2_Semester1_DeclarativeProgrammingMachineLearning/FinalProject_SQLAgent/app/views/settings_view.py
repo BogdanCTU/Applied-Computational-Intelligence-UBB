@@ -1,0 +1,299 @@
+"""Settings dialog allowing inspection and persistence of application configuration."""
+
+from __future__ import annotations
+
+import logging
+from pathlib import Path
+from typing import Any
+from urllib.parse import urlparse
+
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtWidgets import (
+    QCheckBox,
+    QComboBox,
+    QDialog,
+    QFileDialog,
+    QFormLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QMessageBox,
+    QPushButton,
+    QSpinBox,
+    QVBoxLayout,
+    QWidget,
+)
+
+from app.workers.agent_worker import OllamaCheckWorker
+from config.settings import AppSettings, LOCAL_HOSTS, save_settings
+
+log = logging.getLogger(__name__)
+
+
+class SettingsView(QDialog):
+    """Configuration management dialog with connection test and local persistence."""
+
+    settings_saved = Signal(object)  # Emits updated AppSettings
+
+    def __init__(
+        self,
+        settings: AppSettings,
+        *,
+        parent: QWidget | None = None,
+    ) -> None:
+        super().__init__(parent)
+        self.settings = settings
+        self._check_worker: OllamaCheckWorker | None = None
+
+        self.setWindowTitle("Application Settings")
+        self.setMinimumSize(600, 560)
+        self.resize(650, 600)
+
+        self._init_ui()
+        self._load_from_settings()
+
+    def _init_ui(self) -> None:
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(18, 18, 18, 18)
+        layout.setSpacing(14)
+
+        # -------------------------------------------------------------
+        # 1. Local Ollama Settings Group
+        # -------------------------------------------------------------
+        grp_ollama = QGroupBox("Local Ollama Configuration")
+        form_ollama = QFormLayout(grp_ollama)
+        form_ollama.setSpacing(10)
+
+        # Host input
+        self.edit_host = QLineEdit()
+        self.edit_host.setPlaceholderText("http://localhost:11434")
+        form_ollama.addRow("Ollama Endpoint:", self.edit_host)
+
+        # Model input & detection
+        model_row = QHBoxLayout()
+        self.combo_model = QComboBox()
+        self.combo_model.setEditable(True)
+        self.combo_model.addItem("qwen3.5:4b")
+        model_row.addWidget(self.combo_model, stretch=1)
+
+        self.btn_test_conn = QPushButton("Test Connection")
+        self.btn_test_conn.clicked.connect(self._on_test_connection)
+        model_row.addWidget(self.btn_test_conn)
+        form_ollama.addRow("Model Name:", model_row)
+
+        # Connection status feedback label
+        self.lbl_conn_status = QLabel("Click 'Test Connection' to verify local Ollama.")
+        self.lbl_conn_status.setStyleSheet("color: #9ca3af; font-size: 11px;")
+        form_ollama.addRow("", self.lbl_conn_status)
+
+        # Timeout & Keep-alive
+        self.spin_request_timeout = QSpinBox()
+        self.spin_request_timeout.setRange(5, 600)
+        self.spin_request_timeout.setSuffix(" seconds")
+        form_ollama.addRow("Request Timeout:", self.spin_request_timeout)
+
+        self.combo_tool_mode = QComboBox()
+        self.combo_tool_mode.addItems(["auto", "native", "json"])
+        form_ollama.addRow("Tool Mode Protocol:", self.combo_tool_mode)
+
+        layout.addWidget(grp_ollama)
+
+        # -------------------------------------------------------------
+        # 2. Database & SQL Governance Group
+        # -------------------------------------------------------------
+        grp_db = QGroupBox("Database & Security Controls")
+        form_db = QFormLayout(grp_db)
+        form_db.setSpacing(10)
+
+        self.edit_db_path = QLineEdit()
+        self.edit_db_path.setReadOnly(True)
+        form_db.addRow("Database Path:", self.edit_db_path)
+
+        self.spin_query_timeout = QSpinBox()
+        self.spin_query_timeout.setRange(1, 120)
+        self.spin_query_timeout.setSuffix(" seconds")
+        form_db.addRow("Query Timeout:", self.spin_query_timeout)
+
+        self.spin_max_rows = QSpinBox()
+        self.spin_max_rows.setRange(10, 50000)
+        self.spin_max_rows.setSingleStep(50)
+        form_db.addRow("Max Query Rows:", self.spin_max_rows)
+
+        self.chk_require_approval = QCheckBox("Mandatory SQL Approval (Prompts user before query execution)")
+        form_db.addRow("", self.chk_require_approval)
+
+        self.spin_max_iterations = QSpinBox()
+        self.spin_max_iterations.setRange(2, 100)
+        form_db.addRow("Max Agent Iterations:", self.spin_max_iterations)
+
+        layout.addWidget(grp_db)
+
+        # -------------------------------------------------------------
+        # 3. Reports & Storage Group
+        # -------------------------------------------------------------
+        grp_reports = QGroupBox("Reports Storage")
+        form_reports = QFormLayout(grp_reports)
+        form_reports.setSpacing(10)
+
+        dir_row = QHBoxLayout()
+        self.edit_output_dir = QLineEdit()
+        dir_row.addWidget(self.edit_output_dir, stretch=1)
+
+        btn_browse_dir = QPushButton("Browse...")
+        btn_browse_dir.clicked.connect(self._on_browse_output_dir)
+        dir_row.addWidget(btn_browse_dir)
+        form_reports.addRow("Reports Output Directory:", dir_row)
+
+        self.combo_page_size = QComboBox()
+        self.combo_page_size.addItems(["A4", "LETTER"])
+        form_reports.addRow("PDF Page Size:", self.combo_page_size)
+
+        layout.addWidget(grp_reports)
+
+        layout.addStretch()
+
+        # -------------------------------------------------------------
+        # 4. Action Buttons
+        # -------------------------------------------------------------
+        btn_row = QHBoxLayout()
+        btn_row.addStretch()
+
+        btn_cancel = QPushButton("Cancel")
+        btn_cancel.clicked.connect(self.reject)
+        btn_row.addWidget(btn_cancel)
+
+        self.btn_save = QPushButton("Save Settings")
+        self.btn_save.setObjectName("primary_button")
+        self.btn_save.setProperty("primary", True)
+        self.btn_save.clicked.connect(self._on_save_clicked)
+        btn_row.addWidget(self.btn_save)
+
+        layout.addLayout(btn_row)
+
+    def _load_from_settings(self) -> None:
+        """Populate controls from current AppSettings."""
+        self.edit_host.setText(self.settings.ollama.host)
+
+        model_name = self.settings.ollama.model
+        if self.combo_model.findText(model_name) == -1:
+            self.combo_model.addItem(model_name)
+        self.combo_model.setCurrentText(model_name)
+
+        self.spin_request_timeout.setValue(int(self.settings.ollama.request_timeout_s))
+        self.combo_tool_mode.setCurrentText(self.settings.ollama.tool_mode)
+
+        self.edit_db_path.setText(str(self.settings.database_path))
+        self.spin_query_timeout.setValue(int(self.settings.database.query_timeout_s))
+        self.spin_max_rows.setValue(int(self.settings.database.max_result_rows))
+        self.chk_require_approval.setChecked(self.settings.agent.require_sql_approval)
+        self.spin_max_iterations.setValue(int(self.settings.agent.max_iterations))
+
+        self.edit_output_dir.setText(str(self.settings.output_dir))
+        self.combo_page_size.setCurrentText(self.settings.reports.page_size.upper())
+
+    def _on_browse_output_dir(self) -> None:
+        current_dir = self.edit_output_dir.text().strip() or str(self.settings.output_dir)
+        selected = QFileDialog.getExistingDirectory(self, "Select Reports Output Directory", current_dir)
+        if selected:
+            self.edit_output_dir.setText(selected)
+
+    def _on_test_connection(self) -> None:
+        """Run an asynchronous check against Ollama."""
+        host = self.edit_host.text().strip()
+        parsed = urlparse(host)
+        hostname = (parsed.hostname or "").lower()
+
+        if hostname not in LOCAL_HOSTS:
+            self.lbl_conn_status.setText("❌ Remote hosts are prohibited. Must be localhost or 127.0.0.1.")
+            self.lbl_conn_status.setStyleSheet("color: #ef4444; font-size: 11px;")
+            return
+
+        self.btn_test_conn.setEnabled(False)
+        self.lbl_conn_status.setText("Checking connection to Ollama...")
+        self.lbl_conn_status.setStyleSheet("color: #60a5fa; font-size: 11px;")
+
+        # Clone settings with current input host
+        test_settings = AppSettings()
+        test_settings.ollama.host = host
+
+        self._check_worker = OllamaCheckWorker(test_settings, parent=self)
+        self._check_worker.signals.check_completed.connect(self._on_connection_test_completed)
+        self._check_worker.start()
+
+    def _on_connection_test_completed(
+        self, is_online: bool, ver_or_err: str, installed_models: list[str]
+    ) -> None:
+        self.btn_test_conn.setEnabled(True)
+        if is_online:
+            # Update models list if any found
+            current_choice = self.combo_model.currentText().strip()
+            self.combo_model.clear()
+            for m in installed_models:
+                self.combo_model.addItem(m)
+            if self.combo_model.findText(current_choice) != -1:
+                self.combo_model.setCurrentText(current_choice)
+            elif current_choice:
+                self.combo_model.addItem(current_choice)
+                self.combo_model.setCurrentText(current_choice)
+
+            wanted = self.combo_model.currentText().strip()
+            has_wanted = any(wanted in m for m in installed_models)
+            model_note = f" (Model '{wanted}' found)" if has_wanted else f" (Model '{wanted}' NOT found in Ollama!)"
+
+            self.lbl_conn_status.setText(f"✅ Connected to Ollama {ver_or_err}{model_note}")
+            self.lbl_conn_status.setStyleSheet("color: #10b981; font-size: 11px;")
+        else:
+            self.lbl_conn_status.setText(f"❌ Failed to connect: {ver_or_err}")
+            self.lbl_conn_status.setStyleSheet("color: #ef4444; font-size: 11px;")
+
+    def _on_save_clicked(self) -> None:
+        """Validate input values and save updated settings to settings.json."""
+        host = self.edit_host.text().strip()
+        parsed = urlparse(host)
+        hostname = (parsed.hostname or "").lower()
+
+        if hostname not in LOCAL_HOSTS:
+            QMessageBox.critical(
+                self,
+                "Invalid Ollama Host",
+                "For security and privacy, only local hosts ('localhost', '127.0.0.1') are allowed.\n"
+                "External or remote hosts are strictly forbidden.",
+            )
+            return
+
+        model = self.combo_model.currentText().strip()
+        if not model:
+            QMessageBox.warning(self, "Invalid Model", "Model name cannot be empty.")
+            return
+
+        output_dir = self.edit_output_dir.text().strip()
+        if not output_dir:
+            QMessageBox.warning(self, "Invalid Directory", "Output directory cannot be empty.")
+            return
+
+        # Update settings object
+        self.settings.ollama.host = host
+        self.settings.ollama.model = model
+        self.settings.ollama.request_timeout_s = float(self.spin_request_timeout.value())
+        self.settings.ollama.tool_mode = self.combo_tool_mode.currentText()
+
+        self.settings.database.query_timeout_s = float(self.spin_query_timeout.value())
+        self.settings.database.max_result_rows = int(self.spin_max_rows.value())
+        self.settings.agent.require_sql_approval = self.chk_require_approval.isChecked()
+        self.settings.agent.max_iterations = int(self.spin_max_iterations.value())
+
+        self.settings.reports.output_dir = output_dir
+        self.settings.reports.page_size = self.combo_page_size.currentText()
+
+        # Persist to disk
+        try:
+            save_settings(self.settings)
+            log.info("Settings saved successfully to settings.json")
+        except Exception as exc:  # noqa: BLE001
+            QMessageBox.critical(self, "Save Failed", f"Failed to save settings: {exc}")
+            return
+
+        self.settings_saved.emit(self.settings)
+        self.accept()
+
