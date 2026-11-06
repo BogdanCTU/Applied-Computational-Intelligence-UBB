@@ -27,6 +27,29 @@ from .orchestrator import (
     detect_requested_report_format,
 )
 from .system_prompt import build_system_prompt
+from .task_models import (
+    AgentTask,
+    InvalidStateTransitionError,
+    StepStatus,
+    TaskPlan,
+    TaskStatus,
+    TaskStep,
+)
+from .task_manager import (
+    CyclicDependencyError,
+    DependencyError,
+    InMemoryTaskRepository,
+    MissingDependencyError,
+    SelfDependencyError,
+    StepNotFoundError,
+    TaskError,
+    TaskManager,
+    TaskNotFoundError,
+    TaskRepository,
+    TaskValidationError,
+    validate_plan_dag,
+)
+from .task_planner import TaskPlanner
 from .tool_handler import PERMITTED_TOOLS, ToolHandler, ToolHandlerError
 
 __all__ = [
@@ -36,9 +59,15 @@ __all__ = [
     "AgentEventType",
     "AgentOrchestrator",
     "AgentRunResult",
+    "AgentTask",
     "ApprovalCallbackType",
     "ConversationManager",
     "ConversationMessage",
+    "CyclicDependencyError",
+    "DependencyError",
+    "InMemoryTaskRepository",
+    "InvalidStateTransitionError",
+    "MissingDependencyError",
     "OllamaChatResponse",
     "OllamaClient",
     "OllamaClientError",
@@ -54,8 +83,22 @@ __all__ = [
     "OllamaToolCall",
     "PERMITTED_TOOLS",
     "ProgressCallbackType",
+    "SelfDependencyError",
+    "StepNotFoundError",
+    "StepStatus",
+    "TaskError",
+    "TaskManager",
+    "TaskNotFoundError",
+    "TaskPlan",
+    "TaskPlanner",
+    "TaskRepository",
+    "TaskStatus",
+    "TaskStep",
+    "TaskValidationError",
     "ToolHandler",
     "ToolHandlerError",
     "build_system_prompt",
     "detect_requested_report_format",
+    "mask_sensitive_data",
+    "validate_plan_dag",
 ]
