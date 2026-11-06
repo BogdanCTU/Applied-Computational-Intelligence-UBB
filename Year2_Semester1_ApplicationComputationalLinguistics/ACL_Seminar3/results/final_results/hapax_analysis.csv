@@ -1,0 +1,4 @@
+Language,Code,Corpus,Hapax Count (V1),Hapax % of Tokens,Hapax % of Types,Raw Count,Raw Pct Tokens,Raw Pct Types
+English,EN,Frankenstein,"3,015",4.01%,42.99%,3015,4.009255196074521,42.99158705261657
+Italian,IT,Pinocchio,"3,302",7.95%,53.13%,3302,7.951836243226971,53.12952534191472
+Romanian,RO,Bachelor Thesis,"1,138",13.71%,55.35%,1138,13.709191663654982,55.35019455252919

@@ -1,0 +1,141 @@
+{
+  "execution_timestamp_utc": "2026-11-06T16:48:04.850704+00:00",
+  "student": "Todoran Ciprian Bogdan",
+  "corpora": {
+    "EN": {
+      "title": "Frankenstein",
+      "author": "Mary Shelley",
+      "language": "English",
+      "total_tokens": 75201,
+      "total_unique_types": 7013,
+      "ttr": 0.0933,
+      "top_7_words": [
+        [
+          "the",
+          4195
+        ],
+        [
+          "and",
+          2976
+        ],
+        [
+          "i",
+          2850
+        ],
+        [
+          "of",
+          2642
+        ],
+        [
+          "to",
+          2094
+        ],
+        [
+          "my",
+          1776
+        ],
+        [
+          "a",
+          1391
+        ]
+      ],
+      "top_7_coverage_pct": 23.83,
+      "hapax_legomena": {
+        "hapax_count": 3015,
+        "pct_tokens": 4.01,
+        "pct_types": 42.99
+      },
+      "zipf_graph": "results\\final_results\\graphs\\zipf_en_top200.png"
+    },
+    "IT": {
+      "title": "Pinocchio",
+      "author": "Carlo Collodi",
+      "language": "Italian",
+      "total_tokens": 41525,
+      "total_unique_types": 6215,
+      "ttr": 0.1497,
+      "top_7_words": [
+        [
+          "e",
+          1788
+        ],
+        [
+          "di",
+          1390
+        ],
+        [
+          "che",
+          1042
+        ],
+        [
+          "a",
+          977
+        ],
+        [
+          "il",
+          965
+        ],
+        [
+          "la",
+          742
+        ],
+        [
+          "un",
+          738
+        ]
+      ],
+      "top_7_coverage_pct": 18.4,
+      "hapax_legomena": {
+        "hapax_count": 3302,
+        "pct_tokens": 7.95,
+        "pct_types": 53.13
+      },
+      "zipf_graph": "results\\final_results\\graphs\\zipf_it_top200.png"
+    },
+    "RO": {
+      "title": "Bachelor Thesis",
+      "author": "Todoran Ciprian Bogdan",
+      "language": "Romanian",
+      "total_tokens": 8301,
+      "total_unique_types": 2056,
+      "ttr": 0.2477,
+      "top_7_words": [
+        [
+          "de",
+          351
+        ],
+        [
+          "în",
+          281
+        ],
+        [
+          "a",
+          209
+        ],
+        [
+          "și",
+          168
+        ],
+        [
+          "m",
+          165
+        ],
+        [
+          "pentru",
+          119
+        ],
+        [
+          "un",
+          107
+        ]
+      ],
+      "top_7_coverage_pct": 16.87,
+      "hapax_legomena": {
+        "hapax_count": 1138,
+        "pct_tokens": 13.71,
+        "pct_types": 55.35
+      },
+      "zipf_graph": "results\\final_results\\graphs\\zipf_ro_top200.png"
+    }
+  }
+}

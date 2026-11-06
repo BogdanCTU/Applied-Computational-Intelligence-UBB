@@ -1,0 +1,4 @@
+Language,Code,Corpus Title,Author,Tokens (N),Types (V),Raw Tokens,Raw Types,TTR
+English,EN,Frankenstein,Mary Shelley,"75,201","7,013",75201,7013,0.0933
+Italian,IT,Pinocchio,Carlo Collodi,"41,525","6,215",41525,6215,0.1497
+Romanian,RO,Bachelor Thesis,Todoran Ciprian Bogdan,"8,301","2,056",8301,2056,0.2477
