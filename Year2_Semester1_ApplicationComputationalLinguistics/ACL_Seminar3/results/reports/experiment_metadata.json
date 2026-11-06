@@ -1,0 +1,161 @@
+{
+  "execution_timestamp_utc": "2026-11-06T15:30:28.788464+00:00",
+  "environment": {
+    "python_version": "3.13.17 (tags/v3.13.17:64e080d, Oct 21 2026, 14:08:53) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "package_versions": {
+      "pandas": "3.1.1",
+      "numpy": "2.5.4",
+      "matplotlib": "3.11.2",
+      "scipy": "1.18.1",
+      "nltk": "3.10.4",
+      "reportlab": "5.1.0",
+      "requests": "2.34.2",
+      "pytest": "9.2.0"
+    }
+  },
+  "tokenization_configuration": {
+    "unicode_normalization": "NFC",
+    "apostrophe_handling": "Standardized curly quotes to ASCII single quote; preserved within words",
+    "lowercasing": true,
+    "punctuation_removal": true,
+    "numbers_removal": true,
+    "stopwords_removed": false,
+    "stemming_or_lemmatization": false,
+    "word_token_pattern": "[a-z\u00e0-\u00f6\u00f8-\u00ff]+(?:'[a-z\u00e0-\u00f6\u00f8-\u00ff]+)*"
+  },
+  "corpora": {
+    "frankenstein": {
+      "metadata": {
+        "corpus_id": "frankenstein",
+        "title": "Frankenstein; or, The Modern Prometheus",
+        "author": "Mary Shelley",
+        "language": "English",
+        "original_publication": "1818",
+        "source": "Project Gutenberg (eBook #84)",
+        "source_url": "https://www.gutenberg.org/cache/epub/84/pg84.txt",
+        "local_file": "E:\\PERSONAL\\GitHub\\1_Applied-Computational-Intelligence-UBB\\Year2_Semester1_ApplicationComputationalLinguistics\\ACL_Seminar3\\data\\raw\\frankenstein.txt",
+        "target_tokens": 50000,
+        "is_gutenberg": true,
+        "access_date": "2026-11-06T15:30:22.765742+00:00"
+      },
+      "token_statistics": {
+        "total_tokens": 50000,
+        "unique_words": 5849,
+        "type_token_ratio": 0.11698,
+        "most_frequent_word": "the",
+        "most_frequent_word_count": 2821
+      },
+      "zipf_regression_full": {
+        "n_points": 5849,
+        "slope": -1.077389343430857,
+        "zipf_exponent": 1.077389343430857,
+        "intercept": 3.9636541196335706,
+        "constant_c": 9197.16800083416,
+        "r_squared": 0.9761725207812643,
+        "pearson_correlation": -0.9880144334883293,
+        "p_value": 0.0,
+        "std_err": 0.002201313461124004
+      },
+      "zipf_regression_top100": {
+        "n_points": 100,
+        "slope": -1.01165788445036,
+        "zipf_exponent": 1.01165788445036,
+        "intercept": 3.778661009114908,
+        "constant_c": 6007.046711909111,
+        "r_squared": 0.9835085938540467,
+        "pearson_correlation": -0.9917200178750284,
+        "p_value": 3.584131741380713e-89,
+        "std_err": 0.013233063513302914
+      }
+    },
+    "pinocchio": {
+      "metadata": {
+        "corpus_id": "pinocchio",
+        "title": "Le avventure di Pinocchio",
+        "author": "Carlo Collodi",
+        "language": "Italian",
+        "original_publication": "1883",
+        "source": "Project Gutenberg (eBook #52484)",
+        "source_url": "https://www.gutenberg.org/cache/epub/52484/pg52484.txt",
+        "local_file": "E:\\PERSONAL\\GitHub\\1_Applied-Computational-Intelligence-UBB\\Year2_Semester1_ApplicationComputationalLinguistics\\ACL_Seminar3\\data\\raw\\pinocchio.txt",
+        "target_tokens": null,
+        "is_gutenberg": true,
+        "access_date": "2026-11-06T15:30:24.193725+00:00"
+      },
+      "token_statistics": {
+        "total_tokens": 41525,
+        "unique_words": 6215,
+        "type_token_ratio": 0.14966887417218544,
+        "most_frequent_word": "e",
+        "most_frequent_word_count": 1788
+      },
+      "zipf_regression_full": {
+        "n_points": 6215,
+        "slope": -1.0289885899893128,
+        "zipf_exponent": 1.0289885899893128,
+        "intercept": 3.7682653730998292,
+        "constant_c": 5864.964302538263,
+        "r_squared": 0.9695499227167351,
+        "pearson_correlation": -0.984657261546745,
+        "p_value": 0.0,
+        "std_err": 0.002313497283296557
+      },
+      "zipf_regression_top100": {
+        "n_points": 100,
+        "slope": -0.8652930500814575,
+        "zipf_exponent": 0.8652930500814575,
+        "intercept": 3.483248780706482,
+        "constant_c": 3042.6274614613512,
+        "r_squared": 0.9859886192654174,
+        "pearson_correlation": -0.9929695963449321,
+        "p_value": 1.2183927056776728e-92,
+        "std_err": 0.010419687493374106
+      }
+    },
+    "brown": {
+      "metadata": {
+        "corpus_id": "brown",
+        "title": "Brown Corpus (American English Sample)",
+        "author": "W. N. Francis and H. Ku\u010dera (Compilers)",
+        "language": "American English",
+        "original_publication": "1961 (compiled 1963-1964)",
+        "source": "Brown University / NLTK",
+        "source_url": "https://www.nltk.org/nltk_data/",
+        "local_file": "E:\\PERSONAL\\GitHub\\1_Applied-Computational-Intelligence-UBB\\Year2_Semester1_ApplicationComputationalLinguistics\\ACL_Seminar3\\data\\raw\\brown_sample.txt",
+        "target_tokens": 50000,
+        "is_gutenberg": false,
+        "access_date": "2026-11-06T15:30:25.826203+00:00"
+      },
+      "token_statistics": {
+        "total_tokens": 50000,
+        "unique_words": 8246,
+        "type_token_ratio": 0.16492,
+        "most_frequent_word": "the",
+        "most_frequent_word_count": 3633
+      },
+      "zipf_regression_full": {
+        "n_points": 8246,
+        "slope": -0.979526696893785,
+        "zipf_exponent": 0.979526696893785,
+        "intercept": 3.73111796599732,
+        "constant_c": 5384.160108451365,
+        "r_squared": 0.9692840999576406,
+        "pearson_correlation": -0.9845222699145209,
+        "p_value": 0.0,
+        "std_err": 0.0019204515897568136
+      },
+      "zipf_regression_top100": {
+        "n_points": 100,
+        "slope": -0.9798646211021182,
+        "zipf_exponent": 0.9798646211021182,
+        "intercept": 3.6303298435855824,
+        "constant_c": 4269.036259902753,
+        "r_squared": 0.9913751126351505,
+        "pearson_correlation": -0.9956782174152202,
+        "p_value": 5.740907439754986e-103,
+        "std_err": 0.009232317882817977
+      }
+    }
+  }
+}
