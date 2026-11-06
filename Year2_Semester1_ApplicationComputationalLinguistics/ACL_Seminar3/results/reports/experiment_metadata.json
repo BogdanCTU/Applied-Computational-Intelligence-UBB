@@ -1,5 +1,5 @@
 {
-  "execution_timestamp_utc": "2026-11-06T15:30:28.788464+00:00",
+  "execution_timestamp_utc": "2026-11-06T15:52:30.483315+00:00",
   "environment": {
     "python_version": "3.13.17 (tags/v3.13.17:64e080d, Oct 21 2026, 14:08:53) [MSC v.1944 64 bit (AMD64)]",
     "platform": "Windows-11-10.0.22631-SP0",
@@ -37,7 +37,7 @@
         "local_file": "E:\\PERSONAL\\GitHub\\1_Applied-Computational-Intelligence-UBB\\Year2_Semester1_ApplicationComputationalLinguistics\\ACL_Seminar3\\data\\raw\\frankenstein.txt",
         "target_tokens": 50000,
         "is_gutenberg": true,
-        "access_date": "2026-11-06T15:30:22.765742+00:00"
+        "access_date": "2026-11-06T15:52:28.438910+00:00"
       },
       "token_statistics": {
         "total_tokens": 50000,
@@ -81,7 +81,7 @@
         "local_file": "E:\\PERSONAL\\GitHub\\1_Applied-Computational-Intelligence-UBB\\Year2_Semester1_ApplicationComputationalLinguistics\\ACL_Seminar3\\data\\raw\\pinocchio.txt",
         "target_tokens": null,
         "is_gutenberg": true,
-        "access_date": "2026-11-06T15:30:24.193725+00:00"
+        "access_date": "2026-11-06T15:52:28.441268+00:00"
       },
       "token_statistics": {
         "total_tokens": 41525,
@@ -125,7 +125,7 @@
         "local_file": "E:\\PERSONAL\\GitHub\\1_Applied-Computational-Intelligence-UBB\\Year2_Semester1_ApplicationComputationalLinguistics\\ACL_Seminar3\\data\\raw\\brown_sample.txt",
         "target_tokens": 50000,
         "is_gutenberg": false,
-        "access_date": "2026-11-06T15:30:25.826203+00:00"
+        "access_date": "2026-11-06T15:52:28.442281+00:00"
       },
       "token_statistics": {
         "total_tokens": 50000,

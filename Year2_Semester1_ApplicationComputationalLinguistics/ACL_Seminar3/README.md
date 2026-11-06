@@ -117,6 +117,8 @@ ACL_Seminar_3/
 │       ├── frankenstein_tokens.txt
 │       ├── pinocchio_tokens.txt
 │       └── brown_tokens.txt
+├── notebooks/
+│   └── ACL_Seminar_3_Zipf_Analysis.ipynb # Self-contained Jupyter Notebook
 ├── results/
 │   ├── csv/                              # Quantitative CSV outputs
 │   │   ├── corpus_comparison.csv         # Consolidated statistical summary
@@ -182,15 +184,24 @@ pip install -r requirements.txt
 
 ## Execution Guide
 
-### Full End-to-End Execution
+The project provides two independent, fully supported execution methods:
+1. **Command-Line Interface (Modular Application)**: `main.py`
+2. **Interactive Jupyter Notebook**: `notebooks/ACL_Seminar_3_Zipf_Analysis.ipynb`
 
-Run the complete pipeline (download, preprocess, analyze, graph, PDF report):
+Both methods are completely reproducible and generate identical statistical tables, 300 DPI visualizations, and academic PDF reports.
+
+---
+
+### Method 1: Modular Application (CLI)
+
+#### Full End-to-End Pipeline
+Run the complete pipeline (download, preprocess, analyze, graphs, CSVs, PDF report):
 
 ```powershell
 python main.py
 ```
 
-### Command-Line Options
+#### Command-Line Options
 
 ```powershell
 # Download and cache corpora only
@@ -204,6 +215,29 @@ python main.py --force-download
 
 # Enable detailed verbose logging
 python main.py --verbose
+```
+
+---
+
+### Method 2: Self-Contained Jupyter Notebook
+
+The notebook `notebooks/ACL_Seminar_3_Zipf_Analysis.ipynb` contains the entire computational workflow from end to end without any dependencies on `src/`.
+
+#### Interactive Execution (Jupyter or VS Code / Antigravity IDE)
+1. Open `notebooks/ACL_Seminar_3_Zipf_Analysis.ipynb` in your IDE or launch Jupyter:
+   ```powershell
+   jupyter lab
+   ```
+2. Select the `.venv` Python kernel.
+3. Click **Run All Cells**.
+
+#### Headless Execution from Terminal
+To execute and validate the entire notebook from the command line:
+
+```powershell
+python -m nbclient notebooks/ACL_Seminar_3_Zipf_Analysis.ipynb
+# or
+jupyter nbconvert --to notebook --execute --inplace notebooks/ACL_Seminar_3_Zipf_Analysis.ipynb
 ```
 
 ---
