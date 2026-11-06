@@ -21,6 +21,8 @@ class TaskStatus(str, Enum):
     PLANNING = "PLANNING"
     RUNNING = "RUNNING"
     WAITING_FOR_APPROVAL = "WAITING_FOR_APPROVAL"
+    INTERRUPTED = "INTERRUPTED"
+    REQUIRES_RECOVERY = "REQUIRES_RECOVERY"
     COMPLETED = "COMPLETED"
     FAILED = "FAILED"
     CANCELLED = "CANCELLED"
@@ -33,6 +35,7 @@ class StepStatus(str, Enum):
     READY = "READY"
     RUNNING = "RUNNING"
     WAITING_FOR_APPROVAL = "WAITING_FOR_APPROVAL"
+    INTERRUPTED = "INTERRUPTED"
     COMPLETED = "COMPLETED"
     FAILED = "FAILED"
     SKIPPED = "SKIPPED"
@@ -46,15 +49,41 @@ class InvalidStateTransitionError(ValueError):
 # Valid transition maps
 VALID_TASK_TRANSITIONS: dict[TaskStatus, set[TaskStatus]] = {
     TaskStatus.PENDING: {TaskStatus.PLANNING, TaskStatus.RUNNING, TaskStatus.CANCELLED},
-    TaskStatus.PLANNING: {TaskStatus.RUNNING, TaskStatus.FAILED, TaskStatus.CANCELLED},
+    TaskStatus.PLANNING: {
+        TaskStatus.PENDING,
+        TaskStatus.RUNNING,
+        TaskStatus.INTERRUPTED,
+        TaskStatus.REQUIRES_RECOVERY,
+        TaskStatus.FAILED,
+        TaskStatus.CANCELLED,
+    },
     TaskStatus.RUNNING: {
         TaskStatus.WAITING_FOR_APPROVAL,
+        TaskStatus.INTERRUPTED,
+        TaskStatus.REQUIRES_RECOVERY,
         TaskStatus.COMPLETED,
         TaskStatus.FAILED,
         TaskStatus.CANCELLED,
     },
     TaskStatus.WAITING_FOR_APPROVAL: {
         TaskStatus.RUNNING,
+        TaskStatus.INTERRUPTED,
+        TaskStatus.REQUIRES_RECOVERY,
+        TaskStatus.FAILED,
+        TaskStatus.CANCELLED,
+    },
+    TaskStatus.INTERRUPTED: {
+        TaskStatus.PLANNING,
+        TaskStatus.RUNNING,
+        TaskStatus.WAITING_FOR_APPROVAL,
+        TaskStatus.REQUIRES_RECOVERY,
+        TaskStatus.FAILED,
+        TaskStatus.CANCELLED,
+    },
+    TaskStatus.REQUIRES_RECOVERY: {
+        TaskStatus.PLANNING,
+        TaskStatus.RUNNING,
+        TaskStatus.WAITING_FOR_APPROVAL,
         TaskStatus.FAILED,
         TaskStatus.CANCELLED,
     },
@@ -73,6 +102,7 @@ VALID_STEP_TRANSITIONS: dict[StepStatus, set[StepStatus]] = {
     },
     StepStatus.RUNNING: {
         StepStatus.WAITING_FOR_APPROVAL,
+        StepStatus.INTERRUPTED,
         StepStatus.COMPLETED,
         StepStatus.FAILED,
         StepStatus.CANCELLED,
@@ -81,6 +111,15 @@ VALID_STEP_TRANSITIONS: dict[StepStatus, set[StepStatus]] = {
         StepStatus.RUNNING,
         StepStatus.COMPLETED,
         StepStatus.FAILED,
+        StepStatus.CANCELLED,
+    },
+    StepStatus.INTERRUPTED: {
+        StepStatus.READY,
+        StepStatus.RUNNING,
+        StepStatus.WAITING_FOR_APPROVAL,
+        StepStatus.COMPLETED,
+        StepStatus.FAILED,
+        StepStatus.SKIPPED,
         StepStatus.CANCELLED,
     },
     StepStatus.COMPLETED: set(),

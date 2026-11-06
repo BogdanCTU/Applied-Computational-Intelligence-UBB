@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+import sys
+import threading
 from pathlib import Path
 import pytest
 
+from agent.task_manager import StepNotFoundError, TaskNotFoundError
 from agent.task_models import (
     AgentTask,
     StepStatus,
@@ -19,6 +22,7 @@ from memory.models import (
     TaskHistoryItem,
     TaskToolCallRecord,
 )
+from config.paths import get_memory_database_path
 from memory.repository import SQLiteMemoryRepository
 
 
@@ -430,4 +434,213 @@ def test_skill_registry_registration_and_retrieval(tmp_path: Path) -> None:
     sql_skills = repo.get_registered_skills(domain="sql")
     assert len(sql_skills) == 1
     assert sql_skills[0]["skill_id"] == "sql_schema_analysis"
+
+
+# ---------------------------------------------------------------------------
+# Phase 2.1 Audit & Hardening Tests
+# ---------------------------------------------------------------------------
+
+
+def test_concurrent_multi_threaded_writes(tmp_path: Path) -> None:
+    db_file = tmp_path / "concurrent_mem.db"
+    repo = SQLiteMemoryRepository(db_path=db_file)
+
+    errors: list[Exception] = []
+    num_threads = 8
+
+    def worker(tid_index: int) -> None:
+        try:
+            task_id = f"task_thread_{tid_index}"
+            step = TaskStep(step_id=f"step_{tid_index}", name=f"Step {tid_index}")
+            task = AgentTask(
+                task_id=task_id,
+                user_request=f"Thread request {tid_index}",
+                steps=[step],
+            )
+            repo.save(task)
+            repo.save_decision(
+                task_id=task_id,
+                decision_type="concurrency_test",
+                summary=f"Decision from thread {tid_index}",
+                rationale="Testing multi-threaded WAL concurrency",
+            )
+            repo.save_tool_call(
+                task_id=task_id,
+                tool_name="test_tool",
+                arguments={"index": tid_index},
+                result_summary="OK",
+            )
+        except Exception as e:
+            errors.append(e)
+
+    threads = [threading.Thread(target=worker, args=(i,)) for i in range(num_threads)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+
+    assert not errors, f"Concurrent writes produced errors: {errors}"
+
+    all_tasks = repo.list_all(limit=100)
+    assert len(all_tasks) == num_threads
+
+
+def test_explicit_not_found_errors_on_update(tmp_path: Path) -> None:
+    db_file = tmp_path / "errors_mem.db"
+    repo = SQLiteMemoryRepository(db_path=db_file)
+
+    # 1. Update non-existent task status
+    with pytest.raises(TaskNotFoundError) as exc_info:
+        repo.update_task_status("missing_task_id", TaskStatus.COMPLETED)
+    assert "missing_task_id" in str(exc_info.value)
+
+    # 2. Get non-existent task via get_task()
+    with pytest.raises(TaskNotFoundError) as exc_info:
+        repo.get_task("missing_task_id")
+    assert "missing_task_id" in str(exc_info.value)
+
+    # 3. Create a task and try updating a non-existent step
+    task = AgentTask(task_id="t_exists", user_request="Valid task")
+    repo.save(task)
+
+    with pytest.raises(StepNotFoundError) as exc_info:
+        repo.update_step_status("t_exists", "missing_step_id", StepStatus.COMPLETED)
+    assert "missing_step_id" in str(exc_info.value)
+
+
+def test_semantic_fact_update_preserves_unvalidated_status(tmp_path: Path) -> None:
+    db_file = tmp_path / "semantic_preserve.db"
+    repo = SQLiteMemoryRepository(db_path=db_file)
+
+    fact = repo.save_semantic_fact(
+        category="data_quality",
+        subject="orders",
+        fact="Initial observation: orders might have null timestamps.",
+        provenance="llm_observation",
+        is_validated=False,
+    )
+    assert fact.is_validated is False
+
+    # Update fact text without specifying is_validated
+    updated = repo.update_semantic_fact(
+        fact.fact_id,
+        fact="Refined observation: only canceled orders have null delivered_at timestamps.",
+    )
+    assert updated is not None
+    # Must STILL be unvalidated!
+    assert updated.is_validated is False
+
+    # Default retrieval must NOT return it
+    assert len(repo.get_semantic_facts()) == 0
+
+
+def test_validate_semantic_fact_explicit(tmp_path: Path) -> None:
+    db_file = tmp_path / "semantic_validate.db"
+    repo = SQLiteMemoryRepository(db_path=db_file)
+
+    fact = repo.save_semantic_fact(
+        category="business_metric",
+        subject="gmv",
+        fact="GMV includes shipping fee.",
+        provenance="user_feedback",
+        is_validated=False,
+    )
+    assert len(repo.get_semantic_facts()) == 0
+
+    # Explicit validation
+    assert repo.validate_semantic_fact(fact.fact_id) is True
+
+    # Now included in domain facts
+    valid_facts = repo.get_semantic_facts()
+    assert len(valid_facts) == 1
+    assert valid_facts[0].subject == "gmv"
+    assert valid_facts[0].is_validated is True
+
+
+def test_sensitive_data_scrubbed_in_tool_calls(tmp_path: Path) -> None:
+    db_file = tmp_path / "sensitive_tool_call.db"
+    repo = SQLiteMemoryRepository(db_path=db_file)
+
+    task = AgentTask(task_id="t_sec", user_request="Security test")
+    repo.save(task)
+
+    repo.save_tool_call(
+        task_id="t_sec",
+        tool_name="execute_authenticated_query",
+        arguments={
+            "query": "SELECT 1;",
+            "api_key": "sk-secret-12345",
+            "password": "SuperSecretPassword123!",
+            "nested": {
+                "auth_token": "bearer-token-abc",
+                "normal_field": "safe_value",
+            },
+        },
+    )
+
+    calls = repo.get_tool_calls("t_sec")
+    assert len(calls) == 1
+    args = calls[0].arguments
+
+    assert args["query"] == "SELECT 1;"
+    assert args["api_key"] == "[REDACTED_CREDENTIAL]"
+    assert args["password"] == "[REDACTED_CREDENTIAL]"
+    assert args["nested"]["auth_token"] == "[REDACTED_CREDENTIAL]"
+    assert args["nested"]["normal_field"] == "safe_value"
+
+
+def test_decision_rationale_strips_cot_tags(tmp_path: Path) -> None:
+    db_file = tmp_path / "cot_strip.db"
+    repo = SQLiteMemoryRepository(db_path=db_file)
+
+    task = AgentTask(task_id="t_cot", user_request="CoT test")
+    repo.save(task)
+
+    raw_rationale = (
+        "<think>\n"
+        "Need to choose between customers and orders table.\n"
+        "Orders has direct date index.\n"
+        "</think>\n"
+        "Selected orders table because of existing index on order_purchase_timestamp."
+    )
+
+    repo.save_decision(
+        task_id="t_cot",
+        decision_type="index_strategy",
+        summary="Use date index",
+        rationale=raw_rationale,
+    )
+
+    decisions = repo.get_decisions("t_cot")
+    assert len(decisions) == 1
+    persisted_rationale = decisions[0].rationale
+
+    assert "<think>" not in persisted_rationale
+    assert "</think>" not in persisted_rationale
+    assert "Need to choose between" not in persisted_rationale
+    assert persisted_rationale == "Selected orders table because of existing index on order_purchase_timestamp."
+
+
+def test_cross_platform_path_resolution(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    # 1. Default dev environment: relative or absolute path inside project
+    default_p = get_memory_database_path()
+    assert default_p.name == "agent_memory.db"
+
+    # 2. Mock frozen PyInstaller environment on macOS
+    monkeypatch.setattr(sys, "frozen", True, raising=False)
+    monkeypatch.setattr(sys, "_MEIPASS", str(tmp_path / "bundle_extract"), raising=False)
+    monkeypatch.setattr(sys, "platform", "darwin")
+
+    frozen_mac_p = get_memory_database_path()
+    # Must NOT point to _MEIPASS bundle extraction directory!
+    assert str(tmp_path / "bundle_extract") not in str(frozen_mac_p)
+    assert "Application Support" in str(frozen_mac_p)
+
+    # 3. Mock frozen PyInstaller environment on Windows
+    monkeypatch.setattr(sys, "platform", "win32")
+    monkeypatch.setenv("APPDATA", str(tmp_path / "mock_appdata"))
+
+    frozen_win_p = get_memory_database_path()
+    assert str(tmp_path / "bundle_extract") not in str(frozen_win_p)
+    assert str(tmp_path / "mock_appdata") in str(frozen_win_p)
 

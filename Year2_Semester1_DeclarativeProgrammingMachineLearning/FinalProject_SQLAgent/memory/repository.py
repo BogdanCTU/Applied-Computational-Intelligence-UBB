@@ -9,12 +9,27 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 import sqlite3
+import uuid
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterator, Sequence
 
+from agent.checkpoint_models import (
+    CheckpointType,
+    InterruptedOperationRecord,
+    OperationStatus,
+    PendingApprovalSnapshot,
+    RecoveryAttemptRecord,
+    RecoveryPolicy,
+    RecoveryStatus,
+    StepExecutionSnapshot,
+    TaskCheckpoint,
+)
+from agent.events import mask_sensitive_data
+from agent.task_manager import StepNotFoundError, TaskNotFoundError
 from agent.task_models import (
     AgentTask,
     StepStatus,
@@ -54,6 +69,15 @@ def _json_loads(val: Any, default: Any = None) -> Any:
         return default
 
 
+def _strip_reasoning_tags(text: str) -> str:
+    """Strip internal LLM reasoning/chain-of-thought blocks from text."""
+    if not text:
+        return ""
+    # Strip <think>...</think> and unclosed <think>...
+    cleaned = re.sub(r"(?is)<\s*think\s*>.*?(?:<\s*/\s*think\s*>|$)", "", text)
+    return cleaned.strip()
+
+
 class SQLiteMemoryRepository:
     """Thread-safe SQLite repository backing Working, Episodic, and Semantic memory."""
 
@@ -80,13 +104,13 @@ class SQLiteMemoryRepository:
         if auto_migrate:
             self.initialize_schema()
 
-    def initialize_schema(self) -> int:
+    def initialize_schema(self, *, migrations_dir: Path | None = None) -> int:
         """Run migrations and configure WAL mode."""
         with self.connection() as conn:
             # Enable WAL mode for high concurrency
             conn.execute("PRAGMA journal_mode = WAL;")
             conn.execute("PRAGMA synchronous = NORMAL;")
-            return apply_migrations(conn)
+            return apply_migrations(conn, migrations_dir=migrations_dir)
 
     @contextmanager
     def connection(self) -> Iterator[sqlite3.Connection]:
@@ -298,6 +322,13 @@ class SQLiteMemoryRepository:
                 metadata=_json_loads(t_row["metadata"], {}),
             )
 
+    def get_task(self, task_id: str) -> AgentTask:
+        """Fetch task by ID or raise TaskNotFoundError."""
+        task = self.get(task_id)
+        if not task:
+            raise TaskNotFoundError(f"Task with ID '{task_id}' not found.")
+        return task
+
     def list_all(self, limit: int = 100) -> list[AgentTask]:
         """Return all persisted tasks ordered newest to oldest."""
         with self.connection() as conn:
@@ -336,7 +367,7 @@ class SQLiteMemoryRepository:
         st_val = status.value if isinstance(status, TaskStatus) else str(status)
         now_str = _utc_iso_now()
         with self.transaction() as conn:
-            conn.execute(
+            cur = conn.execute(
                 """
                 UPDATE task_runs
                 SET status = ?,
@@ -354,6 +385,8 @@ class SQLiteMemoryRepository:
                     task_id,
                 ),
             )
+            if cur.rowcount == 0:
+                raise TaskNotFoundError(f"Task with ID '{task_id}' not found.")
 
     def update_step_status(
         self,
@@ -368,7 +401,7 @@ class SQLiteMemoryRepository:
         st_val = status.value if isinstance(status, StepStatus) else str(status)
         now_str = _utc_iso_now()
         with self.transaction() as conn:
-            conn.execute(
+            cur = conn.execute(
                 """
                 UPDATE task_steps
                 SET status = ?,
@@ -379,6 +412,8 @@ class SQLiteMemoryRepository:
                 """,
                 (st_val, error, output_reference, now_str, task_id, step_id),
             )
+            if cur.rowcount == 0:
+                raise StepNotFoundError(f"Step '{step_id}' in task '{task_id}' not found.")
 
     def save_decision(
         self,
@@ -391,12 +426,13 @@ class SQLiteMemoryRepository:
         metadata: dict[str, Any] | None = None,
     ) -> TaskDecision:
         """Persist a strategic or analytical choice made by the agent."""
+        cleaned_rationale = _strip_reasoning_tags(rationale)
         decision = TaskDecision(
             task_id=task_id,
             step_id=step_id,
             decision_type=decision_type,
             summary=summary,
-            rationale=rationale,
+            rationale=cleaned_rationale,
             metadata=metadata or {},
         )
         with self.transaction() as conn:
@@ -462,11 +498,12 @@ class SQLiteMemoryRepository:
         metadata: dict[str, Any] | None = None,
     ) -> TaskToolCallRecord:
         """Audit an MCP tool execution in persistent memory."""
+        clean_args = mask_sensitive_data(arguments or {})
         record = TaskToolCallRecord(
             task_id=task_id,
             step_id=step_id,
             tool_name=tool_name,
-            arguments=arguments or {},
+            arguments=clean_args,
             result_summary=result_summary,
             duration_ms=duration_ms,
             status=status,
@@ -879,6 +916,16 @@ class SQLiteMemoryRepository:
         target.updated_at = now_str
         return target
 
+    def validate_semantic_fact(self, fact_id: str) -> bool:
+        """Explicitly validate a semantic fact, admitting it into domain truth."""
+        now_str = _utc_iso_now()
+        with self.transaction() as conn:
+            cur = conn.execute(
+                "UPDATE semantic_facts SET is_validated = 1, updated_at = ? WHERE fact_id = ?;",
+                (now_str, fact_id),
+            )
+            return cur.rowcount > 0
+
     def invalidate_semantic_fact(self, fact_id: str) -> bool:
         """Mark a fact as unvalidated/deprecated so it is excluded from agent execution."""
         now_str = _utc_iso_now()
@@ -908,22 +955,26 @@ class SQLiteMemoryRepository:
         file_path: str,
         *,
         description: str = "",
+        is_enabled: bool = True,
         metadata: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
-        """Record a discovered skill definition in the registry table."""
+        """Record or refresh a discovered skill definition in the registry table."""
         now_str = _utc_iso_now()
         with self.transaction() as conn:
             conn.execute(
                 """
                 INSERT INTO skill_registry (
-                    skill_id, name, domain, version, file_path, description, metadata, created_at, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    skill_id, name, domain, version, file_path, description, is_enabled,
+                    last_discovered_at, metadata, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(skill_id) DO UPDATE SET
                     name = excluded.name,
                     domain = excluded.domain,
                     version = excluded.version,
                     file_path = excluded.file_path,
                     description = excluded.description,
+                    is_enabled = excluded.is_enabled,
+                    last_discovered_at = excluded.last_discovered_at,
                     metadata = excluded.metadata,
                     updated_at = excluded.updated_at;
                 """,
@@ -934,6 +985,8 @@ class SQLiteMemoryRepository:
                     version,
                     file_path,
                     description,
+                    1 if is_enabled else 0,
+                    now_str,
                     _json_dumps(metadata or {}),
                     now_str,
                     now_str,
@@ -946,16 +999,25 @@ class SQLiteMemoryRepository:
             "version": version,
             "file_path": file_path,
             "description": description,
+            "is_enabled": is_enabled,
         }
 
-    def get_registered_skills(self, domain: str | None = None) -> list[dict[str, Any]]:
-        """Fetch registered skills, optionally filtered by domain."""
-        query = "SELECT * FROM skill_registry"
+    def get_registered_skills(
+        self,
+        domain: str | None = None,
+        *,
+        enabled_only: bool = False,
+    ) -> list[dict[str, Any]]:
+        """Fetch registered skills, optionally filtered by domain and enabled status."""
+        clauses: list[str] = []
         params: list[Any] = []
         if domain:
-            query += " WHERE domain = ?"
+            clauses.append("domain = ?")
             params.append(domain)
-        query += " ORDER BY domain ASC, name ASC;"
+        if enabled_only:
+            clauses.append("is_enabled = 1")
+        where = f" WHERE {' AND '.join(clauses)}" if clauses else ""
+        query = f"SELECT * FROM skill_registry{where} ORDER BY domain ASC, name ASC;"
 
         with self.connection() as conn:
             cur = conn.execute(query, params)
@@ -968,8 +1030,528 @@ class SQLiteMemoryRepository:
                     "version": r["version"],
                     "file_path": r["file_path"],
                     "description": r["description"],
+                    "is_enabled": bool(r["is_enabled"]) if "is_enabled" in r.keys() else True,
+                    "last_discovered_at": r["last_discovered_at"] if "last_discovered_at" in r.keys() else None,
                     "metadata": _json_loads(r["metadata"], {}),
                 }
+                for r in rows
+            ]
+
+    def set_skill_enabled(self, skill_id: str, is_enabled: bool) -> bool:
+        """Toggle active status of a skill in persistent memory."""
+        now_str = _utc_iso_now()
+        with self.transaction() as conn:
+            cur = conn.execute(
+                "UPDATE skill_registry SET is_enabled = ?, updated_at = ? WHERE skill_id = ?;",
+                (1 if is_enabled else 0, now_str, skill_id),
+            )
+            return cur.rowcount > 0
+
+    def get_registered_skill(self, skill_id: str) -> dict[str, Any] | None:
+        """Fetch single skill metadata record by skill_id."""
+        with self.connection() as conn:
+            cur = conn.execute("SELECT * FROM skill_registry WHERE skill_id = ?;", (skill_id,))
+            r = cur.fetchone()
+            if not r:
+                return None
+            return {
+                "skill_id": r["skill_id"],
+                "name": r["name"],
+                "domain": r["domain"],
+                "version": r["version"],
+                "file_path": r["file_path"],
+                "description": r["description"],
+                "is_enabled": bool(r["is_enabled"]) if "is_enabled" in r.keys() else True,
+                "last_discovered_at": r["last_discovered_at"] if "last_discovered_at" in r.keys() else None,
+                "metadata": _json_loads(r["metadata"], {}),
+            }
+
+    # -----------------------------------------------------------------------
+    # Phase 3: Checkpointing & Task Recovery
+    # -----------------------------------------------------------------------
+
+    def get_next_checkpoint_sequence(self, task_id: str) -> int:
+        """Get the next sequential checkpoint number for a task."""
+        with self.connection() as conn:
+            cur = conn.execute(
+                "SELECT COALESCE(MAX(sequence_number), 0) + 1 FROM task_checkpoints WHERE task_id = ?;",
+                (task_id,),
+            )
+            row = cur.fetchone()
+            return int(row[0]) if row else 1
+
+    def save_checkpoint(self, checkpoint: TaskCheckpoint) -> TaskCheckpoint:
+        """Persist a cryptographically verified execution snapshot."""
+        if not checkpoint.checksum:
+            checkpoint.set_checksum()
+
+        step_states_dict = {
+            k: (v.model_dump(mode="json") if hasattr(v, "model_dump") else v)
+            for k, v in checkpoint.step_states.items()
+        }
+        pending_approval_json = (
+            checkpoint.pending_approval.model_dump(mode="json")
+            if checkpoint.pending_approval
+            else None
+        )
+
+        with self.transaction() as conn:
+            conn.execute(
+                """
+                INSERT INTO task_checkpoints (
+                    checkpoint_id, task_id, sequence_number, checkpoint_type,
+                    schema_version, task_status, current_stage, current_step_id,
+                    completed_step_ids, pending_step_ids, failed_step_ids,
+                    step_states, decision_ids, pending_approval, artifact_ids,
+                    metadata, checksum, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(task_id, sequence_number) DO UPDATE SET
+                    checkpoint_type = excluded.checkpoint_type,
+                    task_status = excluded.task_status,
+                    current_stage = excluded.current_stage,
+                    current_step_id = excluded.current_step_id,
+                    completed_step_ids = excluded.completed_step_ids,
+                    pending_step_ids = excluded.pending_step_ids,
+                    failed_step_ids = excluded.failed_step_ids,
+                    step_states = excluded.step_states,
+                    decision_ids = excluded.decision_ids,
+                    pending_approval = excluded.pending_approval,
+                    artifact_ids = excluded.artifact_ids,
+                    metadata = excluded.metadata,
+                    checksum = excluded.checksum;
+                """,
+                (
+                    checkpoint.checkpoint_id,
+                    checkpoint.task_id,
+                    checkpoint.sequence_number,
+                    checkpoint.checkpoint_type.value,
+                    checkpoint.schema_version,
+                    checkpoint.task_status.value,
+                    checkpoint.current_stage,
+                    checkpoint.current_step_id,
+                    _json_dumps(checkpoint.completed_step_ids),
+                    _json_dumps(checkpoint.pending_step_ids),
+                    _json_dumps(checkpoint.failed_step_ids),
+                    _json_dumps(step_states_dict),
+                    _json_dumps(checkpoint.decision_ids),
+                    _json_dumps(pending_approval_json) if pending_approval_json else None,
+                    _json_dumps(checkpoint.artifact_ids),
+                    _json_dumps(checkpoint.metadata),
+                    checkpoint.checksum,
+                    checkpoint.created_at,
+                ),
+            )
+        return checkpoint
+
+    def _row_to_checkpoint(self, r: sqlite3.Row) -> TaskCheckpoint:
+        raw_step_states = _json_loads(r["step_states"], {})
+        step_states: dict[str, StepExecutionSnapshot] = {}
+        for k, v in raw_step_states.items():
+            if isinstance(v, dict):
+                step_states[k] = StepExecutionSnapshot.model_validate(v)
+
+        raw_pending = _json_loads(r["pending_approval"])
+        pending_approval = (
+            PendingApprovalSnapshot.model_validate(raw_pending)
+            if raw_pending and isinstance(raw_pending, dict)
+            else None
+        )
+
+        return TaskCheckpoint(
+            checkpoint_id=r["checkpoint_id"],
+            task_id=r["task_id"],
+            sequence_number=int(r["sequence_number"]),
+            checkpoint_type=CheckpointType(r["checkpoint_type"]),
+            schema_version=int(r["schema_version"]),
+            task_status=TaskStatus(r["task_status"]),
+            current_stage=r["current_stage"] or "",
+            current_step_id=r["current_step_id"],
+            completed_step_ids=_json_loads(r["completed_step_ids"], []),
+            pending_step_ids=_json_loads(r["pending_step_ids"], []),
+            failed_step_ids=_json_loads(r["failed_step_ids"], []),
+            step_states=step_states,
+            decision_ids=_json_loads(r["decision_ids"], []),
+            pending_approval=pending_approval,
+            artifact_ids=_json_loads(r["artifact_ids"], []),
+            metadata=_json_loads(r["metadata"], {}),
+            checksum=r["checksum"],
+            created_at=r["created_at"],
+        )
+
+    def get_checkpoint(self, checkpoint_id: str) -> TaskCheckpoint | None:
+        """Fetch a specific checkpoint snapshot by ID."""
+        with self.connection() as conn:
+            cur = conn.execute(
+                "SELECT * FROM task_checkpoints WHERE checkpoint_id = ?;",
+                (checkpoint_id,),
+            )
+            row = cur.fetchone()
+            return self._row_to_checkpoint(row) if row else None
+
+    def get_latest_checkpoint(self, task_id: str) -> TaskCheckpoint | None:
+        """Fetch the most recently recorded checkpoint for a task."""
+        with self.connection() as conn:
+            cur = conn.execute(
+                "SELECT * FROM task_checkpoints WHERE task_id = ? ORDER BY sequence_number DESC LIMIT 1;",
+                (task_id,),
+            )
+            row = cur.fetchone()
+            return self._row_to_checkpoint(row) if row else None
+
+    def get_checkpoint_history(self, task_id: str) -> list[TaskCheckpoint]:
+        """Fetch all checkpoints for a task ordered from earliest to newest."""
+        with self.connection() as conn:
+            cur = conn.execute(
+                "SELECT * FROM task_checkpoints WHERE task_id = ? ORDER BY sequence_number ASC;",
+                (task_id,),
+            )
+            rows = cur.fetchall()
+            return [self._row_to_checkpoint(r) for r in rows]
+
+    # -----------------------------------------------------------------------
+    # Recovery Attempts Persistence
+    # -----------------------------------------------------------------------
+
+    def save_recovery_attempt(self, attempt: RecoveryAttemptRecord) -> RecoveryAttemptRecord:
+        """Persist a task recovery attempt log."""
+        with self.transaction() as conn:
+            conn.execute(
+                """
+                INSERT INTO recovery_attempts (
+                    attempt_id, task_id, checkpoint_id, policy, status,
+                    failure_reason, details, created_at, completed_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+                """,
+                (
+                    attempt.attempt_id,
+                    attempt.task_id,
+                    attempt.checkpoint_id,
+                    attempt.policy.value,
+                    attempt.status.value,
+                    attempt.failure_reason,
+                    _json_dumps(attempt.details),
+                    attempt.created_at,
+                    attempt.completed_at,
+                ),
+            )
+        return attempt
+
+    def update_recovery_attempt(
+        self,
+        attempt_id: str,
+        status: RecoveryStatus | str,
+        *,
+        failure_reason: str | None = None,
+        completed_at: str | None = None,
+        details: dict[str, Any] | None = None,
+    ) -> None:
+        """Update an existing recovery attempt outcome."""
+        st_val = status.value if isinstance(status, RecoveryStatus) else str(status)
+        now_str = completed_at or _utc_iso_now()
+        with self.transaction() as conn:
+            conn.execute(
+                """
+                UPDATE recovery_attempts
+                SET status = ?,
+                    failure_reason = COALESCE(?, failure_reason),
+                    completed_at = ?,
+                    details = CASE WHEN ? THEN ? ELSE details END
+                WHERE attempt_id = ?;
+                """,
+                (
+                    st_val,
+                    failure_reason,
+                    now_str,
+                    details is not None,
+                    _json_dumps(details) if details else None,
+                    attempt_id,
+                ),
+            )
+
+    def get_recovery_history(self, task_id: str) -> list[RecoveryAttemptRecord]:
+        """Fetch all recovery attempts recorded for a task."""
+        with self.connection() as conn:
+            cur = conn.execute(
+                "SELECT * FROM recovery_attempts WHERE task_id = ? ORDER BY created_at ASC;",
+                (task_id,),
+            )
+            rows = cur.fetchall()
+            return [
+                RecoveryAttemptRecord(
+                    attempt_id=r["attempt_id"],
+                    task_id=r["task_id"],
+                    checkpoint_id=r["checkpoint_id"],
+                    policy=RecoveryPolicy(r["policy"]),
+                    status=RecoveryStatus(r["status"]),
+                    failure_reason=r["failure_reason"],
+                    details=_json_loads(r["details"], {}),
+                    created_at=r["created_at"],
+                    completed_at=r["completed_at"],
+                )
+                for r in rows
+            ]
+
+    # -----------------------------------------------------------------------
+    # Interrupted Operations & Idempotency
+    # -----------------------------------------------------------------------
+
+    def _make_op_key(self, task_id: str, step_id: str | None, operation_type: str) -> str:
+        s_id = step_id or "root"
+        return f"{task_id}:{s_id}:{operation_type.strip().lower()}"
+
+    def record_operation_started(
+        self,
+        task_id: str,
+        operation_type: str,
+        *,
+        step_id: str | None = None,
+        operation_key: str | None = None,
+        payload: dict[str, Any] | None = None,
+    ) -> InterruptedOperationRecord:
+        """Record the start of an execution operation."""
+        key = operation_key or self._make_op_key(task_id, step_id, operation_type)
+        now_str = _utc_iso_now()
+        clean_payload = mask_sensitive_data(payload or {})
+        op = InterruptedOperationRecord(
+            task_id=task_id,
+            step_id=step_id,
+            operation_type=operation_type,
+            operation_key=key,
+            status=OperationStatus.STARTED,
+            payload=clean_payload,
+            created_at=now_str,
+            updated_at=now_str,
+        )
+        with self.transaction() as conn:
+            conn.execute(
+                """
+                INSERT INTO interrupted_operations (
+                    operation_id, task_id, step_id, operation_type, operation_key,
+                    status, error, payload, result_summary, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(task_id, operation_key) DO UPDATE SET
+                    status = excluded.status,
+                    error = NULL,
+                    payload = excluded.payload,
+                    updated_at = excluded.updated_at;
+                """,
+                (
+                    op.operation_id,
+                    op.task_id,
+                    op.step_id,
+                    op.operation_type,
+                    op.operation_key,
+                    op.status.value,
+                    None,
+                    _json_dumps(op.payload),
+                    None,
+                    op.created_at,
+                    op.updated_at,
+                ),
+            )
+        return op
+
+    def record_operation_completed(
+        self,
+        task_id: str,
+        operation_type: str,
+        *,
+        step_id: str | None = None,
+        operation_key: str | None = None,
+        result_summary: str | None = None,
+    ) -> InterruptedOperationRecord:
+        """Mark an execution operation as successfully finished."""
+        key = operation_key or self._make_op_key(task_id, step_id, operation_type)
+        now_str = _utc_iso_now()
+        with self.transaction() as conn:
+            conn.execute(
+                """
+                INSERT INTO interrupted_operations (
+                    operation_id, task_id, step_id, operation_type, operation_key,
+                    status, result_summary, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(task_id, operation_key) DO UPDATE SET
+                    status = 'COMPLETED',
+                    result_summary = excluded.result_summary,
+                    error = NULL,
+                    updated_at = excluded.updated_at;
+                """,
+                (
+                    f"op_{uuid.uuid4().hex[:8]}",
+                    task_id,
+                    step_id,
+                    operation_type,
+                    key,
+                    OperationStatus.COMPLETED.value,
+                    result_summary,
+                    now_str,
+                    now_str,
+                ),
+            )
+        ret = self.get_operation(task_id, key)
+        if ret:
+            return ret
+        return InterruptedOperationRecord(
+            task_id=task_id,
+            step_id=step_id,
+            operation_type=operation_type,
+            operation_key=key,
+            status=OperationStatus.COMPLETED,
+            result_summary=result_summary,
+            created_at=now_str,
+            updated_at=now_str,
+        )
+
+    def record_operation_failed(
+        self,
+        task_id: str,
+        operation_type: str,
+        *,
+        step_id: str | None = None,
+        operation_key: str | None = None,
+        error: str = "",
+    ) -> InterruptedOperationRecord:
+        """Mark an execution operation as failed."""
+        key = operation_key or self._make_op_key(task_id, step_id, operation_type)
+        now_str = _utc_iso_now()
+        with self.transaction() as conn:
+            conn.execute(
+                """
+                INSERT INTO interrupted_operations (
+                    operation_id, task_id, step_id, operation_type, operation_key,
+                    status, error, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(task_id, operation_key) DO UPDATE SET
+                    status = 'FAILED',
+                    error = excluded.error,
+                    updated_at = excluded.updated_at;
+                """,
+                (
+                    f"op_{uuid.uuid4().hex[:8]}",
+                    task_id,
+                    step_id,
+                    operation_type,
+                    key,
+                    OperationStatus.FAILED.value,
+                    error,
+                    now_str,
+                    now_str,
+                ),
+            )
+        ret = self.get_operation(task_id, key)
+        if ret:
+            return ret
+        return InterruptedOperationRecord(
+            task_id=task_id,
+            step_id=step_id,
+            operation_type=operation_type,
+            operation_key=key,
+            status=OperationStatus.FAILED,
+            error=error,
+            created_at=now_str,
+            updated_at=now_str,
+        )
+
+    def record_operation_interrupted(
+        self,
+        task_id: str,
+        operation_type: str,
+        *,
+        step_id: str | None = None,
+        operation_key: str | None = None,
+        error: str = "",
+    ) -> InterruptedOperationRecord:
+        """Flag an execution operation as interrupted during recovery reconciliation."""
+        key = operation_key or self._make_op_key(task_id, step_id, operation_type)
+        now_str = _utc_iso_now()
+        with self.transaction() as conn:
+            conn.execute(
+                """
+                INSERT INTO interrupted_operations (
+                    operation_id, task_id, step_id, operation_type, operation_key,
+                    status, error, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(task_id, operation_key) DO UPDATE SET
+                    status = 'INTERRUPTED',
+                    error = excluded.error,
+                    updated_at = excluded.updated_at;
+                """,
+                (
+                    f"op_{uuid.uuid4().hex[:8]}",
+                    task_id,
+                    step_id,
+                    operation_type,
+                    key,
+                    OperationStatus.INTERRUPTED.value,
+                    error,
+                    now_str,
+                    now_str,
+                ),
+            )
+        ret = self.get_operation(task_id, key)
+        if ret:
+            return ret
+        return InterruptedOperationRecord(
+            task_id=task_id,
+            step_id=step_id,
+            operation_type=operation_type,
+            operation_key=key,
+            status=OperationStatus.INTERRUPTED,
+            error=error,
+            created_at=now_str,
+            updated_at=now_str,
+        )
+
+    def get_operation(self, task_id: str, operation_key: str) -> InterruptedOperationRecord | None:
+        """Fetch operation status by unique task and operation key."""
+        with self.connection() as conn:
+            cur = conn.execute(
+                "SELECT * FROM interrupted_operations WHERE task_id = ? AND operation_key = ?;",
+                (task_id, operation_key),
+            )
+            r = cur.fetchone()
+            if not r:
+                return None
+            return InterruptedOperationRecord(
+                operation_id=r["operation_id"],
+                task_id=r["task_id"],
+                step_id=r["step_id"],
+                operation_type=r["operation_type"],
+                operation_key=r["operation_key"],
+                status=OperationStatus(r["status"]),
+                error=r["error"],
+                payload=_json_loads(r["payload"], {}),
+                result_summary=r["result_summary"],
+                created_at=r["created_at"],
+                updated_at=r["updated_at"],
+            )
+
+    def get_interrupted_operations(self, task_id: str) -> list[InterruptedOperationRecord]:
+        """Fetch all incomplete or interrupted operations for a task."""
+        with self.connection() as conn:
+            cur = conn.execute(
+                """
+                SELECT * FROM interrupted_operations
+                WHERE task_id = ? AND status IN ('STARTED', 'INTERRUPTED', 'OUTCOME_UNKNOWN')
+                ORDER BY updated_at ASC;
+                """,
+                (task_id,),
+            )
+            rows = cur.fetchall()
+            return [
+                InterruptedOperationRecord(
+                    operation_id=r["operation_id"],
+                    task_id=r["task_id"],
+                    step_id=r["step_id"],
+                    operation_type=r["operation_type"],
+                    operation_key=r["operation_key"],
+                    status=OperationStatus(r["status"]),
+                    error=r["error"],
+                    payload=_json_loads(r["payload"], {}),
+                    result_summary=r["result_summary"],
+                    created_at=r["created_at"],
+                    updated_at=r["updated_at"],
+                )
                 for r in rows
             ]
 

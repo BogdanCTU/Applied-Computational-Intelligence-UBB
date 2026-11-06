@@ -8,7 +8,7 @@ from pathlib import Path
 
 log = logging.getLogger(__name__)
 
-CURRENT_SCHEMA_VERSION = 1
+CURRENT_SCHEMA_VERSION = 3
 MIGRATIONS_DIR = Path(__file__).resolve().parent
 
 
@@ -20,12 +20,20 @@ class UnsupportedSchemaVersionError(MigrationError):
     """Raised when the database has a newer schema version than supported."""
 
 
-def apply_migrations(conn: sqlite3.Connection) -> int:
+def apply_migrations(
+    conn: sqlite3.Connection,
+    *,
+    migrations_dir: Path | None = None,
+    target_version: int | None = None,
+) -> int:
     """Apply all pending migrations to the database in order.
 
     Ensures foreign keys are enabled and runs each migration in an atomic transaction.
     Returns the final applied schema version.
     """
+    target_dir = migrations_dir or MIGRATIONS_DIR
+    max_target = target_version if target_version is not None else CURRENT_SCHEMA_VERSION
+
     conn.execute("PRAGMA foreign_keys = ON;")
 
     # 1. Ensure schema_migrations table exists
@@ -44,35 +52,45 @@ def apply_migrations(conn: sqlite3.Connection) -> int:
     row = cursor.fetchone()
     current_version = row[0] if row else 0
 
-    if current_version > CURRENT_SCHEMA_VERSION:
+    if current_version > max_target:
         raise UnsupportedSchemaVersionError(
-            f"Database schema version {current_version} is newer than supported version {CURRENT_SCHEMA_VERSION}. "
+            f"Database schema version {current_version} is newer than supported version {max_target}. "
             "Please upgrade the application."
         )
 
     # 3. Apply pending migrations
-    for version in range(current_version + 1, CURRENT_SCHEMA_VERSION + 1):
-        migration_file = MIGRATIONS_DIR / f"{version:03d}_initial_schema.sql"
-        if not migration_file.exists():
-            # Fallback pattern search
-            candidates = list(MIGRATIONS_DIR.glob(f"{version:03d}_*.sql"))
-            if candidates:
-                migration_file = candidates[0]
-            else:
-                raise MigrationError(f"Migration file for version {version} not found in {MIGRATIONS_DIR}")
+    for version in range(current_version + 1, max_target + 1):
+        candidates = list(target_dir.glob(f"{version:03d}_*.sql"))
+        if candidates:
+            migration_file = candidates[0]
+        else:
+            raise MigrationError(f"Migration file for version {version} not found in {target_dir}")
 
         log.info("Applying migration %s...", migration_file.name)
         sql_script = migration_file.read_text(encoding="utf-8")
 
-        # executescript handles transaction boundaries automatically in sqlite3
+        # Guarantee atomic DDL execution: wrap in explicit BEGIN TRANSACTION / COMMIT block.
+        # If any DDL or DML statement fails halfway through, the entire script rolls back cleanly,
+        # leaving zero partial tables and zero recorded migration versions.
         safe_name = migration_file.name.replace("'", "''")
-        full_script = f"{sql_script}\nINSERT INTO schema_migrations (version, name) VALUES ({version}, '{safe_name}');\n"
+        full_script = (
+            f"BEGIN TRANSACTION;\n"
+            f"{sql_script}\n"
+            f"INSERT INTO schema_migrations (version, name) VALUES ({version}, '{safe_name}');\n"
+            f"COMMIT;\n"
+        )
 
         try:
             conn.executescript(full_script)
             log.info("Migration %s applied successfully (version=%d).", migration_file.name, version)
         except Exception as exc:
+            try:
+                conn.execute("ROLLBACK;")
+            except sqlite3.OperationalError:
+                pass
             log.error("Migration %s failed: %s", migration_file.name, exc)
             raise MigrationError(f"Failed to apply migration {migration_file.name}: {exc}") from exc
 
-    return CURRENT_SCHEMA_VERSION
+    cur = conn.execute("SELECT COALESCE(MAX(version), 0) FROM schema_migrations;")
+    row = cur.fetchone()
+    return int(row[0]) if row else 0

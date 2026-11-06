@@ -9,6 +9,7 @@ from __future__ import annotations
 import logging
 from typing import Any, Protocol
 
+from agent.checkpoint_models import CheckpointType, PendingApprovalSnapshot
 from agent.task_models import (
     AgentTask,
     InvalidStateTransitionError,
@@ -199,9 +200,11 @@ class TaskManager:
         self,
         repository: TaskRepository | None = None,
         permitted_tools: set[str] | frozenset[str] | None = None,
+        checkpoint_manager: Any | None = None,
     ) -> None:
         self.repository = repository or InMemoryTaskRepository()
         self.permitted_tools = permitted_tools
+        self.checkpoint_manager = checkpoint_manager
 
     # -----------------------------------------------------------------------
     # Task Lifecycle Operations
@@ -228,7 +231,13 @@ class TaskManager:
             task_kwargs["task_id"] = task_id
 
         task = AgentTask(**task_kwargs)
-        return self.repository.save(task)
+        saved = self.repository.save(task)
+        if self.checkpoint_manager:
+            try:
+                self.checkpoint_manager.create_checkpoint(saved.task_id, CheckpointType.TASK_CREATED)
+            except Exception as e:
+                log.warning("Failed creating TASK_CREATED checkpoint for %s: %s", saved.task_id, e)
+        return saved
 
     def get_task(self, task_id: str) -> AgentTask:
         """Fetch task by ID or raise TaskNotFoundError."""
@@ -267,7 +276,15 @@ class TaskManager:
         if task.status == TaskStatus.PENDING:
             task.transition_to(TaskStatus.PLANNING)
 
-        return self.repository.save(task)
+        saved = self.repository.save(task)
+        if self.checkpoint_manager:
+            try:
+                self.checkpoint_manager.create_checkpoint(
+                    saved.task_id, CheckpointType.PLAN_READY, current_stage="plan_ready"
+                )
+            except Exception as e:
+                log.warning("Failed creating PLAN_READY checkpoint for %s: %s", saved.task_id, e)
+        return saved
 
     def start_task(self, task_id: str) -> AgentTask:
         """Transition task from PENDING/PLANNING to RUNNING state."""
@@ -347,6 +364,19 @@ class TaskManager:
         step.transition_to(StepStatus.RUNNING)
         task.current_step = step_id
         self.repository.save(task)
+        if self.checkpoint_manager:
+            try:
+                self.checkpoint_manager.record_operation_started(
+                    task_id, step.required_skill or "step_execution", step_id=step_id
+                )
+                self.checkpoint_manager.create_checkpoint(
+                    task_id,
+                    CheckpointType.STEP_STARTED,
+                    current_step_id=step_id,
+                    current_stage="step_execution",
+                )
+            except Exception as e:
+                log.warning("Failed recording checkpoint in start_step: %s", e)
         return step
 
     def complete_step(
@@ -376,6 +406,26 @@ class TaskManager:
                 task.transition_to(TaskStatus.COMPLETED)
 
         self.repository.save(task)
+        if self.checkpoint_manager:
+            try:
+                self.checkpoint_manager.record_operation_completed(
+                    task_id,
+                    step.required_skill or "step_execution",
+                    step_id=step_id,
+                    result_summary=f"Completed {step_id}: {output_reference or ''}",
+                )
+                self.checkpoint_manager.create_checkpoint(
+                    task_id,
+                    CheckpointType.STEP_COMPLETED,
+                    current_step_id=step_id,
+                    current_stage="step_completed",
+                )
+                if task.status == TaskStatus.COMPLETED:
+                    self.checkpoint_manager.create_checkpoint(
+                        task_id, CheckpointType.TASK_COMPLETED, current_stage="task_completed"
+                    )
+            except Exception as e:
+                log.warning("Failed recording checkpoint in complete_step: %s", e)
         return step
 
     def fail_step(
@@ -400,6 +450,20 @@ class TaskManager:
             task.transition_to(TaskStatus.FAILED, error=f"Step '{step_id}' failed: {error}")
 
         self.repository.save(task)
+        if self.checkpoint_manager:
+            try:
+                self.checkpoint_manager.record_operation_failed(
+                    task_id, step.required_skill or "step_execution", step_id=step_id, error=error
+                )
+                self.checkpoint_manager.create_checkpoint(
+                    task_id,
+                    CheckpointType.STEP_FAILED,
+                    current_step_id=step_id,
+                    current_stage="step_failed",
+                    metadata={"error": error},
+                )
+            except Exception as e:
+                log.warning("Failed recording checkpoint in fail_step: %s", e)
         return step
 
     def skip_step(self, task_id: str, step_id: str, reason: str = "") -> TaskStep:
@@ -431,6 +495,22 @@ class TaskManager:
         task.transition_to(TaskStatus.WAITING_FOR_APPROVAL)
         task.current_step = step_id
         self.repository.save(task)
+        if self.checkpoint_manager:
+            try:
+                snap = PendingApprovalSnapshot(
+                    step_id=step_id,
+                    operation_type=step.required_skill or "step_approval",
+                    action_summary=f"Approval requested for step {step.name}",
+                )
+                self.checkpoint_manager.create_checkpoint(
+                    task_id,
+                    CheckpointType.APPROVAL_REQUESTED,
+                    current_step_id=step_id,
+                    pending_approval=snap,
+                    current_stage="approval_requested",
+                )
+            except Exception as e:
+                log.warning("Failed recording checkpoint in request_step_approval: %s", e)
         return step
 
     def approve_step(self, task_id: str, step_id: str) -> TaskStep:
@@ -443,7 +523,34 @@ class TaskManager:
         step.transition_to(StepStatus.RUNNING)
         task.transition_to(TaskStatus.RUNNING)
         self.repository.save(task)
+        if self.checkpoint_manager:
+            try:
+                self.checkpoint_manager.create_checkpoint(
+                    task_id,
+                    CheckpointType.APPROVAL_RESOLVED,
+                    current_step_id=step_id,
+                    current_stage="approval_resolved",
+                )
+            except Exception as e:
+                log.warning("Failed recording checkpoint in approve_step: %s", e)
         return step
+
+    def recover_task(
+        self,
+        task_id: str,
+        policy: Any = "REQUIRE_CONFIRMATION",
+    ) -> Any:
+        """Delegate task recovery to the injected CheckpointManager."""
+        if not self.checkpoint_manager:
+            raise TaskError("Cannot recover task: no CheckpointManager configured on TaskManager.")
+        from agent.checkpoint_models import RecoveryPolicy
+
+        pol = (
+            policy
+            if isinstance(policy, RecoveryPolicy)
+            else RecoveryPolicy(str(policy).upper())
+        )
+        return self.checkpoint_manager.recover_task(task_id, policy=pol)
 
     # -----------------------------------------------------------------------
     # Progress & Observability
