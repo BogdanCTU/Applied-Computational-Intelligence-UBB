@@ -1,7 +1,9 @@
 """Agent orchestration package for the Local Report SQL Agent."""
 
-from .events import ActivityCategory, ActivityEvent, mask_sensitive_data
+from .checkpoint_manager import CheckpointManager
+from .context_builder import ContextBuilder
 from .conversation import ConversationManager, ConversationMessage
+from .events import ActivityCategory, ActivityEvent, mask_sensitive_data
 from .ollama_client import (
     OllamaChatResponse,
     OllamaClient,
@@ -26,6 +28,7 @@ from .orchestrator import (
     ProgressCallbackType,
     detect_requested_report_format,
 )
+from .skill_manager import SkillManager
 from .system_prompt import build_system_prompt
 from .task_models import (
     AgentTask,
@@ -61,6 +64,8 @@ __all__ = [
     "AgentRunResult",
     "AgentTask",
     "ApprovalCallbackType",
+    "CheckpointManager",
+    "ContextBuilder",
     "ConversationManager",
     "ConversationMessage",
     "CyclicDependencyError",
@@ -84,6 +89,7 @@ __all__ = [
     "PERMITTED_TOOLS",
     "ProgressCallbackType",
     "SelfDependencyError",
+    "SkillManager",
     "StepNotFoundError",
     "StepStatus",
     "TaskError",

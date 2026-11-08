@@ -197,6 +197,11 @@ class SQLiteMemoryRepository:
 
             # 3. Upsert task_steps
             for idx, step in enumerate(task.steps):
+                db_step_id = (
+                    step.step_id
+                    if step.step_id.startswith(f"{task.task_id}::")
+                    else f"{task.task_id}::{step.step_id}"
+                )
                 conn.execute(
                     """
                     INSERT INTO task_steps (
@@ -205,6 +210,7 @@ class SQLiteMemoryRepository:
                         status, output_reference, error, metadata, created_at, updated_at
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ON CONFLICT(step_id) DO UPDATE SET
+                        task_id = excluded.task_id,
                         step_order = excluded.step_order,
                         name = excluded.name,
                         description = excluded.description,
@@ -219,7 +225,7 @@ class SQLiteMemoryRepository:
                         updated_at = excluded.updated_at;
                     """,
                     (
-                        step.step_id,
+                        db_step_id,
                         task.task_id,
                         idx,
                         step.name,
@@ -271,9 +277,11 @@ class SQLiteMemoryRepository:
             step_rows = cur.fetchall()
             steps: list[TaskStep] = []
             for s in step_rows:
+                raw_sid = s["step_id"]
+                clean_sid = raw_sid.split("::", 1)[1] if "::" in raw_sid else raw_sid
                 steps.append(
                     TaskStep(
-                        step_id=s["step_id"],
+                        step_id=clean_sid,
                         name=s["name"],
                         description=s["description"] or "",
                         required_skill=s["required_skill"],
@@ -400,6 +408,11 @@ class SQLiteMemoryRepository:
         """Update step status without affecting unrelated task state."""
         st_val = status.value if isinstance(status, StepStatus) else str(status)
         now_str = _utc_iso_now()
+        scoped_sid = (
+            step_id
+            if step_id.startswith(f"{task_id}::")
+            else f"{task_id}::{step_id}"
+        )
         with self.transaction() as conn:
             cur = conn.execute(
                 """
@@ -408,9 +421,9 @@ class SQLiteMemoryRepository:
                     error = COALESCE(?, error),
                     output_reference = COALESCE(?, output_reference),
                     updated_at = ?
-                WHERE task_id = ? AND step_id = ?;
+                WHERE task_id = ? AND (step_id = ? OR step_id = ?);
                 """,
-                (st_val, error, output_reference, now_str, task_id, step_id),
+                (st_val, error, output_reference, now_str, task_id, scoped_sid, step_id),
             )
             if cur.rowcount == 0:
                 raise StepNotFoundError(f"Step '{step_id}' in task '{task_id}' not found.")

@@ -156,7 +156,7 @@ def resolve_path(value: str | os.PathLike[str], base: Path | None = None) -> Pat
 
 
 def get_memory_database_path(
-    rel_or_abs_path: str | os.PathLike[str] = "data/agent_memory.db",
+    rel_or_abs_path: str | os.PathLike[str] | None = "data/agent_memory.db",
 ) -> Path:
     """Resolve the location of the persistent agent memory database.
 
@@ -165,7 +165,8 @@ def get_memory_database_path(
     - Stored in app root directory when running in development.
     - Ensures parent directories exist.
     """
-    p = Path(rel_or_abs_path).expanduser()
+    target = rel_or_abs_path or "data/agent_memory.db"
+    p = Path(target).expanduser()
     if p.is_absolute():
         dest = p.resolve()
     elif is_frozen():

@@ -693,7 +693,8 @@ class ContextBuilder:
         if task:
             lines.append(f"Task ID: {task.task_id} | Status: {task.status.value}")
             if task.plan:
-                lines.append(f"Plan Summary: {task.plan.summary}")
+                plan_summary = getattr(task.plan, "summary", None) or getattr(task.plan, "rationale", "")
+                lines.append(f"Plan Summary: {plan_summary}")
                 lines.append(f"Total Steps: {len(task.plan.steps)}")
         if step:
             lines.append(f"Active Step ID: {step.step_id}")
