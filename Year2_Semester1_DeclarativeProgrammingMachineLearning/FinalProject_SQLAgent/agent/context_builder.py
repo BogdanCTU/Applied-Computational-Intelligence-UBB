@@ -27,7 +27,7 @@ from agent.context_models import (
 )
 from agent.skill_models import LoadedSkill, estimate_tokens
 from agent.task_models import AgentTask, TaskStep
-from config.settings import AppSettings, load_settings
+from config.settings import DEFAULT_CONTEXT_WINDOW, AppSettings, load_settings
 from database.schema_inspector import DatabaseSchema
 
 log = logging.getLogger(__name__)
@@ -109,8 +109,13 @@ class ContextBuilder:
         self.memory_repo = memory_repo
         self.schema_provider = schema_provider
 
-        # Token configuration
-        self.num_ctx = int(num_ctx or self.settings.ollama.num_ctx or 8192)
+        # Centralized token configuration
+        configured_limit = (
+            getattr(self.settings.agent, "agent_context_window", None)
+            or getattr(self.settings.ollama, "num_ctx", None)
+            or DEFAULT_CONTEXT_WINDOW
+        )
+        self.num_ctx = int(num_ctx or configured_limit)
         self.reserved_output_tokens = max(128, int(reserved_output_tokens))
         self.safety_margin_tokens = max(64, int(safety_margin_tokens))
 
@@ -132,18 +137,29 @@ class ContextBuilder:
         semantic_facts: list[Any] | None = None,
         working_memory: dict[str, Any] | None = None,
         tool_results: list[dict[str, Any]] | list[str] | None = None,
+        conversation_history: Sequence[Any] | None = None,
         proposed_sql: str | None = None,
         dataset_summary: dict[str, Any] | str | None = None,
         custom_sections: list[ContextSection] | None = None,
         reserved_output_tokens: int | None = None,
         safety_margin_tokens: int | None = None,
         num_ctx_override: int | None = None,
+        effective_context_window: int | None = None,
+        configured_context_window: int | None = None,
+        model_validation_status: str | None = None,
     ) -> AssembledContext:
         """Construct a stage-specific context profile governed by token budgets."""
         exec_stage = self._normalize_stage(stage)
 
         # 1. Calculate budget limits
-        total_num_ctx = num_ctx_override or self.num_ctx
+        total_num_ctx = effective_context_window or num_ctx_override or self.num_ctx
+        conf_window = (
+            configured_context_window
+            or getattr(self.settings.agent, "agent_context_window", None)
+            or total_num_ctx
+        )
+        val_status = model_validation_status or "compatible"
+
         res_output = (
             reserved_output_tokens
             if reserved_output_tokens is not None
@@ -169,6 +185,7 @@ class ContextBuilder:
             semantic_facts=semantic_facts,
             working_memory=working_memory,
             tool_results=tool_results,
+            conversation_history=conversation_history,
             proposed_sql=proposed_sql,
             dataset_summary=dataset_summary,
             custom_sections=custom_sections,
@@ -188,6 +205,8 @@ class ContextBuilder:
         report = ContextBuildReport(
             stage=exec_stage,
             num_ctx=total_num_ctx,
+            configured_context_window=conf_window,
+            effective_context_window=total_num_ctx,
             reserved_output_tokens=res_output,
             safety_margin_tokens=safe_margin,
             available_input_tokens=avail_input,
@@ -195,7 +214,11 @@ class ContextBuilder:
             remaining_tokens=remaining,
             component_breakdown=breakdown.to_dict(),
             included_sections=[s.name for s in admitted],
+            included_categories=sorted(list({s.category for s in admitted})),
             excluded_sections=excluded,
+            excluded_categories=sorted(list({s.category for s in excluded})),
+            exclusion_reasons=[e.reason for e in excluded],
+            model_validation_status=val_status,
             warnings=warnings,
         )
 
@@ -347,6 +370,7 @@ class ContextBuilder:
         semantic_facts: list[Any] | None,
         working_memory: dict[str, Any] | None,
         tool_results: list[dict[str, Any]] | list[str] | None,
+        conversation_history: Sequence[Any] | None = None,
         proposed_sql: str | None,
         dataset_summary: dict[str, Any] | str | None,
         custom_sections: list[ContextSection] | None,
@@ -506,14 +530,19 @@ class ContextBuilder:
                 )
             )
 
-        # 12. Custom Sections (Variable)
+        # 12. Conversation History (Low to Medium)
+        if conversation_history:
+            history_sections = self._format_conversation_history(conversation_history)
+            sections.extend(history_sections)
+
+        # 13. Custom Sections (Variable)
         if custom_sections:
             for cs in custom_sections:
                 if cs.estimated_tokens <= 0:
                     cs.estimated_tokens = estimate_tokens(cs.content)
                 sections.append(cs)
 
-        # 13. User Request (Mandatory)
+        # 14. User Request (Mandatory)
         effective_request = (
             user_request
             or (task.user_request if task else None)
@@ -531,7 +560,21 @@ class ContextBuilder:
             )
         )
 
-        return sections
+        # Duplicate context elimination: ensure unique section names and unique content
+        unique_sections: list[ContextSection] = []
+        seen_names: set[str] = set()
+        seen_contents: set[str] = set()
+
+        for s in sections:
+            c_norm = s.content.strip()
+            if s.name in seen_names or c_norm in seen_contents:
+                log.debug("Eliminating duplicate context section: '%s'", s.name)
+                continue
+            seen_names.add(s.name)
+            seen_contents.add(c_norm)
+            unique_sections.append(s)
+
+        return unique_sections
 
     # -----------------------------------------------------------------------
     # Helpers: Formatting & Resolution (Internal)
@@ -772,7 +815,7 @@ class ContextBuilder:
         return f"VALIDATED DATASET SUMMARY:\n{json.dumps(summary, indent=2, sort_keys=True)}"
 
     def _format_tool_results(self, tool_results: list[dict[str, Any]] | list[str]) -> str:
-        """Format and bound recent MCP tool execution results."""
+        """Format recent MCP tool execution results with explicit budget bounding notice."""
         lines = ["RECENT TOOL RESULTS:"]
         for tr in tool_results:
             if isinstance(tr, dict):
@@ -781,16 +824,49 @@ class ContextBuilder:
                 content = tr.get("result", tr.get("content", tr.get("result_summary", "")))
                 content_str = str(content)
                 if len(content_str) > 3000:
-                    content_str = content_str[:3000] + "\n... [truncated for context budget]"
+                    content_str = content_str[:3000] + f"\n... [truncated for context budget: {len(content_str) - 3000} characters omitted]"
                 safe_content = self._sanitize_delimiters(content_str, "tool_result")
                 lines.append(f'<tool_result name="{t_name}" status="{status}">\n{safe_content}\n</tool_result>')
             else:
                 tr_str = str(tr)
                 if len(tr_str) > 3000:
-                    tr_str = tr_str[:3000] + "\n... [truncated for context budget]"
+                    tr_str = tr_str[:3000] + f"\n... [truncated for context budget: {len(tr_str) - 3000} characters omitted]"
                 safe_tr = self._sanitize_delimiters(tr_str, "tool_result")
                 lines.append(f"<tool_result>\n{safe_tr}\n</tool_result>")
         return "\n".join(lines)
+
+    def _format_conversation_history(
+        self, messages: Sequence[Any]
+    ) -> list[ContextSection]:
+        """Convert prior conversation history into prioritized context sections."""
+        sections: list[ContextSection] = []
+        if not messages:
+            return sections
+
+        total_msgs = len(messages)
+        for idx, m in enumerate(messages):
+            role = getattr(m, "role", None) or (m.get("role") if isinstance(m, dict) else "unknown")
+            content = getattr(m, "content", None) or (m.get("content") if isinstance(m, dict) else str(m))
+            if role == "system" or not str(content).strip():
+                continue
+
+            # Prioritize newest messages (last 4 get MEDIUM, older get LOW)
+            is_recent = idx >= (total_msgs - 4)
+            prio = SectionPriority.MEDIUM if is_recent else SectionPriority.LOW
+
+            safe_content = self._sanitize_delimiters(str(content).strip(), "history_msg")
+            msg_text = f"CONVERSATION [{role.upper()}]: {safe_content}"
+            sections.append(
+                ContextSection(
+                    name=f"history_{idx:03d}_{role}",
+                    content=msg_text,
+                    priority=prio,
+                    is_mandatory=False,
+                    category="conversation_history",
+                    estimated_tokens=estimate_tokens(msg_text),
+                )
+            )
+        return sections
 
     # -----------------------------------------------------------------------
     # Security & Sanitization (Internal)
@@ -836,7 +912,14 @@ class ContextBuilder:
         # Standard ordering for sections in system prompt
         cat_order_sys = ["system_instructions", "skills", "database_schema", "semantic_memory"]
         # Standard ordering for sections in user prompt
-        cat_order_user = ["task_and_checkpoint", "working_memory", "tool_results", "other", "user_request"]
+        cat_order_user = [
+            "task_and_checkpoint",
+            "working_memory",
+            "tool_results",
+            "conversation_history",
+            "other",
+            "user_request",
+        ]
 
         # Sort admitted sections deterministically by category order
         for cat in cat_order_sys:

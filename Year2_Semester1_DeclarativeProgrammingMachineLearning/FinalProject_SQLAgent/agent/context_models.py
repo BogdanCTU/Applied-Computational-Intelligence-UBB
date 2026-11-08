@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 def _utc_iso_now() -> str:
@@ -106,6 +106,7 @@ class ContextComponentBreakdown(BaseModel):
     episodic_memory: int = 0
     semantic_memory: int = 0
     tool_results: int = 0
+    conversation_history: int = 0
     user_request: int = 0
     other: int = 0
 
@@ -129,16 +130,34 @@ class ContextBuildReport(BaseModel):
 
     model_config = ConfigDict(extra="ignore", validate_assignment=True)
 
+    @model_validator(mode="before")
+    @classmethod
+    def _sync_context_windows(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            num = data.get("num_ctx")
+            if num is not None:
+                if "effective_context_window" not in data:
+                    data["effective_context_window"] = num
+                if "configured_context_window" not in data:
+                    data["configured_context_window"] = num
+        return data
+
     stage: ExecutionStage
-    num_ctx: int
-    reserved_output_tokens: int
-    safety_margin_tokens: int
-    available_input_tokens: int
-    estimated_input_tokens: int
-    remaining_tokens: int
+    num_ctx: int = 131072
+    configured_context_window: int = 131072
+    effective_context_window: int = 131072
+    reserved_output_tokens: int = 1024
+    safety_margin_tokens: int = 256
+    available_input_tokens: int = 0
+    estimated_input_tokens: int = 0
+    remaining_tokens: int = 0
     component_breakdown: dict[str, int] = Field(default_factory=dict)
     included_sections: list[str] = Field(default_factory=list)
+    included_categories: list[str] = Field(default_factory=list)
     excluded_sections: list[ExcludedSection] = Field(default_factory=list)
+    excluded_categories: list[str] = Field(default_factory=list)
+    exclusion_reasons: list[str] = Field(default_factory=list)
+    model_validation_status: str = "compatible"
     warnings: list[str] = Field(default_factory=list)
     created_at: str = Field(default_factory=_utc_iso_now)
 
@@ -147,7 +166,9 @@ class ContextBuildReport(BaseModel):
         lines = [
             "Context Assembly Report",
             f"Execution Stage: {self.stage.value}",
-            f"Configured Context (num_ctx): {self.num_ctx:,} tokens",
+            f"Configured Context Window: {self.configured_context_window:,} tokens",
+            f"Effective Context Window: {self.effective_context_window:,} tokens",
+            f"Model Capability Validation: {self.model_validation_status.upper()}",
             f"Reserved Output: {self.reserved_output_tokens:,} tokens | Safety Margin: {self.safety_margin_tokens:,} tokens",
             f"Available Input Budget: {self.available_input_tokens:,} tokens",
             f"Estimated Input Tokens: {self.estimated_input_tokens:,} tokens (Remaining: {self.remaining_tokens:,})",
@@ -165,6 +186,8 @@ class ContextBuildReport(BaseModel):
         lines.append(
             f"Included Sections: {', '.join(self.included_sections) if self.included_sections else 'none'}"
         )
+        if self.included_categories:
+            lines.append(f"Included Categories: {', '.join(self.included_categories)}")
 
         if self.excluded_sections:
             lines.append("Excluded Sections:")
@@ -174,6 +197,13 @@ class ContextBuildReport(BaseModel):
                 )
         else:
             lines.append("Excluded Sections: None")
+
+        if self.excluded_categories:
+            lines.append(f"Excluded Categories: {', '.join(self.excluded_categories)}")
+        if self.exclusion_reasons:
+            lines.append("Exclusion Reasons:")
+            for r in self.exclusion_reasons:
+                lines.append(f"- {r}")
 
         if self.warnings:
             lines.append("")

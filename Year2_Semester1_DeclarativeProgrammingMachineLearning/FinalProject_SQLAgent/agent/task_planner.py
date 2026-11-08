@@ -45,10 +45,16 @@ class TaskPlanner:
         self,
         ollama_client: OllamaClient | None = None,
         permitted_tools: set[str] | frozenset[str] | None = None,
+        num_ctx: int | None = None,
     ) -> None:
         self.ollama_client = ollama_client
         self.permitted_tools: frozenset[str] = (
             frozenset(permitted_tools) if permitted_tools is not None else PERMITTED_TOOLS
+        )
+        self.num_ctx = num_ctx or (
+            getattr(ollama_client.settings, "num_ctx", None)
+            if ollama_client and hasattr(ollama_client, "settings")
+            else None
         )
 
     # -----------------------------------------------------------------------
@@ -267,6 +273,7 @@ class TaskPlanner:
             messages=messages,
             tools=None,
             tool_mode="json",
+            num_ctx=self.num_ctx,
         )
 
         content = response.content or ""

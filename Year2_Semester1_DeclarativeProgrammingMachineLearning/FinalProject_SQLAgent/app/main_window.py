@@ -330,7 +330,10 @@ class MainWindow(QMainWindow):
 
     def _on_settings_saved(self, updated_settings: AppSettings) -> None:
         self.settings = updated_settings
-        self.orchestrator.settings = updated_settings
+        if hasattr(self.orchestrator, "update_settings"):
+            self.orchestrator.update_settings(updated_settings)
+        else:
+            self.orchestrator.settings = updated_settings
         self._check_ollama_status()
 
     # -----------------------------------------------------------------

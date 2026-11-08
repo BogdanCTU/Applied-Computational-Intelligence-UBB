@@ -119,6 +119,9 @@ class ActivityEventCard(QFrame):
             or self.activity_event.result_summary
             or self.activity_event.metadata.get("sql_query")
             or self.activity_event.metadata.get("error")
+            or self.activity_event.metadata.get("effective_context_window")
+            or self.activity_event.metadata.get("configured_context_window")
+            or self.activity_event.metadata.get("component_breakdown")
         )
 
         if has_details:
@@ -199,15 +202,46 @@ class ActivityEventCard(QFrame):
                     "border-radius: 4px; padding: 6px; font-size: 11px;"
                 )
                 details_layout.addWidget(res_lbl)
-                details_layout.addWidget(res_title)
 
-                res_lbl = QLabel(self.event.result_summary)
-                res_lbl.setWordWrap(True)
-                res_lbl.setStyleSheet(
-                    "background-color: #0f172a; color: #cbd5e1; border: 1px solid #334155; "
-                    "border-radius: 4px; padding: 6px; font-size: 11px;"
+            # Context Window & Token Budget Allocation
+            eff_ctx = self.activity_event.metadata.get("effective_context_window")
+            if eff_ctx:
+                conf_ctx = self.activity_event.metadata.get("configured_context_window", eff_ctx)
+                val_status = self.activity_event.metadata.get("model_validation_status", "compatible")
+                est_in = self.activity_event.metadata.get("estimated_input_tokens", 0)
+                res_out = self.activity_event.metadata.get("reserved_output_tokens", 0)
+                safe_margin = self.activity_event.metadata.get("safety_margin_tokens", 0)
+                inc_cats = self.activity_event.metadata.get("included_categories", [])
+                exc_cats = self.activity_event.metadata.get("excluded_categories", [])
+                exc_reasons = self.activity_event.metadata.get("exclusion_reasons", [])
+
+                ctx_title = QLabel("Agent Context Window & Token Allocation:")
+                ctx_title.setStyleSheet("color: #38bdf8; font-size: 10px; font-weight: 600;")
+                details_layout.addWidget(ctx_title)
+
+                conf_k = f"{conf_ctx // 1024}K"
+                eff_k = f"{eff_ctx // 1024}K"
+                summary_lines = [
+                    f"Configured Window: {conf_k} ({conf_ctx:,} tokens) | Effective: {eff_k} ({eff_ctx:,} tokens)",
+                    f"Model Capability: {val_status.upper()} | Estimated Input: {est_in:,} | Reserved Output: {res_out:,} | Safety Margin: {safe_margin:,}",
+                ]
+                if inc_cats:
+                    summary_lines.append(f"Included Categories: {', '.join(inc_cats)}")
+                if exc_cats:
+                    summary_lines.append(f"Excluded Categories: {', '.join(exc_cats)}")
+                if exc_reasons:
+                    summary_lines.append(f"Exclusion Reasons: {'; '.join(exc_reasons[:2])}")
+
+                ctx_edit = QPlainTextEdit()
+                ctx_edit.setReadOnly(True)
+                ctx_edit.setPlainText("\n".join(summary_lines))
+                ctx_edit.setMaximumHeight(85)
+                ctx_edit.setFont(QFont("JetBrains Mono, Menlo, Courier New", 10))
+                ctx_edit.setStyleSheet(
+                    "background-color: #0f172a; color: #94a3b8; border: 1px solid #334155; "
+                    "border-radius: 4px; padding: 4px;"
                 )
-                details_layout.addWidget(res_lbl)
+                details_layout.addWidget(ctx_edit)
 
             layout.addWidget(self.details_widget)
             self.details_widget.setVisible(False)

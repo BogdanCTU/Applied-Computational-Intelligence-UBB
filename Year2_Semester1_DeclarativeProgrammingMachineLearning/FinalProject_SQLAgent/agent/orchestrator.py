@@ -7,13 +7,13 @@ import inspect
 import logging
 import re
 import time
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
 from pathlib import Path
 from typing import Any, Awaitable, Callable, Mapping, Sequence
 
 from agent.checkpoint_manager import CheckpointManager
-from agent.checkpoint_models import CheckpointType, RecoveryPolicy, TaskCheckpoint
+from agent.checkpoint_models import CheckpointType, RecoveryPolicy, RecoveryResult, TaskCheckpoint
 from agent.context_builder import ContextBuilder
 from agent.context_models import AssembledContext, ExecutionStage
 from agent.events import ActivityCategory, ActivityEvent, mask_sensitive_data
@@ -21,7 +21,7 @@ from agent.skill_manager import SkillManager
 from agent.task_manager import TaskManager
 from agent.task_models import AgentTask, StepStatus, TaskPlan, TaskStatus, TaskStep
 from agent.task_planner import TaskPlanner
-from config.settings import AppSettings
+from config.settings import DEFAULT_CONTEXT_WINDOW, AppSettings
 from database.connection import DatabaseNotFoundError
 from mcp_layer.client import MCPStdioClient
 from mcp_layer.tools.sql_tools import SQLValidationError, validate_and_prepare_sql
@@ -32,11 +32,15 @@ from reporting.canonical_data import CanonicalSQLDataset, ChartSpecification, Re
 
 from .conversation import ConversationManager, compact_tool_result_for_llm
 from .ollama_client import (
+    ModelCapabilityStatus,
+    ModelContextCapability,
+    ModelContextIncompatibleError,
     OllamaChatResponse,
     OllamaClient,
     OllamaClientError,
     OllamaConnectionError,
     OllamaConnectionRefusedError,
+    OllamaContextSizeRejectedError,
     OllamaDisconnectError,
     OllamaEmptyResponseError,
     OllamaHTTPError,
@@ -587,6 +591,10 @@ class AgentOrchestrator:
         self._initialized = False
 
         # Phase 1-5 Agent Intelligence Layer integration
+        self.effective_context_window: int = getattr(
+            settings.agent, "agent_context_window", DEFAULT_CONTEXT_WINDOW
+        )
+        self.model_capability: ModelContextCapability | None = None
         self.memory_repo = memory_repo or SQLiteMemoryRepository()
         self.checkpoint_manager = checkpoint_manager or CheckpointManager(
             repository=self.memory_repo,
@@ -597,6 +605,7 @@ class AgentOrchestrator:
         )
         self.task_planner = task_planner or TaskPlanner(
             ollama_client=None,
+            num_ctx=self.effective_context_window,
         )
         self.skill_manager = skill_manager or SkillManager(
             repository=self.memory_repo,
@@ -605,9 +614,29 @@ class AgentOrchestrator:
             settings=settings,
             skill_manager=self.skill_manager,
             memory_repo=self.memory_repo,
-            num_ctx=settings.ollama.num_ctx,
+            num_ctx=self.effective_context_window,
         )
         self.current_task_id: str | None = None
+
+    def update_settings(self, new_settings: AppSettings) -> None:
+        """Update orchestrator settings and propagate context window updates live."""
+        self.settings = new_settings
+        self.ollama_client.settings = new_settings.ollama
+        self.effective_context_window = getattr(
+            new_settings.agent, "agent_context_window", DEFAULT_CONTEXT_WINDOW
+        )
+        self.context_builder.settings = new_settings
+        self.context_builder.num_ctx = self.effective_context_window
+        self.ollama_client.settings.num_ctx = self.effective_context_window
+        if self.task_planner:
+            self.task_planner.num_ctx = self.effective_context_window
+        # Invalidate cached model capability so next execution re-validates
+        self.model_capability = None
+        log.info(
+            "Orchestrator settings updated: agent_context_window=%d, effective=%d",
+            new_settings.agent.agent_context_window,
+            self.effective_context_window,
+        )
 
     async def initialize(self) -> None:
         """Establish MCP connection, discover skills, and determine optimal tool mode ('native' vs 'json')."""
@@ -642,8 +671,33 @@ class AgentOrchestrator:
         else:
             self.active_tool_mode = self.settings.ollama.tool_mode
 
+        # 4. Validate model context capability against configured agent_context_window
+        try:
+            if hasattr(self.ollama_client, "validate_model_context_capability"):
+                cap = await self.ollama_client.validate_model_context_capability(
+                    configured_window=self.settings.agent.agent_context_window,
+                    model_name=self.settings.ollama.model,
+                )
+                if isinstance(cap, ModelContextCapability):
+                    self.model_capability = cap
+                    self.effective_context_window = cap.effective_window
+                    self.context_builder.num_ctx = self.effective_context_window
+                    if hasattr(self.ollama_client, "settings") and hasattr(self.ollama_client.settings, "num_ctx"):
+                        self.ollama_client.settings.num_ctx = self.effective_context_window
+                    if self.task_planner:
+                        self.task_planner.num_ctx = self.effective_context_window
+                    if not cap.is_compatible:
+                        log.warning(
+                            "Model context incompatibility detected: %s",
+                            cap.message,
+                        )
+        except Exception as exc:  # noqa: BLE001
+            log.warning("Model context capability validation failed during initialize: %s", exc)
+
         log.info(
-            "AgentOrchestrator initialized (active_tool_mode=%s)", self.active_tool_mode
+            "AgentOrchestrator initialized (active_tool_mode=%s, effective_ctx=%d)",
+            self.active_tool_mode,
+            self.effective_context_window,
         )
         self._initialized = True
 
@@ -682,7 +736,7 @@ class AgentOrchestrator:
         task_id: str,
         *,
         policy: RecoveryPolicy | str = RecoveryPolicy.REQUIRE_CONFIRMATION,
-    ) -> AgentTask:
+    ) -> RecoveryResult:
         """Recover an interrupted task to a consistent executable state."""
         return self.checkpoint_manager.recover_task(task_id, policy=policy)
 
@@ -915,6 +969,47 @@ class AgentOrchestrator:
                 error="Empty input",
             )
 
+        # Validate model context capability if not yet checked
+        if self.model_capability is None and hasattr(self.ollama_client, "validate_model_context_capability"):
+            try:
+                cap = await self.ollama_client.validate_model_context_capability(
+                    configured_window=self.settings.agent.agent_context_window,
+                    model_name=self.settings.ollama.model,
+                )
+                if isinstance(cap, ModelContextCapability):
+                    self.model_capability = cap
+                    self.effective_context_window = cap.effective_window
+                    self.context_builder.num_ctx = self.effective_context_window
+                    if hasattr(self.ollama_client, "settings") and hasattr(self.ollama_client.settings, "num_ctx"):
+                        self.ollama_client.settings.num_ctx = self.effective_context_window
+                    if self.task_planner:
+                        self.task_planner.num_ctx = self.effective_context_window
+            except Exception as exc:  # noqa: BLE001
+                log.warning("Model context capability validation error: %s", exc)
+
+        # Check for model context incompatibility
+        if (
+            self.model_capability
+            and isinstance(self.model_capability, ModelContextCapability)
+            and not self.model_capability.is_compatible
+        ):
+            err_msg = self.model_capability.message
+            await self._emit_activity(
+                ActivityCategory.ERROR,
+                title="Model Context Incompatible",
+                description=err_msg,
+                status="failed",
+                metadata={"model_capability": asdict(self.model_capability) if is_dataclass(self.model_capability) else {}},
+                callback=progress_callback,
+                legacy_type=AgentEventType.ERROR,
+            )
+            return AgentRunResult(
+                status="error",
+                final_message=err_msg,
+                error=err_msg,
+                total_duration_s=round(time.perf_counter() - start_time, 3),
+            )
+
         # Detect user's explicit report format preference
         target_format = detect_requested_report_format(cleaned_user_msg)
         user_explicitly_wants_sql = bool(_USER_WANTS_SQL_RE.search(cleaned_user_msg))
@@ -1033,6 +1128,11 @@ class AgentOrchestrator:
                     "sample_rows": sql_rows[:3] if sql_rows else [],
                 }
 
+            val_status = (
+                self.model_capability.status.value
+                if self.model_capability
+                else "compatible"
+            )
             assembled_ctx = self.context_builder.build(
                 stage=current_stage,
                 user_request=cleaned_user_msg,
@@ -1043,15 +1143,21 @@ class AgentOrchestrator:
                 relevant_tables=list(last_schema_result.get("tables", [])) if (isinstance(last_schema_result, dict) and "tables" in last_schema_result) else None,
                 proposed_sql=proposed_sql,
                 dataset_summary=dataset_summary,
+                effective_context_window=self.effective_context_window,
+                configured_context_window=self.settings.agent.agent_context_window,
+                model_validation_status=val_status,
+                conversation_history=self.conversation.messages,
             )
 
             # 2. Emit AGENT_STATUS event with context build metrics
+            ctx_label = f"{self.effective_context_window // 1024}K"
             await self._emit_activity(
                 ActivityCategory.AGENT_STATUS,
                 title="Agent Reasoning",
                 description=(
                     f"Consulting Ollama with {self.settings.ollama.model} (Iteration {iterations}/{max_iterations}) "
-                    f"| Stage: {current_stage.value} | Tokens: {assembled_ctx.report.estimated_input_tokens}/{assembled_ctx.report.available_input_tokens}"
+                    f"| Context: {ctx_label} | Stage: {current_stage.value} "
+                    f"| Tokens: {assembled_ctx.report.estimated_input_tokens:,}/{assembled_ctx.report.available_input_tokens:,}"
                 ),
                 status="in_progress",
                 metadata=assembled_ctx.report.model_dump(),
@@ -1064,11 +1170,24 @@ class AgentOrchestrator:
             )
 
             try:
-                response: OllamaChatResponse = await self.ollama_client.chat(
-                    messages=messages_for_llm,
-                    tools=ollama_tools,
-                    tool_mode=self.active_tool_mode,
-                )
+                chat_kwargs: dict[str, Any] = {
+                    "messages": messages_for_llm,
+                    "tools": ollama_tools,
+                    "tool_mode": self.active_tool_mode,
+                }
+                try:
+                    target_fn = getattr(self.ollama_client.chat, "side_effect", None)
+                    if not callable(target_fn):
+                        target_fn = self.ollama_client.chat
+                    sig = inspect.signature(target_fn)
+                    if "num_ctx" in sig.parameters or any(
+                        p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()
+                    ):
+                        chat_kwargs["num_ctx"] = self.effective_context_window
+                except (ValueError, TypeError):
+                    chat_kwargs["num_ctx"] = self.effective_context_window
+
+                response: OllamaChatResponse = await self.ollama_client.chat(**chat_kwargs)
             except OllamaClientError as exc:
                 if isinstance(exc, OllamaEmptyResponseError):
                     user_wants_report = bool(_REPORT_INTENT_RE.search(cleaned_user_msg))
@@ -1171,6 +1290,7 @@ class AgentOrchestrator:
                             messages=messages_for_llm,
                             tools=None,
                             tool_mode="json",
+                            num_ctx=self.effective_context_window,
                         )
                     except Exception as retry_exc:
                         overall_status = "error"

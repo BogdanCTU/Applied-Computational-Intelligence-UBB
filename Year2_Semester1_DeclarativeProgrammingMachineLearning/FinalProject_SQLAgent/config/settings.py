@@ -32,6 +32,16 @@ log = logging.getLogger(__name__)
 
 SETTINGS_FILENAME = "settings.json"
 
+# Supported agent context window token limits
+ALLOWED_CONTEXT_WINDOWS: tuple[int, ...] = (32768, 65536, 131072, 262144)
+DEFAULT_CONTEXT_WINDOW: int = 131072
+CONTEXT_WINDOW_DISPLAY_LABELS: dict[int, str] = {
+    32768: "32K",
+    65536: "64K",
+    131072: "128K (Default)",
+    262144: "256K",
+}
+
 # Hosts considered "local". The application refuses to talk to any other host
 # so that prompts and database content never leave the machine.
 LOCAL_HOSTS = {"localhost", "127.0.0.1", "::1", "[::1]"}
@@ -43,7 +53,7 @@ class OllamaSettings:
     model: str = "qwen3.5:4b"
     temperature: float = 0.1
     top_p: float = 0.9
-    num_ctx: int = 8192
+    num_ctx: int = DEFAULT_CONTEXT_WINDOW
     request_timeout_s: float = 600.0
     stream: bool = True
     keep_alive: str = "10m"
@@ -68,6 +78,7 @@ class AgentSettings:
     max_history_messages: int = 30
     require_sql_approval: bool = False
     system_prompt_override: str = ""
+    agent_context_window: int = DEFAULT_CONTEXT_WINDOW
 
 
 @dataclass
@@ -107,6 +118,15 @@ class AppSettings:
     def log_dir(self) -> Path:
         return resolve_path(self.logging.directory)
 
+    @property
+    def agent_context_window(self) -> int:
+        return self.agent.agent_context_window
+
+    @agent_context_window.setter
+    def agent_context_window(self, value: int) -> None:
+        self.agent.agent_context_window = int(value)
+        self.ollama.num_ctx = int(value)
+
     # ---------------------------------------------------------- serialisation
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -114,7 +134,21 @@ class AppSettings:
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "AppSettings":
         settings = cls()
-        _merge_into(settings, data or {})
+        data_copy = dict(data or {})
+        if "agent_context_window" in data_copy and "agent" not in data_copy:
+            data_copy["agent"] = {"agent_context_window": data_copy.pop("agent_context_window")}
+        elif "agent_context_window" in data_copy and isinstance(data_copy.get("agent"), dict):
+            data_copy["agent"]["agent_context_window"] = data_copy.pop("agent_context_window")
+        _merge_into(settings, data_copy)
+
+        # agent_context_window is the single authoritative setting
+        # If legacy config or ollama.num_ctx was set independently or invalid, sync it
+        if settings.ollama.num_ctx not in ALLOWED_CONTEXT_WINDOWS:
+            settings.ollama.num_ctx = settings.agent.agent_context_window
+        else:
+            # Keep both aligned to the authoritative agent_context_window
+            settings.ollama.num_ctx = settings.agent.agent_context_window
+
         return settings
 
     # -------------------------------------------------------------- validation
@@ -130,6 +164,16 @@ class AppSettings:
             errors.append("Model name must not be empty")
         if self.ollama.tool_mode not in {"auto", "native", "json"}:
             errors.append("Tool mode must be 'auto', 'native' or 'json'")
+        if self.agent.agent_context_window not in ALLOWED_CONTEXT_WINDOWS:
+            errors.append(
+                f"Agent context window must be one of {list(ALLOWED_CONTEXT_WINDOWS)}, "
+                f"got {self.agent.agent_context_window}"
+            )
+        if self.ollama.num_ctx not in ALLOWED_CONTEXT_WINDOWS:
+            errors.append(
+                f"Ollama num_ctx must be one of {list(ALLOWED_CONTEXT_WINDOWS)}, "
+                f"got {self.ollama.num_ctx}"
+            )
         if not self.database.path.strip():
             errors.append("Database path must not be empty")
         if not 1 <= self.database.max_result_rows <= 100_000:
@@ -151,6 +195,8 @@ ENV_OVERRIDES: dict[str, tuple[str, str]] = {
     "REPORT_AGENT_OLLAMA_MODEL": ("ollama", "model"),
     "REPORT_AGENT_TOOL_MODE": ("ollama", "tool_mode"),
     "REPORT_AGENT_REQUEST_TIMEOUT": ("ollama", "request_timeout_s"),
+    "REPORT_AGENT_CONTEXT_WINDOW": ("agent", "agent_context_window"),
+    "REPORT_AGENT_NUM_CTX": ("ollama", "num_ctx"),
     "REPORT_AGENT_DB_PATH": ("database", "path"),
     "REPORT_AGENT_OUTPUT_DIR": ("reports", "output_dir"),
     "REPORT_AGENT_MAX_ROWS": ("database", "max_result_rows"),
@@ -197,6 +243,8 @@ def _apply_env(settings: AppSettings) -> None:
     for var, (section, key) in ENV_OVERRIDES.items():
         if var in os.environ:
             _merge_into(getattr(settings, section), {key: os.environ[var]})
+    if "REPORT_AGENT_CONTEXT_WINDOW" in os.environ:
+        settings.ollama.num_ctx = settings.agent.agent_context_window
 
 
 def settings_file() -> Path:

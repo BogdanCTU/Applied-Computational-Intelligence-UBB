@@ -8,12 +8,13 @@ import logging
 import re
 import time
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import Any, Mapping, Sequence
 from urllib.parse import urlparse
 
 import httpx
 
-from config.settings import LOCAL_HOSTS, OllamaSettings
+from config.settings import DEFAULT_CONTEXT_WINDOW, LOCAL_HOSTS, OllamaSettings
 
 log = logging.getLogger(__name__)
 
@@ -22,8 +23,50 @@ _JSON_BLOCK_RE = re.compile(r"```(?:json)?\s*(\{.*?\}|\[.*?\])\s*```", re.DOTALL
 _TOOL_CALL_TAG_RE = re.compile(r"<tool_call>\s*([\s\S]*?)\s*</tool_call>", re.IGNORECASE)
 
 
+class ModelCapabilityStatus(str, Enum):
+    COMPATIBLE = "compatible"
+    INCOMPATIBLE = "incompatible"
+    UNKNOWN = "unknown"
+    ERROR = "error"
+
+
+@dataclass
+class ModelContextCapability:
+    model: str
+    configured_window: int
+    model_max_context: int | None
+    effective_window: int
+    status: ModelCapabilityStatus
+    message: str
+    is_compatible: bool
+
+
 class OllamaClientError(RuntimeError):
     """Base error for Ollama client failures."""
+
+
+class ModelContextIncompatibleError(OllamaClientError):
+    """Raised when the selected Ollama model's supported context is smaller than configured."""
+
+    def __init__(self, model: str, model_max: int, configured: int, message: str = "") -> None:
+        msg = message or (
+            f"Model '{model}' maximum supported context window ({model_max:,} tokens) "
+            f"is smaller than the configured agent context window ({configured:,} tokens)."
+        )
+        super().__init__(msg)
+        self.model = model
+        self.model_max = model_max
+        self.configured = configured
+
+
+class OllamaContextSizeRejectedError(OllamaClientError):
+    """Raised when Ollama rejects the requested context size (num_ctx)."""
+
+    def __init__(self, status_code: int, message: str, raw_text: str = "") -> None:
+        super().__init__(f"Ollama rejected context size (HTTP {status_code}): {message}")
+        self.status_code = status_code
+        self.message = message
+        self.raw_text = raw_text
 
 
 class OllamaConnectionError(OllamaClientError):
@@ -245,14 +288,161 @@ class OllamaClient:
         )
         return "json"
 
+    async def get_model_info(self, model_name: str | None = None) -> dict[str, Any]:
+        """Query Ollama `/api/show` to retrieve model details and parameters."""
+        target = (model_name or self.model).strip()
+        try:
+            async with self._create_http_client() as client:
+                resp = await client.post("/api/show", json={"model": target})
+                if resp.status_code == 404:
+                    # Retry with "name" key in case of older Ollama version
+                    resp = await client.post("/api/show", json={"name": target})
+                if resp.status_code != 200:
+                    raise OllamaHTTPError(
+                        status_code=resp.status_code,
+                        message=f"Failed to query /api/show for model '{target}': HTTP {resp.status_code}",
+                        raw_text=resp.text,
+                    )
+                return resp.json()
+        except httpx.TimeoutException as exc:
+            raise OllamaTimeoutError(f"Timed out querying model info for '{target}'") from exc
+        except httpx.RemoteProtocolError as exc:
+            raise OllamaDisconnectError(f"Ollama disconnected querying model info: {exc}") from exc
+        except httpx.ConnectError as exc:
+            raise OllamaConnectionError(f"Cannot connect to Ollama to query model info: {exc}") from exc
+        except httpx.RequestError as exc:
+            raise OllamaConnectionError(f"Cannot connect to Ollama to query model info: {exc}") from exc
+
+    @staticmethod
+    def extract_model_context_length(show_info: dict[str, Any]) -> int | None:
+        """Extract the maximum supported context length from Ollama /api/show metadata."""
+        if not isinstance(show_info, dict):
+            return None
+
+        # 1. Search model_info dict for context_length keys
+        # e.g. "qwen2.context_length", "qwen3_5.context_length", "llama.context_length", "context_length"
+        model_info = show_info.get("model_info")
+        if isinstance(model_info, dict):
+            for k, v in model_info.items():
+                if str(k).lower().endswith("context_length") or "context_length" in str(k).lower():
+                    try:
+                        val = int(v)
+                        if val > 0:
+                            return val
+                    except (ValueError, TypeError):
+                        continue
+
+        # 2. Search parameters string for num_ctx
+        params = show_info.get("parameters", "")
+        if isinstance(params, str) and params.strip():
+            m = re.search(r"(?:^|\n)\s*num_ctx\s+(\d+)", params, re.IGNORECASE)
+            if m:
+                try:
+                    val = int(m.group(1))
+                    if val > 0:
+                        return val
+                except (ValueError, TypeError):
+                    pass
+
+        # 3. Search modelfile string for PARAMETER num_ctx
+        modelfile = show_info.get("modelfile", "")
+        if isinstance(modelfile, str) and modelfile.strip():
+            m = re.search(r"(?:^|\n)\s*PARAMETER\s+num_ctx\s+(\d+)", modelfile, re.IGNORECASE)
+            if m:
+                try:
+                    val = int(m.group(1))
+                    if val > 0:
+                        return val
+                except (ValueError, TypeError):
+                    pass
+
+        return None
+
+    async def validate_model_context_capability(
+        self,
+        configured_window: int,
+        model_name: str | None = None,
+        *,
+        safe_fallback_window: int = 32768,
+    ) -> ModelContextCapability:
+        """Validate whether the selected model supports the configured context window.
+
+        Evaluates against model metadata and applies documented safe policy when capability
+        is unknown.
+        """
+        target = (model_name or self.model).strip()
+        try:
+            info = await self.get_model_info(target)
+            model_max = self.extract_model_context_length(info)
+        except Exception as exc:  # noqa: BLE001
+            log.warning("Could not determine model context capability for '%s': %s", target, exc)
+            effective = min(configured_window, safe_fallback_window)
+            return ModelContextCapability(
+                model=target,
+                configured_window=configured_window,
+                model_max_context=None,
+                effective_window=effective,
+                status=ModelCapabilityStatus.UNKNOWN,
+                message=(
+                    f"Model '{target}' capability cannot be determined ({exc}). "
+                    f"Safe policy applied: effective context set to {effective:,} tokens."
+                ),
+                is_compatible=True,
+            )
+
+        if model_max is None:
+            effective = min(configured_window, safe_fallback_window)
+            return ModelContextCapability(
+                model=target,
+                configured_window=configured_window,
+                model_max_context=None,
+                effective_window=effective,
+                status=ModelCapabilityStatus.UNKNOWN,
+                message=(
+                    f"Model '{target}' context length cannot be determined from Ollama metadata. "
+                    f"Safe policy applied: effective context window set to {effective:,} tokens."
+                ),
+                is_compatible=True,
+            )
+
+        if model_max >= configured_window:
+            return ModelContextCapability(
+                model=target,
+                configured_window=configured_window,
+                model_max_context=model_max,
+                effective_window=configured_window,
+                status=ModelCapabilityStatus.COMPATIBLE,
+                message=(
+                    f"Model '{target}' supports up to {model_max:,} tokens; "
+                    f"effective context window is configured {configured_window:,} tokens."
+                ),
+                is_compatible=True,
+            )
+
+        # model_max < configured_window: Incompatibility
+        return ModelContextCapability(
+            model=target,
+            configured_window=configured_window,
+            model_max_context=model_max,
+            effective_window=model_max,
+            status=ModelCapabilityStatus.INCOMPATIBLE,
+            message=(
+                f"Model '{target}' maximum supported context window ({model_max:,} tokens) "
+                f"is smaller than configured agent context window ({configured_window:,} tokens)."
+            ),
+            is_compatible=False,
+        )
+
     async def chat(
         self,
         messages: Sequence[Mapping[str, Any]],
         *,
         tools: Sequence[Mapping[str, Any]] | None = None,
         tool_mode: str = "native",
+        num_ctx: int | None = None,
     ) -> OllamaChatResponse:
         """Send a chat request to Ollama `/api/chat` with bounded retry and strict error classification."""
+        effective_num_ctx = int(num_ctx or self.settings.num_ctx or DEFAULT_CONTEXT_WINDOW)
         payload: dict[str, Any] = {
             "model": self.model,
             "messages": list(messages),
@@ -260,7 +450,7 @@ class OllamaClient:
             "options": {
                 "temperature": float(self.settings.temperature),
                 "top_p": float(self.settings.top_p),
-                "num_ctx": int(self.settings.num_ctx),
+                "num_ctx": effective_num_ctx,
             },
             "keep_alive": self.settings.keep_alive,
         }
@@ -372,6 +562,22 @@ class OllamaClient:
                 f"Model '{self.model}' not found in Ollama. Run: ollama pull {self.model}",
             )
         if resp.status_code != 200:
+            err_lower = resp.text.lower()
+            if (
+                "num_ctx" in err_lower
+                or "context length" in err_lower
+                or "context window" in err_lower
+                or "context size" in err_lower
+                or "out of memory" in err_lower
+                or "vram" in err_lower
+                or "unable to allocate" in err_lower
+            ):
+                raise OllamaContextSizeRejectedError(
+                    status_code=resp.status_code,
+                    message=f"Ollama rejected context size ({effective_num_ctx}): {resp.text.strip()}",
+                    raw_text=resp.text,
+                )
+
             # Check for native tool-calling XML parse failure in Ollama (HTTP 500 / XML syntax error)
             if tool_mode == "native" and tools and (
                 resp.status_code == 500
@@ -384,7 +590,7 @@ class OllamaClient:
                     resp.status_code,
                     resp.text.strip(),
                 )
-                return await self._fallback_chat_json(messages)
+                return await self._fallback_chat_json(messages, num_ctx=effective_num_ctx)
 
             raise OllamaHTTPError(
                 status_code=resp.status_code,
@@ -508,6 +714,8 @@ class OllamaClient:
     async def _fallback_chat_json(
         self,
         messages: Sequence[Mapping[str, Any]],
+        *,
+        num_ctx: int | None = None,
     ) -> OllamaChatResponse:
         """Fallback to structured JSON mode when native tool calling fails."""
         from config.prompts import JSON_FALLBACK_INSTRUCTIONS
@@ -536,6 +744,7 @@ class OllamaClient:
             messages=fallback_messages,
             tools=None,
             tool_mode="json",
+            num_ctx=num_ctx,
         )
         resp.used_fallback = True
         return resp
