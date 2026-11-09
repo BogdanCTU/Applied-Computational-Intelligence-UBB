@@ -85,8 +85,12 @@ def _create_mock_orchestrator(
     mock_client.connect = AsyncMock()
     mock_client.list_tools = AsyncMock(
         return_value=[
+            MCPToolSpec("inspect_database_schema", "Inspect database schema", {}),
+            MCPToolSpec("get_table_sample", "Sample table rows", {}),
+            MCPToolSpec("prepare_sql_query", "Prepare and validate SQL query", {}),
             MCPToolSpec("execute_readonly_sql", "Execute read-only SQL", {}),
             MCPToolSpec("generate_pdf_report", "Generate PDF", {}),
+            MCPToolSpec("generate_csv_report", "Generate CSV", {}),
         ]
     )
 

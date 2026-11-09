@@ -26,7 +26,8 @@ def inspect_database_schema_impl(
     table_name: str | None = None,
 ) -> dict[str, Any]:
     """Inspect full database schema or a single ``table_name``."""
-    cleaned_table = (table_name or "").strip() or None
+    raw_table = (table_name or "").strip()
+    cleaned_table = None if (not raw_table or raw_table.upper() in {"ALL", "*"}) else raw_table
     try:
         schema = inspect_schema(
             settings.database_path,
@@ -175,12 +176,12 @@ def register_database_tools(
     @mcp.tool(
         name="inspect_database_schema",
         description=(
-            "Inspect the SQLite database schema. Optionally pass 'table_name' to inspect "
-            "a single table; omit 'table_name' or pass empty string '' to list all tables, "
-            "columns, SQLite types, primary keys, foreign keys, indexes, row counts, and table relationships."
+            "Inspect the SQLite database schema. Pass table_name='ALL' to list all tables, "
+            "columns, SQLite types, primary keys, foreign keys, indexes, row counts, date ranges, "
+            "and table relationships, or pass a specific table name to inspect a single table."
         ),
     )
-    def inspect_database_schema(table_name: str = "") -> dict[str, Any]:
+    def inspect_database_schema(table_name: str = "ALL") -> dict[str, Any]:
         return inspect_database_schema_impl(get_settings(), table_name=table_name or None)
 
     @mcp.tool(

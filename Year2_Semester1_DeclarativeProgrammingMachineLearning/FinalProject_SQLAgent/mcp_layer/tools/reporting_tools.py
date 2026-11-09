@@ -179,16 +179,18 @@ def register_reporting_tools(
         name="generate_pdf_report",
         description=(
             "Generate a professionally formatted, paginated PDF report (default output format) "
-            "from structured query results and save it in the configured reports directory. "
-            "Does not execute SQL."
+            "with KPI cards, charts (bar, line, pie, donut, matrix/heatmap, pareto, etc.), and "
+            "data tables from executed SQL query results, and save it in the configured reports directory. "
+            "Pass 'title', 'description', and optional 'summary', 'findings', 'charts', or 'kpis'; "
+            "'sql_query', 'columns', and 'rows' are automatically populated from executed SQL datasets if omitted."
         ),
     )
     def generate_pdf_report(
         title: str,
-        description: str,
-        sql_query: str,
-        columns: list[str],
-        rows: list[Any],
+        description: str = "",
+        sql_query: str = "",
+        columns: list[str] | None = None,
+        rows: list[Any] | None = None,
         summary: str | None = None,
         user_request: str | None = None,
         charts: list[Any] | None = None,
@@ -204,8 +206,8 @@ def register_reporting_tools(
             title=title,
             description=description,
             sql_query=sql_query,
-            columns=columns,
-            rows=rows,
+            columns=columns if columns is not None else [],
+            rows=rows if rows is not None else [],
             summary=summary,
             user_request=user_request,
             charts=charts,
@@ -222,13 +224,14 @@ def register_reporting_tools(
         description=(
             "Generate a UTF-8 CSV report from structured column names and query results "
             "and save it in the configured reports directory. Use only when the user "
-            "explicitly requests CSV output. Does not execute SQL."
+            "explicitly requests CSV output. 'columns' and 'rows' are automatically populated "
+            "from executed SQL datasets if omitted."
         ),
     )
     def generate_csv_report(
         title: str,
-        columns: list[str],
-        rows: list[Any],
+        columns: list[str] | None = None,
+        rows: list[Any] | None = None,
         description: str | None = None,
         sql_query: str | None = None,
         user_request: str | None = None,
@@ -237,8 +240,8 @@ def register_reporting_tools(
         return generate_csv_report_impl(
             get_settings(),
             title=title,
-            columns=columns,
-            rows=rows,
+            columns=columns if columns is not None else [],
+            rows=rows if rows is not None else [],
             description=description,
             sql_query=sql_query,
             user_request=user_request,

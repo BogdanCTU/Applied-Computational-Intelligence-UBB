@@ -23,7 +23,7 @@ from agent.task_models import AgentTask, StepStatus, TaskPlan, TaskStatus, TaskS
 from agent.task_planner import TaskPlanner
 from config.settings import DEFAULT_CONTEXT_WINDOW, AppSettings
 from database.connection import DatabaseNotFoundError
-from mcp_layer.client import MCPStdioClient
+from mcp_layer.client import MCPClientError, MCPStdioClient
 from mcp_layer.tools.sql_tools import SQLValidationError, validate_and_prepare_sql
 from memory.models import TaskDecision, TaskToolCallRecord
 from memory.repository import SQLiteMemoryRepository
@@ -51,7 +51,14 @@ from .ollama_client import (
     OllamaToolCall,
 )
 from .system_prompt import build_system_prompt
-from .tool_handler import PERMITTED_TOOLS, ToolHandler
+from .tool_handler import (
+    EXPECTED_MCP_TOOLS,
+    MCPToolRegistry,
+    PERMITTED_TOOLS,
+    ToolDiscoveryError,
+    ToolHandler,
+    ToolHandlerError,
+)
 
 log = logging.getLogger(__name__)
 
@@ -203,25 +210,39 @@ def _synthesize_charts_from_intent(
                     cat_col = c
                     break
 
-    # Find candidate numeric columns
+    # Find candidate numeric columns (verify actual row values when rows are present)
+    def _is_col_numeric(col_name: str, col_idx: int) -> bool:
+        if col_name in (date_col, cat_col):
+            return False
+        if not rows:
+            return True
+        for r in rows[:5]:
+            val = r.get(col_name) if isinstance(r, dict) else (r[col_idx] if col_idx < len(r) else None)
+            if val is None:
+                continue
+            if isinstance(val, bool):
+                return False
+            if isinstance(val, (int, float)):
+                return True
+            try:
+                float(str(val).replace(",", ""))
+                return True
+            except (ValueError, TypeError):
+                return False
+        return False
+
     num_cols = [
         c
-        for c, cl in zip(columns, cols_lower)
-        if any(
-            k in cl
-            for k in ["revenue", "sales", "total", "count", "amount", "price", "orders", "quantity", "val", "transactions"]
+        for idx, (c, cl) in enumerate(zip(columns, cols_lower))
+        if _is_col_numeric(c, idx)
+        and (
+            any(
+                k in cl
+                for k in ["revenue", "sales", "total", "count", "amount", "price", "orders", "quantity", "val", "transactions", "avg", "sum"]
+            )
+            or rows
         )
     ]
-    if not num_cols:
-        sample_row = rows[0]
-        if isinstance(sample_row, dict):
-            num_cols = [c for c in columns if isinstance(sample_row.get(c), (int, float))]
-        else:
-            num_cols = [
-                c
-                for idx, c in enumerate(columns)
-                if idx < len(sample_row) and isinstance(sample_row[idx], (int, float))
-            ]
 
     if not num_cols:
         return []
@@ -638,13 +659,20 @@ class AgentOrchestrator:
             self.effective_context_window,
         )
 
+    @property
+    def tool_registry(self) -> MCPToolRegistry:
+        """Return the authoritative runtime MCPToolRegistry discovered from the MCP server."""
+        return self.tool_handler.registry
+
     async def initialize(self) -> None:
-        """Establish MCP connection, discover skills, and determine optimal tool mode ('native' vs 'json')."""
+        """Establish MCP connection, discover and validate all 6 MCP tools, discover skills, and determine tool mode."""
         if self._initialized:
             return
 
-        # 1. Connect MCP client and initialize permitted tools
+        # 1. Connect MCP client and initialize + validate all 6 permitted MCP tools
         await self.tool_handler.initialize()
+        self.ollama_client.tool_registry = self.tool_handler.registry
+        self.context_builder.tool_registry = self.tool_handler.registry
 
         # 2. Discover domain skills
         try:
@@ -670,6 +698,8 @@ class AgentOrchestrator:
                 self.active_tool_mode = "native"
         else:
             self.active_tool_mode = self.settings.ollama.tool_mode
+
+        self.context_builder.tool_mode = self.active_tool_mode
 
         # 4. Validate model context capability against configured agent_context_window
         try:
@@ -865,8 +895,20 @@ class AgentOrchestrator:
                     else:
                         log.info("Chart '%s' failed validation (%s); attempting fallback chart synthesis.", ch.get("title"), trans.error_message)
             if validated_charts:
+                # Supplement with any additional chart types requested by user intent (e.g., pie/donut, matrix/heatmap)
+                intent_charts = _synthesize_charts_from_intent(cleaned_user_msg, cols, rws)
+                existing_types = {c.get("chart_type") for c in validated_charts if isinstance(c, dict)}
+                for ic in intent_charts:
+                    if ic.get("chart_type") not in existing_types:
+                        validated_charts.append(ic)
+                        existing_types.add(ic.get("chart_type"))
                 t_args["charts"] = validated_charts
                 component_status["chart_generation"] = "success"
+            else:
+                intent_charts = _synthesize_charts_from_intent(cleaned_user_msg, cols, rws)
+                if intent_charts:
+                    t_args["charts"] = intent_charts
+                    component_status["chart_generation"] = "success"
 
         if t_args.get("rows") or t_args.get("datasets"):
             component_status["table_generation"] = "success"
@@ -958,9 +1000,6 @@ class AgentOrchestrator:
     ) -> AgentRunResult:
         """Execute a complete natural-language reporting workflow."""
         start_time = time.perf_counter()
-        if not self._initialized:
-            await self.initialize()
-
         cleaned_user_msg = (user_message or "").strip()
         if not cleaned_user_msg:
             return AgentRunResult(
@@ -968,6 +1007,28 @@ class AgentOrchestrator:
                 final_message="User message cannot be empty.",
                 error="Empty input",
             )
+
+        if not self._initialized:
+            try:
+                await self.initialize()
+            except (MCPClientError, ToolHandlerError) as init_exc:
+                err_msg = f"MCP tool discovery failed during initialization: {init_exc}"
+                log.error(err_msg)
+                await self._emit_activity(
+                    ActivityCategory.ERROR,
+                    title="MCP Initialization Failed",
+                    description=err_msg,
+                    status="failed",
+                    callback=progress_callback,
+                    legacy_type=AgentEventType.ERROR,
+                    extra_data={"error": err_msg},
+                )
+                return AgentRunResult(
+                    status="error",
+                    final_message=err_msg,
+                    error=err_msg,
+                    total_duration_s=round(time.perf_counter() - start_time, 3),
+                )
 
         # Validate model context capability if not yet checked
         if self.model_capability is None and hasattr(self.ollama_client, "validate_model_context_capability"):
@@ -1060,9 +1121,20 @@ class AgentOrchestrator:
             legacy_type=AgentEventType.PLANNING,
         )
 
+        prev_period_info = calculate_previous_calendar_month()
+        reporting_period_dict: dict[str, str] | None = None
+        if any(p in cleaned_user_msg.lower() for p in ("last month", "previous month", "prior month")):
+            reporting_period_dict = {
+                "period_label": prev_period_info.period_label,
+                "start_date": prev_period_info.start_date_str,
+                "end_date_exclusive": prev_period_info.end_date_str,
+            }
+
         system_prompt = build_system_prompt(
             self.settings,
             tool_mode=self.active_tool_mode,
+            discovered_tools=self.tool_handler.registry,
+            reporting_period=reporting_period_dict,
         )
 
         ollama_tools = (
@@ -1133,6 +1205,14 @@ class AgentOrchestrator:
                 if self.model_capability
                 else "compatible"
             )
+            rel_tables: list[str] | None = None
+            if isinstance(last_schema_result, dict) and isinstance(last_schema_result.get("tables"), list):
+                rel_tables = [
+                    str(t.get("name"))
+                    for t in last_schema_result["tables"]
+                    if isinstance(t, dict) and t.get("name")
+                ]
+
             assembled_ctx = self.context_builder.build(
                 stage=current_stage,
                 user_request=cleaned_user_msg,
@@ -1140,14 +1220,23 @@ class AgentOrchestrator:
                 active_step=current_ready_step,
                 checkpoint=latest_chk,
                 schema=last_schema_result,
-                relevant_tables=list(last_schema_result.get("tables", [])) if (isinstance(last_schema_result, dict) and "tables" in last_schema_result) else None,
+                relevant_tables=rel_tables,
                 proposed_sql=proposed_sql,
                 dataset_summary=dataset_summary,
+                tool_mode=self.active_tool_mode,
+                discovered_tools=self.tool_handler.registry,
+                reporting_period=reporting_period_dict,
                 effective_context_window=self.effective_context_window,
                 configured_context_window=self.settings.agent.agent_context_window,
                 model_validation_status=val_status,
                 conversation_history=self.conversation.messages,
             )
+
+            # Ensure discovered MCP tool definitions are passed on every native-mode iteration
+            if self.active_tool_mode == "native":
+                ollama_tools = self.tool_handler.get_ollama_tools_schema()
+            else:
+                ollama_tools = None
 
             # 2. Emit AGENT_STATUS event with context build metrics
             ctx_label = f"{self.effective_context_window // 1024}K"
@@ -1188,6 +1277,11 @@ class AgentOrchestrator:
                     chat_kwargs["num_ctx"] = self.effective_context_window
 
                 response: OllamaChatResponse = await self.ollama_client.chat(**chat_kwargs)
+                if cancel_event and cancel_event.is_set():
+                    overall_status = "cancelled"
+                    final_message = "Agent execution was cancelled by user."
+                    termination_reason = "cancelled_by_user"
+                    break
             except OllamaClientError as exc:
                 if isinstance(exc, OllamaEmptyResponseError):
                     user_wants_report = bool(_REPORT_INTENT_RE.search(cleaned_user_msg))
@@ -1341,12 +1435,17 @@ class AgentOrchestrator:
                 getattr(response, "done", None),
             )
 
-            # If client automatically used JSON fallback, switch orchestrator to json mode
+            # If client automatically used JSON fallback on this turn, log it without permanently stripping native tools unless configured for json mode
             if response.used_fallback:
-                log.info("Switching orchestrator active_tool_mode to 'json' following client fallback")
-                self.active_tool_mode = "json"
-                system_prompt = build_system_prompt(self.settings, tool_mode="json")
-                ollama_tools = None
+                if self.settings.ollama.tool_mode == "json":
+                    self.active_tool_mode = "json"
+                    self.context_builder.tool_mode = "json"
+                    ollama_tools = None
+                else:
+                    log.info(
+                        "Client used single-turn JSON fallback; preserving active_tool_mode='%s' and MCP tool definitions for subsequent turns",
+                        self.active_tool_mode,
+                    )
 
             # 3. Emit REASONING_SUMMARY if provided by model
             if response.thinking:
@@ -1366,6 +1465,32 @@ class AgentOrchestrator:
             # Case A: Model produced final message with no tool calls
             if not response.has_tool_calls:
                 candidate_content = (response.content or "").strip()
+
+                # Guard against false CAPABILITY_LIMITATION refusal when MCP tools are registered
+                if (
+                    candidate_content
+                    and not executed_sql
+                    and not generated_reports
+                    and self.tool_handler.registry.is_complete
+                    and not attempted_recovery
+                    and iterations < max_iterations
+                    and (
+                        "CAPABILITY_LIMITATION" in candidate_content.upper()
+                        or "CANNOT GENERATE PDF" in candidate_content.upper()
+                        or "CANNOT CREATE GRAPHICAL" in candidate_content.upper()
+                    )
+                ):
+                    attempted_recovery = True
+                    log.warning(
+                        "Intercepted false capability refusal from model while all 6 MCP tools are registered; prompting immediate tool execution."
+                    )
+                    self.conversation.add_user_message(
+                        "CORRECTION: All 6 MCP tools (`inspect_database_schema`, `get_table_sample`, `prepare_sql_query`, "
+                        "`execute_readonly_sql`, `generate_pdf_report`, `generate_csv_report`) are active and registered. "
+                        "You CAN generate PDF reports, charts, and CSV exports. Call `inspect_database_schema` with "
+                        "`table_name='ALL'` immediately to start fulfilling the request."
+                    )
+                    continue
 
                 if candidate_content:
                     final_message = candidate_content
@@ -1522,7 +1647,7 @@ class AgentOrchestrator:
                                     step_id=None,
                                     artifact_type=target_format,
                                     file_path=rep_path,
-                                    file_size=Path(rep_path).stat().st_size,
+                                    file_size_bytes=Path(rep_path).stat().st_size,
                                     metadata=fb_res.data,
                                 )
                             except Exception as a_exc:
@@ -2120,7 +2245,7 @@ class AgentOrchestrator:
                                     step_id=active_step_id,
                                     artifact_type="CSV" if t_name == "generate_csv_report" else "PDF",
                                     file_path=rep_path,
-                                    file_size=Path(rep_path).stat().st_size,
+                                    file_size_bytes=Path(rep_path).stat().st_size,
                                     metadata=tool_res.data,
                                 )
                             except Exception as a_exc:

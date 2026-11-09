@@ -157,11 +157,12 @@ class OllamaChatResponse:
 class OllamaClient:
     """Asynchronous HTTP client for the local Ollama daemon."""
 
-    def __init__(self, settings: OllamaSettings) -> None:
+    def __init__(self, settings: OllamaSettings, *, tool_registry: Any | None = None) -> None:
         self.settings = settings
         self.base_url = self._validate_and_normalize_host(settings.host)
         self.model = settings.model.strip()
         self.timeout_s = float(settings.request_timeout_s)
+        self.tool_registry = tool_registry
 
     @staticmethod
     def _validate_and_normalize_host(host: str) -> str:
@@ -248,7 +249,24 @@ class OllamaClient:
         return wanted in tags or target in tags
 
     async def probe_tool_capability(self) -> str:
-        """Probe model's tool calling capability. Return 'native' or 'json'."""
+        """Verify model's tool calling capability via /api/show metadata or chat probe.
+
+        Returns 'native' or 'json'. Checks Ollama `/api/show` capabilities first so
+        no dummy LLM inference precedes the first user request when metadata is available.
+        """
+        try:
+            show_info = await self.get_model_info(self.model)
+            if isinstance(show_info, dict):
+                caps = show_info.get("capabilities")
+                if isinstance(caps, list) and any(str(c).lower() == "tools" for c in caps):
+                    log.info(
+                        "Native tool calling verified via /api/show capabilities for model '%s'",
+                        self.model,
+                    )
+                    return "native"
+        except Exception as exc:  # noqa: BLE001
+            log.debug("Could not verify tool capability via /api/show (%s); falling back to chat probe", exc)
+
         probe_tool = {
             "type": "function",
             "function": {
@@ -455,8 +473,11 @@ class OllamaClient:
             "keep_alive": self.settings.keep_alive,
         }
 
-        if tool_mode == "native" and tools:
-            payload["tools"] = list(tools)
+        if tool_mode == "native":
+            if tools is None and self.tool_registry is not None and hasattr(self.tool_registry, "get_ollama_tools"):
+                tools = self.tool_registry.get_ollama_tools()
+            if tools:
+                payload["tools"] = list(tools)
         elif tool_mode == "json":
             payload["format"] = "json"
 
@@ -720,6 +741,13 @@ class OllamaClient:
         """Fallback to structured JSON mode when native tool calling fails."""
         from config.prompts import JSON_FALLBACK_INSTRUCTIONS
 
+        registry_summary = ""
+        if self.tool_registry is not None and hasattr(self.tool_registry, "format_prompt_summary"):
+            registry_summary = str(self.tool_registry.format_prompt_summary()).strip()
+        extra_block = JSON_FALLBACK_INSTRUCTIONS.strip()
+        if registry_summary:
+            extra_block = f"{registry_summary}\n\n{extra_block}"
+
         fallback_messages: list[dict[str, Any]] = []
         has_system = False
         for m in messages:
@@ -728,7 +756,7 @@ class OllamaClient:
                 has_system = True
                 content = str(m_copy.get("content", ""))
                 if "IMPORTANT OUTPUT FORMAT" not in content:
-                    m_copy["content"] = content.rstrip() + "\n\n" + JSON_FALLBACK_INSTRUCTIONS.strip()
+                    m_copy["content"] = content.rstrip() + "\n\n" + extra_block
             fallback_messages.append(m_copy)
 
         if not has_system:
@@ -736,7 +764,7 @@ class OllamaClient:
                 0,
                 {
                     "role": "system",
-                    "content": JSON_FALLBACK_INSTRUCTIONS.strip(),
+                    "content": extra_block,
                 },
             )
 
