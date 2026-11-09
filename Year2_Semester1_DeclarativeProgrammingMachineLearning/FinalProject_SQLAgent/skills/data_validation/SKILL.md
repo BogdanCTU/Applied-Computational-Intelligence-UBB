@@ -15,14 +15,14 @@ Before passing any data to the PDF or CSV reporting pipelines, verify every item
    - Ensure numeric columns (e.g. `price`, `revenue`, `quantity`) contain numerical types (`int` or `float`), not string-encoded text.
    - Ensure categorical labels are non-null strings.
 3. **Null Check & Fallbacks**:
-   - Verify that critical dimension columns (e.g. `order_id`, `product_category_name`, `order_purchase_timestamp`) do not contain unexpected `NULL` values.
+   - Verify that critical dimension columns (e.g. `order_id`, `category`, `order_date`, `channel`, `status`) do not contain unexpected `NULL` values.
 4. **Sum Reconciliation**:
    - Compute `SUM(column)` over individual rows and verify it matches the grand total displayed on executive summary cards or table footers.
 5. **Percentage Bounding**:
    - Every individual percentage must satisfy: $0\% \le p \le 100\%$.
    - The sum of percentages across exhaustive categories must equal $100.0\% \pm 0.1\%$ (allowing for minor floating-point rounding).
 6. **Date Range Sanity**:
-   - Ensure all dates fall within the known dataset timeline (e.g. 2016 to 2018 for the e-commerce store).
+   - Ensure all dates fall within the dataset timeline inspected via `inspect_database_schema` (e.g. `2024-01-01` to `2026-09-29` for `orders.order_date`).
    - Ensure `end_date >= start_date`.
 7. **Chart and Table Parity**:
    - Confirm that the number of chart bars/slices matches the number of rows in the summary table.

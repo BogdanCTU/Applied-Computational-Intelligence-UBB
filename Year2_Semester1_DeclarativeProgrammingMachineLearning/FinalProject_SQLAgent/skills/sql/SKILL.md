@@ -38,17 +38,17 @@ Guide the agent in generating safe, read-only, accurate, and optimized SQLite qu
 ## 4. SQLite Syntax & Dialect Rules
 - **No FULL OUTER JOIN**: SQLite does not support `FULL OUTER JOIN`. Use `LEFT JOIN` (with primary driving table on the left) or union of directed joins if necessary.
 - **Date Filtering & Formatting**:
-  - Dates in the database are stored as ISO-8601 strings (e.g. `'2023-10-15 14:32:00'`).
-  - Filter using standard ISO strings: `order_purchase_timestamp >= '2023-01-01' AND order_purchase_timestamp < '2024-01-01'`.
-  - Extract month / year using SQLite date functions: `strftime('%Y-%m', order_purchase_timestamp)`.
+  - Dates in the database are stored as ISO-8601 strings on `orders.order_date` (e.g. `'2026-08-15'`).
+  - Filter using standard ISO strings: `o.order_date >= '2026-08-01' AND o.order_date < '2026-09-01'`.
+  - Extract month / year using SQLite date functions: `strftime('%Y-%m', o.order_date)`.
 - **NULL Handling**:
   - Use `COALESCE(val, 0)` when aggregating fields that may contain NULLs.
-  - Check for missing values explicitly: `WHERE delivery_date IS NOT NULL`.
+  - Check for missing values explicitly: `WHERE delivered_date IS NOT NULL`.
 
 ---
 
 ## 5. Aggregation & Performance
 - **Common Table Expressions (CTEs)**: For multi-stage analytical queries (e.g. calculating customer lifetime value or monthly cohorts), use readable `WITH` blocks.
-- **Indexing & Filtering**: Place filters (`WHERE`) on indexed columns (`order_purchase_timestamp`, `order_id`, `customer_id`) before grouping.
+- **Indexing & Filtering**: Place filters (`WHERE`) on indexed columns (`order_date`, `order_id`, `customer_id`) before grouping.
 - **Ordering & Limits**: Always specify deterministic `ORDER BY` clauses when applying `LIMIT` to report top records.
 

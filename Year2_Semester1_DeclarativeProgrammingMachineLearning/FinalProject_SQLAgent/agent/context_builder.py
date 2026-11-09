@@ -26,6 +26,7 @@ from agent.context_models import (
     SectionPriority,
 )
 from agent.skill_models import LoadedSkill, estimate_tokens
+from agent.system_prompt import _format_discovered_tools_section, build_system_prompt
 from agent.task_models import AgentTask, TaskStep
 from config.settings import DEFAULT_CONTEXT_WINDOW, AppSettings, load_settings
 from database.schema_inspector import DatabaseSchema
@@ -49,43 +50,46 @@ STAGE_INSTRUCTIONS: dict[ExecutionStage, str] = {
     ExecutionStage.REQUEST_PLANNING: (
         "TASK PLANNING STAGE:\n"
         "Analyze the user request and database schema. Generate a clear, structured sequence of execution steps "
-        "with dependencies and required tools. Do not generate SQL queries yet."
+        "with dependencies and required MCP tools (`inspect_database_schema`, `prepare_sql_query`, "
+        "`execute_readonly_sql`, `generate_pdf_report`, `generate_csv_report`)."
     ),
     ExecutionStage.SCHEMA_DISCOVERY: (
         "SCHEMA DISCOVERY STAGE:\n"
-        "Inspect table structures, primary keys, and relationships. Identify only the tables and columns "
-        "strictly needed to satisfy the user request."
+        "Call `inspect_database_schema` with `table_name='ALL'` (or `get_table_sample` if needed) to inspect "
+        "table structures, primary keys, date ranges, and relationships. Identify the tables and columns "
+        "needed to satisfy the user request."
     ),
     ExecutionStage.SQL_GENERATION: (
         "SQL GENERATION STAGE:\n"
-        "Generate a single, syntactically correct, strictly read-only SQLite query. "
-        "Adhere to SQLite idioms: use explicit column projections (no SELECT *), qualified table names, "
-        "and strftime for date operations. Never modify the database."
+        "Generate a single, syntactically correct, strictly read-only SQLite query and validate it by calling "
+        "`prepare_sql_query`. Adhere to SQLite idioms: use explicit column projections (no SELECT *), "
+        "qualified table names, and `strftime` for date operations. Once validated, call `execute_readonly_sql`."
     ),
     ExecutionStage.SQL_VALIDATION: (
         "SQL VALIDATION STAGE:\n"
-        "Verify that the proposed SQL query is strictly read-only, references existing tables/columns, "
-        "has no dangerous side-effects, and safely answers the original question."
+        "Verify with `prepare_sql_query` that the proposed SQL query is strictly read-only, references existing "
+        "tables/columns, has no dangerous side-effects, and safely answers the original question, then call "
+        "`execute_readonly_sql`."
     ),
     ExecutionStage.DATA_ANALYSIS: (
         "DATA ANALYSIS STAGE:\n"
         "Analyze the validated SQL query results. Verify metric definitions, compute key performance "
-        "indicators, identify trends, and check for anomalies."
+        "indicators, identify trends, and proceed to call `generate_pdf_report` (or `generate_csv_report` if CSV was explicitly requested)."
     ),
     ExecutionStage.CHART_PLANNING: (
         "CHART PLANNING STAGE:\n"
-        "Select the most appropriate visual chart type(s) representing the data. Ensure category names, "
-        "numerical scales, and visual hierarchies conform to executive reporting standards."
+        "Select the most appropriate visual chart type(s) representing the data and invoke `generate_pdf_report` "
+        "to render the executive PDF report with charts, KPIs, and data tables."
     ),
     ExecutionStage.REPORT_GENERATION: (
         "REPORT GENERATION STAGE:\n"
-        "Synthesize findings into an executive report specification. Ensure numerical reconciliation "
-        "with CanonicalSQLDataset and specify formatting parameters for PDF or CSV generation."
+        "Call `generate_pdf_report` (default) or `generate_csv_report` (only if CSV was explicitly requested) "
+        "with a clear `title` and `description`. Ensure numerical reconciliation with CanonicalSQLDataset."
     ),
     ExecutionStage.FINAL_RESPONSE: (
         "FINAL SYNTHESIS STAGE:\n"
         "Provide a clear, executive-level natural language summary answering the user's initial request. "
-        "Reference generated artifacts and highlight key quantitative findings."
+        "Reference the generated report file path and highlight key quantitative findings from the SQL results."
     ),
 }
 
@@ -100,6 +104,8 @@ class ContextBuilder:
         skill_manager: Any | None = None,
         memory_repo: Any | None = None,
         schema_provider: Callable[[], str | DatabaseSchema] | str | DatabaseSchema | None = None,
+        tool_registry: Any | None = None,
+        tool_mode: str = "native",
         num_ctx: int | None = None,
         reserved_output_tokens: int = 1024,
         safety_margin_tokens: int = 256,
@@ -108,6 +114,8 @@ class ContextBuilder:
         self.skill_manager = skill_manager
         self.memory_repo = memory_repo
         self.schema_provider = schema_provider
+        self.tool_registry = tool_registry
+        self.tool_mode = tool_mode
 
         # Centralized token configuration
         configured_limit = (
@@ -141,6 +149,9 @@ class ContextBuilder:
         proposed_sql: str | None = None,
         dataset_summary: dict[str, Any] | str | None = None,
         custom_sections: list[ContextSection] | None = None,
+        tool_mode: str | None = None,
+        discovered_tools: Any | None = None,
+        reporting_period: dict[str, str] | None = None,
         reserved_output_tokens: int | None = None,
         safety_margin_tokens: int | None = None,
         num_ctx_override: int | None = None,
@@ -189,6 +200,9 @@ class ContextBuilder:
             proposed_sql=proposed_sql,
             dataset_summary=dataset_summary,
             custom_sections=custom_sections,
+            tool_mode=tool_mode,
+            discovered_tools=discovered_tools,
+            reporting_period=reporting_period,
         )
 
         # 3. Filter sections through internal token budget allocator
@@ -374,12 +388,18 @@ class ContextBuilder:
         proposed_sql: str | None,
         dataset_summary: dict[str, Any] | str | None,
         custom_sections: list[ContextSection] | None,
+        tool_mode: str | None = None,
+        discovered_tools: Any | None = None,
+        reporting_period: dict[str, str] | None = None,
     ) -> list[ContextSection]:
         """Gather candidate context sections for the given execution stage."""
         sections: list[ContextSection] = []
 
         # 1. Base System Instructions (Mandatory)
-        sys_text = self._build_base_system_instructions()
+        sys_text = self._build_base_system_instructions(
+            tool_mode=tool_mode,
+            reporting_period=reporting_period,
+        )
         sections.append(
             ContextSection(
                 name="system_instructions",
@@ -390,6 +410,21 @@ class ContextBuilder:
                 estimated_tokens=estimate_tokens(sys_text),
             )
         )
+
+        # 1b. Discovered MCP Tools Registry Summary (High Priority)
+        active_registry = discovered_tools if discovered_tools is not None else self.tool_registry
+        tools_summary = _format_discovered_tools_section(active_registry)
+        if tools_summary:
+            sections.append(
+                ContextSection(
+                    name="discovered_mcp_tools",
+                    content=tools_summary,
+                    priority=SectionPriority.HIGH,
+                    is_mandatory=False,
+                    category="system_instructions",
+                    estimated_tokens=estimate_tokens(tools_summary),
+                )
+            )
 
         # 2. Stage Instructions (Mandatory)
         stage_text = STAGE_INSTRUCTIONS.get(stage, f"STAGE: {stage.value}")
@@ -592,19 +627,18 @@ class ContextBuilder:
                 f"Unknown execution stage '{stage}'. Must be one of: {valid_names}"
             )
 
-    def _build_base_system_instructions(self) -> str:
-        """Construct base system instructions emphasizing local offline and read-only behavior."""
-        override = (self.settings.agent.system_prompt_override or "").strip()
-        if override:
-            return override
-
-        return (
-            "You are the Local Report SQL Agent assistant.\n"
-            "OPERATING BOUNDARIES:\n"
-            "1. You operate completely offline with a local SQLite database.\n"
-            "2. All database queries must be strictly READ-ONLY (SELECT or WITH statements).\n"
-            "3. Never attempt DROP, INSERT, UPDATE, DELETE, ALTER, or PRAGMA write statements.\n"
-            "4. Follow the specific guidelines for the active execution stage."
+    def _build_base_system_instructions(
+        self,
+        *,
+        tool_mode: str | None = None,
+        reporting_period: dict[str, str] | None = None,
+    ) -> str:
+        """Construct capability-aware system instructions via build_system_prompt."""
+        active_mode = tool_mode or self.tool_mode or "native"
+        return build_system_prompt(
+            self.settings,
+            tool_mode=active_mode,
+            reporting_period=reporting_period,
         )
 
     def _resolve_skills_for_stage(
@@ -686,7 +720,7 @@ class ContextBuilder:
             if isinstance(schema, DatabaseSchema):
                 return self._format_database_schema(schema, relevant_tables)
             if isinstance(schema, dict):
-                return f"DATABASE SCHEMA:\n{json.dumps(schema, indent=2)}"
+                return self._format_schema_dict(schema, relevant_tables)
             return str(schema).strip()
 
         # Check provider function
@@ -695,11 +729,70 @@ class ContextBuilder:
                 prov = self.schema_provider() if callable(self.schema_provider) else self.schema_provider
                 if isinstance(prov, DatabaseSchema):
                     return self._format_database_schema(prov, relevant_tables)
+                if isinstance(prov, dict):
+                    return self._format_schema_dict(prov, relevant_tables)
                 return str(prov).strip()
             except Exception as e:
                 log.warning("Error fetching schema from schema_provider: %s", e)
 
         return None
+
+    def _format_schema_dict(
+        self,
+        schema_dict: dict[str, Any],
+        relevant_tables: list[str] | None,
+    ) -> str:
+        """Render a concise, token-efficient summary from an inspect_database_schema dict."""
+        tables = schema_dict.get("tables")
+        if not isinstance(tables, list):
+            return f"DATABASE SCHEMA:\n{json.dumps(schema_dict, indent=2)}"
+
+        if relevant_tables:
+            rel_set = {t.lower().strip() for t in relevant_tables if isinstance(t, str)}
+            filtered = [
+                t for t in tables
+                if isinstance(t, dict) and str(t.get("name", "")).lower() in rel_set
+            ]
+            if filtered:
+                tables = filtered
+
+        lines: list[str] = ["DATABASE SCHEMA OVERVIEW:"]
+        for t in tables:
+            if not isinstance(t, dict):
+                continue
+            t_name = t.get("name", "unknown")
+            row_cnt = t.get("row_count")
+            cnt_str = f" ({row_cnt:,} rows)" if isinstance(row_cnt, int) else ""
+            lines.append(f"Table: {t_name}{cnt_str}")
+            cols = t.get("columns", [])
+            if isinstance(cols, list) and cols:
+                col_parts: list[str] = []
+                for c in cols:
+                    if isinstance(c, dict):
+                        pk = " [PK]" if c.get("is_primary_key") else ""
+                        dtype = c.get("data_type") or c.get("affinity") or "TEXT"
+                        col_parts.append(f"{c.get('name')} ({dtype}{pk})")
+                if col_parts:
+                    lines.append("  Columns: " + ", ".join(col_parts))
+            date_cols = t.get("date_columns", [])
+            if isinstance(date_cols, list) and date_cols:
+                d_parts: list[str] = []
+                for dc in date_cols:
+                    if isinstance(dc, dict) and dc.get("column"):
+                        d_parts.append(
+                            f"{dc['column']}: {dc.get('min_value')} to {dc.get('max_value')}"
+                        )
+                if d_parts:
+                    lines.append("  Date Ranges: " + "; ".join(d_parts))
+            fks = t.get("foreign_keys", [])
+            if isinstance(fks, list) and fks:
+                for fk in fks:
+                    if isinstance(fk, dict):
+                        lines.append(
+                            f"  FK: {t_name}.{fk.get('from_column')} -> "
+                            f"{fk.get('to_table')}.{fk.get('to_column')}"
+                        )
+        return "\n".join(lines)
 
     def _format_database_schema(
         self,

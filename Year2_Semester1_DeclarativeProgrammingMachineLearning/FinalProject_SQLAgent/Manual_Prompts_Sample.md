@@ -1,3 +1,6 @@
+Retrieve the most profitable 10 Orders of all time and present them on an output PDF, presenting the data in bar charts, pie charts, historical tracking chart and tabellar format.
+
+
 I want an output report in PDF file, exporting last month orders, sales, revenue, transactions. I want graphical historical bar charts, sone distribution pies and matrix graphs. Provide also at the end of the report data in table format.
 
 
