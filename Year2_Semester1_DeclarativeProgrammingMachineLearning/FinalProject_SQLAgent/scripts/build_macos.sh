@@ -70,6 +70,23 @@ else
     echo "Warning: Child MCP server did not return standard handshake in smoke test."
 fi
 
+echo "Verifying application resource packaging..."
+if [ ! -f "${APP_PATH}/Contents/Resources/memory/migrations/001_initial_schema.sql" ] && [ ! -f "${APP_PATH}/Contents/Frameworks/memory/migrations/001_initial_schema.sql" ]; then
+    echo "ERROR: Memory database migration files missing from application bundle."
+    exit 1
+fi
+echo "Memory migrations verified in application bundle."
+
+if [ ! -f "${APP_PATH}/Contents/Resources/skills/sql/SKILL.md" ] && [ ! -f "${APP_PATH}/Contents/Frameworks/skills/sql/SKILL.md" ]; then
+    echo "ERROR: Domain skills missing from application bundle."
+    exit 1
+fi
+echo "Domain skills verified in application bundle."
+
+echo "Verifying GUI application startup smoke test..."
+QT_QPA_PLATFORM=offscreen "${BIN_PATH}" --smoke-test
+echo "GUI startup smoke test verified successfully."
+
 echo ""
 echo "=========================================================="
 echo " BUILD SUCCESSFUL!"

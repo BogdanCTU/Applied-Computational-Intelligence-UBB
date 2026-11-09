@@ -1,0 +1,4 @@
+Language,Code,Corpus Source,Author,Tokens,Types,TTR,Top Word,Top 7 Coverage,Hapax Count,Hapax % Tokens,Hapax % Types
+English,EN,Frankenstein,Mary Shelley,75201,7013,0.0933,'the' (4195),23.83%,3015,4.01%,42.99%
+Italian,IT,Pinocchio,Carlo Collodi,41525,6215,0.1497,'e' (1788),18.40%,3302,7.95%,53.13%
+Romanian,RO,Bachelor Thesis,Todoran Ciprian Bogdan,8301,2056,0.2477,'de' (351),16.87%,1138,13.71%,55.35%

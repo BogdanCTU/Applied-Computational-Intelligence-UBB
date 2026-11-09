@@ -267,8 +267,9 @@ class MainWindow(QMainWindow):
         self.chat_view.set_processing_state(False)
         self.active_worker = None
 
-        if result.final_message and result.status == "success":
-            self.chat_view.add_assistant_message(result.final_message)
+        if result.status == "success":
+            msg = result.final_message or "Workflow completed successfully."
+            self.chat_view.add_assistant_message(msg)
         elif result.status == "approval_denied":
             self.chat_view.add_system_message("🚫 SQL query execution was denied by the user. Report generation halted.")
         elif result.status == "cancelled":
@@ -276,6 +277,9 @@ class MainWindow(QMainWindow):
         elif result.status == "error":
             err = result.error or result.final_message or "An unexpected error occurred."
             self.chat_view.add_system_message(f"❌ <b>Error:</b> {err}")
+        else:
+            msg = result.final_message or f"Agent finished with status: {result.status}"
+            self.chat_view.add_system_message(f"ℹ️ {msg}")
 
     def _on_agent_error(self, err_msg: str) -> None:
         self.chat_view.set_processing_state(False)
@@ -326,7 +330,10 @@ class MainWindow(QMainWindow):
 
     def _on_settings_saved(self, updated_settings: AppSettings) -> None:
         self.settings = updated_settings
-        self.orchestrator.settings = updated_settings
+        if hasattr(self.orchestrator, "update_settings"):
+            self.orchestrator.update_settings(updated_settings)
+        else:
+            self.orchestrator.settings = updated_settings
         self._check_ollama_status()
 
     # -----------------------------------------------------------------

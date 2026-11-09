@@ -1,0 +1,54 @@
+{
+  "timestamp": "2026-11-06T16:19:48.057047+00:00",
+  "python": "3.13.17",
+  "results": [
+    {
+      "Corpus": "Frankenstein",
+      "Language": "English",
+      "Tokens": 50000,
+      "Unique Types": 5849,
+      "TTR": 0.117,
+      "Top Word": "the",
+      "Top Word Count": 2821,
+      "Zipf Slope": -1.0774,
+      "Exponent s": 1.0774,
+      "R\u00b2": 0.9762
+    },
+    {
+      "Corpus": "Pinocchio",
+      "Language": "Italian",
+      "Tokens": 41525,
+      "Unique Types": 6215,
+      "TTR": 0.1497,
+      "Top Word": "e",
+      "Top Word Count": 1788,
+      "Zipf Slope": -1.029,
+      "Exponent s": 1.029,
+      "R\u00b2": 0.9695
+    },
+    {
+      "Corpus": "Brown Corpus",
+      "Language": "American English",
+      "Tokens": 50000,
+      "Unique Types": 8246,
+      "TTR": 0.1649,
+      "Top Word": "the",
+      "Top Word Count": 3633,
+      "Zipf Slope": -0.9795,
+      "Exponent s": 0.9795,
+      "R\u00b2": 0.9693
+    },
+    {
+      "Corpus": "Bachelor Thesis (UMFST)",
+      "Language": "Romanian",
+      "Tokens": 8301,
+      "Unique Types": 2056,
+      "TTR": 0.2477,
+      "Top Word": "de",
+      "Top Word Count": 351,
+      "Zipf Slope": -0.9071,
+      "Exponent s": 0.9071,
+      "R\u00b2": 0.9611
+    }
+  ]
+}

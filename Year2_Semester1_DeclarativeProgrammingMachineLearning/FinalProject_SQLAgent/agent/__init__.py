@@ -1,13 +1,19 @@
 """Agent orchestration package for the Local Report SQL Agent."""
 
-from .events import ActivityCategory, ActivityEvent, mask_sensitive_data
+from .checkpoint_manager import CheckpointManager
+from .context_builder import ContextBuilder
 from .conversation import ConversationManager, ConversationMessage
+from .events import ActivityCategory, ActivityEvent, mask_sensitive_data
 from .ollama_client import (
+    ModelCapabilityStatus,
+    ModelContextCapability,
+    ModelContextIncompatibleError,
     OllamaChatResponse,
     OllamaClient,
     OllamaClientError,
     OllamaConnectionError,
     OllamaConnectionRefusedError,
+    OllamaContextSizeRejectedError,
     OllamaDisconnectError,
     OllamaEmptyResponseError,
     OllamaHTTPError,
@@ -26,7 +32,31 @@ from .orchestrator import (
     ProgressCallbackType,
     detect_requested_report_format,
 )
+from .skill_manager import SkillManager
 from .system_prompt import build_system_prompt
+from .task_models import (
+    AgentTask,
+    InvalidStateTransitionError,
+    StepStatus,
+    TaskPlan,
+    TaskStatus,
+    TaskStep,
+)
+from .task_manager import (
+    CyclicDependencyError,
+    DependencyError,
+    InMemoryTaskRepository,
+    MissingDependencyError,
+    SelfDependencyError,
+    StepNotFoundError,
+    TaskError,
+    TaskManager,
+    TaskNotFoundError,
+    TaskRepository,
+    TaskValidationError,
+    validate_plan_dag,
+)
+from .task_planner import TaskPlanner
 from .tool_handler import PERMITTED_TOOLS, ToolHandler, ToolHandlerError
 
 __all__ = [
@@ -36,14 +66,26 @@ __all__ = [
     "AgentEventType",
     "AgentOrchestrator",
     "AgentRunResult",
+    "AgentTask",
     "ApprovalCallbackType",
+    "CheckpointManager",
+    "ContextBuilder",
     "ConversationManager",
     "ConversationMessage",
+    "CyclicDependencyError",
+    "DependencyError",
+    "InMemoryTaskRepository",
+    "InvalidStateTransitionError",
+    "MissingDependencyError",
+    "ModelCapabilityStatus",
+    "ModelContextCapability",
+    "ModelContextIncompatibleError",
     "OllamaChatResponse",
     "OllamaClient",
     "OllamaClientError",
     "OllamaConnectionError",
     "OllamaConnectionRefusedError",
+    "OllamaContextSizeRejectedError",
     "OllamaDisconnectError",
     "OllamaEmptyResponseError",
     "OllamaHTTPError",
@@ -54,8 +96,23 @@ __all__ = [
     "OllamaToolCall",
     "PERMITTED_TOOLS",
     "ProgressCallbackType",
+    "SelfDependencyError",
+    "SkillManager",
+    "StepNotFoundError",
+    "StepStatus",
+    "TaskError",
+    "TaskManager",
+    "TaskNotFoundError",
+    "TaskPlan",
+    "TaskPlanner",
+    "TaskRepository",
+    "TaskStatus",
+    "TaskStep",
+    "TaskValidationError",
     "ToolHandler",
     "ToolHandlerError",
     "build_system_prompt",
     "detect_requested_report_format",
+    "mask_sensitive_data",
+    "validate_plan_dag",
 ]

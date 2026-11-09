@@ -49,6 +49,14 @@ class AgentWorker(QThread):
 
     def run(self) -> None:
         """Thread entrypoint establishing the event loop."""
+        import sys
+
+        if sys.platform == "win32":
+            try:
+                asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+            except Exception as e:  # noqa: BLE001
+                log.warning("Could not set WindowsProactorEventLoopPolicy: %s", e)
+
         self._loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self._loop)
         self.signals.started.emit()

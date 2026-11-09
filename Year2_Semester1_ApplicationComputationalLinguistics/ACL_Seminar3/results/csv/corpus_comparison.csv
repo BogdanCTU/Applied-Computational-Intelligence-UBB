@@ -1,0 +1,4 @@
+corpus,language,author,source,total_tokens,unique_words,type_token_ratio,most_frequent_word,most_frequent_word_count,zipf_slope,zipf_exponent,r_squared,pearson_correlation
+"Frankenstein; or, The Modern Prometheus",English,Mary Shelley,Project Gutenberg (eBook #84),50000,5849,0.11698,the,2821,-1.077389,1.077389,0.976173,-0.988014
+Le avventure di Pinocchio,Italian,Carlo Collodi,Project Gutenberg (eBook #52484),41525,6215,0.149669,e,1788,-1.028989,1.028989,0.96955,-0.984657
+Brown Corpus (American English Sample),American English,W. N. Francis and H. Kučera (Compilers),Brown University / NLTK,50000,8246,0.16492,the,3633,-0.979527,0.979527,0.969284,-0.984522

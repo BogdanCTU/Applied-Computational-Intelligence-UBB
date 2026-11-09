@@ -1,0 +1,24 @@
+skill_id: sql_generation
+name: SQL Generation & Schema Analysis
+description: Authoritative rules and constraints for generating safe, performant, and read-only analytical SQLite queries.
+version: 1.0.0
+category: sql
+tags:
+  - sql
+  - sqlite
+  - schema
+  - analytics
+supported_task_types:
+  - sql_query
+  - schema_inspection
+  - data_extraction
+  - analytics
+  - report
+required_capabilities:
+  - database_inspection
+  - readonly_sql
+dependencies: []
+is_enabled: true
+min_system_version: 1
+author: system
+

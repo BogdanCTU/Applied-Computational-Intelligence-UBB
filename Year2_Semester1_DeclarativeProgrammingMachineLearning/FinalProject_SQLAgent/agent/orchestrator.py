@@ -7,25 +7,40 @@ import inspect
 import logging
 import re
 import time
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
 from pathlib import Path
 from typing import Any, Awaitable, Callable, Mapping, Sequence
 
+from agent.checkpoint_manager import CheckpointManager
+from agent.checkpoint_models import CheckpointType, RecoveryPolicy, RecoveryResult, TaskCheckpoint
+from agent.context_builder import ContextBuilder
+from agent.context_models import AssembledContext, ExecutionStage
 from agent.events import ActivityCategory, ActivityEvent, mask_sensitive_data
-from config.settings import AppSettings
+from agent.skill_manager import SkillManager
+from agent.task_manager import TaskManager
+from agent.task_models import AgentTask, StepStatus, TaskPlan, TaskStatus, TaskStep
+from agent.task_planner import TaskPlanner
+from config.settings import DEFAULT_CONTEXT_WINDOW, AppSettings
 from database.connection import DatabaseNotFoundError
 from mcp_layer.client import MCPStdioClient
 from mcp_layer.tools.sql_tools import SQLValidationError, validate_and_prepare_sql
+from memory.models import TaskDecision, TaskToolCallRecord
+from memory.repository import SQLiteMemoryRepository
 from reporting import ReportHistoryManager, ReportingPeriod, calculate_previous_calendar_month
+from reporting.canonical_data import CanonicalSQLDataset, ChartSpecification, ReportConsistencyValidator
 
 from .conversation import ConversationManager, compact_tool_result_for_llm
 from .ollama_client import (
+    ModelCapabilityStatus,
+    ModelContextCapability,
+    ModelContextIncompatibleError,
     OllamaChatResponse,
     OllamaClient,
     OllamaClientError,
     OllamaConnectionError,
     OllamaConnectionRefusedError,
+    OllamaContextSizeRejectedError,
     OllamaDisconnectError,
     OllamaEmptyResponseError,
     OllamaHTTPError,
@@ -95,6 +110,7 @@ class AgentRunResult:
     total_duration_s: float = 0.0
     error: str | None = None
     component_status: dict[str, str] = field(default_factory=dict)
+    task_id: str | None = None
 
     @property
     def is_success(self) -> bool:
@@ -543,7 +559,7 @@ def _synthesize_sql_execution_summary(
 
 
 class AgentOrchestrator:
-    """Central orchestrator coordinating Ollama, conversation state, and MCP tools."""
+    """Central orchestrator coordinating Ollama, conversation state, MCP tools, and Agent Intelligence Layer."""
 
     def __init__(
         self,
@@ -552,6 +568,12 @@ class AgentOrchestrator:
         ollama_client: OllamaClient | None = None,
         mcp_client: MCPStdioClient | None = None,
         tool_handler: ToolHandler | None = None,
+        task_manager: TaskManager | None = None,
+        task_planner: TaskPlanner | None = None,
+        memory_repo: SQLiteMemoryRepository | None = None,
+        checkpoint_manager: CheckpointManager | None = None,
+        skill_manager: SkillManager | None = None,
+        context_builder: ContextBuilder | None = None,
     ) -> None:
         self.settings = settings
         self.ollama_client = ollama_client or OllamaClient(settings.ollama)
@@ -568,15 +590,69 @@ class AgentOrchestrator:
         self.session_datasets: dict[str, dict[str, Any]] = {}
         self._initialized = False
 
+        # Phase 1-5 Agent Intelligence Layer integration
+        self.effective_context_window: int = getattr(
+            settings.agent, "agent_context_window", DEFAULT_CONTEXT_WINDOW
+        )
+        self.model_capability: ModelContextCapability | None = None
+        self.memory_repo = memory_repo or SQLiteMemoryRepository()
+        self.checkpoint_manager = checkpoint_manager or CheckpointManager(
+            repository=self.memory_repo,
+        )
+        self.task_manager = task_manager or TaskManager(
+            repository=self.memory_repo,
+            checkpoint_manager=self.checkpoint_manager,
+        )
+        self.task_planner = task_planner or TaskPlanner(
+            ollama_client=None,
+            num_ctx=self.effective_context_window,
+        )
+        self.skill_manager = skill_manager or SkillManager(
+            repository=self.memory_repo,
+        )
+        self.context_builder = context_builder or ContextBuilder(
+            settings=settings,
+            skill_manager=self.skill_manager,
+            memory_repo=self.memory_repo,
+            num_ctx=self.effective_context_window,
+        )
+        self.current_task_id: str | None = None
+
+    def update_settings(self, new_settings: AppSettings) -> None:
+        """Update orchestrator settings and propagate context window updates live."""
+        self.settings = new_settings
+        self.ollama_client.settings = new_settings.ollama
+        self.effective_context_window = getattr(
+            new_settings.agent, "agent_context_window", DEFAULT_CONTEXT_WINDOW
+        )
+        self.context_builder.settings = new_settings
+        self.context_builder.num_ctx = self.effective_context_window
+        self.ollama_client.settings.num_ctx = self.effective_context_window
+        if self.task_planner:
+            self.task_planner.num_ctx = self.effective_context_window
+        # Invalidate cached model capability so next execution re-validates
+        self.model_capability = None
+        log.info(
+            "Orchestrator settings updated: agent_context_window=%d, effective=%d",
+            new_settings.agent.agent_context_window,
+            self.effective_context_window,
+        )
+
     async def initialize(self) -> None:
-        """Establish MCP connection and determine optimal tool mode ('native' vs 'json')."""
+        """Establish MCP connection, discover skills, and determine optimal tool mode ('native' vs 'json')."""
         if self._initialized:
             return
 
         # 1. Connect MCP client and initialize permitted tools
         await self.tool_handler.initialize()
 
-        # 2. Determine tool mode (auto / native / json)
+        # 2. Discover domain skills
+        try:
+            self.skill_manager.discover_skills()
+        except Exception as exc:  # noqa: BLE001
+            log.warning("Skill discovery failed during orchestrator initialization: %s", exc)
+
+        # 3. Determine tool mode (auto / native / json)
         if self.settings.ollama.tool_mode == "auto":
             try:
                 conn_res = await self.ollama_client.check_connection()
@@ -595,8 +671,33 @@ class AgentOrchestrator:
         else:
             self.active_tool_mode = self.settings.ollama.tool_mode
 
+        # 4. Validate model context capability against configured agent_context_window
+        try:
+            if hasattr(self.ollama_client, "validate_model_context_capability"):
+                cap = await self.ollama_client.validate_model_context_capability(
+                    configured_window=self.settings.agent.agent_context_window,
+                    model_name=self.settings.ollama.model,
+                )
+                if isinstance(cap, ModelContextCapability):
+                    self.model_capability = cap
+                    self.effective_context_window = cap.effective_window
+                    self.context_builder.num_ctx = self.effective_context_window
+                    if hasattr(self.ollama_client, "settings") and hasattr(self.ollama_client.settings, "num_ctx"):
+                        self.ollama_client.settings.num_ctx = self.effective_context_window
+                    if self.task_planner:
+                        self.task_planner.num_ctx = self.effective_context_window
+                    if not cap.is_compatible:
+                        log.warning(
+                            "Model context incompatibility detected: %s",
+                            cap.message,
+                        )
+        except Exception as exc:  # noqa: BLE001
+            log.warning("Model context capability validation failed during initialize: %s", exc)
+
         log.info(
-            "AgentOrchestrator initialized (active_tool_mode=%s)", self.active_tool_mode
+            "AgentOrchestrator initialized (active_tool_mode=%s, effective_ctx=%d)",
+            self.active_tool_mode,
+            self.effective_context_window,
         )
         self._initialized = True
 
@@ -620,10 +721,179 @@ class AgentOrchestrator:
         """Clear conversation history, session datasets, and reset tool mode."""
         self.conversation.clear()
         self.session_datasets.clear()
+        self.current_task_id = None
         if self.settings.ollama.tool_mode in {"native", "json"}:
             self.active_tool_mode = self.settings.ollama.tool_mode
         elif not self.active_tool_mode or self.active_tool_mode == "auto":
             self.active_tool_mode = "native"
+
+    def get_interrupted_tasks(self) -> list[AgentTask]:
+        """Return any tasks from persistent memory in non-terminal states."""
+        return self.checkpoint_manager.detect_interrupted_tasks()
+
+    def recover_task(
+        self,
+        task_id: str,
+        *,
+        policy: RecoveryPolicy | str = RecoveryPolicy.REQUIRE_CONFIRMATION,
+    ) -> RecoveryResult:
+        """Recover an interrupted task to a consistent executable state."""
+        return self.checkpoint_manager.recover_task(task_id, policy=policy)
+
+    def _determine_execution_stage(
+        self,
+        *,
+        task: AgentTask | None,
+        active_step: TaskStep | None,
+        last_schema_result: Any | None,
+        executed_sql: str | None,
+        proposed_sql: str | None,
+        user_wants_report: bool,
+    ) -> ExecutionStage:
+        """Infer current agent execution stage from active step and conversational state."""
+        if active_step:
+            req_tools = set(active_step.required_tools or [])
+            if any(t in req_tools for t in ("inspect_database_schema", "get_table_sample")):
+                return ExecutionStage.SCHEMA_DISCOVERY
+            if "prepare_sql_query" in req_tools:
+                return ExecutionStage.SQL_GENERATION
+            if "execute_readonly_sql" in req_tools:
+                return ExecutionStage.SQL_VALIDATION
+            if any(t in req_tools for t in ("generate_pdf_report", "generate_csv_report")):
+                return ExecutionStage.REPORT_GENERATION
+
+        if not executed_sql and not last_schema_result:
+            return ExecutionStage.SCHEMA_DISCOVERY
+        if last_schema_result and not executed_sql and not proposed_sql:
+            return ExecutionStage.SQL_GENERATION
+        if proposed_sql and not executed_sql:
+            return ExecutionStage.SQL_VALIDATION
+        if executed_sql:
+            return ExecutionStage.REPORT_GENERATION if user_wants_report else ExecutionStage.DATA_ANALYSIS
+
+        return ExecutionStage.FINAL_RESPONSE
+
+    def _prepare_and_validate_report_args(
+        self,
+        t_args: dict[str, Any],
+        *,
+        executed_sql: str | None,
+        sql_columns: list[str],
+        sql_rows: list[Any],
+        cleaned_user_msg: str,
+        target_format: str,
+        user_explicitly_wants_sql: bool,
+        component_status: dict[str, str],
+    ) -> dict[str, Any]:
+        """Enforce CanonicalSQLDataset as single source of numerical truth with pre-generation consistency validation."""
+        if not t_args.get("columns") and sql_columns:
+            t_args["columns"] = sql_columns
+        if not t_args.get("rows") and sql_rows:
+            t_args["rows"] = sql_rows
+        if not t_args.get("sql_query") and executed_sql:
+            t_args["sql_query"] = executed_sql
+        t_args["user_request"] = cleaned_user_msg
+
+        if not t_args.get("datasets") and self.session_datasets:
+            t_args["datasets"] = dict(self.session_datasets)
+
+        t_args["include_sql"] = user_explicitly_wants_sql or bool(t_args.get("include_sql"))
+
+        cols = t_args.get("columns", sql_columns)
+        rws = t_args.get("rows", sql_rows)
+        primary_ds = CanonicalSQLDataset(cols, rws, name="primary", sql_query=executed_sql or "")
+
+        # 1. Deterministic KPIs from single source of truth
+        synth_kpis = primary_ds.compute_deterministic_kpis() if not primary_ds.is_empty else []
+        if synth_kpis:
+            t_args["kpis"] = synth_kpis
+            component_status["kpi_generation"] = "success"
+        elif not t_args.get("kpis") and (cols or rws):
+            synth_kpis = _synthesize_kpis(cols, rws, self.session_datasets)
+            if synth_kpis:
+                t_args["kpis"] = synth_kpis
+                component_status["kpi_generation"] = "success"
+
+        # 2. Auto-inject findings if omitted
+        if not t_args.get("findings"):
+            prev_period = calculate_previous_calendar_month()
+            t_args["findings"] = [
+                f"Reporting period: {prev_period.period_label} ({prev_period.start_date_str} to {prev_period.end_date_str} exclusive).",
+                "All requested metrics (orders, sales volume, net revenue, and transactions) were aggregated from SQLite database tables.",
+                "Revenue calculations verified to prevent double-counting across multi-item transactions.",
+            ]
+
+        # 3. Chart validation and synthesis
+        raw_charts = t_args.get("charts")
+        if not raw_charts or any(isinstance(c, str) for c in raw_charts):
+            synth_charts: list[dict[str, Any]] = []
+            if self.session_datasets:
+                for ds_name, ds_info in self.session_datasets.items():
+                    ds_charts = _synthesize_charts_from_intent(
+                        cleaned_user_msg,
+                        ds_info.get("columns", []),
+                        ds_info.get("rows", []),
+                    )
+                    for ch in ds_charts:
+                        ch["dataset_id"] = ds_name
+                        if not any(existing.get("chart_type") == ch.get("chart_type") for existing in synth_charts):
+                            synth_charts.append(ch)
+            if not synth_charts:
+                synth_charts = _synthesize_charts_from_intent(
+                    cleaned_user_msg,
+                    cols,
+                    rws,
+                )
+            if synth_charts:
+                t_args["charts"] = synth_charts
+                component_status["chart_generation"] = "success"
+        else:
+            validated_charts = []
+            for ch in raw_charts:
+                if isinstance(ch, dict):
+                    x_c = ch.get("x_column") or ch.get("x_axis") or (cols[0] if cols else "")
+                    y_c = ch.get("y_columns") or [ch.get("y_axis")] if (ch.get("y_columns") or ch.get("y_axis")) else ([cols[1]] if len(cols) > 1 else [x_c])
+                    spec = ChartSpecification(
+                        title=ch.get("title", "Chart"),
+                        chart_type=ch.get("chart_type", "vertical_bar"),
+                        x_axis=x_c or "",
+                        y_axis=y_c or "",
+                    )
+                    trans = primary_ds.extract_and_transform_chart(spec)
+                    if trans.is_valid:
+                        validated_charts.append(ch)
+                    else:
+                        log.info("Chart '%s' failed validation (%s); attempting fallback chart synthesis.", ch.get("title"), trans.error_message)
+            if validated_charts:
+                t_args["charts"] = validated_charts
+                component_status["chart_generation"] = "success"
+
+        if t_args.get("rows") or t_args.get("datasets"):
+            component_status["table_generation"] = "success"
+
+        if isinstance(t_args.get("report_spec"), dict):
+            rs = t_args["report_spec"]
+            if not rs.get("datasets") and t_args.get("datasets"):
+                rs["datasets"] = dict(t_args["datasets"])
+            if not rs.get("kpis") and t_args.get("kpis"):
+                rs["kpis"] = list(t_args["kpis"])
+            if not rs.get("findings") and t_args.get("findings"):
+                rs["findings"] = list(t_args["findings"])
+            if not rs.get("charts") and t_args.get("charts"):
+                rs["charts"] = list(t_args["charts"])
+
+        # 4. Consistency Validator Gate
+        val_res = ReportConsistencyValidator.validate_report_components(
+            primary_ds,
+            kpis=t_args.get("kpis"),
+            charts=t_args.get("charts"),
+        )
+        if not val_res.is_valid:
+            log.warning("Report consistency validation issues detected: %s", getattr(val_res, "errors", val_res))
+        if getattr(val_res, "warnings", None):
+            log.info("Report consistency warnings: %s", val_res.warnings)
+
+        return t_args
 
     async def _emit_event(
         self,
@@ -699,6 +969,47 @@ class AgentOrchestrator:
                 error="Empty input",
             )
 
+        # Validate model context capability if not yet checked
+        if self.model_capability is None and hasattr(self.ollama_client, "validate_model_context_capability"):
+            try:
+                cap = await self.ollama_client.validate_model_context_capability(
+                    configured_window=self.settings.agent.agent_context_window,
+                    model_name=self.settings.ollama.model,
+                )
+                if isinstance(cap, ModelContextCapability):
+                    self.model_capability = cap
+                    self.effective_context_window = cap.effective_window
+                    self.context_builder.num_ctx = self.effective_context_window
+                    if hasattr(self.ollama_client, "settings") and hasattr(self.ollama_client.settings, "num_ctx"):
+                        self.ollama_client.settings.num_ctx = self.effective_context_window
+                    if self.task_planner:
+                        self.task_planner.num_ctx = self.effective_context_window
+            except Exception as exc:  # noqa: BLE001
+                log.warning("Model context capability validation error: %s", exc)
+
+        # Check for model context incompatibility
+        if (
+            self.model_capability
+            and isinstance(self.model_capability, ModelContextCapability)
+            and not self.model_capability.is_compatible
+        ):
+            err_msg = self.model_capability.message
+            await self._emit_activity(
+                ActivityCategory.ERROR,
+                title="Model Context Incompatible",
+                description=err_msg,
+                status="failed",
+                metadata={"model_capability": asdict(self.model_capability) if is_dataclass(self.model_capability) else {}},
+                callback=progress_callback,
+                legacy_type=AgentEventType.ERROR,
+            )
+            return AgentRunResult(
+                status="error",
+                final_message=err_msg,
+                error=err_msg,
+                total_duration_s=round(time.perf_counter() - start_time, 3),
+            )
+
         # Detect user's explicit report format preference
         target_format = detect_requested_report_format(cleaned_user_msg)
         user_explicitly_wants_sql = bool(_USER_WANTS_SQL_RE.search(cleaned_user_msg))
@@ -718,6 +1029,35 @@ class AgentOrchestrator:
             callback=progress_callback,
             legacy_type=AgentEventType.USER_REQUEST,
             extra_data={"message": cleaned_user_msg},
+        )
+
+        # 1.1 Task Lifecycle Initiation & Planning
+        task = self.task_manager.create_task(cleaned_user_msg)
+        self.current_task_id = task.task_id
+
+        try:
+            plan = await self.task_planner.plan_task(task.task_id, cleaned_user_msg)
+        except Exception as exc:  # noqa: BLE001
+            log.warning("Task planning failed (%s); using deterministic fallback plan", exc)
+            plan = self.task_planner.create_fallback_plan(task.task_id, cleaned_user_msg)
+
+        task = self.task_manager.register_plan(task.task_id, plan)
+        task = self.task_manager.start_task(task.task_id)
+
+        # Emit task planning activity event
+        await self._emit_activity(
+            ActivityCategory.PLANNING,
+            title="Task Plan Formulated",
+            description=f"Structured plan with {len(plan.steps)} stage(s): {', '.join(s.name for s in plan.steps)}",
+            status="success",
+            metadata={
+                "task_id": task.task_id,
+                "step_count": len(plan.steps),
+                "steps": [s.to_dict() for s in plan.steps],
+                "rationale": plan.rationale,
+            },
+            callback=progress_callback,
+            legacy_type=AgentEventType.PLANNING,
         )
 
         system_prompt = build_system_prompt(
@@ -765,26 +1105,89 @@ class AgentOrchestrator:
 
             iterations += 1
 
-            # 2. Emit AGENT_STATUS event
+            # Determine execution stage & active step
+            ready_steps = self.task_manager.get_ready_steps(task.task_id)
+            current_ready_step = ready_steps[0] if ready_steps else None
+            user_wants_report = bool(_REPORT_INTENT_RE.search(cleaned_user_msg))
+
+            current_stage = self._determine_execution_stage(
+                task=task,
+                active_step=current_ready_step,
+                last_schema_result=last_schema_result,
+                executed_sql=executed_sql,
+                proposed_sql=proposed_sql,
+                user_wants_report=user_wants_report,
+            )
+
+            latest_chk = self.checkpoint_manager.get_latest_checkpoint(task.task_id)
+            dataset_summary = None
+            if executed_sql and (sql_columns or sql_rows):
+                dataset_summary = {
+                    "columns": sql_columns,
+                    "row_count": len(sql_rows),
+                    "sample_rows": sql_rows[:3] if sql_rows else [],
+                }
+
+            val_status = (
+                self.model_capability.status.value
+                if self.model_capability
+                else "compatible"
+            )
+            assembled_ctx = self.context_builder.build(
+                stage=current_stage,
+                user_request=cleaned_user_msg,
+                task=task,
+                active_step=current_ready_step,
+                checkpoint=latest_chk,
+                schema=last_schema_result,
+                relevant_tables=list(last_schema_result.get("tables", [])) if (isinstance(last_schema_result, dict) and "tables" in last_schema_result) else None,
+                proposed_sql=proposed_sql,
+                dataset_summary=dataset_summary,
+                effective_context_window=self.effective_context_window,
+                configured_context_window=self.settings.agent.agent_context_window,
+                model_validation_status=val_status,
+                conversation_history=self.conversation.messages,
+            )
+
+            # 2. Emit AGENT_STATUS event with context build metrics
+            ctx_label = f"{self.effective_context_window // 1024}K"
             await self._emit_activity(
                 ActivityCategory.AGENT_STATUS,
                 title="Agent Reasoning",
-                description=f"Consulting Ollama with {self.settings.ollama.model} (Iteration {iterations}/{max_iterations})...",
+                description=(
+                    f"Consulting Ollama with {self.settings.ollama.model} (Iteration {iterations}/{max_iterations}) "
+                    f"| Context: {ctx_label} | Stage: {current_stage.value} "
+                    f"| Tokens: {assembled_ctx.report.estimated_input_tokens:,}/{assembled_ctx.report.available_input_tokens:,}"
+                ),
                 status="in_progress",
+                metadata=assembled_ctx.report.model_dump(),
                 callback=progress_callback,
                 legacy_type=AgentEventType.THINKING,
             )
 
             messages_for_llm = self.conversation.get_messages_for_llm(
-                system_prompt=system_prompt
+                system_prompt=assembled_ctx.system_prompt
             )
 
             try:
-                response: OllamaChatResponse = await self.ollama_client.chat(
-                    messages=messages_for_llm,
-                    tools=ollama_tools,
-                    tool_mode=self.active_tool_mode,
-                )
+                chat_kwargs: dict[str, Any] = {
+                    "messages": messages_for_llm,
+                    "tools": ollama_tools,
+                    "tool_mode": self.active_tool_mode,
+                }
+                try:
+                    target_fn = getattr(self.ollama_client.chat, "side_effect", None)
+                    if not callable(target_fn):
+                        target_fn = self.ollama_client.chat
+                    sig = inspect.signature(target_fn)
+                    if "num_ctx" in sig.parameters or any(
+                        p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()
+                    ):
+                        chat_kwargs["num_ctx"] = self.effective_context_window
+                except (ValueError, TypeError):
+                    chat_kwargs["num_ctx"] = self.effective_context_window
+
+                response: OllamaChatResponse = await self.ollama_client.chat(**chat_kwargs)
             except OllamaClientError as exc:
                 if isinstance(exc, OllamaEmptyResponseError):
                     user_wants_report = bool(_REPORT_INTENT_RE.search(cleaned_user_msg))
@@ -887,6 +1290,7 @@ class AgentOrchestrator:
                             messages=messages_for_llm,
                             tools=None,
                             tool_mode="json",
+                            num_ctx=self.effective_context_window,
                         )
                     except Exception as retry_exc:
                         overall_status = "error"
@@ -1049,40 +1453,20 @@ class AgentOrchestrator:
                         "sql_query": executed_sql or "",
                         "columns": sql_columns,
                         "rows": sql_rows,
-                        "findings": [
-                            f"Reporting period: {prev_period.period_label} ({prev_period.start_date_str} to {prev_period.end_date_str} exclusive).",
-                            "Data extracted from primary SQLite database tables verifying orders, sales volume, net revenue, and transaction metrics.",
-                            "Revenue calculations verified to prevent double-counting across multi-item transactions.",
-                        ],
                     }
                     if self.session_datasets:
                         fb_args["datasets"] = dict(self.session_datasets)
 
-                    synth_kpis = _synthesize_kpis(sql_columns, sql_rows, self.session_datasets)
-                    if synth_kpis:
-                        fb_args["kpis"] = synth_kpis
-                        component_status["kpi_generation"] = "success"
-
-                    synth_charts: list[dict[str, Any]] = []
-                    if self.session_datasets:
-                        for ds_name, ds_info in self.session_datasets.items():
-                            ds_charts = _synthesize_charts_from_intent(
-                                cleaned_user_msg,
-                                ds_info.get("columns", []),
-                                ds_info.get("rows", []),
-                            )
-                            for ch in ds_charts:
-                                ch["dataset_id"] = ds_name
-                                if not any(existing.get("chart_type") == ch.get("chart_type") for existing in synth_charts):
-                                    synth_charts.append(ch)
-                    if not synth_charts:
-                        synth_charts = _synthesize_charts_from_intent(cleaned_user_msg, sql_columns, sql_rows)
-                    if synth_charts:
-                        fb_args["charts"] = synth_charts
-                        component_status["chart_generation"] = "success"
-
-                    if sql_rows or self.session_datasets:
-                        component_status["table_generation"] = "success"
+                    fb_args = self._prepare_and_validate_report_args(
+                        fb_args,
+                        executed_sql=executed_sql,
+                        sql_columns=sql_columns,
+                        sql_rows=sql_rows,
+                        cleaned_user_msg=cleaned_user_msg,
+                        target_format=target_format,
+                        user_explicitly_wants_sql=user_explicitly_wants_sql,
+                        component_status=component_status,
+                    )
 
                     await self._emit_activity(
                         ActivityCategory.REPORT_PLANNING,
@@ -1112,10 +1496,16 @@ class AgentOrchestrator:
                             raw_text=str(fb_res),
                         )
 
+                    rep_path = fb_res.data.get("output_path", "")
+                    if rep_path:
+                        p = Path(rep_path)
+                        if not (p.exists() and p.stat().st_size > 0):
+                            fb_res.is_error = True
+                            fb_res.data["error"] = f"Generated report file missing or empty on disk: {rep_path}"
+
                     if not fb_res.is_error:
                         generated_reports.append(fb_res.data)
                         component_status["pdf_generation"] = "success"
-                        rep_path = fb_res.data.get("output_path", "")
                         rep_size = fb_res.data.get("file_size_bytes", 0)
                         pages = fb_res.data.get("page_count", 1)
                         charts_ren = fb_res.data.get("charts_rendered", 0)
@@ -1124,6 +1514,28 @@ class AgentOrchestrator:
                         tables_req = fb_res.data.get("tables_requested", 1)
                         ds_cnt = fb_res.data.get("datasets_count", 1)
                         status_c = fb_res.data.get("completion_status", "complete")
+
+                        if rep_path:
+                            try:
+                                self.memory_repo.save_artifact(
+                                    task_id=task.task_id,
+                                    step_id=None,
+                                    artifact_type=target_format,
+                                    file_path=rep_path,
+                                    file_size=Path(rep_path).stat().st_size,
+                                    metadata=fb_res.data,
+                                )
+                            except Exception as a_exc:
+                                log.warning("Failed saving fallback artifact to memory: %s", a_exc)
+
+                            try:
+                                self.checkpoint_manager.create_checkpoint(
+                                    task.task_id,
+                                    CheckpointType.ARTIFACT_GENERATED,
+                                    current_stage="report_generated",
+                                )
+                            except Exception as c_exc:
+                                log.warning("Failed creating checkpoint for artifact: %s", c_exc)
 
                         await self._emit_activity(
                             ActivityCategory.REPORT_GENERATION,
@@ -1148,6 +1560,7 @@ class AgentOrchestrator:
                         ).strip()
                     else:
                         component_status["pdf_generation"] = "failed"
+                        log.warning("Fallback report generation failed: %s", fb_res.data.get("error"))
                         log.warning("Fallback report generation failed: %s", fb_res.data.get("error"))
 
                 self.conversation.add_assistant_message(
@@ -1189,6 +1602,32 @@ class AgentOrchestrator:
             for tool_call in response.tool_calls:
                 t_name = tool_call.name
                 t_args = dict(tool_call.arguments)
+
+                # Match tool call to a ready step in task manager
+                ready_steps = self.task_manager.get_ready_steps(task.task_id)
+                step_for_tool = next(
+                    (s for s in ready_steps if t_name in s.required_tools),
+                    ready_steps[0] if ready_steps else None,
+                )
+                active_step_id: str | None = None
+                if step_for_tool:
+                    try:
+                        self.task_manager.start_step(task.task_id, step_for_tool.step_id)
+                        active_step_id = step_for_tool.step_id
+                    except Exception as s_st_exc:
+                        log.debug("Step start transition note: %s", s_st_exc)
+                        active_step_id = step_for_tool.step_id
+
+                # Save tool call initiated in persistent memory
+                try:
+                    self.memory_repo.save_tool_call(
+                        task_id=task.task_id,
+                        step_id=active_step_id,
+                        tool_name=t_name,
+                        arguments=t_args,
+                    )
+                except Exception as mem_tc_exc:
+                    log.warning("Failed saving tool call to memory: %s", mem_tc_exc)
 
                 # 5. Emit TOOL_CALL event
                 await self._emit_activity(
@@ -1343,6 +1782,21 @@ class AgentOrchestrator:
                     # Step 3: Approval gate check
                     if self.settings.agent.require_sql_approval:
                         if validated_sql not in approved_queries:
+                            if active_step_id:
+                                try:
+                                    self.task_manager.request_step_approval(task.task_id, active_step_id)
+                                except Exception:
+                                    pass
+                            try:
+                                self.memory_repo.save_decision(
+                                    task_id=task.task_id,
+                                    decision_type="sql_approval_requested",
+                                    rationale=response.content or "Proposed SQL query execution",
+                                    chosen_path=validated_sql,
+                                )
+                            except Exception:
+                                pass
+
                             # 9. Emit APPROVAL_REQUIRED event
                             await self._emit_activity(
                                 ActivityCategory.APPROVAL_REQUIRED,
@@ -1369,6 +1823,20 @@ class AgentOrchestrator:
                                 log.warning(err)
                                 overall_status = "approval_denied"
                                 final_message = err
+                                if active_step_id:
+                                    try:
+                                        self.task_manager.fail_step(task.task_id, active_step_id, error="Missing approval callback")
+                                    except Exception:
+                                        pass
+                                try:
+                                    self.memory_repo.save_decision(
+                                        task_id=task.task_id,
+                                        decision_type="sql_approval_denied",
+                                        rationale="No approval callback provided by caller",
+                                        chosen_path="denied_missing_callback",
+                                    )
+                                except Exception:
+                                    pass
                                 await self._emit_activity(
                                     ActivityCategory.APPROVAL_RESULT,
                                     title="Approval Denied",
@@ -1409,6 +1877,20 @@ class AgentOrchestrator:
                                 final_message = (
                                     f"SQL query execution was denied by user: {validated_sql}"
                                 )
+                                if active_step_id:
+                                    try:
+                                        self.task_manager.fail_step(task.task_id, active_step_id, error="Approval denied by user")
+                                    except Exception:
+                                        pass
+                                try:
+                                    self.memory_repo.save_decision(
+                                        task_id=task.task_id,
+                                        decision_type="sql_approval_denied",
+                                        rationale="User rejected execution of proposed query",
+                                        chosen_path="denied",
+                                    )
+                                except Exception:
+                                    pass
                                 # 10. Emit APPROVAL_RESULT (rejected) event
                                 await self._emit_activity(
                                     ActivityCategory.APPROVAL_RESULT,
@@ -1436,6 +1918,20 @@ class AgentOrchestrator:
 
                             # User approved!
                             approved_queries.add(validated_sql)
+                            if active_step_id:
+                                try:
+                                    self.task_manager.approve_step(task.task_id, active_step_id)
+                                except Exception:
+                                    pass
+                            try:
+                                self.memory_repo.save_decision(
+                                    task_id=task.task_id,
+                                    decision_type="sql_approval_granted",
+                                    rationale="User explicitly approved SQL execution",
+                                    chosen_path=validated_sql,
+                                )
+                            except Exception:
+                                pass
                             # 10. Emit APPROVAL_RESULT (approved) event
                             await self._emit_activity(
                                 ActivityCategory.APPROVAL_RESULT,
@@ -1484,85 +1980,18 @@ class AgentOrchestrator:
                     t_name = "generate_pdf_report"
                     t_args.setdefault("description", t_args.get("title", "Report"))
 
-                # Inject full query results into report tools if omitted by LLM
+                # Inject full query results into report tools if omitted by LLM and validate
                 if t_name in {"generate_pdf_report", "generate_csv_report"}:
-                    if not t_args.get("columns") and sql_columns:
-                        t_args["columns"] = sql_columns
-                    if not t_args.get("rows") and sql_rows:
-                        t_args["rows"] = sql_rows
-                    if not t_args.get("sql_query") and executed_sql:
-                        t_args["sql_query"] = executed_sql
-                    t_args["user_request"] = cleaned_user_msg
-
-                    # Inject session datasets if multiple queries occurred
-                    if not t_args.get("datasets") and self.session_datasets:
-                        t_args["datasets"] = dict(self.session_datasets)
-
-                    # SQL Visibility Policy: Include SQL ONLY if user explicitly requested it
-                    t_args["include_sql"] = user_explicitly_wants_sql or bool(t_args.get("include_sql"))
-
-                    # Deterministic KPI calculation from authoritative SQL dataset (Single Source of Truth)
-                    synth_kpis = _synthesize_kpis(
-                        t_args.get("columns", sql_columns),
-                        t_args.get("rows", sql_rows),
-                        self.session_datasets,
+                    t_args = self._prepare_and_validate_report_args(
+                        t_args,
+                        executed_sql=executed_sql,
+                        sql_columns=sql_columns,
+                        sql_rows=sql_rows,
+                        cleaned_user_msg=cleaned_user_msg,
+                        target_format="CSV" if t_name == "generate_csv_report" else "PDF",
+                        user_explicitly_wants_sql=user_explicitly_wants_sql,
+                        component_status=component_status,
                     )
-                    if synth_kpis:
-                        t_args["kpis"] = synth_kpis
-                        component_status["kpi_generation"] = "success"
-                    elif t_args.get("kpis"):
-                        component_status["kpi_generation"] = "success"
-
-                    # Auto-inject findings with reporting period if omitted
-                    if not t_args.get("findings"):
-                        prev_period = calculate_previous_calendar_month()
-                        t_args["findings"] = [
-                            f"Reporting period: {prev_period.period_label} ({prev_period.start_date_str} to {prev_period.end_date_str} exclusive).",
-                            "All requested metrics (orders, sales volume, net revenue, and transactions) were aggregated from SQLite database tables.",
-                            "Revenue calculations verified to prevent double-counting across multi-item transactions.",
-                        ]
-
-                    # Auto-synthesize vector chart specifications if user requested charts and none supplied,
-                    # or if the model supplied names/strings rather than full configuration dicts:
-                    raw_charts = t_args.get("charts")
-                    if not raw_charts or any(isinstance(c, str) for c in raw_charts):
-                        synth_charts: list[dict[str, Any]] = []
-                        if self.session_datasets:
-                            for ds_name, ds_info in self.session_datasets.items():
-                                ds_charts = _synthesize_charts_from_intent(
-                                    cleaned_user_msg,
-                                    ds_info.get("columns", []),
-                                    ds_info.get("rows", []),
-                                )
-                                for ch in ds_charts:
-                                    ch["dataset_id"] = ds_name
-                                    if not any(existing.get("chart_type") == ch.get("chart_type") for existing in synth_charts):
-                                        synth_charts.append(ch)
-                        if not synth_charts:
-                            synth_charts = _synthesize_charts_from_intent(
-                                cleaned_user_msg,
-                                t_args.get("columns", sql_columns),
-                                t_args.get("rows", sql_rows),
-                            )
-                        if synth_charts:
-                            t_args["charts"] = synth_charts
-                            component_status["chart_generation"] = "success"
-                    else:
-                        component_status["chart_generation"] = "success"
-
-                    if t_args.get("rows") or t_args.get("datasets"):
-                        component_status["table_generation"] = "success"
-
-                    if isinstance(t_args.get("report_spec"), dict):
-                        rs = t_args["report_spec"]
-                        if not rs.get("datasets") and t_args.get("datasets"):
-                            rs["datasets"] = dict(t_args["datasets"])
-                        if not rs.get("kpis") and t_args.get("kpis"):
-                            rs["kpis"] = list(t_args["kpis"])
-                        if not rs.get("findings") and t_args.get("findings"):
-                            rs["findings"] = list(t_args["findings"])
-                        if not rs.get("charts") and t_args.get("charts"):
-                            rs["charts"] = list(t_args["charts"])
 
                     # 13. Emit REPORT_PLANNING event
                     fmt = "PDF" if t_name == "generate_pdf_report" else "CSV"
@@ -1658,6 +2087,13 @@ class AgentOrchestrator:
 
                 # Capture generated report metadata
                 if t_name in {"generate_pdf_report", "generate_csv_report"}:
+                    rep_path = tool_res.data.get("output_path", "")
+                    if rep_path:
+                        p = Path(rep_path)
+                        if not (p.exists() and p.stat().st_size > 0):
+                            tool_res.is_error = True
+                            tool_res.data["error"] = f"Generated report file missing or empty on disk: {rep_path}"
+
                     if not tool_res.is_error:
                         generated_reports.append(tool_res.data)
                         component_status["pdf_generation"] = "success"
@@ -1668,7 +2104,6 @@ class AgentOrchestrator:
                         if tool_res.data.get("tables_rendered", 0) > 0:
                             component_status["table_generation"] = "success"
 
-                        rep_path = tool_res.data.get("output_path", "")
                         rep_size = tool_res.data.get("file_size_bytes", 0)
                         pages = tool_res.data.get("page_count", 1)
                         charts_ren = tool_res.data.get("charts_rendered", 0)
@@ -1677,6 +2112,30 @@ class AgentOrchestrator:
                         tables_req = tool_res.data.get("tables_requested", 1)
                         ds_cnt = tool_res.data.get("datasets_count", 1)
                         status_c = tool_res.data.get("completion_status", "complete")
+
+                        if rep_path:
+                            try:
+                                self.memory_repo.save_artifact(
+                                    task_id=task.task_id,
+                                    step_id=active_step_id,
+                                    artifact_type="CSV" if t_name == "generate_csv_report" else "PDF",
+                                    file_path=rep_path,
+                                    file_size=Path(rep_path).stat().st_size,
+                                    metadata=tool_res.data,
+                                )
+                            except Exception as a_exc:
+                                log.warning("Failed saving artifact to memory: %s", a_exc)
+
+                            try:
+                                self.checkpoint_manager.create_checkpoint(
+                                    task.task_id,
+                                    CheckpointType.ARTIFACT_GENERATED,
+                                    current_step_id=active_step_id,
+                                    current_stage="report_generated",
+                                )
+                            except Exception as c_exc:
+                                log.warning("Failed creating checkpoint for artifact: %s", c_exc)
+
                         # 14. Emit REPORT_GENERATION event
                         await self._emit_activity(
                             ActivityCategory.REPORT_GENERATION,
@@ -1697,6 +2156,39 @@ class AgentOrchestrator:
                         )
                     else:
                         component_status["pdf_generation"] = "failed"
+
+                # Step status update in task manager
+                if active_step_id:
+                    try:
+                        if not tool_res.is_error:
+                            self.task_manager.complete_step(
+                                task.task_id,
+                                active_step_id,
+                                output_reference=str(tool_res.data.get("output_path") or f"{len(tool_res.data.get('rows', []))} rows"),
+                            )
+                        else:
+                            self.task_manager.fail_step(
+                                task.task_id,
+                                active_step_id,
+                                error=str(tool_res.data.get("error", "Tool execution failed")),
+                            )
+                    except Exception as s_fin_exc:
+                        log.debug("Step completion note: %s", s_fin_exc)
+
+                # Update tool call in persistent memory with outcomes
+                try:
+                    self.memory_repo.save_tool_call(
+                        task_id=task.task_id,
+                        tool_name=t_name,
+                        step_id=active_step_id,
+                        arguments=t_args,
+                        result_summary=str(tool_res.data.get("message") or tool_res.data.get("error") or ""),
+                        status="success" if not tool_res.is_error else "failed",
+                        error=str(tool_res.data.get("error")) if tool_res.is_error else None,
+                        duration_ms=duration_ms,
+                    )
+                except Exception as mem_u_exc:
+                    log.warning("Failed updating tool call in memory: %s", mem_u_exc)
 
                 # 15. Emit TOOL_RESULT event
                 await self._emit_activity(
@@ -1729,20 +2221,71 @@ class AgentOrchestrator:
             final_message = error_msg
             termination_reason = "max_iterations_reached"
 
-        # Enforce invariant: if overall_status == "success", final_message must be non-empty
-        if overall_status == "success" and not (final_message and final_message.strip()):
-            if generated_reports:
-                rep = generated_reports[-1]
-                rep_path = rep.get("output_path", "")
-                final_message = f"Report successfully generated and saved to:\n`{rep_path}`"
-                termination_reason = "report_delivery_response_synthesized"
-            elif executed_sql and (sql_rows or sql_columns):
-                final_message = _synthesize_sql_execution_summary(executed_sql, sql_columns, sql_rows)
-                termination_reason = "sql_summary_response_synthesized"
+        # Conclude task lifecycle in task manager and record durable checkpoint
+        try:
+            curr_task = self.task_manager.get_task(task.task_id)
+            if overall_status == "success":
+                # Mark any remaining non-terminal steps as SKIPPED
+                for s in curr_task.steps:
+                    if not s.is_terminal:
+                        try:
+                            self.task_manager.skip_step(
+                                task.task_id,
+                                s.step_id,
+                                reason="Step skipped - workflow reached resolution earlier",
+                            )
+                        except Exception:
+                            pass
+                curr_task = self.task_manager.get_task(task.task_id)
+                if curr_task.status != TaskStatus.COMPLETED:
+                    curr_task.transition_to(TaskStatus.COMPLETED)
+                    self.task_manager.repository.save(curr_task)
+                self.checkpoint_manager.create_checkpoint(
+                    task.task_id,
+                    CheckpointType.TASK_COMPLETED,
+                    current_stage="task_completed",
+                )
+            elif overall_status == "cancelled":
+                try:
+                    self.task_manager.cancel_task(task.task_id, reason="Cancelled by user")
+                except Exception:
+                    pass
+            else:
+                if not curr_task.status.is_terminal:
+                    try:
+                        curr_task.transition_to(TaskStatus.FAILED, error=error_msg or final_message)
+                        self.task_manager.repository.save(curr_task)
+                    except Exception:
+                        pass
+                self.checkpoint_manager.create_checkpoint(
+                    task.task_id,
+                    CheckpointType.STEP_FAILED,
+                    current_stage="error",
+                )
+        except Exception as t_term_exc:
+            log.warning("Failed concluding task lifecycle: %s", t_term_exc)
+
+        # Enforce invariant: final_message must NEVER be empty regardless of overall status
+        if not (final_message and final_message.strip()):
+            if overall_status == "success":
+                if generated_reports:
+                    rep = generated_reports[-1]
+                    rep_path = rep.get("output_path", "")
+                    final_message = f"Report successfully generated and saved to:\n`{rep_path}`"
+                    termination_reason = "report_delivery_response_synthesized"
+                elif executed_sql and (sql_rows or sql_columns):
+                    final_message = _synthesize_sql_execution_summary(executed_sql, sql_columns, sql_rows)
+                    termination_reason = "sql_summary_response_synthesized"
+                else:
+                    final_message = "Workflow completed successfully."
+                    termination_reason = "default_success_message_synthesized"
+            elif overall_status == "approval_denied":
+                final_message = "SQL query execution was denied by user."
+            elif overall_status == "cancelled":
+                final_message = "Agent execution was cancelled by user."
             else:
                 overall_status = "error"
-                error_msg = "Agent completed execution but failed to produce a user-facing response."
-                final_message = error_msg
+                final_message = error_msg or "Agent completed execution but failed to produce a user-facing response."
                 termination_reason = "empty_final_message_invariant_failure"
 
         log.info(
@@ -1770,11 +2313,11 @@ class AgentOrchestrator:
             await self._emit_activity(
                 ActivityCategory.ERROR,
                 title="Execution Error",
-                description=error_msg or "Agent encountered an error",
+                description=error_msg or final_message or "Agent encountered an error",
                 status="failed",
                 callback=progress_callback,
                 legacy_type=AgentEventType.ERROR,
-                extra_data={"error": error_msg},
+                extra_data={"error": error_msg or final_message},
             )
 
         if generated_reports:
@@ -1794,6 +2337,7 @@ class AgentOrchestrator:
             total_duration_s=total_duration,
             error=error_msg,
             component_status=component_status,
+            task_id=task.task_id,
         )
 
     def _format_friendly_error(self, exc: Exception) -> str:

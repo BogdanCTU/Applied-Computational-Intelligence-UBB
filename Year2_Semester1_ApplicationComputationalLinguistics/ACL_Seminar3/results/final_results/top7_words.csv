@@ -1,0 +1,22 @@
+language_code,corpus,rank,word,frequency,pct_of_corpus
+EN,Frankenstein,1,the,4195,5.578
+EN,Frankenstein,2,and,2976,3.957
+EN,Frankenstein,3,i,2850,3.79
+EN,Frankenstein,4,of,2642,3.513
+EN,Frankenstein,5,to,2094,2.785
+EN,Frankenstein,6,my,1776,2.362
+EN,Frankenstein,7,a,1391,1.85
+IT,Pinocchio,1,e,1788,4.306
+IT,Pinocchio,2,di,1390,3.347
+IT,Pinocchio,3,che,1042,2.509
+IT,Pinocchio,4,a,977,2.353
+IT,Pinocchio,5,il,965,2.324
+IT,Pinocchio,6,la,742,1.787
+IT,Pinocchio,7,un,738,1.777
+RO,Bachelor Thesis,1,de,351,4.228
+RO,Bachelor Thesis,2,în,281,3.385
+RO,Bachelor Thesis,3,a,209,2.518
+RO,Bachelor Thesis,4,și,168,2.024
+RO,Bachelor Thesis,5,m,165,1.988
+RO,Bachelor Thesis,6,pentru,119,1.434
+RO,Bachelor Thesis,7,un,107,1.289

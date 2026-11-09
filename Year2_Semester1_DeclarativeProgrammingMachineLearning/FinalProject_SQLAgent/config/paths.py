@@ -153,3 +153,26 @@ def resolve_path(value: str | os.PathLike[str], base: Path | None = None) -> Pat
             return ensure_writable_database(p)
         return (user_data_root() / p).resolve()
     return (app_root() / p).resolve()
+
+
+def get_memory_database_path(
+    rel_or_abs_path: str | os.PathLike[str] | None = "data/agent_memory.db",
+) -> Path:
+    """Resolve the location of the persistent agent memory database.
+
+    Guarantees:
+    - Stored in persistent, writable user data directory when packaged (macOS App Support, Windows %APPDATA%).
+    - Stored in app root directory when running in development.
+    - Ensures parent directories exist.
+    """
+    target = rel_or_abs_path or "data/agent_memory.db"
+    p = Path(target).expanduser()
+    if p.is_absolute():
+        dest = p.resolve()
+    elif is_frozen():
+        dest = (user_data_root() / p).resolve()
+    else:
+        dest = (app_root() / p).resolve()
+
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    return dest

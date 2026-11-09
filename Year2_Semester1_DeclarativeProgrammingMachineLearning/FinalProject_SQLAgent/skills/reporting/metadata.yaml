@@ -1,0 +1,24 @@
+skill_id: report_design
+name: Executive Report Design & Visualization
+description: Visual presentation standards, chart selection criteria, and formatting rules for PDF and CSV executive reports.
+version: 1.0.0
+category: reporting
+tags:
+  - reporting
+  - pdf
+  - csv
+  - charts
+  - visualization
+supported_task_types:
+  - pdf_report
+  - csv_export
+  - chart_generation
+  - report
+required_capabilities:
+  - report_generation
+dependencies:
+  - data_validation
+is_enabled: true
+min_system_version: 1
+author: system
+

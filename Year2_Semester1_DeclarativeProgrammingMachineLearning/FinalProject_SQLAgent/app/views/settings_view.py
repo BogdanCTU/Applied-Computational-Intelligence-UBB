@@ -28,7 +28,14 @@ from PySide6.QtWidgets import (
 )
 
 from app.workers.agent_worker import OllamaCheckWorker
-from config.settings import AppSettings, LOCAL_HOSTS, save_settings
+from config.settings import (
+    ALLOWED_CONTEXT_WINDOWS,
+    CONTEXT_WINDOW_DISPLAY_LABELS,
+    DEFAULT_CONTEXT_WINDOW,
+    LOCAL_HOSTS,
+    AppSettings,
+    save_settings,
+)
 
 log = logging.getLogger(__name__)
 
@@ -132,6 +139,15 @@ class SettingsView(QDialog):
         self.combo_tool_mode.setMinimumHeight(32)
         self.combo_tool_mode.addItems(["auto", "native", "json"])
         form_ollama.addRow("Tool Mode Protocol:", self.combo_tool_mode)
+
+        # Context window selection (32K, 64K, 128K Default, 256K)
+        self.combo_context_window = QComboBox()
+        self.combo_context_window.setMinimumHeight(32)
+        self.combo_context_window.addItem("32K (32,768 tokens)", 32768)
+        self.combo_context_window.addItem("64K (65,536 tokens)", 65536)
+        self.combo_context_window.addItem("128K (131,072 tokens) - Default", 131072)
+        self.combo_context_window.addItem("256K (262,144 tokens)", 262144)
+        form_ollama.addRow("Agent Context Window:", self.combo_context_window)
 
         content_layout.addWidget(grp_ollama)
 
@@ -242,6 +258,16 @@ class SettingsView(QDialog):
         self.spin_request_timeout.setValue(int(self.settings.ollama.request_timeout_s))
         self.combo_tool_mode.setCurrentText(self.settings.ollama.tool_mode)
 
+        # Populate context window
+        current_ctx = getattr(
+            self.settings.agent, "agent_context_window", DEFAULT_CONTEXT_WINDOW
+        )
+        ctx_idx = self.combo_context_window.findData(current_ctx)
+        if ctx_idx != -1:
+            self.combo_context_window.setCurrentIndex(ctx_idx)
+        else:
+            self.combo_context_window.setCurrentIndex(2)  # 128K default
+
         self.edit_db_path.setText(str(self.settings.database_path))
         self.spin_query_timeout.setValue(int(self.settings.database.query_timeout_s))
         self.spin_max_rows.setValue(int(self.settings.database.max_result_rows))
@@ -331,11 +357,17 @@ class SettingsView(QDialog):
             QMessageBox.warning(self, "Invalid Directory", "Output directory cannot be empty.")
             return
 
+        selected_ctx = self.combo_context_window.currentData()
+        if selected_ctx not in ALLOWED_CONTEXT_WINDOWS:
+            selected_ctx = DEFAULT_CONTEXT_WINDOW
+
         # Update settings object
         self.settings.ollama.host = host
         self.settings.ollama.model = model
         self.settings.ollama.request_timeout_s = float(self.spin_request_timeout.value())
         self.settings.ollama.tool_mode = self.combo_tool_mode.currentText()
+        self.settings.agent.agent_context_window = int(selected_ctx)
+        self.settings.ollama.num_ctx = int(selected_ctx)
 
         self.settings.database.query_timeout_s = float(self.spin_query_timeout.value())
         self.settings.database.max_result_rows = int(self.spin_max_rows.value())
