@@ -1,4 +1,8 @@
-Retrieve from the database the most profitable orders, and produce a chart bar graph comparing them, and their revenue over time in an historical graph.
+I want an output report in PDF file, exporting last month orders, sales, revenue, transactions. I want graphical historical bar charts, sone distribution pies and matrix graphs. Provide also at the end of the report data in table format.
+
+
+
+Retrieve from the database the most profitable orders and produce a chart bar graph comparing them, and their revenue over time in an historical graph.
 
 
 
@@ -18,4 +22,4 @@ Retrieve from the database the best selling products for the current month and p
 
 
 
-Retrieve from the database the most profitable orders, and produce a chart bar graph comparing them, and their revenue over time in an historical graph.
+Retrieve from the database the most profitable orders and produce a chart bar graph comparing them and their revenue over time in an historical graph.

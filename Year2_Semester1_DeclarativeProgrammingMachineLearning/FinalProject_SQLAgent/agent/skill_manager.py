@@ -82,13 +82,20 @@ class SkillManager:
         if skills_dir:
             self.skills_dir = Path(skills_dir).resolve()
         else:
-            cand = resolve_path("skills")
-            from config.paths import is_frozen, resource_root
+            from config.paths import app_root, is_frozen, resource_root
 
-            if not cand.exists() and is_frozen():
-                res_cand = resource_root() / "skills"
-                if res_cand.exists():
-                    cand = res_cand
+            cand = None
+            if is_frozen():
+                for alt in [resource_root() / "skills", app_root() / "skills"]:
+                    if alt.exists() and any(alt.iterdir()):
+                        cand = alt
+                        break
+            if cand is None:
+                cand = resolve_path("skills")
+            if not cand.exists():
+                pkg_cand = Path(__file__).resolve().parents[1] / "skills"
+                if pkg_cand.exists() and any(pkg_cand.iterdir()):
+                    cand = pkg_cand
             self.skills_dir = cand
 
         self.repository = repository

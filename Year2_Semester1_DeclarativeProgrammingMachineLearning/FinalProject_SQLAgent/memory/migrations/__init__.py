@@ -12,6 +12,28 @@ CURRENT_SCHEMA_VERSION = 3
 MIGRATIONS_DIR = Path(__file__).resolve().parent
 
 
+def get_default_migrations_dir() -> Path:
+    """Resolve directory containing SQL migration files, handling both source and frozen apps."""
+    try:
+        from config.paths import app_root, is_frozen, resource_root
+
+        if is_frozen():
+            for alt in [
+                resource_root() / "memory" / "migrations",
+                resource_root() / "migrations",
+                app_root() / "memory" / "migrations",
+            ]:
+                if alt.exists() and any(alt.glob("*.sql")):
+                    return alt
+    except Exception:
+        pass
+
+    cand = Path(__file__).resolve().parent
+    if cand.exists() and any(cand.glob("*.sql")):
+        return cand
+    return cand
+
+
 class MigrationError(RuntimeError):
     """Base exception for migration failures."""
 
@@ -31,7 +53,7 @@ def apply_migrations(
     Ensures foreign keys are enabled and runs each migration in an atomic transaction.
     Returns the final applied schema version.
     """
-    target_dir = migrations_dir or MIGRATIONS_DIR
+    target_dir = migrations_dir or get_default_migrations_dir()
     max_target = target_version if target_version is not None else CURRENT_SCHEMA_VERSION
 
     conn.execute("PRAGMA foreign_keys = ON;")
