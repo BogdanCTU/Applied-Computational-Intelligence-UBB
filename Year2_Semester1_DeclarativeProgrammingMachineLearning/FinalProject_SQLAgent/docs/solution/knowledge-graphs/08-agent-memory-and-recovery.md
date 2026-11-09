@@ -153,3 +153,4 @@ flowchart TD
 ```
 
 The recovery decision flowchart above traces how `CheckpointManager.recover_task()` (`agent/checkpoint_manager.py`) handles Scenarios A through F while verifying SHA-256 checkpoint integrity and protecting human approval gates.
+

@@ -90,3 +90,4 @@ Before restoring any checkpoint, `RecoveryValidator.validate_checkpoint()` verif
 | **Scenario D: Interrupted SQL Execution** | `interrupted_operations` has `sql_execution` in `STARTED` state | Marks operation `INTERRUPTED` and schedules safe re-execution (since all SQL against `ecommerce.db` is strictly read-only and idempotent). |
 | **Scenario E: Interrupted Report Generation** | `interrupted_operations` has `report_generation` in `STARTED` state | Checks if the target PDF/CSV artifact already exists on disk and passes validation; if valid, reuses the artifact without regenerating (`reusable_artifacts`), otherwise schedules safe regeneration. |
 | **Scenario F: Interrupted During Approval** | `task_status == WAITING_FOR_APPROVAL` or `pending_approval != None` | Restores `WAITING_FOR_APPROVAL` state on both task and step, sets `requires_user_action=True`, and never auto-executes an unapproved query. |
+

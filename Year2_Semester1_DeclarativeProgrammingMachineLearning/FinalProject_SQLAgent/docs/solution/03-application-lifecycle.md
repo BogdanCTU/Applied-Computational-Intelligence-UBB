@@ -89,3 +89,4 @@ When the user closes the desktop window, `MainWindow.closeEvent(event: QCloseEve
 2. **Health-Check Worker Teardown**: If `self._check_worker` is running, waits up to `1000 ms` (`self._check_worker.wait(1000)`).
 3. **Event Loop Task Cleanup**: Inside `AgentWorker.run()`, the `finally` block cancels all pending `asyncio` tasks on the worker loop, awaits `asyncio.gather(*pending, return_exceptions=True)`, and closes the loop.
 4. **MCP Subprocess Termination**: `AgentOrchestrator.shutdown()` invokes `ToolHandler.shutdown()` → `MCPClientManager.disconnect()`, which exits the `AsyncExitStack` managing `ClientSession` and `stdio_client`, cleanly closing the child MCP server's `stdin`/`stdout` pipes.
+

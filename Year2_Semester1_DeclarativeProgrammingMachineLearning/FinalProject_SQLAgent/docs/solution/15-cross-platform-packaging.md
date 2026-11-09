@@ -73,3 +73,4 @@ Executes the equivalent 5-stage PowerShell workflow on Windows:
 3. Runs the automated `pytest` suite.
 4. Cleans `build\` and `dist\` and runs `PyInstaller --clean --noconfirm ReportSQLAgent.spec`.
 5. Verifies `dist\ReportSQLAgent\ReportSQLAgent.exe`.
+

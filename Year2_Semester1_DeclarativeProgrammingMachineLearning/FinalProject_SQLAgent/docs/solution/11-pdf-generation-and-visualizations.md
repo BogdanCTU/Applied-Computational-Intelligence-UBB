@@ -70,3 +70,4 @@ If a dataset has insufficient numeric values for a requested chart, the renderer
 - Supports both **single-dataset exports** (`columns` + `rows`) and **multi-dataset exports** (`datasets: dict[str, dict]`, writing `# Dataset: <name>` section headers so no secondary query result is ever discarded).
 - Uses UTF-8 encoding (`encoding="utf-8", newline=""`), `csv.QUOTE_MINIMAL`, `\n` line terminators, and converts SQL `NULL` (`None`) to empty string `""`.
 - Enforces `max_rows` (`ReportSettings.max_report_rows = 100,000` default) and records a `ReportMetadata` entry in `reports/report_history.json` via `ReportHistoryManager`.
+

@@ -22,3 +22,4 @@
 | **Semantic Memory** | Memory (`memory/repository.py`) | Validated domain facts (`semantic_facts`) and discovered skill metadata (`skill_registry`) persisted in `data/agent_memory.db`. |
 | **`SkillManager`** | Skills (`agent/skill_manager.py`) | Discovers, security-scans, and extracts stage-relevant slices from `skills/*/SKILL.md` (`sql`, `data_analysis`, `data_validation`). |
 | **Working Memory** | Memory (`memory/repository.py`) | Active task execution state (`task_runs`, `task_plans`, `task_steps`, `task_decisions`, `task_tool_calls`, `task_artifacts`) persisted in `data/agent_memory.db`. |
+

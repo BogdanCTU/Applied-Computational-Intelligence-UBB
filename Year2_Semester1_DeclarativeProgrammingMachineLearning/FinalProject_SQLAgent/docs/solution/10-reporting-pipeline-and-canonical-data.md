@@ -76,3 +76,4 @@ To ensure natural-language date requests like *"last month"* or *"previous calen
 - `sql_filter_clause`: `">= 'YYYY-MM-01' AND < 'YYYY-MM-01'"`.
 
 These values are injected into `SystemPromptBuilder` on every turn so the LLM writes exact half-open interval filters (`order_date >= '...' AND order_date < '...'`) that properly include timestamps on the final day of the month.
+

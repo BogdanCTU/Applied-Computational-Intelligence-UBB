@@ -125,3 +125,4 @@ At runtime, the application spans **two operating system processes** inside the 
 | `skills/` | `sql/SKILL.md`, `data_analysis/SKILL.md`, `data_validation/SKILL.md` | Structured domain knowledge markdown files with YAML frontmatter injected dynamically by execution stage. |
 | `scripts/` | `verify_environment.py`, `import_dataset.py`, `build_macos.sh`, `build_windows.ps1` | Environment verification, CLI dataset builder, and cross-platform PyInstaller packaging scripts. |
 | `tests/` | 35 `test_*.py` modules | Comprehensive unit, integration, security, GUI, MCP discovery, and live `qwen3.5:4b` E2E test suites. |
+

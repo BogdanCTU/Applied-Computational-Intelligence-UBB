@@ -122,3 +122,4 @@ classDiagram
 ```
 
 The class diagram above shows the structural contracts connecting `CanonicalSQLDataset`, `ChartSpecification`, `TransformedChartData`, `ReportSpecification`, `ChartRegistry`, and `ReportMetadata`.
+

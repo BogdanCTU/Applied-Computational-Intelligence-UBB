@@ -66,3 +66,4 @@ QT_QPA_PLATFORM=offscreen .venv/bin/pytest -k "not live" -q
 # 3. Run the live local Ollama (qwen3.5:4b) end-to-end tests
 QT_QPA_PLATFORM=offscreen .venv/bin/pytest -k "live" -v
 ```
+

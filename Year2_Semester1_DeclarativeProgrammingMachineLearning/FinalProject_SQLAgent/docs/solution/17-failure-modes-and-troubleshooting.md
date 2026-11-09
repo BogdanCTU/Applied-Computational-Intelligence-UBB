@@ -83,3 +83,4 @@ The fault-tree diagram above maps each runtime failure domain to its automated c
 - **GUI & Orchestrator Log**: `logs/report_agent_app.log` (or `~/Library/Application Support/ReportSQLAgent/logs/report_agent_app.log` when running the packaged macOS `.app`).
 - **MCP Server Subprocess Log**: `logs/report_agent_mcp_server.log` (logged strictly to file and `stderr` so `stdout` JSON-RPC frames remain uncorrupted).
 - **Early Bootstrap Crash Log**: `logs/startup_crash.log` (written by `run_app.py:_fallback_log_fatal()` if an import error occurs before `setup_logging()`).
+

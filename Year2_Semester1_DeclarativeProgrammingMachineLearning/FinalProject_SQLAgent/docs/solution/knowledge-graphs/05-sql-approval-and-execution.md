@@ -67,3 +67,4 @@ The flowchart above details the three major security and governance stages—Lex
 | `31` | `sqlite3.SQLITE_FUNCTION` | `SQLITE_OK` (unless function is `load_extension` or `fts3_tokenizer`) | Permits analytical functions (`SUM`, `AVG`, `STRFTIME`, `JULIANDAY`, `ROUND`) while blocking arbitrary shared-library code execution. |
 | `33` | `SQLITE_RECURSIVE` | `SQLITE_OK` | Permits recursive Common Table Expressions (`WITH RECURSIVE`). |
 | *All Other Action Codes* | `SQLITE_INSERT`, `SQLITE_UPDATE`, `SQLITE_DELETE`, `SQLITE_PRAGMA`, `SQLITE_ATTACH`, etc. | `SQLITE_DENY` | Enforces engine-level immutability even if a statement bypassed lexical checks. |
+

@@ -171,3 +171,4 @@ classDiagram
 ```
 
 The class diagram above highlights the ownership and method contracts between the UI host (`MainWindow`), background thread runner (`AgentWorker`), central brain (`AgentOrchestrator`), MCP tool adapter (`ToolHandler` + `ToolRegistry`), and persistent SQLite repository (`SQLiteMemoryRepository`).
+

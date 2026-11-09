@@ -73,3 +73,4 @@
 | `REPORT_AGENT_MAX_CSV_ROWS` | `("reports", "max_report_rows")` | `int` (`>= 1`) | `100000` |
 | `REPORT_AGENT_INCLUDE_SQL_IN_PDF` | `("reports", "include_sql_in_pdf")` | `_parse_bool` | `False` |
 | `REPORT_AGENT_LOG_LEVEL` | `("logging", "level")` | `str` (`DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`) | `"INFO"` |
+

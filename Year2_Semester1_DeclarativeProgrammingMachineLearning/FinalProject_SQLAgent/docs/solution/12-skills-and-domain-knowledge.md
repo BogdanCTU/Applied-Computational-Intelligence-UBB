@@ -46,3 +46,4 @@ Because skill files are injected into the LLM system prompt, `SkillManager._scan
 1. **Prompt Injection & Script Blocking (`_DANGEROUS_PATTERNS`)**: Rejects `<script`, `javascript:`, `eval(`, `exec(`, `__import__`, `os.system`, `subprocess.Popen`, `ignore previous instructions`, and `disregard all system rules`.
 2. **Destructive SQL Blocking (`_FORBIDDEN_SQL_PATTERNS`)**: Rejects any skill containing `DROP TABLE`, `DELETE FROM`, `TRUNCATE TABLE`, `ALTER TABLE`, `INSERT INTO`, `UPDATE ... SET`, or `ATTACH DATABASE`.
 3. **Malformed YAML / Missing Sections**: Raises `MalformedSkillError` (when `strict=True`) or marks the skill `INVALID` in `SkillDiscoveryReport` so corrupted skills are never injected into `ContextBuilder`.
+

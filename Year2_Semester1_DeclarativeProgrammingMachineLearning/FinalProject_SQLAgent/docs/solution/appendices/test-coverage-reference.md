@@ -49,3 +49,4 @@
 | 33 | `tests/test_task_models.py` | `11` | `AgentTask` and `TaskStep` state machine transition rules (`InvalidStateTransitionError`). |
 | 34 | `tests/test_task_planner.py` | `18` | `TaskPlanner.generate_plan()` JSON parsing, tool whitelisting, and deterministic 4-step fallback plan synthesis. |
 | 35 | `tests/test_task_recovery.py` | `13` | `CheckpointManager.recover_task()` across Scenarios A, B, C, D, E, and F under `AUTOMATIC_SAFE`, `REQUIRE_CONFIRMATION`, and `MANUAL_ONLY` policies. |
+

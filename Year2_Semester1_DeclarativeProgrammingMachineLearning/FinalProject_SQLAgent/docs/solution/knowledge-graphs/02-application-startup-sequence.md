@@ -73,3 +73,4 @@ The sequence diagram above captures every startup interaction from process launc
 1. **Zero UI Blocking on Startup**: `MainWindow.__init__()` schedules `_check_ollama_status()` via `QTimer.singleShot(100, ...)` on `OllamaCheckWorker` (`QThread`), and defers MCP subprocess spawn (`AgentOrchestrator.initialize()`) until the first `process_message()` call on `AgentWorker`. As a result, the desktop window appears in `< 300 ms` even if Ollama is offline.
 2. **Early Crash Persistence**: If an unhandled exception occurs before `setup_logging()` finishes, `run_app.py:_fallback_log_fatal(exc)` writes the traceback to `user_data_root() / "logs" / "startup_crash.log"`.
 3. **Database Separation Check at Boot**: `SQLiteMemoryRepository.__init__()` immediately verifies that the writable `agent_memory.db` path does not point to `data/ecommerce.db` before opening any SQLite connection.
+

@@ -74,3 +74,4 @@ stateDiagram-v2
 ```
 
 The state machine diagram above traces every validation gate, retry path, and return status inside `ToolHandler.execute_tool()` and `MCPClientManager.call_tool()`.
+

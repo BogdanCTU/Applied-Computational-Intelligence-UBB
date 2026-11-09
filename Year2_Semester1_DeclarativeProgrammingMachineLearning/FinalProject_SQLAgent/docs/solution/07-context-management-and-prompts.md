@@ -81,3 +81,4 @@ In addition, when `discovered_tools_summary` is provided from `ToolRegistry.form
 `ConversationMemory` manages the rolling message window passed to Ollama:
 - Stores `ConversationMessage` instances (`role`, `content`, `thinking`, `tool_calls`, `tool_call_id`, `tool_name`).
 - Enforces `max_history_messages` (`30` default) via `_trim_history()`, preserving the latest user turn and any unbroken `assistant (tool_calls)` → `tool (result)` chains so Ollama never receives an orphaned `role="tool"` message.
+

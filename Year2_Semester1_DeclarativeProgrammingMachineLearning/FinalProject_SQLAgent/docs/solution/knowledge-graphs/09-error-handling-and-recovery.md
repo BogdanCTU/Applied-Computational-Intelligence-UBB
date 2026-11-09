@@ -52,3 +52,4 @@ The state machine diagram above illustrates the three concentric resilience tier
 | `UnsafeQueryError` / `InvalidQueryError` | `validate_readonly_sql()` / `execute_readonly_query()` | Caught in `mcp_layer/tools/sql_tools.py`, returned as `{"status": "error", "error": ...}` | LLM self-corrects SQL query on next iteration (up to `3` retries). |
 | `QueryTimeoutError` | `_progress_watchdog()` in `database/query_executor.py` | Returned as structured tool error | Prevents runaway joins from hanging the app; LLM simplifies query. |
 | `QueryCancelledError` / `asyncio.CancelledError` | `cancel_event.is_set()` in `AgentWorker` / `AgentOrchestrator` | Transitions task to `TaskStatus.CANCELLED` | Chat displays `"⏹️ Workflow was cancelled by user."` |
+

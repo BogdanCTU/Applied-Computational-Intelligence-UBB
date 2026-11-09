@@ -69,3 +69,4 @@ The diagram above illustrates the 3-layer configuration cascade and final `AppSe
 - **Windows**: Windows 10 (64-bit) or Windows 11 (64-bit).
 - **Memory (RAM)**: Minimum `8 GB` RAM (`16 GB` unified memory/RAM recommended when using the `128K` or `256K` context window with `qwen3.5:4b`).
 - **Disk Space**: ~`500 MB` for the repository, `.venv`, and `data/ecommerce.db` (`~58 MB`), plus ~`3.0 GB` for the local `qwen3.5:4b` Ollama model weights.
+

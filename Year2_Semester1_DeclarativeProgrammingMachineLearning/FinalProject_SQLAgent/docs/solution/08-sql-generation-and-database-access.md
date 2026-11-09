@@ -142,3 +142,4 @@ All analytical database access passes through `connect_readonly()` and `execute_
 For rebuilding `data/ecommerce.db` from raw CSVs, ZIP archives, or reference SQLite files (`scripts/import_dataset.py`), `database/importer.py` provides a streaming, transactional pipeline:
 - Infers column types (`INTEGER`, `NUMERIC`, `TEXT`), `NOT NULL` constraints, primary keys (`<table>_id`), foreign keys, topological load order (`customers`, `products` → `orders` → `order_items`, `payments`, `shipments` → `returns`), and analytical indexes dynamically.
 - Streams inserts in configurable batches (`batch_size = 5,000`) inside explicit transactions and verifies `PRAGMA integrity_check` and `PRAGMA foreign_key_check` before committing.
+

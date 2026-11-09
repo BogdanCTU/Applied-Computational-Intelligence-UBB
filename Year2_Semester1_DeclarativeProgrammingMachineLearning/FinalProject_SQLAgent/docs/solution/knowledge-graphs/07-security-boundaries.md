@@ -59,3 +59,4 @@ The trust-zone diagram above maps all five security zones—from untrusted/proba
 | **Query Resource Boundary** | `database/query_executor.py` | `_progress_watchdog` every 5,000 opcodes (`120s` timeout) + `fetchmany(max_rows + 1)` | `QueryTimeoutError` / `QueryCancelledError` |
 | **Report Filesystem Boundary** | `reporting/report_manager.py` | `candidate.resolve().is_relative_to(base_dir.resolve())`; no NUL bytes or `..` | `ReportSecurityError` |
 | **Skill Injection Boundary** | `agent/skill_manager.py` | No `<script>`, `eval(`, `os.system`, destructive SQL, or prompt injection phrases | `SkillSecurityError` |
+

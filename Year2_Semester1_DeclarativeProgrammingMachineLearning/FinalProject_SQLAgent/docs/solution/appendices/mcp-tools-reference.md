@@ -159,3 +159,4 @@ The MCP server (`mcp_layer/server.py`) exposes **six authoritative tools** (`EXP
 | `sql_query` | `string` | No | `""` | SQL query that produced the dataset. |
 | `user_request` | `string` | No | `""` | Original user request. |
 | `datasets` | `object \| null` | No | `None` | Optional dictionary of multiple named datasets to export sequentially. |
+

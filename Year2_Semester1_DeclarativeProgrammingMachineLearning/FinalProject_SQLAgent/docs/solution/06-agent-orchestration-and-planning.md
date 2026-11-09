@@ -112,3 +112,4 @@ Once the task is in `RUNNING` state, `AgentOrchestrator.process_message()` execu
 6. **Direct SQL Recovery & Report Synthesis Guards**:
    - If the model outputs a raw `SELECT` block in plain text instead of a tool call (`_extract_raw_sql_from_text`), nudges the model to invoke `execute_readonly_sql` (up to 2 nudges).
    - If the user requested a report and SQL rows have already been retrieved (`tool_handler.latest_sql_result`), but the model stops without calling `generate_pdf_report` / `generate_csv_report`, nudges the model once and—if still omitted—invokes `_synthesize_fallback_report()` so valid reporting requests never fail silently.
+

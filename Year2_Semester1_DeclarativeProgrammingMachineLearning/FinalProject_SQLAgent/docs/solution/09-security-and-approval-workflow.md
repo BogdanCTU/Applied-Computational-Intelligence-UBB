@@ -118,3 +118,4 @@ All generated PDF and CSV files are strictly confined to the configured `reports
 - Appends a timestamp and 6-character UUID suffix (`<stem>_YYYYMMDD_HHMMSS_<hex6>.<ext>`).
 - Verifies `candidate.resolve().is_relative_to(base_dir.resolve())` before returning the path, raising `ReportSecurityError` on any escape attempt.
 - Writes to a `.tmp` file first (`.pdf.tmp` or `.csv.tmp`) and atomically renames via `tmp_path.replace(output_path)`.
+

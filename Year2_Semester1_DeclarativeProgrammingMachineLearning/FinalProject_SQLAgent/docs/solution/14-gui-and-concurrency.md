@@ -109,3 +109,4 @@ sequenceDiagram
 ```
 
 The sequence diagram above shows the lifecycle of `AgentWorker` (`app/workers/agent_worker.py`), its dedicated `asyncio` event loop (using `WindowsProactorEventLoopPolicy` on `win32` so stdio subprocesses work inside `QThread`), Qt signal emissions, and thread-safe cooperative cancellation (`loop.call_soon_threadsafe(self._cancel_event.set)`).
+

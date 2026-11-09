@@ -120,3 +120,4 @@ Before assembling prompts, `OllamaClient.resolve_effective_context_window(config
 - **Connection Refused (`httpx.ConnectError`)**: Raises `OllamaConnectionError` immediately with instructions to run `ollama serve`.
 - **Missing Model (`HTTP 404`)**: Raises `OllamaModelNotFoundError` with instructions to run `ollama pull qwen3.5:4b`.
 - **Request Timeout (`httpx.TimeoutException`)**: Raises `OllamaTimeoutError` after `request_timeout_s` (`600.0s` default).
+

@@ -118,3 +118,4 @@ When `ToolHandler.initialize()` runs:
    }
    ```
 5. **Argument Aliasing & Sanitization**: Before dispatching `generate_pdf_report` or `generate_csv_report` over MCP, `ToolHandler._prepare_report_tool_arguments()` normalizes model-supplied argument aliases (e.g., mapping `report_title`/`name` → `title`, `executive_summary` → `summary`, `query`/`sql` → `sql_query`, `key_findings`/`insights` → `findings`, and auto-injecting cached full query rows from `self._latest_sql_result` when the LLM omits or truncates `rows`).
+

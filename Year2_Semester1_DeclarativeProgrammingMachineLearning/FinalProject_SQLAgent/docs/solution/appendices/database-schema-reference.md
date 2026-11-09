@@ -126,3 +126,4 @@
 | `status` | `TEXT` | `TEXT` | Yes | No | — | `'approved'`, `'refunded'`, `'rejected'`, `'requested'` |
 
 - **Indexes**: `idx_returns_order_item_id(order_item_id)`, `idx_returns_reason(reason)`, `idx_returns_requested_at(requested_at)`, `idx_returns_status(status)`
+

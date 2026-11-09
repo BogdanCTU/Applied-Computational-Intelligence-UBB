@@ -62,3 +62,4 @@ The high-level flow diagram above demonstrates how the user interacts with the P
 1. **University Evaluators & Academic Reviewers**: Inspecting neuro-symbolic AI engineering, MCP protocol integration, deterministic safety guardrails, and formal state machines.
 2. **Software Architects & AI Engineers**: Reviewing production patterns for local small-language-model (`qwen3.5:4b`) tool calling, token-budgeted context assembly, and crash-resilient task checkpointing.
 3. **Business & Data Analysts**: Generating multi-section PDF executive briefings and CSV data exports from local SQLite datasets without writing SQL manually.
+

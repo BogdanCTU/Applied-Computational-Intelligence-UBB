@@ -118,3 +118,4 @@ This appendix provides a complete, file-by-file map of every source module in th
 | `app/models/csv_table_model.py` | `CsvTableModel` | `QAbstractTableModel` loading up to `5,000` preview rows from UTF-8/Latin-1 CSV files. |
 | `app/workers/agent_worker.py` | `AgentWorker`, `OllamaCheckWorker` | `QThread` workers running dedicated `asyncio` event loops for agent execution and Ollama health checks. |
 | `app/workers/worker_signals.py` | `WorkerSignals`, `OllamaCheckSignals` | Qt `Signal` definitions synchronizing background threads with `MainWindow`. |
+

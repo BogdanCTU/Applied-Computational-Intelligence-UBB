@@ -44,3 +44,4 @@ The deployment graph above connects the 5-step build scripts (`build_macos.sh`, 
 | **MCP Child Server Command** | `Contents/MacOS/ReportSQLAgent --mcp-server` | `ReportSQLAgent.exe --mcp-server` |
 | **Bundled Read-Only Assets (`sys._MEIPASS`)** | `Contents/Resources/` & `Contents/Frameworks/` (`memory/migrations/*.sql`, `skills/*`, `data/ecommerce.db`) | `_internal\` (`memory\migrations\*.sql`, `skills\*`, `data\ecommerce.db`) |
 | **Writable User Data Root** | `~/Library/Application Support/ReportSQLAgent/` | `%APPDATA%\ReportSQLAgent\` |
+
