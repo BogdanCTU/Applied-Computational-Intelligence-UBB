@@ -169,6 +169,15 @@ class ReportMetadata:
     failed_components: list[dict[str, str]] = field(default_factory=list)
     completion_status: str = "complete"  # "complete" or "incomplete"
     warnings: list[str] = field(default_factory=list)
+    requested_period: str = ""
+    actual_data_period: str = ""
+    historical_comparison_period: str = ""
+    requested_period_has_data: bool = True
+    available_data_range: dict[str, str] = field(default_factory=dict)
+    kpis: list[dict[str, Any]] = field(default_factory=list)
+    comparison_kpis: list[dict[str, Any]] = field(default_factory=list)
+    omitted_analyses: list[str] = field(default_factory=list)
+    executive_summary: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         data = asdict(self)
@@ -213,6 +222,15 @@ class ReportMetadata:
             failed_components=list(raw.get("failed_components") or []),
             completion_status=str(raw.get("completion_status") or "complete"),
             warnings=[str(w) for w in (raw.get("warnings") or [])],
+            requested_period=str(raw.get("requested_period") or ""),
+            actual_data_period=str(raw.get("actual_data_period") or ""),
+            historical_comparison_period=str(raw.get("historical_comparison_period") or ""),
+            requested_period_has_data=bool(raw.get("requested_period_has_data", True)),
+            available_data_range=dict(raw.get("available_data_range") or {}),
+            kpis=list(raw.get("kpis") or []),
+            comparison_kpis=list(raw.get("comparison_kpis") or []),
+            omitted_analyses=[str(o) for o in (raw.get("omitted_analyses") or [])],
+            executive_summary=str(raw.get("executive_summary") or ""),
         )
 
 

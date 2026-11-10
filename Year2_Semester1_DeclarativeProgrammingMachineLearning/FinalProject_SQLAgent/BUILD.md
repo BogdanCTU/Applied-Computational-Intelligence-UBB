@@ -137,7 +137,7 @@ Both `scripts/build_macos.sh` and `scripts/build_windows.ps1` execute the follow
 | Stage | Name | Description |
 |:---|:---|:---|
 | **[1/5]** | **Environment Verification** | Runs `scripts/verify_environment.py --build` to confirm Python version compatibility, package dependencies (`PySide6`, `reportlab`, `mcp`, `httpx`, `pydantic`), and SQLite database file presence. |
-| **[2/5]** | **Automated Test Suite** | Runs `pytest tests/ -k "not test_live_local_ollama_integration_end_to_end" -q` to guarantee 100% of offline unit and integration tests pass before packaging. |
+| **[2/5]** | **Automated Test Suite** | Runs `pytest tests/ -k "not test_live_local_ollama_integration_end_to_end" -q` to guarantee 100% of offline unit, integration, and reporting pipeline tests (456 tests) pass before packaging. |
 | **[3/5]** | **Clean Artifacts** | Safely deletes stale `build/` and `dist/` folders to ensure a reproducible, clean build. |
 | **[4/5]** | **PyInstaller Packaging** | Executes PyInstaller against `ReportSQLAgent.spec` with optimizations and hidden imports. |
 | **[5/5]** | **Output Validation** | Validates the output binaries, checks file permissions, and runs a live smoke test against `--mcp-server` to verify stdio JSON-RPC initialization. |

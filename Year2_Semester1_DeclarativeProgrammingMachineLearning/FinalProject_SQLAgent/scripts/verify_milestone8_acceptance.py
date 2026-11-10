@@ -25,6 +25,7 @@ log = logging.getLogger("acceptance_verifier")
 
 async def run_acceptance_tests() -> None:
     settings = AppSettings()
+    settings.agent.require_sql_approval = True
     log.info("Starting Milestone 8 Acceptance Verification with model: %s", settings.ollama.model)
 
     orchestrator = AgentOrchestrator(settings)

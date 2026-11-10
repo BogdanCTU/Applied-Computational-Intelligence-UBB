@@ -1,41 +1,43 @@
-# Academic Demonstration Guide (5–10 Minutes)
+# Academic Demonstration Guide (10–15 Minutes)
 
-This guide provides a repeatable, step-by-step demonstration script for university presentation and evaluation of the **Local Report SQL Agent**.
-
----
-
-## Demonstration Script Overview
-
-| Phase | Duration | Core Capability Demonstrated |
-| :---: | :---: | :--- |
-| **Part 1** | 1 min | Application launch, architecture introduction, and Ollama status |
-| **Part 2** | 1 min | Conversational capabilities and dynamic database schema inspection |
-| **Part 3** | 2 min | Complex SQL generation, explanation, and query rejection safety |
-| **Part 4** | 2 min | Query approval, execution, and embedded native PDF report preview |
-| **Part 5** | 2 min | Explicit CSV export request and embedded tabular CSV preview |
-| **Part 6** | 1 min | Persistent report history, settings inspection, and clean shutdown |
+This document provides a repeatable, step-by-step presentation script for university defense and academic evaluation of the **Local Report SQL Agent**.
 
 ---
 
-## Step-by-Step Demonstration Procedure
+## 1. Demonstration Session Overview
 
-### Step 1: Launch the Application (0:00 – 1:00)
+| Phase | Duration | Core Capability Demonstrated | Key Evaluator Takeaway |
+| :---: | :---: | :--- | :--- |
+| **Phase 1** | 1.5 min | Application startup, local health checks, and architecture overview | 100% offline localhost boundary (`127.0.0.1:11434`), zero cloud exposure. |
+| **Phase 2** | 1.5 min | Conversational capability discovery & FastMCP dynamic schema introspection | No hardcoded schemas; genuine MCP tool calling over stdio subprocess. |
+| **Phase 3** | 2.5 min | Complex SQL synthesis, syntax inspection, and mandatory user rejection | Human-in-the-loop security gate blocks execution; default action is Reject. |
+| **Phase 4** | 3.5 min | SQL approval, multi-step execution, and embedded native PDF report preview | ReportLab PDF compilation, Page X of Y canvas, dual KPI grids, vector charts. |
+| **Phase 5** | 2.5 min | Edge-period reporting (October 2026) & Data Availability Notice banner | PeriodAvailabilityContext prevents silent substitution; explicit notice rendered. |
+| **Phase 6** | 2.0 min | Explicit CSV export request and virtualized tabular viewer | Seamless format steering; high-density tabular view with $O(1)$ memory. |
+| **Phase 7** | 1.5 min | Historical report catalog, settings management, and clean shutdown | Persistent report history, configurable parameters, clean thread termination. |
 
-**Action:**  
-Open your terminal in the project directory and launch the application:
+---
+
+## 2. Step-by-Step Demonstration Procedure
+
+### Phase 1: Launch & Architectural Overview (0:00 – 1:30)
+
+**Action:**
+Open the macOS terminal or command prompt in the workspace directory and execute:
 ```bash
 .venv/bin/python run_app.py
 ```
-*(Alternatively, on macOS: `open dist/ReportSQLAgent.app`)*
+*(Alternatively, on macOS double-click `dist/ReportSQLAgent.app` or run `open dist/ReportSQLAgent.app`)*
 
 **Presenter Talking Points:**
-* *"This is the Local Report SQL Agent, an offline desktop AI system built with PySide6, Python 3.13, local Ollama, and SQLite."*
-* Point out the **Header Status Pill**: Notice the green indicator `● Ollama Online (qwen3.5:4b)`. Mention that this health check runs asynchronously in a background thread to prevent UI freezing.
-* Highlight the **Asymmetric Split Layout**: ~65% on the left is the dynamic **Report Workspace** (currently showing an empty placeholder), and ~35% on the right is the **AI Report Assistant** chat interface.
+* *"Good morning, esteemed committee members. This is the Local Report SQL Agent, an enterprise-grade, 100% offline desktop application built for private relational analytics."*
+* Point to the **Header Status Pill**: *"Notice the green indicator `● Ollama Online (qwen3.5:4b)`. Health checks run asynchronously in a background thread to prevent UI freezing."*
+* Point to the **Asymmetric Workspace**: *"On the left (~65%) is the native Report Workspace featuring embedded PDF and CSV viewers; on the right (~35%) is the AI Assistant and Activity Inspector."*
+* Emphasize: *"Prompts, schema metadata, query results, and generated reports never leave this machine. All network traffic is strictly confined to 127.0.0.1."*
 
 ---
 
-### Step 2: Introduce the Agent & Discover Capabilities (1:00 – 2:00)
+### Phase 2: Conversational Discovery & MCP Schema Introspection (1:30 – 3:00)
 
 **Prompt to Send:**
 ```text
@@ -43,32 +45,24 @@ Hello! What can you do, and what database do you have access to?
 ```
 
 **Expected Result:**
-* The agent responds conversationally without invoking database tools.
-* It explains that it can analyze the local e-commerce database, write SQL queries, and generate downloadable reports in PDF format by default, or CSV upon request.
+* The agent replies conversationally explaining its capabilities: querying the relational database, running analytical aggregations, and compiling publication-grade PDF and CSV reports.
 
-**Presenter Talking Points:**
-* *"Notice how general questions are handled conversationally without unnecessary database queries or file generation."*
-
----
-
-### Step 3: Inspect the Relational Database Schema (2:00 – 3:00)
-
-**Prompt to Send:**
+**Next Prompt to Send:**
 ```text
-Please inspect the database and show me all available tables and their relationships.
+Please inspect the database and show me all available tables and their record counts.
 ```
 
 **Expected Result:**
-* A status indicator appears: `⏳ Inspecting database schema...`
-* The agent invokes the FastMCP tool `inspect_database_schema` over stdio.
-* The agent summarizes the 7 relational tables: `customers`, `products`, `orders`, `order_items`, `payments`, `reviews`, and `returns` (499,385 total records).
+* A progress card appears: `⏳ Inspecting database schema...`
+* The agent invokes the FastMCP tool `inspect_database_schema` over stdio pipes.
+* The agent displays the 7 relational tables: `customers`, `products`, `orders`, `order_items`, `payments`, `shipments`, and `returns` (499,385 total records).
 
 **Presenter Talking Points:**
-* *"The LLM does not rely on hardcoded assumptions. It dynamically queries the schema using genuine Model Context Protocol (MCP) tools running in an isolated subprocess."*
+* *"The model does not rely on pre-baked prompt assumptions. It discovers the database structure dynamically using the official Model Context Protocol (FastMCP) running in an isolated background subprocess."*
 
 ---
 
-### Step 4: Request a Business Report & Demonstrate Rejection (3:00 – 5:00)
+### Phase 3: Complex SQL Synthesis & Rejection Gate (3:00 – 5:30)
 
 **Prompt to Send:**
 ```text
@@ -76,8 +70,7 @@ Generate a report showing total revenue grouped by payment method.
 ```
 
 **Expected Result:**
-1. The agent first calls `prepare_sql_query` to validate syntax and check the query plan via `EXPLAIN QUERY PLAN`.
-2. An inline SQL card appears in the chat showing the proposed query:
+1. The agent decomposes the request, calls `prepare_sql_query`, and displays the syntax-highlighted SQL card:
    ```sql
    SELECT payment_method, SUM(amount) AS total_revenue
    FROM payments
@@ -85,54 +78,71 @@ Generate a report showing total revenue grouped by payment method.
    GROUP BY payment_method
    ORDER BY total_revenue DESC;
    ```
-3. When the agent attempts to execute the query via `execute_readonly_sql`, the **Modal SQL Approval Dialog** pops up automatically.
+2. When the agent attempts to execute `execute_readonly_sql`, the **Modal SQL Approval Dialog** pops up automatically.
 
 **Action:**
-* Point out the dialog features:
-  - Formatted SQL code block.
-  - Target database label (`ecommerce.db`).
-  - Security indicator: Notice the button focused by default is **Reject Query**.
-* **Click "Reject Query"** (or press `Esc`).
+* Point out dialog features: formatted SQL syntax highlighting, database target label (`data/ecommerce.db`), and default focus on **Reject Query**.
+* **Click "Reject Query"** (or hit `Esc`).
 
 **Expected Result:**
-* The query is **not executed**.
-* The agent receives an `APPROVAL_DENIED` notice and reports:  
+* Query execution is **blocked**. The agent surfaces:  
   *“SQL query execution was denied by user. Query was not run.”*
 
 **Presenter Talking Points:**
-* *"This demonstrates our mandatory human-in-the-loop security gate. Even if the LLM produces valid SQL, it cannot touch the database without explicit user consent. The default action is strictly Reject."*
+* *"This demonstrates our mandatory human-in-the-loop security gate. Even if the LLM produces valid SQL, it cannot touch the database without explicit user consent. The default button is strictly Reject."*
 
 ---
 
-### Step 5: Approve Query & Generate PDF Report (5:00 – 7:00)
+### Phase 4: Query Approval & Embedded PDF Report Preview (5:30 – 9:00)
 
 **Prompt to Send:**
 ```text
-Please run the query and generate the revenue report as a PDF.
+Please execute the query and generate the revenue report as a PDF.
 ```
 
 **Expected Result:**
 1. The SQL Approval Dialog appears again.
 2. **Click "Approve Query"**.
-3. Status indicators update:
+3. Status indicators update in real-time:
    - `⏳ Executing read-only SQL query...`
-   - `⏳ Compiling PDF report via ReportLab...`
-4. The FastMCP server compiles a styled ReportLab PDF.
-5. **The left workspace immediately loads the generated PDF document.**
+   - `⏳ Validating data via 4-stage ReportDataValidator...`
+   - `⏳ Compiling PDF report via ReportLab Platypus...`
+4. **The left workspace immediately renders the generated PDF document.**
 
 **Action in Workspace:**
 * Demonstrate the embedded **native Qt PDF Viewer (`QPdfView`)**:
-  - Click `▶` to navigate pages (or use page controls).
-  - Use `+` and `-` zoom buttons.
-  - Click **Fit to Width** and **Fit to Page**.
-  - Show the ReportLab styling: KPI header cards, executive summary, formatted table grid, executed SQL block, and `Page X of Y` footer.
+  - Click `▶` to navigate pages.
+  - Demonstrate `+` and `-` zoom controls, **Fit to Width**, and **Fit to Page**.
+  - Show the ReportLab document structure: Header banner, KPI cards, vector chart, styled table grid, executed SQL block, and `Page X of Y` footer.
 
 **Presenter Talking Points:**
-* *"The user does not need to open an external PDF viewer. Qt 6's native QPdfView renders the report directly within the application workspace."*
+* *"Notice how Qt 6's native QPdfView renders the PDF directly inside the workspace without launching external viewer processes. The numerical values on the KPI cards and tables are guaranteed accurate by our CanonicalSQLDataset architecture."*
 
 ---
 
-### Step 6: Generate & Preview a CSV Report (7:00 – 8:30)
+### Phase 5: Edge-Period Reporting & Data Availability Notice (9:00 – 11:30)
+
+**Prompt to Send:**
+```text
+I want an output report in PDF file, exporting last month orders, sales, revenue, transactions. I want graphical historical bar charts, some distribution pies and matrix graphs. Provide also at the end of the report data in table format.
+```
+
+**Expected Result:**
+1. The agent resolves the calendar period (October 2026).
+2. The database ends at September 2026.
+3. The agent invokes `PeriodAvailabilityContext` and generates the report.
+4. The generated PDF renders:
+   - **Red/Pink Data Availability Notice Banner**: Clearly states that October 2026 data is not yet recorded and designates September 2026 as the comparison baseline.
+   - **Dual KPI Grids**: October 2026 displays 0s, while September 2026 displays validated actuals.
+   - **Distribution Pie Charts & Operational Matrix**: Multi-category distribution and multi-dimensional performance crosstabs.
+   - **LongTable Data Tables**: High-density tabular rows paginated cleanly across pages.
+
+**Presenter Talking Points:**
+* *"Previously, LLM reporting pipelines silently hallucinated or substituted September data as if it were October. Our canonical architecture explicitly separates requested vs available periods and renders a clear Data Availability Notice."*
+
+---
+
+### Phase 6: Tabular CSV Export & Virtualized Viewer (11:30 – 13:30)
 
 **Prompt to Send:**
 ```text
@@ -140,56 +150,47 @@ Export the top 10 products by price as a CSV report.
 ```
 
 **Expected Result:**
-1. Intent steering detects `"as a CSV report"` and configures CSV output mode.
-2. The agent proposes a query against `products`:
+1. Intent steering detects `"as a CSV report"` and selects RFC-4180 CSV export mode.
+2. Proposes query against `products`:
    ```sql
    SELECT product_name, category, price, stock_quantity
    FROM products
    ORDER BY price DESC
    LIMIT 10;
    ```
-3. The SQL Approval Dialog appears. **Click "Approve Query"**.
+3. SQL Approval Dialog appears. **Click "Approve Query"**.
 4. The FastMCP server compiles an RFC-4180 UTF-8 CSV report.
 5. **The left workspace automatically flips to the Tabular CSV Viewer (`QTableView`).**
 
-**Action in Workspace:**
-* Show the tabular grid: column headers (`product_name`, `category`, `price`, `stock_quantity`), formatted numeric alignment, and row count indicators.
-
 **Presenter Talking Points:**
-* *"Notice how format steering operates seamlessly: PDF is the default for business summaries, while explicit CSV requests switch the workspace to a tabular data view."*
+* *"Format steering operates seamlessly: narrative summaries default to PDF, while explicit tabular requests switch the workspace to a virtualized QTableView."*
 
 ---
 
-### Step 7: Report History & Clean Shutdown (8:30 – 10:00)
+### Phase 7: Historical Catalog, Settings & Clean Shutdown (13:30 – 15:00)
 
 **Action:**
-1. Click the **History** button in the top navigation bar.
-2. The **Report History Dialog** opens, displaying a catalog of all generated reports:
-   - Timestamps, report titles, formats (PDF/CSV), and file sizes.
-   - Click **Preview** on any past report: the workspace instantly switches and renders that historical document.
+1. Click the **History** button in the top navigation bar:
+   - Show the catalog of generated PDF and CSV reports with timestamps and file sizes.
+   - Click **Preview** on any past report: the workspace instantly switches and renders that document.
    - Click **Close**.
-3. Click the **⚙ (Settings)** button:
-   - Show configurable local parameters (Ollama model, timeouts, row caps, approval requirements).
-   - Click **Test Connection**: shows active Ollama version and installed models.
+2. Click the **⚙ (Settings)** button:
+   - Show configurable local parameters (Ollama model, timeouts, row limits, approval requirements).
+   - Click **Test Connection**: displays active Ollama version and model availability.
    - Click **Close**.
-4. Close the main application window (`X`).
+3. Close the main application window (`X`).
 
 **Presenter Talking Points:**
 * *"When closing the application, background threads and child MCP subprocesses are terminated cleanly without orphaned processes or segmentation faults. Everything operated locally on localhost, with zero cloud APIs and zero data transmission."*
 
 ---
 
-## Demonstration Checklist Summary
+## 3. Academic Defense Q&A Cheat-Sheet
 
-- [ ] Application launches with clean dark theme
-- [ ] Header shows `● Ollama Online (qwen3.5:4b)`
-- [ ] Conversational greeting succeeds without tools
-- [ ] Dynamic schema inspection lists 7 tables
-- [ ] Complex SQL query generated with syntax highlighting
-- [ ] SQL rejection halts workflow safely
-- [ ] SQL approval executes query over `mode=ro` SQLite connection
-- [ ] PDF report generated and rendered in native `QPdfView`
-- [ ] Explicit CSV request generated and rendered in `QTableView`
-- [ ] Historical catalog lists all reports with instant workspace preview
-- [ ] Application closes cleanly with exit code 0
-
+| Topic | Committee Question | Rigorous Defense Response |
+| :--- | :--- | :--- |
+| **Model Context Protocol** | *Why FastMCP over standard function calling?* | FastMCP standardizes tool schemas, decouples tools into an isolated subprocess, and prevents UI thread blocking through async stdio pipes. |
+| **SQL Security** | *How is SQL injection prevented?* | Six defense layers: regex scanner, AST verification, EXPLAIN QUERY PLAN validation, human approval modal, read-only SQLite URI, and low-level SQLite C-authorizer blocking write bytecodes. |
+| **Numerical Truth** | *How do you prevent LLM math hallucinations?* | The LLM never computes numbers. The `CanonicalSQLDataset` and Python aggregation engine compute all metrics deterministically; the LLM only writes qualitative text. |
+| **Data Integrity** | *How do you ensure the database was not modified?* | SHA-256 hash `c5a5965e000becdb75d0802897cb047dc2f827d1fdc7bacdf9d53ef7a46b6934` is verified before and after runs. In PyInstaller frozen mode, the DB is opened `mode=ro`. |
+| **Testing Scope** | *What is the automated test coverage?* | 457 tests across 36 modules covering the entire stack: database, SQL security, MCP tools, 25 chart types, context budgeting, memory migrations, and headless GUI. |

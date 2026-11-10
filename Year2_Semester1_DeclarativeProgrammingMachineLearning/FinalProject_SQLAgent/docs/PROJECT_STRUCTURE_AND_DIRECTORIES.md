@@ -117,14 +117,16 @@ FinalProject_SQLAgent/
 ├── reporting/                         # Deterministic Report Generation Engines
 │   ├── __init__.py                    # Reporting package initialization
 │   ├── canonical_data.py              # Single source of truth dataset & KPI calculator
+│   ├── dataset_registry.py            # Semantic dataset registry & CuratedDataset manager
+│   ├── report_validator.py            # Four-stage report data and chart eligibility validator
 │   ├── report_spec.py                 # Structured report specification dataclasses
 │   ├── dynamic_pdf_composer.py        # ReportLab Platypus multi-component document composer
 │   ├── pdf_generator.py               # PDF page templates, canvas numbering & styles
 │   ├── csv_generator.py               # RFC-4180 compliant CSV export engine
-│   ├── chart_builder.py               # 22 vector chart renderers (ReportLab graphics)
+│   ├── chart_builder.py               # 25 vector chart renderers (ReportLab graphics)
 │   ├── chart_registry.py              # Chart type registry and capability validator
 │   ├── report_manager.py              # Report metadata tracking & directory manager
-│   └── date_utils.py                  # Financial calendar calculations & date helpers
+│   └── date_utils.py                  # Financial calendar calculations & PeriodAvailabilityContext
 │
 ├── skills/                            # Markdown & YAML Domain Skill Definitions
 │   ├── sql/                           # SQL query generation best practices
@@ -149,9 +151,10 @@ FinalProject_SQLAgent/
 │   ├── verify_milestone9_acceptance.py# Acceptance validation for Milestone 9 (Reporting)
 │   └── verify_milestone10_acceptance.py# Acceptance validation for Milestone 10 (Charts)
 │
-├── tests/                             # Comprehensive Automated Test Suite (431 tests)
+├── tests/                             # Comprehensive Automated Test Suite (457 tests across 36 modules)
 │   ├── __init__.py                    # Test suite initialization
-│   ├── test_agent.py                  # Orchestrator & conversation lifecycle tests
+│   ├── test_advanced_visualization_engine.py # Tests for all 25 chart types & registry
+│   ├── test_agent.py                  # Orchestrator & conversation lifecycle tests (54 tests)
 │   ├── test_agent_intelligence_integration.py # End-to-end intelligence layer integration
 │   ├── test_approval_config.py        # Human approval gate & configuration modes
 │   ├── test_checkpoint_manager.py     # Checkpoint rollback and recovery tests
@@ -169,11 +172,13 @@ FinalProject_SQLAgent/
 │   ├── test_gui.py                    # PySide6 UI components and widget tests
 │   ├── test_macos_startup.py          # Packaged bundle startup & frozen path tests
 │   ├── test_mcp_reliability.py        # Stdio connection resilience & timeouts
-│   ├── test_mcp_tools.py              # All 6 MCP tools functionality tests
+│   ├── test_mcp_tool_discovery_and_capability.py # MCP 6-tool discovery & capability awareness
+│   ├── test_mcp_tools.py              # FastMCP stdio server and tools tests
 │   ├── test_memory_migrations.py      # Atomic SQLite migration execution tests
 │   ├── test_memory_repository.py      # Episodic & semantic memory repository tests
 │   ├── test_reporting.py              # PDF and CSV generator output verification
 │   ├── test_reporting_accuracy.py     # Numeric calculation & deterministic KPI accuracy
+│   ├── test_reporting_pipeline_fixes.py # Canonical reporting pipeline 18 regression scenarios
 │   ├── test_skill_manager.py          # Domain skill discovery & Kahn cycle detection
 │   ├── test_skill_models.py           # Skill YAML parser & token estimator tests
 │   ├── test_skill_security.py         # Path traversal & symlink escape prevention
@@ -251,7 +256,7 @@ FinalProject_SQLAgent/
 - **Role**: Generates professional PDF business documents (via ReportLab Platypus) and CSV files directly from validated SQL query results.
 - **Key Files**:
   - [`canonical_data.py`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reporting/canonical_data.py): Canonical dataset representing the single source of truth; calculates deterministic KPIs.
-  - [`dynamic_pdf_composer.py`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reporting/dynamic_pdf_composer.py): Assembles header, KPI summary cards, vector charts, tabular data, narrative findings, and optional SQL query appendix.
+  - [`dynamic_pdf_composer.py`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reporting/dynamic_pdf_comåposer.py): Assembles header, KPI summary cards, vector charts, tabular data, narrative findings, and optional SQL query appendix.
   - [`chart_builder.py`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reporting/chart_builder.py): Renders 22 distinct chart types (bars, lines, heatmaps, box plots, treemaps) as vector graphics.
 - **Invariants**:
   - The LLM never invents numbers for reports; all metrics and chart series are computed deterministically in Python from the SQL result set.

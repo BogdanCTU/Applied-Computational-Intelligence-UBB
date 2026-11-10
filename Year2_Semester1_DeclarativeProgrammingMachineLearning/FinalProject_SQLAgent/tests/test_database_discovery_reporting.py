@@ -122,9 +122,9 @@ def test_chart_synthesis_historical_bar_pie_and_matrix() -> None:
     )
     columns = ["month", "status", "total_orders", "sales_volume", "total_revenue", "transactions"]
     rows = [
-        ["2026-07", "completed", 120, 18000.0, 17100.0, 120],
-        ["2026-08", "completed", 140, 21000.0, 19950.0, 140],
-        ["2026-09", "completed", 160, 24000.0, 22800.0, 160],
+        ["2026-07", "delivered", 120, 18000.0, 17100.0, 120],
+        ["2026-08", "shipped", 140, 21000.0, 19950.0, 140],
+        ["2026-09", "processing", 160, 24000.0, 22800.0, 160],
     ]
     charts = _synthesize_charts_from_intent(prompt, columns, rows)
     chart_types = [c["chart_type"] for c in charts]
@@ -140,8 +140,8 @@ def test_pdf_generation_multi_chart_and_table_paginated(tmp_path: Path) -> None:
     columns = ["month", "status", "total_orders", "sales_volume", "total_revenue", "transactions"]
     rows = [
         ["2026-07", "delivered", 120, 18000.0, 17100.0, 120],
-        ["2026-08", "delivered", 140, 21000.0, 19950.0, 140],
-        ["2026-09", "delivered", 160, 24000.0, 22800.0, 160],
+        ["2026-08", "shipped", 140, 21000.0, 19950.0, 140],
+        ["2026-09", "processing", 160, 24000.0, 22800.0, 160],
     ]
     charts = [
         {

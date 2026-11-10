@@ -965,7 +965,7 @@ async def test_ollama_client_remote_protocol_disconnect_with_retry() -> None:
         with pytest.raises(OllamaDisconnectError) as exc_info:
             await client.chat(messages=[{"role": "user", "content": "hi"}])
         assert "disconnected without sending a response" in str(exc_info.value)
-        assert mock_post.call_count == 2  # exactly 2 attempts, bounded retry
+        assert mock_post.call_count == 3  # exactly 3 attempts (1 initial + 2 retries), bounded retry
 
 
 @pytest.mark.asyncio

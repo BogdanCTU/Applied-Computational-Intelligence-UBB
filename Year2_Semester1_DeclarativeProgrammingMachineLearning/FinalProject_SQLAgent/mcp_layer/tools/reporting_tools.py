@@ -50,6 +50,15 @@ def _metadata_to_tool_response(meta: ReportMetadata) -> dict[str, Any]:
         "failed_components": meta.failed_components,
         "completion_status": meta.completion_status,
         "warnings": meta.warnings,
+        "requested_period": meta.requested_period,
+        "actual_data_period": meta.actual_data_period,
+        "historical_comparison_period": meta.historical_comparison_period,
+        "requested_period_has_data": meta.requested_period_has_data,
+        "available_data_range": meta.available_data_range,
+        "kpis": meta.kpis,
+        "comparison_kpis": meta.comparison_kpis,
+        "omitted_analyses": meta.omitted_analyses,
+        "executive_summary": meta.executive_summary,
     }
 
 
@@ -74,6 +83,8 @@ def generate_pdf_report_impl(
     """Generate a formatted PDF report in ``settings.output_dir``."""
     try:
         inc_sql = settings.reports.include_sql_in_pdf if include_sql is None else bool(include_sql)
+        # Provide db_path only when multi-dataset session curation is active
+        db_p = settings.database_path if (datasets and any(str(k).startswith("dataset_") for k in datasets)) else None
         meta = generate_pdf_file(
             title=title,
             description=description or "",
@@ -93,6 +104,7 @@ def generate_pdf_report_impl(
             datasets=datasets,
             kpis=kpis,
             findings=findings,
+            db_path=db_p,
         )
         return _metadata_to_tool_response(meta)
     except ReportSecurityError as exc:

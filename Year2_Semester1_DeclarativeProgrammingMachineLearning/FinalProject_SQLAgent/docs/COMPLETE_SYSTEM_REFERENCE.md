@@ -209,7 +209,7 @@ FinalProject_SQLAgent/
 │   ├── verify_environment.py          # Pre-build & runtime environment verifier
 │   └── import_dataset.py              # Command-line CSV to SQLite data importer
 │
-├── tests/                             # Comprehensive Automated Test Suite (431 tests)
+├── tests/                             # Comprehensive Automated Test Suite (457 tests across 36 modules)
 └── docs/                              # Project Documentation Corpus
 ```
 
@@ -299,14 +299,30 @@ FinalProject_SQLAgent/
 
 #### [`CanonicalSQLDataset`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reporting/canonical_data.py)
 * Serves as the authoritative Single Source of Truth for all report components.
-* Computes deterministic KPIs (total, average, counts, min/max) and validates numeric column types.
+* Computes deterministic KPIs (Gross Sales, Net Revenue, Orders, Transactions, AOV) and validates numeric column types.
+* Strict metric separation: Gross Sales (order item totals) vs Net Revenue (actual payments); vertical AOV strictly computed as Net Revenue / Orders without cross-unit horizontal summing.
+
+#### [`ReportDatasetRegistry`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reporting/dataset_registry.py)
+* Curates, registers, and categorizes query results into semantic roles (`canonical_kpis`, `status_distribution`, `historical_trend`, `crosstab_matrix`).
+* Manages `CuratedDataset` instances, enforcing valid column naming, tabular row normalization, and deduplication.
+
+#### [`ReportDataValidator`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reporting/report_validator.py)
+* Four-stage verification gate executed before PDF/CSV generation:
+  1. *Schema Validation*: Verifies column types, dictionary row structures, and non-empty metadata.
+  2. *Strict Chart Eligibility*: Rejects single-slice/100% distribution charts, requires $\ge 2$ time points for trends, and validates 2D pivot crosstabs.
+  3. *Cross-Dataset Numerical Consistency*: Ensures matching totals between KPI cards and summary tables.
+  4. *Empty Suppression*: Automatically strips unpopulated sections, preventing blank pages and orphan headers.
+
+#### [`PeriodAvailabilityContext` & Date Utilities](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reporting/date_utils.py)
+* Computes calendar month boundaries (`calculate_calendar_month`) and evaluates database date coverage (`resolve_requested_period`).
+* When requested period has no records (e.g. October 2026 when database coverage ends September 2026), flags `has_requested_data=False` and designates the latest available month as comparison.
 
 #### [`DynamicPdfComposer`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reporting/dynamic_pdf_composer.py)
-* Assembles ReportLab Platypus documents: header banner, KPI summary cards, vector charts, paginated tables with alternating row shading, narrative findings, and monospace SQL appendix.
-* Implements two-pass `NumberedCanvas` emitting `"Page X of Y"`.
+* Assembles ReportLab Platypus documents: header banner, Data Availability Notice (Red/Pink callout banner when requested period has no data), dual KPI grid (Requested Period vs Comparison Period), 25 vector chart types, paginated tables with alternating row shading, narrative findings, and monospace SQL appendix.
+* Implements two-pass `NumberedCanvas` emitting `"Page X of Y"` and `LongTable` pagination wrapping across page boundaries.
 
-#### [`ChartBuilder`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reporting/chart_builder.py)
-* Renders 22 supported vector chart types (vertical/horizontal/stacked bar, historical/multi line, area, pie, donut, heatmap, matrix, scatter, density, box plot, violin plot, treemap) using native ReportLab graphics.
+#### [`ChartRegistry` & `ChartBuilder`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reporting/chart_registry.py)
+* Renders 25 supported vector chart types across Comparison, Trend, Distribution, Relationship, Hierarchical, and Matrix categories using native ReportLab graphics.
 
 #### [`CsvGenerator`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reporting/csv_generator.py)
 * Streaming RFC-4180 compliant CSV export engine encoded with UTF-8-SIG (BOM) for Excel compatibility.

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import re
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -196,7 +197,63 @@ def compose_dynamic_pdf(
         )
     )
     story.append(meta_bar)
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 6))
+
+    # 1b. Reporting Period & Data Availability Banner (when period metadata is specified)
+    if spec.requested_period or spec.historical_comparison_period or spec.available_data_range:
+        req_lbl = _safe_markup(spec.requested_period or "All Available Data")
+        bounds_str = ""
+        if spec.period_boundaries.get("interval"):
+            bounds_str = f" {_safe_markup(spec.period_boundaries['interval'])}"
+        status_badge = (
+            "<font color='#DC2626'><b>No Records (0 rows)</b></font>"
+            if (spec.requested_period and not spec.requested_period_has_data)
+            else "<font color='#15803D'><b>Verified Data</b></font>"
+        )
+        comp_lbl = _safe_markup(spec.historical_comparison_period or "None")
+        avail_min = _safe_markup(str(spec.available_data_range.get("min_date", "") or "N/A"))
+        avail_max = _safe_markup(str(spec.available_data_range.get("max_date", "") or "N/A"))
+        avail_str = f"{avail_min} to {avail_max}" if (avail_min != "N/A" or avail_max != "N/A") else "Full Ledger"
+
+        period_bar = Table(
+            [
+                [
+                    Paragraph(f"<b>Requested Period:</b> {req_lbl}{bounds_str} ({status_badge})", body_style),
+                    Paragraph(f"<b>Comparison Period:</b> {comp_lbl}", body_style),
+                    Paragraph(f"<b>DB Date Range:</b> {avail_str}", body_style),
+                ]
+            ],
+            colWidths=[available_width * 0.42, available_width * 0.28, available_width * 0.30],
+        )
+        period_bar.setStyle(
+            TableStyle(
+                [
+                    (
+                        "BACKGROUND",
+                        (0, 0),
+                        (-1, -1),
+                        colors.HexColor("#FEF2F2")
+                        if (spec.requested_period and not spec.requested_period_has_data)
+                        else colors.HexColor("#F1F5F9"),
+                    ),
+                    (
+                        "BOX",
+                        (0, 0),
+                        (-1, -1),
+                        0.5,
+                        colors.HexColor("#FECACA")
+                        if (spec.requested_period and not spec.requested_period_has_data)
+                        else colors.HexColor("#CBD5E1"),
+                    ),
+                    ("TOPPADDING", (0, 0), (-1, -1), 4),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 6),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+                ]
+            )
+        )
+        story.append(period_bar)
+        story.append(Spacer(1, 8))
 
     # 2. Executive Summary
     if spec.executive_summary:
@@ -204,15 +261,21 @@ def compose_dynamic_pdf(
         story.append(Paragraph(_safe_markup(spec.executive_summary), body_style))
         story.append(Spacer(1, 6))
 
-    # 3. Key Performance Indicators (KPI Cards Grid)
-    if spec.kpis:
+    # Helper to build a KPI card grid table
+    def _build_kpi_grid(
+        kpi_list: list[dict[str, Any]],
+        bg_hex: str = "#EFF6FF",
+        border_hex: str = "#BFDBFE",
+        grid_hex: str = "#DBEAFE",
+        val_hex: str = "#1E3A8A",
+    ) -> Table:
         kpi_cells: list[list[Any]] = []
         card_row: list[Any] = []
-        num_kpis = len(spec.kpis)
-        cols_per_row = min(4, num_kpis)
+        num_kpis = len(kpi_list)
+        cols_per_row = min(4, max(1, num_kpis))
         card_w = available_width / cols_per_row
 
-        for raw_k in spec.kpis:
+        for raw_k in kpi_list:
             if isinstance(raw_k, str):
                 if ":" in raw_k:
                     parts = raw_k.split(":", 1)
@@ -226,13 +289,13 @@ def compose_dynamic_pdf(
 
             lbl = _safe_markup(str(k.get("label", "Metric")))
             val = _safe_markup(str(k.get("value", "—")))
-            sub = _safe_markup(str(k.get("note", k.get("change", ""))))
+            sub = _safe_markup(str(k.get("note", k.get("change", k.get("delta", "")))))
             card_content = (
-                f"<font size='8' color='#64748B'>{lbl}</font><br/>"
-                f"<font size='13' color='#1E3A8A'><b>{val}</b></font>"
+                f"<font size='8' color='#475569'>{lbl}</font><br/>"
+                f"<font size='12.5' color='{val_hex}'><b>{val}</b></font>"
             )
             if sub:
-                card_content += f"<br/><font size='7.5' color='#10B981'>{sub}</font>"
+                card_content += f"<br/><font size='7.2' color='#047857'>{sub}</font>"
 
             card_row.append(Paragraph(card_content, body_style))
             if len(card_row) == cols_per_row:
@@ -244,13 +307,13 @@ def compose_dynamic_pdf(
                 card_row.append("")
             kpi_cells.append(card_row)
 
-        kpi_table = Table(kpi_cells, colWidths=[card_w] * cols_per_row)
-        kpi_table.setStyle(
+        kpi_tbl = Table(kpi_cells, colWidths=[card_w] * cols_per_row)
+        kpi_tbl.setStyle(
             TableStyle(
                 [
-                    ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#EFF6FF")),
-                    ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#BFDBFE")),
-                    ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#DBEAFE")),
+                    ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor(bg_hex)),
+                    ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor(border_hex)),
+                    ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor(grid_hex)),
                     ("TOPPADDING", (0, 0), (-1, -1), 6),
                     ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
                     ("LEFTPADDING", (0, 0), (-1, -1), 8),
@@ -258,7 +321,47 @@ def compose_dynamic_pdf(
                 ]
             )
         )
-        story.append(kpi_table)
+        return kpi_tbl
+
+    # 3. Key Performance Indicators (Requested Period + Optional Labeled Comparison Period)
+    if spec.kpis:
+        if spec.requested_period and not spec.requested_period_has_data:
+            story.append(
+                Paragraph(
+                    f"<b>Requested Period KPIs — {_safe_markup(spec.requested_period)} (Verified 0 Records):</b>",
+                    component_title_style,
+                )
+            )
+            story.append(
+                _build_kpi_grid(
+                    spec.kpis,
+                    bg_hex="#FEF2F2",
+                    border_hex="#FECACA",
+                    grid_hex="#FEE2E2",
+                    val_hex="#991B1B",
+                )
+            )
+        else:
+            story.append(_build_kpi_grid(spec.kpis))
+        story.append(Spacer(1, 6))
+
+    if spec.comparison_kpis:
+        comp_hdr = _safe_markup(spec.historical_comparison_period or "Historical Comparison Period")
+        story.append(
+            Paragraph(
+                f"<b>Historical Comparison KPIs — {comp_hdr} (Reference Only, Not Requested Period):</b>",
+                component_title_style,
+            )
+        )
+        story.append(
+            _build_kpi_grid(
+                spec.comparison_kpis,
+                bg_hex="#FFFBEB",
+                border_hex="#FDE68A",
+                grid_hex="#FEF3C7",
+                val_hex="#92400E",
+            )
+        )
         story.append(Spacer(1, 8))
 
     # 4. Highlighted Findings Callout Box
@@ -283,14 +386,13 @@ def compose_dynamic_pdf(
         story.append(findings_box)
         story.append(Spacer(1, 8))
 
-    # 5. Dynamic Sections & Components
-    sections_count = len(spec.sections)
+    # 5. Dynamic Sections & Components (filtering out empty sections & avoiding duplicate chart titles)
     charts_requested = 0
     charts_rendered = 0
     tables_requested = 0
     tables_rendered = 0
     failed_components: list[dict[str, Any]] = []
-    warnings: list[str] = []
+    warnings: list[str] = list(spec.validation_warnings or [])
 
     datasets_count = len(spec.datasets)
     dataset_details: dict[str, int] = {
@@ -298,20 +400,26 @@ def compose_dynamic_pdf(
         for ds_id, ds in spec.datasets.items()
     }
 
-    for sec_idx, raw_sec in enumerate(spec.sections, start=1):
+    rendered_section_num = 0
+    for raw_sec in spec.sections:
         section = raw_sec if isinstance(raw_sec, ReportSection) else ReportSection.from_dict(raw_sec)
-        story.append(Paragraph(f"{sec_idx}. {_safe_markup(section.title)}", section_title_style))
-        if section.description:
-            story.append(Paragraph(_safe_markup(section.description), body_style))
-            story.append(Spacer(1, 4))
+        sec_comp_groups: list[list[Any]] = []
 
         for raw_comp in section.components:
             comp = raw_comp if isinstance(raw_comp, ReportComponent) else ReportComponent.from_dict(raw_comp)
-            if comp.title:
-                story.append(Paragraph(_safe_markup(comp.title), component_title_style))
+            comp_flowables: list[Any] = []
+
+            # Suppress external Paragraph title for charts when ChartRegistry already renders the same title inside the Drawing
+            show_external_title = bool(comp.title)
+            if comp.component_type == "chart" and comp.chart_config and comp.chart_config.title:
+                if comp.title.strip().lower() == comp.chart_config.title.strip().lower():
+                    show_external_title = False
+
+            if show_external_title:
+                comp_flowables.append(Paragraph(_safe_markup(comp.title), component_title_style))
             if comp.description:
-                story.append(Paragraph(_safe_markup(comp.description), body_style))
-                story.append(Spacer(1, 3))
+                comp_flowables.append(Paragraph(_safe_markup(comp.description), body_style))
+                comp_flowables.append(Spacer(1, 3))
 
             # Resolve dataset for component
             ds_data: dict[str, Any] = {}
@@ -333,8 +441,9 @@ def compose_dynamic_pdf(
                         cfg = comp.chart_config
                         cfg.width = available_width
                         chart_drawing = build_chart(cfg, cols, rows)
-                        story.append(chart_drawing)
-                        story.append(Spacer(1, 8))
+                        comp_flowables.append(chart_drawing)
+                        comp_flowables.append(Spacer(1, 8))
+                        sec_comp_groups.append(comp_flowables)
                         charts_rendered += 1
                     else:
                         failed_components.append({"type": "chart", "title": comp.title, "error": "Missing chart configuration"})
@@ -356,16 +465,66 @@ def compose_dynamic_pdf(
                         table_cell_left,
                         table_cell_right,
                     )
-                    story.append(tbl_flowable)
-                    story.append(Spacer(1, 8))
+                    comp_flowables.append(tbl_flowable)
+                    comp_flowables.append(Spacer(1, 8))
+                    sec_comp_groups.append(comp_flowables)
                     tables_rendered += 1
                 except Exception as e:
                     failed_components.append({"type": "table", "title": comp.title, "error": str(e)})
                     warnings.append(f"Failed to render table '{comp.title}': {e}")
 
             elif comp.component_type == "text" and comp.content:
-                story.append(Paragraph(_safe_markup(str(comp.content)), body_style))
-                story.append(Spacer(1, 6))
+                comp_flowables.append(Paragraph(_safe_markup(str(comp.content)), body_style))
+                comp_flowables.append(Spacer(1, 6))
+                sec_comp_groups.append(comp_flowables)
+
+        # Never render bare/empty section headings with 0 components
+        if not sec_comp_groups:
+            continue
+
+        rendered_section_num += 1
+        clean_sec_title = re.sub(r"^\d+\.\s*", "", section.title.strip())
+        sec_header_flowables: list[Any] = [
+            Paragraph(f"{rendered_section_num}. {_safe_markup(clean_sec_title)}", section_title_style)
+        ]
+        if section.description:
+            sec_header_flowables.append(Paragraph(_safe_markup(section.description), body_style))
+            sec_header_flowables.append(Spacer(1, 4))
+
+        # Keep section title together with first component to prevent orphan headings at bottom of page
+        story.append(KeepTogether(sec_header_flowables + sec_comp_groups[0]))
+        for extra_group in sec_comp_groups[1:]:
+            story.extend(extra_group)
+
+    sections_count = rendered_section_num
+
+    # 5b. Data Availability & Methodology Notes Section (if notes or omitted analyses exist)
+    methodology_notes = list(spec.data_availability_notes or []) + [
+        f"Omitted Visualization/Breakdown: {om}" for om in (spec.omitted_analyses or [])
+    ]
+    if methodology_notes:
+        rendered_section_num += 1
+        sections_count = rendered_section_num
+        note_flowables: list[Any] = [
+            Paragraph(f"{rendered_section_num}. Data Availability & Methodology Notes", section_title_style)
+        ]
+        note_rows = [[Paragraph(f"• {_safe_markup(n)}", body_style)] for n in methodology_notes]
+        notes_tbl = Table(note_rows, colWidths=[available_width])
+        notes_tbl.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
+                    ("BOX", (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
+                    ("TOPPADDING", (0, 0), (-1, -1), 3),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+                ]
+            )
+        )
+        note_flowables.append(notes_tbl)
+        note_flowables.append(Spacer(1, 8))
+        story.append(KeepTogether(note_flowables))
 
     # 6. APPENDIX: SQL QUERIES (PHASE 4: INCLUDED ONLY WHEN EXPLICITLY REQUESTED)
     if spec.include_sql and spec.sql_queries:
@@ -464,6 +623,15 @@ def compose_dynamic_pdf(
         failed_components=failed_components,
         completion_status=completion_status,
         warnings=warnings,
+        requested_period=spec.requested_period,
+        actual_data_period=spec.actual_data_period,
+        historical_comparison_period=spec.historical_comparison_period,
+        requested_period_has_data=spec.requested_period_has_data,
+        available_data_range=dict(spec.available_data_range or {}),
+        kpis=list(spec.kpis or []),
+        comparison_kpis=list(spec.comparison_kpis or []),
+        omitted_analyses=list(spec.omitted_analyses or []),
+        executive_summary=spec.executive_summary,
     )
 
     if record_history:
@@ -472,6 +640,99 @@ def compose_dynamic_pdf(
         ReportHistoryManager(output_dir).record(metadata)
 
     return metadata
+
+
+def _infer_auto_column_format(col_name: str) -> str:
+    """Infer display format ('currency', 'percent', 'int', or '') from column name."""
+    cl = col_name.lower().strip()
+    if any(k in cl for k in ("pct", "percent", "share_pct", "margin_pct", "rate_pct")):
+        return "percent"
+    if any(
+        k in cl
+        for k in (
+            "sales",
+            "revenue",
+            "subtotal",
+            "total_amount",
+            "avg_order_value",
+            "aov",
+            "amount",
+            "price",
+            "cost",
+            "fee",
+            "tax",
+            "discount",
+            "profit",
+        )
+    ):
+        return "currency"
+    if any(
+        k in cl
+        for k in (
+            "order_count",
+            "total_orders",
+            "orders_count",
+            "orders",
+            "transaction_count",
+            "total_transactions",
+            "transactions",
+            "count",
+            "units",
+            "quantity",
+        )
+    ):
+        return "int"
+    return ""
+
+
+def _is_non_additive_column(col_name: str) -> bool:
+    """Return True if column is a ratio, average, or rate that must not be summed directly."""
+    cl = col_name.lower().strip()
+    return any(
+        k in cl
+        for k in ("avg", "average", "aov", "margin", "rate", "unit_price", "price", "ratio")
+    )
+
+
+def _is_homogeneous_crosstab(numeric_cols: Sequence[str]) -> bool:
+    """Return True only when numeric columns are homogeneous pivot categories (e.g. status/channel slices).
+
+    Returns False when columns represent distinct incompatible measures (such as Order Count + Sales + Revenue),
+    preventing invalid horizontal row summation.
+    """
+    if len(numeric_cols) < 2:
+        return False
+    heterogeneous_measure_tokens = (
+        "order",
+        "transaction",
+        "sales",
+        "subtotal",
+        "revenue",
+        "total_amount",
+        "amount",
+        "aov",
+        "avg",
+        "average",
+        "margin",
+        "profit",
+        "pct",
+        "percent",
+        "share",
+        "price",
+        "cost",
+        "tax",
+        "discount",
+        "shipping",
+        "count",
+    )
+    matched_tokens: set[str] = set()
+    for c in numeric_cols:
+        cl = c.lower().strip()
+        for tok in heterogeneous_measure_tokens:
+            if tok in cl:
+                matched_tokens.add(tok)
+    # If any heterogeneous metric keywords appear in the numeric column headers, they are distinct metrics, NOT a crosstab
+    return len(matched_tokens) == 0
 
 
 def _build_table_flowable(
@@ -484,17 +745,20 @@ def _build_table_flowable(
     cell_right_style: ParagraphStyle,
 ) -> Any:
     """Build a paginated LongTable with repeated headers across page breaks."""
-    display_cols = config.columns if config.columns else list(columns)
+    from .canonical_data import validate_tabular_rows_structure
+
+    display_cols = list(config.columns) if config.columns else list(columns)
     if not display_cols:
         return Paragraph("<i>(Empty table configuration)</i>", cell_left_style)
 
-    # Normalize rows
+    # Validate and normalize rows, blocking scalar strings from character-by-character zipping
+    _, sanitized_rows, _ = validate_tabular_rows_structure(columns, rows)
     dict_rows: list[dict[str, Any]] = []
-    if rows:
-        if isinstance(rows[0], dict):
-            dict_rows = [dict(r) for r in rows]  # type: ignore[arg-type]
-        else:
-            dict_rows = [dict(zip(columns, r)) for r in rows]  # type: ignore[arg-type]
+    for r in sanitized_rows:
+        if isinstance(r, Mapping):
+            dict_rows.append(dict(r))
+        elif isinstance(r, (list, tuple)):
+            dict_rows.append(dict(zip(columns, r)))
 
     if config.limit and len(dict_rows) > config.limit:
         dict_rows = dict_rows[:config.limit]
@@ -506,14 +770,28 @@ def _build_table_flowable(
         )
 
     # Numeric alignment
-    numeric_flags = []
+    numeric_flags: list[bool] = []
     for c in display_cols:
-        sample_vals = [r.get(c) for r in dict_rows[:10]]
-        is_num = all(isinstance(v, (int, float)) or (v is None) for v in sample_vals) if sample_vals else False
+        sample_vals = [r.get(c) for r in dict_rows[:10] if r.get(c) is not None]
+        is_num = (
+            all(isinstance(v, (int, float)) or _safe_float(v, None) is not None for v in sample_vals)
+            if sample_vals
+            else False
+        )
+        # Never treat temporal/month columns as numeric sums
+        if any(k in c.lower() for k in ("month", "date", "period", "year", "id", "sku")):
+            is_num = False
         numeric_flags.append(is_num)
 
-    # Row totals for matrix/crosstab or when show_totals is True with >=2 numeric columns
-    add_row_total = config.show_totals and sum(numeric_flags) >= 2 and "Total" not in [c.title() for c in display_cols]
+    numeric_col_names = [c for c, is_num in zip(display_cols, numeric_flags) if is_num]
+
+    # Row totals ONLY for homogeneous crosstab pivots (e.g., cancelled + delivered + shipped),
+    # NEVER summing Order Count + Sales + Revenue!
+    add_row_total = (
+        config.show_totals
+        and _is_homogeneous_crosstab(numeric_col_names)
+        and "Total" not in [c.title() for c in display_cols]
+    )
     if add_row_total:
         orig_cols = list(display_cols)
         orig_num = list(numeric_flags)
@@ -522,17 +800,37 @@ def _build_table_flowable(
         for r in dict_rows:
             r["Total"] = sum(_safe_float(r.get(c), 0.0) for idx, c in enumerate(orig_cols) if orig_num[idx])
 
-    # Summary row for column totals
+    # Summary row for vertical column totals (only when >= 2 rows exist)
     total_row_idx = -1
-    if config.show_totals and dict_rows:
+    if config.show_totals and len(dict_rows) >= 2:
         total_row: dict[str, Any] = {}
+        # First pass: compute additive column totals
         for idx, c in enumerate(display_cols):
             if idx == 0:
                 total_row[c] = "Total"
             elif numeric_flags[idx]:
-                total_row[c] = sum(_safe_float(r.get(c), 0.0) for r in dict_rows)
+                if _is_non_additive_column(c):
+                    total_row[c] = None  # Computed in second pass
+                else:
+                    total_row[c] = sum(_safe_float(r.get(c), 0.0) for r in dict_rows)
             else:
                 total_row[c] = ""
+
+        # Second pass: compute derived ratios (such as AOV = Total Revenue / Total Orders)
+        ord_col = next((c for c in display_cols if "order" in c.lower() and not _is_non_additive_column(c)), None)
+        rev_col = next((c for c in display_cols if any(k in c.lower() for k in ("revenue", "total_amount", "sales"))), None)
+        for idx, c in enumerate(display_cols):
+            if idx > 0 and numeric_flags[idx] and total_row.get(c) is None:
+                cl = c.lower()
+                if any(k in cl for k in ("aov", "avg_order_value", "average_order_value")) and ord_col and rev_col:
+                    tot_o = _safe_float(total_row.get(ord_col), 0.0)
+                    tot_r = _safe_float(total_row.get(rev_col), 0.0)
+                    total_row[c] = (tot_r / tot_o) if tot_o > 0 else "—"
+                else:
+                    # Average across rows for other rate/margin columns
+                    vals = [_safe_float(r.get(c), 0.0) for r in dict_rows if r.get(c) is not None]
+                    total_row[c] = (sum(vals) / len(vals)) if vals else "—"
+
         dict_rows.append(total_row)
         total_row_idx = len(dict_rows)
 
@@ -544,18 +842,22 @@ def _build_table_flowable(
     if dict_rows:
         for r_idx, r in enumerate(dict_rows, start=1):
             row_cells: list[Paragraph] = []
-            is_tot_row = (config.show_totals and r_idx == len(dict_rows))
+            is_tot_row = (total_row_idx > 0 and r_idx == total_row_idx)
             for idx, c in enumerate(display_cols):
                 style = cell_right_style if numeric_flags[idx] else cell_left_style
                 val = r.get(c)
-                fmt = config.formatting.get(c, "")
-                if fmt:
+                fmt = config.formatting.get(c, "") or (_infer_auto_column_format(c) if numeric_flags[idx] else "")
+                if isinstance(val, str) and val in {"Total", "—", ""}:
+                    val_str = val
+                elif fmt:
                     val_str = _format_val(val, fmt)
                 else:
                     val_str = _format_display_value(val)
                 if is_tot_row or (add_row_total and idx == len(display_cols) - 1):
-                    val_str = f"<b>{val_str}</b>"
-                row_cells.append(Paragraph(_safe_markup(val_str), style))
+                    val_str = f"<b>{_safe_markup(val_str)}</b>"
+                    row_cells.append(Paragraph(val_str, style))
+                else:
+                    row_cells.append(Paragraph(_safe_markup(val_str), style))
             table_data.append(row_cells)
     else:
         table_data.append([Paragraph("No records found.", cell_left_style)] + ["" for _ in range(len(display_cols) - 1)])
@@ -570,7 +872,7 @@ def _build_table_flowable(
         ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#E2E8F0")),
     ]
 
-    if config.show_totals and total_row_idx > 0:
+    if total_row_idx > 0:
         table_cmds.append(("BACKGROUND", (0, total_row_idx), (-1, total_row_idx), colors.HexColor("#E2E8F0")))
         table_cmds.append(("FONTNAME", (0, total_row_idx), (-1, total_row_idx), "Helvetica-Bold"))
         table_cmds.append(("LINEABOVE", (0, total_row_idx), (-1, total_row_idx), 1.0, colors.HexColor("#64748B")))

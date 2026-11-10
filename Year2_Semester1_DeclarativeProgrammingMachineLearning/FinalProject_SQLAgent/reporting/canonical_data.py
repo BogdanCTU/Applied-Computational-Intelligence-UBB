@@ -47,6 +47,134 @@ AggregationMethod = Literal["sum", "avg", "count", "min", "max", "none"]
 SortingOrder = Literal["asc", "desc", "none"]
 
 
+# Authoritative business metric definitions, SQL formulas, source columns, and additivity rules
+AUTHORITATIVE_METRIC_DEFINITIONS: dict[str, dict[str, Any]] = {
+    "orders": {
+        "label": "Total Orders",
+        "formula": "COUNT(DISTINCT orders.order_id)",
+        "source_table": "orders",
+        "source_column": "orders.order_id",
+        "aliases": ("order_count", "total_orders", "orders_count", "num_orders", "orders"),
+        "unit": "integer",
+        "format": "{:,}",
+        "is_additive": True,
+        "description": "Count of distinct customer orders placed during the reporting period.",
+    },
+    "transactions": {
+        "label": "Transactions",
+        "formula": "COUNT(DISTINCT payments.payment_id)",
+        "source_table": "payments",
+        "source_column": "payments.payment_id",
+        "aliases": (
+            "transaction_count",
+            "total_transactions",
+            "transactions_count",
+            "num_transactions",
+            "transactions",
+            "payment_count",
+        ),
+        "unit": "integer",
+        "format": "{:,}",
+        "is_additive": True,
+        "description": "Count of distinct payment transactions recorded in the payments ledger.",
+    },
+    "sales": {
+        "label": "Sales Volume",
+        "formula": "SUM(orders.subtotal)",
+        "source_table": "orders",
+        "source_column": "orders.subtotal",
+        "aliases": ("sales", "sales_volume", "gross_sales", "subtotal", "gross_amount", "gross_item_sales"),
+        "unit": "currency",
+        "format": "${:,.2f}",
+        "is_additive": True,
+        "description": "Gross merchandise subtotal prior to shipping fees, taxes, and discounts.",
+    },
+    "revenue": {
+        "label": "Total Revenue",
+        "formula": "SUM(orders.total_amount)",
+        "source_table": "orders",
+        "source_column": "orders.total_amount",
+        "aliases": ("revenue", "total_revenue", "net_revenue", "total_amount", "net_amount", "captured_revenue"),
+        "unit": "currency",
+        "format": "${:,.2f}",
+        "is_additive": True,
+        "description": "Final realized order total (subtotal + shipping_fee + tax_amount - discount_amount).",
+    },
+    "avg_order_value": {
+        "label": "Average Order Value",
+        "formula": "SUM(orders.total_amount) / NULLIF(COUNT(DISTINCT orders.order_id), 0)",
+        "source_table": "orders",
+        "source_column": "orders.total_amount / orders.order_id",
+        "aliases": ("avg_order_value", "aov", "average_order_value"),
+        "unit": "currency",
+        "format": "${:,.2f}",
+        "is_additive": False,
+        "description": "Ratio of Total Revenue to Total Orders (non-additive ratio).",
+    },
+}
+
+
+def validate_tabular_rows_structure(
+    columns: Sequence[str],
+    rows: Any,
+) -> tuple[bool, list[list[Any] | dict[str, Any]], list[str]]:
+    """Validate and sanitize tabular rows, preventing scalar strings from being iterated as rows.
+
+    Returns ``(is_valid, sanitized_rows, validation_errors)``.
+    """
+    errors: list[str] = []
+    col_list = [str(c).strip() for c in (columns or [])]
+    col_lower = [c.lower() for c in col_list]
+
+    if rows is None or rows == []:
+        return True, [], []
+
+    if isinstance(rows, (str, bytes, bytearray)):
+        errors.append(
+            f"Scalar string or bytes supplied as 'rows' instead of a sequence of row tuples/dicts: {rows!r}"
+        )
+        return False, [], errors
+
+    if not isinstance(rows, Sequence):
+        errors.append(f"Expected sequence of rows, got {type(rows).__name__}")
+        return False, [], errors
+
+    # Detect when rows is a flat list of column names (e.g. ["month", "order_count", "sales", "revenue"])
+    if all(isinstance(r, (str, bytes, bytearray)) for r in rows):
+        errors.append(
+            "Scalar string elements supplied inside 'rows' list (character-by-character iteration blocked)."
+        )
+        return False, [], errors
+
+    sanitized: list[list[Any] | dict[str, Any]] = []
+    for idx, r in enumerate(rows):
+        if isinstance(r, (str, bytes, bytearray)):
+            errors.append(f"Row {idx} is a scalar string/bytes ({r!r}) and was rejected.")
+            continue
+        if isinstance(r, Mapping):
+            sanitized.append(dict(r))
+            continue
+        if isinstance(r, (list, tuple)):
+            r_list = list(r)
+            # Check if this row is merely repeating the column headers
+            if col_lower and len(r_list) == len(col_lower):
+                if [str(x).strip().lower() for x in r_list] == col_lower:
+                    errors.append(f"Row {idx} duplicates column header names and was stripped.")
+                    continue
+            sanitized.append(r_list)
+            continue
+        # Only wrap non-string scalar if single column dataset
+        if len(col_list) == 1 and isinstance(r, (int, float)):
+            sanitized.append([r])
+        else:
+            errors.append(f"Row {idx} has unsupported type {type(r).__name__} and was rejected.")
+
+    is_valid = len(errors) == 0 or len(sanitized) > 0
+    if len(sanitized) == 0 and len(rows) > 0:
+        is_valid = False
+    return is_valid, sanitized, errors
+
+
 def safe_float(val: Any, default: float = 0.0) -> float:
     """Safely convert value to float, handling strings with currency symbols and commas."""
     if val is None:
@@ -197,27 +325,30 @@ class CanonicalSQLDataset:
         self.name = name
         self.sql_query = sql_query or ""
         self.columns = [str(c) for c in (columns or [])]
-        
-        # Normalize rows to list of lists and list of dicts
+
+        # Normalize rows to list of lists and list of dicts, strictly blocking scalar strings
         self._dict_rows: list[dict[str, Any]] = []
         self._table_rows: list[list[Any]] = []
+        is_struct_valid, sanitized_rows, struct_errors = validate_tabular_rows_structure(
+            self.columns,
+            rows,
+        )
+        self.is_structurally_valid: bool = is_struct_valid
+        self.validation_errors: list[str] = list(struct_errors)
 
-        if rows:
-            first = rows[0]
-            if isinstance(first, Mapping):
-                for r in rows:
-                    d = dict(r)  # type: ignore[arg-type]
-                    self._dict_rows.append(d)
-                    self._table_rows.append([d.get(c) for c in self.columns])
-            else:
-                for r in rows:
-                    row_list = list(r)  # type: ignore[arg-type]
-                    self._table_rows.append(row_list)
-                    d = {
-                        self.columns[i]: (row_list[i] if i < len(row_list) else None)
-                        for i in range(len(self.columns))
-                    }
-                    self._dict_rows.append(d)
+        for r in sanitized_rows:
+            if isinstance(r, Mapping):
+                d = dict(r)
+                self._dict_rows.append(d)
+                self._table_rows.append([d.get(c) for c in self.columns])
+            elif isinstance(r, (list, tuple)):
+                row_list = list(r)
+                self._table_rows.append(row_list)
+                d = {
+                    self.columns[i]: (row_list[i] if i < len(row_list) else None)
+                    for i in range(len(self.columns))
+                }
+                self._dict_rows.append(d)
 
         # Infer column data types
         self.column_types: dict[str, str] = {}
@@ -584,8 +715,46 @@ class CanonicalSQLDataset:
             for s_idx in range(len(final_data_series)):
                 final_data_series[s_idx] = [p[s_idx + 1] for p in paired]
 
-        # 6. Chart-Specific Validations
+        # 6. Chart-Specific & Analytical Suitability Validations
         percentages: list[float] | None = None
+        title_lower = (spec.title or "").lower()
+        is_historical_intent = (
+            spec.chart_type in {"line", "multi_line", "historical", "historical_line"}
+            or any(k in title_lower for k in ("historical", "trend", "over time", "monthly evolution"))
+        )
+        is_matrix_intent = spec.chart_type in {"matrix", "heatmap", "pivot_table", "correlation_heatmap"}
+
+        if is_historical_intent and len(final_categories) < 2:
+            return TransformedChartData(
+                title=spec.title,
+                chart_type=spec.chart_type,
+                x_axis=x_col,
+                y_axes=y_cols,
+                categories=[],
+                data_series=[],
+                series_names=[],
+                is_valid=False,
+                error_message=(
+                    f"Historical/trend chart '{spec.title}' requires at least 2 time periods; "
+                    f"only {len(final_categories)} period ({final_categories[0] if final_categories else 'none'}) is present."
+                ),
+            )
+
+        if is_matrix_intent and (len(final_categories) < 2 or self.row_count < 2):
+            return TransformedChartData(
+                title=spec.title,
+                chart_type=spec.chart_type,
+                x_axis=x_col,
+                y_axes=y_cols,
+                categories=[],
+                data_series=[],
+                series_names=[],
+                is_valid=False,
+                error_message=(
+                    f"Matrix visualization '{spec.title}' requires at least 2 rows for meaningful comparison; "
+                    f"only {self.row_count} row is present."
+                ),
+            )
 
         if spec.chart_type in {"pie", "donut"}:
             if not final_data_series or not final_data_series[0]:
@@ -600,12 +769,11 @@ class CanonicalSQLDataset:
                     is_valid=False,
                     error_message="Insufficient data points for pie chart.",
                 )
-            
+
             pie_vals = final_data_series[0]
             has_negatives = any(v < 0 for v in pie_vals)
             if has_negatives:
                 warnings.append("Pie chart data contained negative values; filtered non-negative values.")
-                # Filter non-negative
                 valid_pairs = [(c, v) for c, v in zip(final_categories, pie_vals) if v >= 0]
                 if not valid_pairs:
                     return TransformedChartData(
@@ -623,6 +791,7 @@ class CanonicalSQLDataset:
                 pie_vals = [p[1] for p in valid_pairs]
                 final_data_series = [pie_vals]
 
+            positive_pairs = [(c, v) for c, v in zip(final_categories, pie_vals) if v > 0]
             total_val = sum(pie_vals)
             if total_val <= 0:
                 return TransformedChartData(
@@ -635,6 +804,22 @@ class CanonicalSQLDataset:
                     series_names=[],
                     is_valid=False,
                     error_message="Cannot generate pie chart: sum of slice values is zero.",
+                )
+
+            if len(positive_pairs) < 2:
+                return TransformedChartData(
+                    title=spec.title,
+                    chart_type=spec.chart_type,
+                    x_axis=x_col,
+                    y_axes=y_cols,
+                    categories=[],
+                    data_series=[],
+                    series_names=[],
+                    is_valid=False,
+                    error_message=(
+                        f"Distribution chart '{spec.title}' requires at least 2 positive categories; "
+                        f"single-category (100%) distributions are not meaningful."
+                    ),
                 )
 
             # Cap pie slices at top 7 + 'Other' to ensure legend and slices sum to 100%
@@ -713,9 +898,13 @@ class ReportConsistencyValidator:
         *,
         kpis: Sequence[Mapping[str, Any]] | None = None,
         charts: Sequence[ChartSpecification | TransformedChartData | Mapping[str, Any]] | None = None,
+        executive_summary: str = "",
+        requested_period: str = "",
+        requested_period_has_data: bool = True,
+        comparison_period: str = "",
     ) -> ValidationResult:
-        """Validate consistency across KPIs, charts, and source datasets.
-        
+        """Validate consistency across KPIs, executive summary, charts, periods, and source datasets.
+
         Returns ValidationResult(is_valid, validation_errors, validation_warnings).
         """
         errors: list[str] = []
@@ -727,19 +916,60 @@ class ReportConsistencyValidator:
         if not datasets:
             return ValidationResult(True, [], ["No datasets present in report."])
 
-        primary_ds = next(iter(datasets.values()))
+        # 0. Check dataset structural validation errors (e.g. scalar strings passed as rows)
+        seen_signatures: dict[tuple[Any, ...], str] = {}
+        for ds_name, ds in datasets.items():
+            for err in getattr(ds, "validation_errors", []):
+                warnings.append(f"Dataset '{ds_name}': {err}")
+            if not ds.is_empty:
+                sig = (
+                    tuple(c.lower() for c in ds.columns),
+                    tuple(tuple(str(v) for v in r) for r in ds.table_rows),
+                )
+                if sig in seen_signatures:
+                    warnings.append(
+                        f"Duplicate dataset detected: '{ds_name}' is identical to '{seen_signatures[sig]}'."
+                    )
+                else:
+                    seen_signatures[sig] = ds_name
+
+        primary_ds = next(
+            (ds for ds in datasets.values() if not ds.is_empty),
+            next(iter(datasets.values())),
+        )
 
         # 1. Validate empty SQL result
         if all(ds.is_empty for ds in datasets.values()):
             warnings.append("All SQL query results returned 0 rows. A clean 'No Data' report should be produced.")
             return ValidationResult(True, [], warnings)
 
-        # 2. Validate Chart Specifications & Transformed Data
+        # 2. Validate Period Separation & Executive Summary vs KPI consistency
+        if requested_period and not requested_period_has_data:
+            if executive_summary and comparison_period:
+                if requested_period.lower() not in executive_summary.lower():
+                    warnings.append(
+                        f"Executive summary does not explicitly state that requested period '{requested_period}' had 0 records."
+                    )
+            if kpis:
+                for k in kpis:
+                    val_str = str(k.get("value", "")).strip()
+                    lbl_str = str(k.get("label", "")).strip()
+                    if val_str in {"$0.00", "0", "0.0"} and executive_summary:
+                        # Check if executive summary mentions non-zero comparison numbers without period separation
+                        if comparison_period and comparison_period.lower() not in lbl_str.lower():
+                            warnings.append(
+                                f"KPI '{lbl_str}' shows zero ('{val_str}') while comparison period '{comparison_period}' is discussed in narrative."
+                            )
+
+        # 3. Validate Chart Specifications & Transformed Data
         if charts:
             for idx, raw_ch in enumerate(charts, start=1):
                 if isinstance(raw_ch, TransformedChartData):
                     transformed = raw_ch
-                    if transformed.is_valid and transformed.y_axes and transformed.data_series:
+                    if not transformed.is_valid:
+                        warnings.append(f"Chart '{transformed.title}' omitted: {transformed.error_message}")
+                        continue
+                    if transformed.y_axes and transformed.data_series:
                         y_col = transformed.y_axes[0]
                         if y_col in primary_ds.columns:
                             table_sum = sum(primary_ds.get_numeric_column_values(y_col))
@@ -765,7 +995,6 @@ class ReportConsistencyValidator:
                 if not transformed.is_valid:
                     warnings.append(f"Chart '{spec.title}' omitted: {transformed.error_message}")
                 else:
-                    # Verify pie chart percentages sum to approx 100%
                     if spec.chart_type in {"pie", "donut"} and transformed.percentages:
                         pct_sum = sum(transformed.percentages)
                         if not (98.0 <= pct_sum <= 102.0):
@@ -773,7 +1002,7 @@ class ReportConsistencyValidator:
                                 f"Pie chart '{spec.title}' percentage sum {pct_sum:.1f}% deviates from 100%."
                             )
 
-        # 3. Validate KPI Alignment
+        # 4. Validate KPI Alignment
         if kpis and not primary_ds.is_empty:
             computed = primary_ds.compute_deterministic_kpis()
             computed_map = {k["label"].lower(): k["value"] for k in computed}
@@ -786,4 +1015,5 @@ class ReportConsistencyValidator:
                     )
 
         return ValidationResult(len(errors) == 0, errors, warnings)
+
 

@@ -193,6 +193,31 @@ class ChartConfiguration:
             chart_options=dict(data.get("chart_options") or {}),
         )
 
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "chart_type": self.chart_type,
+            "title": self.title,
+            "subtitle": self.subtitle,
+            "x_axis": self.x_axis,
+            "y_axis": self.y_axis,
+            "x_column": self.x_column,
+            "y_columns": self.y_columns,
+            "category_dimension": self.category_dimension,
+            "numerical_measure": self.numerical_measure,
+            "series": self.series,
+            "labels": self.labels,
+            "legend": self.legend,
+            "format": self.format,
+            "dataset_id": self.dataset_id,
+            "width": self.width,
+            "height": self.height,
+            "date_grouping": self.date_grouping,
+            "aggregation": self.aggregation,
+            "sorting": self.sorting,
+            "data_labels": self.data_labels,
+            "chart_options": self.chart_options,
+        }
+
 
 @dataclass
 class TableConfiguration:
@@ -316,18 +341,48 @@ class ReportSection:
 
 @dataclass
 class ReportSpecification:
-    """Dynamic, validated multi-component report blueprint."""
+    """Dynamic, validated multi-component report blueprint capturing user analytical intent."""
 
     title: str
     subtitle: str = ""
     executive_summary: str = ""
     kpis: list[dict[str, Any]] = field(default_factory=list)
+    comparison_kpis: list[dict[str, Any]] = field(default_factory=list)
     findings: list[str] = field(default_factory=list)
     sections: list[ReportSection] = field(default_factory=list)
     datasets: dict[str, dict[str, Any]] = field(default_factory=dict)
     include_sql: bool = False
     sql_queries: list[dict[str, str]] = field(default_factory=list)  # [{"query": "...", "purpose": "..."}]
     page_size: str = "A4"
+
+    # Explicit analytical intent & period separation fields
+    requested_period: str = ""
+    period_boundaries: dict[str, str] = field(default_factory=dict)
+    reporting_frequency: str = "monthly"
+    historical_comparison_period: str = ""
+    comparison_period_boundaries: dict[str, str] = field(default_factory=dict)
+    available_data_range: dict[str, str] = field(default_factory=dict)
+    actual_data_period: str = ""
+    requested_period_has_data: bool = True
+    requested_period_record_count: int = 0
+    requested_metrics: list[str] = field(default_factory=list)
+    requested_dimensions: list[str] = field(default_factory=list)
+    required_breakdowns: list[str] = field(default_factory=list)
+    requested_chart_types: list[str] = field(default_factory=list)
+    required_tables: list[str] = field(default_factory=list)
+    currency_format: str = "USD ($#,##0.00)"
+    numeric_formatting: dict[str, str] = field(
+        default_factory=lambda: {
+            "currency": "${:,.2f}",
+            "integer": "{:,}",
+            "percentage": "{:.1f}%",
+        }
+    )
+    missing_data_policy: str = "explicit_no_data_with_labeled_historical_comparison"
+    output_format: str = "PDF"
+    data_availability_notes: list[str] = field(default_factory=list)
+    validation_warnings: list[str] = field(default_factory=list)
+    omitted_analyses: list[str] = field(default_factory=list)
 
     def __init__(
         self,
@@ -343,21 +398,182 @@ class ReportSpecification:
         page_size: str = "A4",
         *,
         key_findings: list[str] | None = None,
+        comparison_kpis: list[dict[str, Any]] | None = None,
+        requested_period: str = "",
+        period_boundaries: dict[str, str] | None = None,
+        reporting_frequency: str = "monthly",
+        historical_comparison_period: str = "",
+        comparison_period_boundaries: dict[str, str] | None = None,
+        available_data_range: dict[str, str] | None = None,
+        actual_data_period: str = "",
+        requested_period_has_data: bool = True,
+        requested_period_record_count: int = 0,
+        requested_metrics: list[str] | None = None,
+        requested_dimensions: list[str] | None = None,
+        required_breakdowns: list[str] | None = None,
+        requested_chart_types: list[str] | None = None,
+        required_tables: list[str] | None = None,
+        currency_format: str = "USD ($#,##0.00)",
+        numeric_formatting: dict[str, str] | None = None,
+        missing_data_policy: str = "explicit_no_data_with_labeled_historical_comparison",
+        output_format: str = "PDF",
+        data_availability_notes: list[str] | None = None,
+        validation_warnings: list[str] | None = None,
+        omitted_analyses: list[str] | None = None,
         **kwargs: Any,
     ) -> None:
         self.title = title
         self.subtitle = subtitle
         self.executive_summary = executive_summary
         self.kpis = kpis or []
+        self.comparison_kpis = comparison_kpis or []
         self.findings = findings or key_findings or []
         self.sections = sections or []
         self.datasets = datasets or {}
         self.include_sql = include_sql
         self.sql_queries = sql_queries or []
         self.page_size = page_size
+        self.requested_period = requested_period
+        self.period_boundaries = period_boundaries or {}
+        self.reporting_frequency = reporting_frequency
+        self.historical_comparison_period = historical_comparison_period
+        self.comparison_period_boundaries = comparison_period_boundaries or {}
+        self.available_data_range = available_data_range or {}
+        self.actual_data_period = actual_data_period
+        self.requested_period_has_data = requested_period_has_data
+        self.requested_period_record_count = requested_period_record_count
+        self.requested_metrics = requested_metrics or []
+        self.requested_dimensions = requested_dimensions or []
+        self.required_breakdowns = required_breakdowns or []
+        self.requested_chart_types = requested_chart_types or []
+        self.required_tables = required_tables or []
+        self.currency_format = currency_format
+        self.numeric_formatting = numeric_formatting or {
+            "currency": "${:,.2f}",
+            "integer": "{:,}",
+            "percentage": "{:.1f}%",
+        }
+        self.missing_data_policy = missing_data_policy
+        self.output_format = output_format
+        self.data_availability_notes = data_availability_notes or []
+        self.validation_warnings = validation_warnings or []
+        self.omitted_analyses = omitted_analyses or []
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+    @classmethod
+    def from_user_intent(
+        cls,
+        user_request: str,
+        title: str = "",
+        description: str = "",
+        reference_date: Any = None,
+        output_format: str = "PDF",
+    ) -> "ReportSpecification":
+        """Construct a structured ReportSpecification directly from natural-language user intent."""
+        from reporting.date_utils import resolve_requested_period
+
+        combined = f"{user_request or ''} {title or ''} {description or ''}".lower()
+        period_obj = resolve_requested_period(
+            user_request=user_request,
+            title=title,
+            reference_date=reference_date,
+        )
+
+        req_period_label = period_obj.period_label if period_obj else ""
+        boundaries: dict[str, str] = {}
+        if period_obj:
+            boundaries = {
+                "start_date": period_obj.start_date_str,
+                "end_date_exclusive": period_obj.end_date_str,
+                "interval": f"[{period_obj.start_date_str}, {period_obj.end_date_str})",
+                "sql_filter": period_obj.sql_filter_clause,
+            }
+
+        # Frequency detection
+        freq = "monthly"
+        if "daily" in combined or "by day" in combined:
+            freq = "daily"
+        elif "quarter" in combined or "quarterly" in combined:
+            freq = "quarterly"
+        elif "annual" in combined or "yearly" in combined:
+            freq = "annual"
+
+        # Metrics detection
+        metrics: list[str] = []
+        if any(k in combined for k in ("order", "orders", "volume")):
+            metrics.append("orders")
+        if any(k in combined for k in ("transaction", "transactions", "payment")):
+            metrics.append("transactions")
+        if any(k in combined for k in ("sale", "sales", "subtotal", "gross")):
+            metrics.append("sales")
+        if any(k in combined for k in ("revenue", "total_amount", "income", "net")):
+            metrics.append("revenue")
+        if any(k in combined for k in ("aov", "average order value", "avg order")):
+            metrics.append("avg_order_value")
+        if not metrics:
+            metrics = ["orders", "sales", "revenue"]
+
+        # Dimensions & breakdowns detection
+        dimensions: list[str] = ["month"]
+        breakdowns: list[str] = ["historical_monthly"]
+        if any(k in combined for k in ("channel", "channels", "distribution", "pie", "matrix", "performance", "sales report")):
+            if "channel" not in dimensions:
+                dimensions.append("channel")
+            if "channel_breakdown" not in breakdowns:
+                breakdowns.append("channel_breakdown")
+        if any(k in combined for k in ("payment", "method", "transactions", "distribution", "pie", "sales report")):
+            if "payment_method" not in dimensions:
+                dimensions.append("payment_method")
+            if "payment_method_breakdown" not in breakdowns:
+                breakdowns.append("payment_method_breakdown")
+        if any(k in combined for k in ("status", "fulfillment", "delivered", "cancelled", "distribution", "pie", "sales report")):
+            if "order_status" not in dimensions:
+                dimensions.append("order_status")
+            if "order_status_breakdown" not in breakdowns:
+                breakdowns.append("order_status_breakdown")
+        if any(k in combined for k in ("category", "categories", "product")):
+            if "category" not in dimensions:
+                dimensions.append("category")
+            if "category_breakdown" not in breakdowns:
+                breakdowns.append("category_breakdown")
+
+        # Requested chart types
+        chart_types: list[str] = []
+        if any(k in combined for k in ("bar", "historical", "comparison")):
+            chart_types.append("vertical_bar")
+        if any(k in combined for k in ("line", "trend", "historical")):
+            chart_types.append("historical_line")
+        if any(k in combined for k in ("pie", "donut", "distribution", "share")):
+            chart_types.append("pie")
+        if any(k in combined for k in ("matrix", "heatmap", "crosstab", "pivot")):
+            chart_types.append("matrix")
+        if not chart_types:
+            chart_types = ["vertical_bar", "pie"]
+
+        # Required tables
+        req_tables = list(breakdowns)
+
+        resolved_title = title or (
+            f"{req_period_label} Sales & Performance Report"
+            if req_period_label
+            else "Executive Analytical Report"
+        )
+
+        return cls(
+            title=resolved_title,
+            subtitle=description or "",
+            requested_period=req_period_label,
+            period_boundaries=boundaries,
+            reporting_frequency=freq,
+            requested_metrics=metrics,
+            requested_dimensions=dimensions,
+            required_breakdowns=breakdowns,
+            requested_chart_types=chart_types,
+            required_tables=req_tables,
+            output_format=output_format.upper(),
+        )
 
     @classmethod
     def from_dict(cls, data: Mapping[str, Any]) -> "ReportSpecification":
@@ -366,6 +582,9 @@ class ReportSpecification:
 
         raw_kpis = data.get("kpis") or []
         kpis = [dict(k) for k in raw_kpis if isinstance(k, dict)]
+
+        raw_comp_kpis = data.get("comparison_kpis") or []
+        comparison_kpis = [dict(k) for k in raw_comp_kpis if isinstance(k, dict)]
 
         raw_findings = data.get("findings") or []
         findings = [str(f) for f in raw_findings if f]
@@ -381,10 +600,34 @@ class ReportSpecification:
             subtitle=str(data.get("subtitle") or ""),
             executive_summary=str(data.get("executive_summary") or data.get("summary") or ""),
             kpis=kpis,
+            comparison_kpis=comparison_kpis,
             findings=findings,
             sections=sections,
             datasets=datasets,
             include_sql=bool(data.get("include_sql", False)),
             sql_queries=sql_queries,
             page_size=str(data.get("page_size") or "A4"),
+            requested_period=str(data.get("requested_period") or ""),
+            period_boundaries=dict(data.get("period_boundaries") or {}),
+            reporting_frequency=str(data.get("reporting_frequency") or "monthly"),
+            historical_comparison_period=str(data.get("historical_comparison_period") or ""),
+            comparison_period_boundaries=dict(data.get("comparison_period_boundaries") or {}),
+            available_data_range=dict(data.get("available_data_range") or {}),
+            actual_data_period=str(data.get("actual_data_period") or ""),
+            requested_period_has_data=bool(data.get("requested_period_has_data", True)),
+            requested_period_record_count=int(data.get("requested_period_record_count", 0)),
+            requested_metrics=list(data.get("requested_metrics") or []),
+            requested_dimensions=list(data.get("requested_dimensions") or []),
+            required_breakdowns=list(data.get("required_breakdowns") or []),
+            requested_chart_types=list(data.get("requested_chart_types") or []),
+            required_tables=list(data.get("required_tables") or []),
+            currency_format=str(data.get("currency_format") or "USD ($#,##0.00)"),
+            numeric_formatting=dict(data.get("numeric_formatting") or {}),
+            missing_data_policy=str(
+                data.get("missing_data_policy") or "explicit_no_data_with_labeled_historical_comparison"
+            ),
+            output_format=str(data.get("output_format") or "PDF"),
+            data_availability_notes=list(data.get("data_availability_notes") or []),
+            validation_warnings=list(data.get("validation_warnings") or []),
+            omitted_analyses=list(data.get("omitted_analyses") or []),
         )

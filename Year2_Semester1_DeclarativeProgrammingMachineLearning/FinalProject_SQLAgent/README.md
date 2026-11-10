@@ -5,12 +5,12 @@
 [![Ollama](https://img.shields.io/badge/LLM-Ollama%20qwen3.5%3A4b-orange.svg)](https://ollama.com/)
 [![MCP](https://img.shields.io/badge/Protocol-Model%20Context%20Protocol%20(FastMCP)-purple.svg)](https://modelcontextprotocol.io/)
 [![ReportLab](https://img.shields.io/badge/Reporting-ReportLab%205.1-red.svg)](https://www.reportlab.com/)
-[![Tests](https://img.shields.io/badge/Tests-156%20Passed-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-457%20Passed-brightgreen.svg)]()
 [![Documentation](https://img.shields.io/badge/Specification-SOLUTION.md-blueviolet.svg)](SOLUTION.md)
 
 > [!IMPORTANT]
 > **COMPREHENSIVE SOLUTION DOCUMENTATION AVAILABLE**:  
-> For the complete university final project documentation, including in-depth architectural specifications, sequence diagrams, the 25-chart visualization engine catalog, SQLite relational schema details, and 156-test verification evidence, please consult [**`SOLUTION.md`**](SOLUTION.md).
+> For the complete university final project documentation, including in-depth architectural specifications, sequence diagrams, the 25-chart visualization engine catalog, SQLite relational schema details, canonical reporting pipeline architecture, and 457-test verification evidence, please consult [**`SOLUTION.md`**](SOLUTION.md).
 
 A production-grade, 100% offline desktop application that empowers users to query relational databases and generate publication-quality reports using natural language. 
 
@@ -77,8 +77,8 @@ Comprehensive technical and academic documentation is available in the [`docs/`]
 * [**`docs/DATABASE.md`**](docs/DATABASE.md): Relational data model, Entity-Relationship diagram, 7-table specifications (499,385 records), and multi-layer read-only SQLite security.
 * [**`docs/AGENT_WORKFLOW.md`**](docs/AGENT_WORKFLOW.md): Natural language request lifecycle, format steering (PDF default vs explicit CSV), Ollama integration, and configurable human approval gate.
 * [**`docs/SECURITY.md`**](docs/SECURITY.md): Local-only boundary, defense-in-depth SQL protections (lexical, AST, query-only pragma, C-authorizer), path traversal defenses, and privacy guarantees.
-* [**`docs/TESTING.md`**](docs/TESTING.md): Testing architecture, full 156-test breakdown across 10 test suites, manual acceptance test checklist, and known limitations.
-* [**`docs/DEMO_GUIDE.md`**](docs/DEMO_GUIDE.md): Step-by-step 5–10 minute demonstration script with exact prompts, expected dialogs, and presenter talking points.
+* [**`docs/TESTING.md`**](docs/TESTING.md): Testing architecture, full 457-test breakdown across 36 test modules, regression test suite, manual acceptance test checklist, and known limitations.
+* [**`docs/DEMO_GUIDE.md`**](docs/DEMO_GUIDE.md): Step-by-step 10–15 minute academic demonstration script with exact prompts, expected dialogs, and presenter talking points.
 * [**`docs/PROJECT_SUMMARY.md`**](docs/PROJECT_SUMMARY.md): Academic project summary, functional/non-functional requirements compliance matrix, technology stack, and conclusions.
 
 ### Module Responsibilities
@@ -86,13 +86,13 @@ Comprehensive technical and academic documentation is available in the [`docs/`]
 | Directory | Core Role & Responsibilities |
 | :--- | :--- |
 | [`app/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/app) | PySide6 desktop interface: `MainWindow` layout, `ReportPreviewWidget` (PDF/CSV viewers), `ChatView`, modal `SqlApprovalDialog`, `HistoryView`, `SettingsView`, and asynchronous `AgentWorker` threading. |
-| [`agent/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/agent) | Autonomous orchestration: `OllamaClient` (HTTP API), `ToolHandler` (FastMCP parameter normalization), `ConversationManager` (turn/token bounding), and `AgentOrchestrator`. |
+| [`agent/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/agent) | Autonomous orchestration: `OllamaClient` (HTTP API with exponential retry), `ToolHandler` (FastMCP parameter normalization), `ConversationManager` (turn/token bounding), `AgentOrchestrator`, and `ContextBuilder`. |
 | [`mcp_layer/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/mcp_layer) | MCP implementation: `FastMCP` stdio server (`server.py`), `MCPStdioClient` (`client.py`), and modular tool packages for database inspection, SQL tools, and report generators. |
 | [`database/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/database) | Relational engine: batch CSV/ZIP dataset importer (`importer.py`), schema introspection (`inspector.py`), and multi-layer read-only query executor with C-authorizer (`executor.py`). |
-| [`reporting/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reporting) | Output generation: Centralized `ChartRegistry` (25 chart types), dynamic PDF composer (`dynamic_pdf_composer.py`), CSV exporter, and persistent catalog manager (`report_manager.py`). |
+| [`reporting/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reporting) | Output generation: Centralized `ChartRegistry` (25 chart types), canonical data layer (`canonical_data.py`), dataset registry (`dataset_registry.py`), 4-stage validator (`report_validator.py`), date utilities (`date_utils.py`), dynamic PDF composer (`dynamic_pdf_composer.py`), CSV exporter, and persistent catalog manager (`report_manager.py`). |
 | [`config/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/config) | System configuration: layered settings (`settings.py`), cross-platform path resolution (`paths.py`), system prompts (`prompts.py`), and logging (`logging_setup.py`). |
 | [`scripts/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/scripts) | Automation scripts: environment and database hash verifier (`verify_environment.py`), acceptance test suite (`verify_milestone10_acceptance.py`), and packaging scripts. |
-| [`tests/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/tests) | Automated pytest suite: 156 automated tests covering database, SQL validator, MCP tools, report generators, agent orchestrator, headless GUI, and E2E workflows. |
+| [`tests/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/tests) | Automated pytest suite: 457 automated tests covering database, SQL validator, MCP tools, report generators, reporting pipeline fixes, agent orchestrator, headless GUI, and E2E workflows. |
 
 ---
 
@@ -280,25 +280,24 @@ The application automatically adapts to its runtime environment (`config/paths.p
 The test suite runs 100% offline using temporary databases and mocks:
 
 ```bash
-# Run complete test suite (156 tests)
+# Run complete test suite (457 tests)
 .venv/bin/pytest tests/ -v
 ```
 
 ### Test Coverage Breakdown
 
-| Test File | Tests | Coverage Scope |
-| :--- | :---: | :--- |
-| `tests/test_advanced_visualization_engine.py` | 5 | All 25 chart types, ChartRegistry registration, validation, edge cases, multi-chart PDF composition. |
-| `tests/test_approval_config.py` | 8 | Configurable SQL approval toggle, settings persistence, auto-approval logging, modal enforcement. |
-| `tests/test_dynamic_pdf_milestone9.py` | 5 | Multi-component PDF composer, Page X of Y canvas, LongTable pagination, diagnostic counters. |
-| `tests/test_database.py` | 26 | CSV/ZIP importer, schema discovery, read-only guarantees, C-authorizer, table sampling, and parity verification. |
-| `tests/test_sql_validation.py` | 32 | Lexical validation, AST inspection, statement whitelisting, injection prevention, and timeout enforcement. |
-| `tests/test_mcp_tools.py` | 10 | Official FastMCP stdio server and client, tool registration, schema parity, and error propagation. |
-| `tests/test_reporting.py` | 10 | ReportLab PDF layout, typography, multi-page tables, CSV escaping, path traversal defense, and report history. |
-| `tests/test_agent.py` | 37 | Ollama client, context manager, tool handler, iterative orchestration, approval gates, and live Ollama integration. |
-| `tests/test_gui.py` | 21 | Headless offscreen PySide6 GUI tests: `MainWindow`, `ChatView`, `ReportPreviewWidget`, `SqlApprovalDialog`, `HistoryView`, and worker threads. |
-| `tests/test_e2e_workflows.py` | 8 | End-to-end integration workflows: basic interaction, schema discovery, rejection, approval, PDF/CSV generation, and error recovery. |
-| **Total** | **156** | **All 156 tests passing.** |
+The 457 automated tests span 36 specialized test modules across the complete stack:
+
+| Test Module Category | Files | Tests | Coverage Scope |
+| :--- | :---: | :---: | :--- |
+| **Reporting & Visualizations** | 6 | 63 | 25 vector chart renderers (`test_advanced_visualization_engine.py`), dynamic PDF composition (`test_dynamic_pdf_milestone9.py`), ReportLab generation & typography (`test_reporting.py`), reporting numerical accuracy (`test_reporting_accuracy.py`), and 18-defect regression suite (`test_reporting_pipeline_fixes.py`). |
+| **Agent Orchestration & Intelligence** | 10 | 185 | Ollama client HTTP/retries & tool calling (`test_agent.py`), checkpoint models & recovery (`test_checkpoint_models.py`, `test_checkpoint_manager.py`, `test_task_recovery.py`), context window & relevance (`test_context_window.py`, `test_context_builder.py`, `test_context_models.py`, `test_context_security.py`), and task planning (`test_task_planner.py`, `test_task_manager.py`). |
+| **Model Context Protocol (MCP)** | 4 | 22 | FastMCP stdio server/client lifecycle (`test_mcp_tools.py`), connection recovery (`test_mcp_reliability.py`), tool schema parity (`test_mcp_tool_discovery_and_capability.py`), and discovery reporting. |
+| **Database & SQL Security** | 3 | 66 | Batch CSV importer, schema discovery, C-authorizer, read-only guarantees (`test_database.py`), lexical scanning, AST validation, and injection prevention (`test_sql_validation.py`). |
+| **Skills & Domain Knowledge** | 4 | 42 | Skill parsing, models, security isolation, and selection matching (`test_skill_manager.py`, `test_skill_models.py`, `test_skill_security.py`, `test_skill_selection.py`). |
+| **Memory & Migrations** | 2 | 27 | SQLite working memory repository (`test_memory_repository.py`) and schema migrations (`test_memory_migrations.py`). |
+| **Desktop GUI & E2E Workflows** | 4 | 44 | Headless PySide6 GUI (`test_gui.py`), approval toggles (`test_approval_config.py`), end-to-end workflows (`test_e2e_workflows.py`), and macOS startup lifecycle (`test_macos_startup.py`). |
+| **Total Test Suite** | **36** | **457** | **All 457 tests passing (100% pass rate).** |
 
 ---
 

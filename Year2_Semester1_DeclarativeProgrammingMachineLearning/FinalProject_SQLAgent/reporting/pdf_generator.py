@@ -220,6 +220,8 @@ def generate_pdf_file(
     datasets: Mapping[str, Any] | None = None,
     kpis: Sequence[Mapping[str, Any]] | None = None,
     findings: Sequence[str] | None = None,
+    db_path: str | Path | None = None,
+    reference_date: datetime | None = None,
 ) -> ReportMetadata:
     """Generate a professionally styled, paginated PDF report inside ``output_dir``."""
     clean_title = (title or "").strip()
@@ -240,10 +242,13 @@ def generate_pdf_file(
     if (
         (charts and len(charts) > 0)
         or (sections and len(sections) > 0)
-        or (datasets and len(datasets) > 1)
+        or (datasets and len(datasets) > 0)
         or (kpis and len(kpis) > 0)
         or (findings and len(findings) > 0)
     ):
+        from .canonical_data import CanonicalSQLDataset, ChartSpecification
+        from .dataset_registry import CuratedDataset, ReportDatasetRegistry
+        from .date_utils import resolve_requested_period
         from .dynamic_pdf_composer import compose_dynamic_pdf
         from .report_spec import (
             ChartConfiguration,
@@ -252,35 +257,177 @@ def generate_pdf_file(
             ReportSpecification,
             TableConfiguration,
         )
+        from .report_validator import ReportDataValidator
 
-        all_datasets = dict(datasets or {})
-        if "primary" not in all_datasets and (columns or rows):
-            all_datasets["primary"] = {
-                "columns": list(columns or []),
-                "rows": list(rows or []),
-            }
+        # Parse structured analytical intent from user request, title, and description
+        intent_spec = ReportSpecification.from_user_intent(
+            user_request=user_request,
+            title=clean_title,
+            description=description,
+            reference_date=reference_date,
+            output_format="PDF",
+        )
+        req_period_obj = resolve_requested_period(
+            user_request=user_request,
+            title=clean_title,
+            reference_date=reference_date,
+        )
 
-        from .canonical_data import CanonicalSQLDataset, ChartSpecification, ReportConsistencyValidator
+        registry = ReportDatasetRegistry(
+            requested_period=req_period_obj,
+            reference_date=reference_date,
+        )
 
-        # 1. Establish authoritative canonical SQL datasets
-        canonical_datasets: dict[str, CanonicalSQLDataset] = {}
-        for ds_name, ds_info in all_datasets.items():
-            if isinstance(ds_info, dict):
-                canonical_datasets[ds_name] = CanonicalSQLDataset(
+        raw_datasets = dict(datasets or {})
+        for ds_name, ds_info in raw_datasets.items():
+            if isinstance(ds_info, Mapping):
+                registry.register(
+                    str(ds_name),
                     ds_info.get("columns", []),
                     ds_info.get("rows", []),
-                    name=ds_name,
-                    sql_query=ds_info.get("sql_query", sql_query),
+                    sql_query=str(ds_info.get("sql_query") or sql_query or ""),
+                    explicit_title=str(ds_info.get("title") or ""),
                 )
-        if "primary" in canonical_datasets:
-            primary_ds = canonical_datasets["primary"]
-        elif canonical_datasets:
-            primary_ds = next(iter(canonical_datasets.values()))
-        else:
-            primary_ds = CanonicalSQLDataset(columns or [], rows or [], name="primary", sql_query=sql_query)
-            canonical_datasets["primary"] = primary_ds
 
-        sec_components: list[ReportComponent] = []
+        if "primary" not in raw_datasets and (columns or rows):
+            registry.register(
+                "primary",
+                list(columns or []),
+                rows,
+                sql_query=sql_query,
+            )
+
+        # If a read-only database path is provided (or when curating an agent session with dataset_1..N
+        # where a missing period fallback or multi-breakdown is needed), supplement missing breakdowns
+        effective_db_path = db_path
+        if effective_db_path is None and raw_datasets and any(k.startswith("dataset_") for k in raw_datasets):
+            default_db = Path("data/ecommerce.db")
+            if default_db.is_file():
+                effective_db_path = default_db
+
+        if effective_db_path is not None:
+            registry.supplement_from_readonly_database(
+                effective_db_path,
+                required_breakdowns=intent_spec.required_breakdowns,
+                requested_chart_types=intent_spec.requested_chart_types,
+            )
+
+        period_ctx = registry.finalize_curation()
+        included_list = registry.included_datasets
+        curated_map: dict[str, CuratedDataset] = {ds.dataset_id: ds for ds in included_list}
+
+        # Map any superseded/duplicate dataset ID to its active curated dataset so charts don't break
+        fallback_hist_ds = next(
+            (ds for ds in included_list if ds.analytical_purpose == "historical_monthly"),
+            None,
+        )
+        primary_curated = (
+            curated_map.get("primary")
+            or fallback_hist_ds
+            or (included_list[0] if included_list else None)
+        )
+
+        # Validate & reconcile KPIs, Comparison KPIs, Executive Summary, and Key Findings
+        norm_kpis, comp_kpis, reconciled_summary, period_findings = (
+            ReportDataValidator.build_reconciled_kpis_and_summary(
+                registry,
+                supplied_kpis=kpis,
+                supplied_summary=summary or "",
+            )
+        )
+
+        merged_findings: list[str] = list(period_findings)
+        for f in (findings or []):
+            f_str = str(f).strip()
+            if f_str and f_str not in merged_findings:
+                merged_findings.append(f_str)
+
+        if not included_list and all(ds.row_count == 0 for ds in registry.all_datasets.values()):
+            if not any("zero rows" in f.lower() or "no matching" in f.lower() for f in merged_findings):
+                merged_findings.append("No matching records returned from database query (0 rows).")
+
+        # Resolve and validate candidate charts against curated datasets
+        omitted_analyses: list[str] = []
+        charts_by_ds: dict[str, list[ReportComponent]] = {}
+        seen_chart_keys: set[tuple[str, str, str]] = set()
+
+        def _try_add_chart(ch_dict: Mapping[str, Any]) -> None:
+            ch_cfg = ChartConfiguration.from_dict(ch_dict)
+            ds_id = ch_cfg.dataset_id
+            x_col_cand = ch_cfg.x_axis or ch_cfg.category_dimension or ""
+
+            # If dataset_id points to a 1-row/superseded dataset (e.g. dataset_4) and x_axis is month,
+            # upgrade to the multi-month historical dataset if available!
+            if (
+                fallback_hist_ds is not None
+                and x_col_cand.lower() in {"month", "order_date", "period"}
+                and (not ds_id or ds_id not in curated_map or curated_map[ds_id].row_count < 2)
+            ):
+                if ch_cfg.chart_type in {"matrix", "heatmap"}:
+                    mat_ds = next(
+                        (d for d in included_list if d.analytical_purpose == "cross_dimensional_matrix"),
+                        fallback_hist_ds,
+                    )
+                    ds_id = mat_ds.dataset_id
+                    if mat_ds.analytical_purpose == "cross_dimensional_matrix":
+                        ch_cfg.series = [c for c in mat_ds.columns if c != "month"]
+                        ch_cfg.title = f"Monthly Revenue Matrix by Channel ({mat_ds.reporting_period})"
+                else:
+                    ds_id = fallback_hist_ds.dataset_id
+
+            if not ds_id or ds_id not in curated_map:
+                for cand_ds in included_list:
+                    if x_col_cand in cand_ds.columns:
+                        ds_id = cand_ds.dataset_id
+                        break
+
+            if not ds_id or ds_id not in curated_map:
+                ds_id = primary_curated.dataset_id if primary_curated else None
+
+            if not ds_id or ds_id not in curated_map:
+                return
+
+            target_curated = curated_map[ds_id]
+            target_canonical = target_curated.canonical
+            if target_canonical is None:
+                return
+
+            ch_cfg.dataset_id = ds_id
+            chart_spec = ChartSpecification(
+                title=ch_cfg.title,
+                chart_type=ch_cfg.chart_type,
+                x_axis=ch_cfg.x_axis or ch_cfg.category_dimension or "",
+                y_axis=ch_cfg.y_axis or ch_cfg.numerical_measure or (ch_cfg.series if ch_cfg.series else ""),
+                aggregation_method=ch_cfg.aggregation,
+                sorting=ch_cfg.sorting,
+            )
+            trans = target_canonical.extract_and_transform_chart(chart_spec)
+            if not trans.is_valid:
+                msg = f"Chart '{ch_cfg.title}' omitted: {trans.error_message}"
+                if msg not in omitted_analyses:
+                    omitted_analyses.append(msg)
+                if msg not in merged_findings and len(included_list) <= 1:
+                    merged_findings.append(msg)
+                return
+
+            dedup_key = (
+                ds_id,
+                chart_spec.chart_type,
+                f"{trans.x_axis}:{','.join(trans.y_axes)}",
+            )
+            if dedup_key in seen_chart_keys:
+                return
+            seen_chart_keys.add(dedup_key)
+
+            charts_by_ds.setdefault(ds_id, []).append(
+                ReportComponent(
+                    component_type="chart",
+                    title=ch_cfg.title,
+                    chart_config=ch_cfg,
+                    dataset_id=ds_id,
+                )
+            )
+
         if charts:
             for ch in charts:
                 if isinstance(ch, str):
@@ -294,137 +441,259 @@ def generate_pdf_file(
                         ct = "matrix"
                     elif any(w in chart_str for w in ["line", "trend"]):
                         ct = "historical_line"
-                    
-                    x_col = columns[0] if columns else "dimension"
-                    y_cols = [c for c in (columns or []) if c != x_col]
-                    if not y_cols and columns:
-                        y_cols = [columns[0]]
+                    x_col = (columns[0] if columns else "dimension")
+                    y_cols = [c for c in (columns or []) if c != x_col] or ([columns[0]] if columns else [])
                     ch = {
                         "chart_type": ct,
                         "title": ch.strip(),
                         "x_column": x_col,
                         "y_columns": y_cols,
                     }
-                ch_cfg = ChartConfiguration.from_dict(ch)
-                ds_id = ch_cfg.dataset_id
-                if not ds_id or ds_id not in all_datasets:
-                    # Match dataset by x_axis column
-                    for candidate_id, cand_ds in all_datasets.items():
-                        if isinstance(cand_ds, dict) and ch_cfg.x_axis in cand_ds.get("columns", []):
-                            ds_id = candidate_id
-                            break
-                if not ds_id:
-                    ds_id = "primary" if "primary" in all_datasets else (next(iter(all_datasets.keys())) if all_datasets else None)
-                ch_cfg.dataset_id = ds_id
+                if isinstance(ch, Mapping):
+                    _try_add_chart(ch)
 
-                # Validate chart against authoritative dataset
-                ch_ds = canonical_datasets.get(ds_id or "primary", primary_ds)
-                chart_spec = ChartSpecification(
-                    title=ch_cfg.title,
-                    chart_type=ch_cfg.chart_type,
-                    x_axis=ch_cfg.x_axis or ch_cfg.category_dimension or "",
-                    y_axis=ch_cfg.y_axis or ch_cfg.numerical_measure or (ch_cfg.series if ch_cfg.series else ""),
-                    aggregation_method=ch_cfg.aggregation,
-                    sorting=ch_cfg.sorting,
-                )
-                trans = ch_ds.extract_and_transform_chart(chart_spec)
-                if not trans.is_valid:
-                    findings = list(findings or [])
-                    findings.append(f"Chart '{ch_cfg.title}' omitted: {trans.error_message}")
+        # Also attach recommended visualizations from curated multi-breakdown datasets if not yet charted
+        if len(included_list) > 1:
+            for ds in included_list:
+                for viz_cfg in ds.visualization_mapping:
+                    _try_add_chart(viz_cfg)
+
+        # Build clean, topical sections without empty headings or duplicate intermediate tables
+        built_sections: list[ReportSection] = []
+        is_multi_breakdown = len(included_list) > 1 or any(
+            ds.analytical_purpose
+            in {
+                "historical_monthly",
+                "channel_breakdown",
+                "payment_method_breakdown",
+                "order_status_breakdown",
+                "cross_dimensional_matrix",
+            }
+            for ds in included_list
+        )
+
+        if is_multi_breakdown and len(included_list) > 1:
+            section_order = [
+                (
+                    "historical_monthly",
+                    "Historical Performance",
+                    "Multi-month progression of order volume, payment transactions, gross sales, and net revenue.",
+                ),
+                (
+                    "channel_breakdown",
+                    "Channel Analysis",
+                    "Order volume, gross sales, total revenue, and market share across acquisition channels.",
+                ),
+                (
+                    "payment_method_breakdown",
+                    "Payment Method Analysis",
+                    "Transaction volume, order count, and revenue contribution by payment instrument.",
+                ),
+                (
+                    "order_status_breakdown",
+                    "Order Status Analysis",
+                    "Fulfillment pipeline distribution and associated revenue across order statuses.",
+                ),
+                (
+                    "cross_dimensional_matrix",
+                    "Comparative Matrices",
+                    "Two-dimensional cross-tabulation of monthly revenue performance across sales channels.",
+                ),
+                (
+                    "category_breakdown",
+                    "Product Category Analysis",
+                    "Sales and revenue performance segmented by product category.",
+                ),
+            ]
+            rendered_ds_ids: set[str] = set()
+            for purpose_key, sec_title, sec_desc in section_order:
+                matching_ds = [ds for ds in included_list if ds.analytical_purpose == purpose_key]
+                if not matching_ds:
                     continue
+                sec_comps: list[ReportComponent] = []
+                for ds in matching_ds:
+                    rendered_ds_ids.add(ds.dataset_id)
+                    sec_comps.extend(charts_by_ds.get(ds.dataset_id, []))
+                    sec_comps.append(
+                        ReportComponent(
+                            component_type="table",
+                            title=ds.title,
+                            table_config=TableConfiguration(
+                                columns=ds.columns,
+                                show_totals=(ds.row_count >= 2),
+                                dataset_id=ds.dataset_id,
+                            ),
+                            dataset_id=ds.dataset_id,
+                        )
+                    )
+                if sec_comps:
+                    built_sections.append(
+                        ReportSection(
+                            title=sec_title,
+                            description=sec_desc,
+                            components=sec_comps,
+                        )
+                    )
 
-                sec_components.append(
-                    ReportComponent(
-                        component_type="chart",
-                        title=ch_cfg.title,
-                        chart_config=ch_cfg,
-                        dataset_id=ds_id,
+            # Any remaining valid datasets not in the standard 6 buckets
+            remaining_ds = [ds for ds in included_list if ds.dataset_id not in rendered_ds_ids]
+            if remaining_ds:
+                rem_comps: list[ReportComponent] = []
+                for ds in remaining_ds:
+                    rem_comps.extend(charts_by_ds.get(ds.dataset_id, []))
+                    rem_comps.append(
+                        ReportComponent(
+                            component_type="table",
+                            title=ds.title,
+                            table_config=TableConfiguration(
+                                columns=ds.columns,
+                                show_totals=(ds.row_count >= 2),
+                                dataset_id=ds.dataset_id,
+                            ),
+                            dataset_id=ds.dataset_id,
+                        )
+                    )
+                built_sections.append(
+                    ReportSection(
+                        title="Detailed Analytical Data",
+                        description="Supplementary validated query results.",
+                        components=rem_comps,
                     )
                 )
+        else:
+            # Single dataset / standard overview layout
+            is_matrix_req = any(k in (user_request or "").lower() for k in ["matrix", "crosstab", "totals", "total"])
+            sec_components: list[ReportComponent] = []
+            for ds_id_k, comp_list in charts_by_ds.items():
+                sec_components.extend(comp_list)
 
-        is_matrix_req = any(k in (user_request or "").lower() for k in ["matrix", "crosstab", "totals", "total"])
-        if len(all_datasets) > 1:
-            for ds_name, ds_info in all_datasets.items():
-                if isinstance(ds_info, dict) and ds_info.get("columns"):
+            if included_list:
+                for ds in included_list:
                     sec_components.append(
                         ReportComponent(
                             component_type="table",
-                            title=f"Data Summary: {ds_name.replace('_', ' ').title()}",
+                            title=ds.title if len(included_list) > 1 else "Data Summary Table",
                             table_config=TableConfiguration(
-                                columns=list(ds_info.get("columns", [])),
-                                show_totals=is_matrix_req,
-                                dataset_id=ds_name,
+                                columns=ds.columns,
+                                show_totals=is_matrix_req or (ds.row_count >= 2 and is_matrix_req),
+                                dataset_id=ds.dataset_id,
                             ),
-                            dataset_id=ds_name,
+                            dataset_id=ds.dataset_id,
                         )
                     )
-        elif columns or rows:
-            sec_components.append(
-                ReportComponent(
-                    component_type="table",
-                    title="Data Summary Table",
-                    table_config=TableConfiguration(columns=list(columns or []), show_totals=is_matrix_req),
-                    dataset_id="primary",
+            elif columns:
+                # Explicit 0-row table when the entire report has 0 rows
+                sec_components.append(
+                    ReportComponent(
+                        component_type="table",
+                        title="Data Summary Table",
+                        table_config=TableConfiguration(columns=list(columns or []), show_totals=False),
+                        dataset_id="primary",
+                    )
                 )
-            )
 
-        built_sections = [
-            ReportSection(
-                title="Analytical Overview",
-                description=description,
-                components=sec_components,
-            )
-        ]
-        if sections:
-            for s in sections:
-                if isinstance(s, ReportSection):
-                    built_sections.append(s)
-                elif isinstance(s, Mapping):
-                    built_sections.append(ReportSection.from_dict(s))
-                elif isinstance(s, str):
-                    built_sections.append(ReportSection(title=s, description="", components=[]))
-                elif s:
-                    built_sections.append(ReportSection.from_dict(s))
+            if sec_components:
+                built_sections.append(
+                    ReportSection(
+                        title="Analytical Overview",
+                        description=description,
+                        components=sec_components,
+                    )
+                )
 
-        # 2. Deterministic KPI calculation from authoritative Single Source of Truth
-        norm_kpis: list[dict[str, Any]] = []
-        if not primary_ds.is_empty:
-            computed_kpis = primary_ds.compute_deterministic_kpis()
-            if not kpis:
-                norm_kpis = computed_kpis
-            else:
-                computed_map = {k["label"].lower(): k["value"] for k in computed_kpis}
-                for k in kpis:
-                    if isinstance(k, str):
-                        parts = k.split(":", 1) if ":" in k else [k, ""]
-                        lbl = parts[0].strip()
-                        val = parts[1].strip() if len(parts) > 1 else ""
-                    elif isinstance(k, Mapping):
-                        lbl = str(k.get("label", "Metric"))
-                        val = str(k.get("value", ""))
-                    else:
-                        lbl = "Metric"
-                        val = str(k)
+            # Append any caller-supplied sections that actually contain components
+            if sections:
+                for s in sections:
+                    sec_obj = s if isinstance(s, ReportSection) else (ReportSection.from_dict(s) if isinstance(s, Mapping) else None)
+                    if sec_obj and sec_obj.components:
+                        built_sections.append(sec_obj)
 
-                    if lbl.lower() in computed_map:
-                        val = computed_map[lbl.lower()]
-                    norm_kpis.append({"label": lbl, "value": val or "—"})
-        elif primary_ds.is_empty:
-            findings = list(findings or [])
-            if not any("zero rows" in f.lower() or "no matching" in f.lower() for f in findings):
-                findings.append("No matching records returned from database query (0 rows).")
+        # Build curated datasets dict for ReportSpecification (only validated datasets, or empty primary if 0 rows)
+        spec_datasets: dict[str, dict[str, Any]] = {
+            ds.dataset_id: {
+                "columns": ds.columns,
+                "rows": ds.rows,
+                "title": ds.title,
+                "analytical_purpose": ds.analytical_purpose,
+                "reporting_period": ds.reporting_period,
+            }
+            for ds in included_list
+        }
+        if not spec_datasets and columns is not None:
+            spec_datasets["primary"] = {
+                "columns": list(columns or []),
+                "rows": [],
+            }
+
+        validation_report = ReportDataValidator.validate(
+            registry,
+            kpis=norm_kpis,
+            comparison_kpis=comp_kpis,
+            executive_summary=reconciled_summary,
+            charts=[
+                c.chart_config.to_dict()
+                for comp_list in charts_by_ds.values()
+                for c in comp_list
+                if c.chart_config is not None
+            ],
+            required_breakdowns=intent_spec.required_breakdowns if len(included_list) > 1 else None,
+        )
+        for om in validation_report.omitted_analyses:
+            if om not in omitted_analyses:
+                omitted_analyses.append(om)
 
         dyn_spec = ReportSpecification(
             title=clean_title,
             subtitle=description,
-            executive_summary=summary or "",
+            executive_summary=reconciled_summary,
             kpis=norm_kpis,
-            findings=list(findings or []),
+            comparison_kpis=comp_kpis,
+            findings=merged_findings,
             sections=built_sections,
-            datasets=all_datasets,
+            datasets=spec_datasets,
             include_sql=include_sql,
             sql_queries=[{"query": sql_query, "purpose": "Report source query"}] if (sql_query and include_sql) else [],
             page_size=page_size_name,
+            requested_period=period_ctx.requested_period.period_label if period_ctx.requested_period else "",
+            period_boundaries=(
+                {
+                    "start_date": period_ctx.requested_period.start_date_str,
+                    "end_date_exclusive": period_ctx.requested_period.end_date_str,
+                    "interval": f"[{period_ctx.requested_period.start_date_str}, {period_ctx.requested_period.end_date_str})",
+                }
+                if period_ctx.requested_period
+                else {}
+            ),
+            reporting_frequency=intent_spec.reporting_frequency,
+            historical_comparison_period=(
+                period_ctx.comparison_period.period_label if period_ctx.comparison_period else ""
+            ),
+            comparison_period_boundaries=(
+                {
+                    "start_date": period_ctx.comparison_period.start_date_str,
+                    "end_date_exclusive": period_ctx.comparison_period.end_date_str,
+                    "interval": f"[{period_ctx.comparison_period.start_date_str}, {period_ctx.comparison_period.end_date_str})",
+                }
+                if period_ctx.comparison_period
+                else {}
+            ),
+            available_data_range={
+                "min_date": period_ctx.available_min_date or "",
+                "max_date": period_ctx.available_max_date or "",
+            }
+            if (period_ctx.available_min_date or period_ctx.available_max_date)
+            else {},
+            actual_data_period=", ".join(period_ctx.actual_periods_present),
+            requested_period_has_data=period_ctx.requested_period_has_data,
+            requested_period_record_count=period_ctx.requested_period_record_count,
+            requested_metrics=intent_spec.requested_metrics,
+            requested_dimensions=intent_spec.requested_dimensions,
+            required_breakdowns=intent_spec.required_breakdowns,
+            requested_chart_types=intent_spec.requested_chart_types,
+            required_tables=intent_spec.required_tables,
+            data_availability_notes=period_ctx.data_availability_notes,
+            validation_warnings=validation_report.warnings,
+            omitted_analyses=omitted_analyses,
         )
         return compose_dynamic_pdf(dyn_spec, output_dir=output_dir, record_history=record_history)
 

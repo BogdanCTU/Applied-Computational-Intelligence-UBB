@@ -50,9 +50,11 @@ Never guess business formulas. Always apply the following standardized definitio
 
 ---
 
-## 3. Explicit Aggregation Grain
+## 3. Explicit Aggregation Grain & Half-Open Date Intervals
 Every analytical result must specify its exact dimension grain:
 - **Temporal Grain**: Daily (`o.order_date`), Monthly (`strftime('%Y-%m', o.order_date) AS month`), Quarterly, or Annual.
-- **Entity Grain**: By Order Channel (`o.channel`), Order Status (`o.status`), Product Category (`products.category`), or Customer Country (`customers.country`).
-- Ensure that summary totals equal the sum of grain partitions.
+- **Half-Open Monthly Date Boundaries**: Always filter monthly ranges using half-open intervals `o.order_date >= 'YYYY-MM-01' AND o.order_date < 'NEXT_YYYY-MM-01'` so timestamps on the final day of the month (e.g. `2026-09-29 23:22:24`) are never excluded.
+- **Requested Period vs. Historical Comparison Period**: If a requested calendar month (e.g., October 2026) has zero rows in `orders`, never silently substitute an earlier month (e.g., September 2026) as if it were the requested period. Always report `0` (`No Data`) for the requested period and label any fallback data explicitly as a **Historical Comparison Period**.
+- **Entity Grain**: By Order Channel (`o.channel`), Payment Method (`p.method`), Order Status (`o.status`), Product Category (`products.category`), or Customer Country (`customers.country`).
+- Ensure that summary totals equal the sum of grain partitions, and never sum heterogeneous metrics (`order_count + sales + revenue`) horizontally across a row.
 

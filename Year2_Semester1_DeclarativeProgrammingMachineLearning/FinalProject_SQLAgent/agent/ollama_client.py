@@ -186,10 +186,10 @@ class OllamaClient:
             headers=headers,
             timeout=httpx.Timeout(
                 timeout=self.timeout_s,
-                connect=10.0,
+                connect=15.0,
                 read=self.timeout_s,
-                write=30.0,
-                pool=10.0,
+                write=120.0,
+                pool=15.0,
             ),
             limits=httpx.Limits(
                 max_keepalive_connections=5,
@@ -483,7 +483,7 @@ class OllamaClient:
 
         payload_bytes = len(json.dumps(payload))
         start_ts = time.perf_counter()
-        MAX_RETRIES = 1
+        MAX_RETRIES = 2
         resp = None
 
         for attempt in range(MAX_RETRIES + 1):
@@ -514,7 +514,7 @@ class OllamaClient:
                     exc,
                 )
                 if attempt < MAX_RETRIES:
-                    await asyncio.sleep(0.5)
+                    await asyncio.sleep(2.0 * (attempt + 1))
                     continue
                 raise OllamaDisconnectError(
                     f"Ollama server disconnected without sending a response: {exc}. "
@@ -530,7 +530,7 @@ class OllamaClient:
                     exc,
                 )
                 if attempt < MAX_RETRIES:
-                    await asyncio.sleep(0.5)
+                    await asyncio.sleep(2.0 * (attempt + 1))
                     continue
                 raise OllamaDisconnectError(f"Connection to Ollama was reset: {exc}") from exc
             except httpx.TimeoutException as exc:

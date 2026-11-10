@@ -25,17 +25,22 @@ Guide the agent in structuring, formatting, and generating professional PDF and 
 
 ---
 
-## 3. Chart Selection Criteria
+## 3. Chart Selection & Eligibility Criteria
+- **Historical Bar / Line Charts**:
+  - Exclusively for chronological time-series trends (`month`, `date`, `quarter`).
+  - Must contain **at least 2 distinct time periods** (`>= 2` months/dates). Never generate a historical trend chart with only 1 month.
 - **Bar Charts (Horizontal / Vertical)**:
-  - Best for comparing discrete categories (e.g. Revenue by Product Category, Order Count by State).
+  - Best for comparing discrete categories (e.g. Revenue by Channel, Payment Method, Order Status, Product Category).
   - Use vertical bars for few categories (< 8), horizontal bars for long category names.
-- **Line Charts**:
-  - Exclusively for chronological time-series trends (Daily, Monthly, Quarterly revenue).
-  - Ensure X-axis dates are sequentially ordered without gaps.
 - **Pie / Donut Charts**:
-  - Strictly limited to parts-of-a-whole distributions (e.g. Payment Method Breakdown: Credit Card, Boleto, Voucher).
-  - All slices must sum to exactly 100%.
-  - Never use a pie chart for continuous metrics or when there are more than 6 categories.
+  - Strictly limited to parts-of-a-whole categorical distributions (e.g. Share by Channel, Payment Method, or Order Status).
+  - Must contain **at least 2 positive categories** (`2..8` slices). Never generate a single-slice (`100.0%`) pie chart or a pie chart over a single month.
+- **Performance Matrices / Heatmaps**:
+  - Must contain **at least 2 rows** (or two categorical dimensions such as `Channel x Order Status`). Never render a 1-row matrix.
+- **Dataset & Table Hygiene**:
+  - Always pass `rows` as a list of row lists (`list[list[Any]]`) or row dicts (`list[dict[str, Any]]`) matching `columns` — never pass a list of column-name strings as `rows`.
+  - Exclude intermediate metadata probes (`MIN/MAX(order_date)`), empty intermediate query attempts, and duplicate datasets from the final PDF.
+  - Never horizontally sum heterogeneous columns (e.g. `Order Count + Sales + Revenue`) into a row `"Total"` column.
 
 ---
 

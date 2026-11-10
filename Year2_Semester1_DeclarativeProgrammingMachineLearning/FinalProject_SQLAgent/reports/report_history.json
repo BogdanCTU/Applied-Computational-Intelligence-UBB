@@ -1,5 +1,395 @@
 [
   {
+    "report_id": "2879cbc3dc8d495286b2eec690c819bd",
+    "title": "Monthly Order Counts and Revenue Report",
+    "description": "CSV export of monthly order counts and total revenue from the orders table, covering the period from January 2024 to September 2026.",
+    "user_request": "Export a CSV containing monthly order counts and revenue.",
+    "sql_query": "WITH monthly_orders AS (\n    SELECT \n        strftime('%Y-%m', o.order_date) AS month,\n        COUNT(DISTINCT o.order_id) AS order_count,\n        SUM(o.total_amount) AS revenue\n    FROM orders o\n    WHERE o.order_date >= '2024-01-01' AND o.order_date < '2027-12-31'\n    GROUP BY month\n    ORDER BY month\n)\nSELECT * FROM monthly_orders",
+    "output_format": "CSV",
+    "file_name": "monthly_order_counts_and_revenue_report_20261110_143009_0e7867.csv",
+    "output_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reports/monthly_order_counts_and_revenue_report_20261110_143009_0e7867.csv",
+    "record_count": 33,
+    "total_input_records": 33,
+    "truncated": false,
+    "column_names": [
+      "month",
+      "order_count",
+      "revenue"
+    ],
+    "file_size_bytes": 815,
+    "created_at": "2026-11-10T14:30:09",
+    "status": "completed",
+    "error_message": null,
+    "page_count": 1,
+    "sections_count": 1,
+    "charts_requested": 0,
+    "charts_rendered": 0,
+    "tables_requested": 1,
+    "tables_rendered": 1,
+    "datasets_count": 1,
+    "dataset_details": {},
+    "failed_components": [],
+    "completion_status": "complete",
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
+  },
+  {
+    "report_id": "f2e922f3",
+    "title": "Top 10 Products by Revenue - E-commerce Analytics Report",
+    "description": "Comprehensive analysis of the highest-performing products by revenue, including product details, sales metrics, and revenue breakdowns from the e-commerce database.",
+    "user_request": "Top 10 Products by Revenue - E-commerce Analytics Report",
+    "sql_query": "WITH product_revenue AS (\n    SELECT \n        p.product_id,\n        p.product_name,\n        p.category,\n        p.brand,\n        COUNT(DISTINCT oi.order_item_id) AS order_items_count,\n        SUM(oi.line_total) AS total_revenue,\n        SUM(oi.quantity) AS total_quantity_sold\n    FROM products p\n    JOIN order_items oi ON p.product_id = oi.product_id\n    GROUP BY p.product_id, p.product_name, p.category, p.brand\n    ORDER BY total_revenue DESC\n)\nSELECT \n    product_id,\n    product_name,\n    category,\n    brand,\n    order_items_count,\n    total_revenue,\n    total_quantity_sold\nFROM product_revenue\nORDER BY total_revenue DESC\nLIMIT 10",
+    "output_format": "PDF",
+    "file_name": "top_10_products_by_revenue_-_e-commerce_analytics_report_20261110_142631_20b7d9.pdf",
+    "output_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reports/top_10_products_by_revenue_-_e-commerce_analytics_report_20261110_142631_20b7d9.pdf",
+    "record_count": 22,
+    "total_input_records": 22,
+    "truncated": false,
+    "column_names": [
+      "product_id",
+      "product_name",
+      "category",
+      "brand",
+      "order_items_count",
+      "total_revenue",
+      "total_quantity_sold"
+    ],
+    "file_size_bytes": 80490,
+    "created_at": "2026-11-10 14:26:31",
+    "status": "completed",
+    "error_message": null,
+    "page_count": 6,
+    "sections_count": 2,
+    "charts_requested": 5,
+    "charts_rendered": 5,
+    "tables_requested": 2,
+    "tables_rendered": 2,
+    "datasets_count": 2,
+    "dataset_details": {
+      "dataset_1": 10,
+      "curated_historical_monthly": 12
+    },
+    "failed_components": [],
+    "completion_status": "complete",
+    "warnings": [
+      "Deduplicated 1 redundant intermediate dataset(s): primary.",
+      "Chart 'Historical Monthly Order Volume (2025-10 to 2026-09 (12 Months Historical))' omitted: X-axis column 'month' not found in dataset columns: ['product_id', 'product_name', 'category', 'brand', 'order_items_count', 'total_revenue', 'total_quantity_sold']",
+      "Chart 'Historical Monthly Revenue & Sales Trend (2025-10 to 2026-09 (12 Months Historical))' omitted: X-axis column 'month' not found in dataset columns: ['product_id', 'product_name', 'category', 'brand', 'order_items_count', 'total_revenue', 'total_quantity_sold']",
+      "Chart 'Monthly Performance Matrix (2025-10 to 2026-09 (12 Months Historical))' omitted: X-axis column 'month' not found in dataset columns: ['product_id', 'product_name', 'category', 'brand', 'order_items_count', 'total_revenue', 'total_quantity_sold']"
+    ],
+    "requested_period": "",
+    "actual_data_period": "2025-10, 2025-11, 2025-12, 2026-01, 2026-02, 2026-03, 2026-04, 2026-05, 2026-06, 2026-07, 2026-08, 2026-09",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {
+      "min_date": "2024-01-01 00:08:26",
+      "max_date": "2026-09-29 23:22:24"
+    },
+    "kpis": [
+      {
+        "label": "Total Revenue",
+        "value": "$10,041,832.31",
+        "note": "Calculated from total_revenue"
+      }
+    ],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": "This report identifies the top 10 products generating the most revenue across the e-commerce platform. The analysis reveals that outdoor gear dominates the top performers, with hydration packs and backpacks leading the revenue rankings. Total revenue from these top 10 products represents a significant portion of overall product performance, highlighting key categories for strategic focus."
+  },
+  {
+    "report_id": "207d24d5",
+    "title": "Monthly Revenue by Product Category Analysis",
+    "description": "Comprehensive analysis of monthly revenue trends across 9 product categories from January to December 2024, featuring multi-series line charts and detailed summary tables.",
+    "user_request": "Monthly Revenue by Product Category Analysis",
+    "sql_query": "",
+    "output_format": "PDF",
+    "file_name": "monthly_revenue_by_product_category_analysis_20261110_142246_cd06b7.pdf",
+    "output_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reports/monthly_revenue_by_product_category_analysis_20261110_142246_cd06b7.pdf",
+    "record_count": 710,
+    "total_input_records": 710,
+    "truncated": false,
+    "column_names": [
+      "month",
+      "category",
+      "order_count",
+      "revenue",
+      "total_revenue"
+    ],
+    "file_size_bytes": 212222,
+    "created_at": "2026-11-10 14:22:46",
+    "status": "completed",
+    "error_message": null,
+    "page_count": 39,
+    "sections_count": 2,
+    "charts_requested": 10,
+    "charts_rendered": 10,
+    "tables_requested": 3,
+    "tables_rendered": 3,
+    "datasets_count": 3,
+    "dataset_details": {
+      "dataset_1": 330,
+      "dataset_2": 330,
+      "primary": 50
+    },
+    "failed_components": [],
+    "completion_status": "complete",
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "2024-01, 2024-02, 2024-03, 2024-04, 2024-05, 2024-06, 2024-07, 2024-08, 2024-09, 2024-10, 2024-11, 2024-12, 2025-01, 2025-02, 2025-03, 2025-04, 2025-05, 2025-06, 2025-07, 2025-08, 2025-09, 2025-10, 2025-11, 2025-12, 2026-01, 2026-02, 2026-03, 2026-04, 2026-05, 2026-06, 2026-07, 2026-08, 2026-09",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {
+      "min_date": "2024-01-01 00:08:26",
+      "max_date": "2026-09-29 23:22:24"
+    },
+    "kpis": [
+      {
+        "label": "Total Orders",
+        "value": "181,304",
+        "note": "Summed from order_count"
+      },
+      {
+        "label": "Total Revenue",
+        "value": "$135,591,618.14",
+        "note": "Calculated from revenue"
+      },
+      {
+        "label": "Average Order Value",
+        "value": "$747.87",
+        "note": "Revenue / Orders"
+      }
+    ],
+    "comparison_kpis": [],
+    "omitted_analyses": [
+      "Breakdown 'category breakdown' was not present in the executed query results."
+    ],
+    "executive_summary": "This report analyzes monthly revenue performance across 9 product categories (Accessories, Apparel, Backpacks, Climbing, Cooking, Footwear, Lighting, Navigation, Sleeping Bags, Tents) from January to December 2024. Total orders processed: 315,876 with total revenue of $31,334,596.67 across all categories and months."
+  },
+  {
+    "report_id": "1a84723a",
+    "title": "Order Analytics Report - Historical Trends and Distribution Analysis",
+    "description": "Comprehensive analysis of order data including historical monthly trends, order status distribution, and key performance metrics from 2024 to 2026.",
+    "user_request": "Order Analytics Report - Historical Trends and Distribution Analysis",
+    "sql_query": "",
+    "output_format": "PDF",
+    "file_name": "order_analytics_report_-_historical_trends_and_distribution_20261110_141455_96e900.pdf",
+    "output_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reports/order_analytics_report_-_historical_trends_and_distribution_20261110_141455_96e900.pdf",
+    "record_count": 86,
+    "total_input_records": 86,
+    "truncated": false,
+    "column_names": [
+      "month",
+      "order_count",
+      "total_revenue"
+    ],
+    "file_size_bytes": 80594,
+    "created_at": "2026-11-10 14:14:55",
+    "status": "completed",
+    "error_message": null,
+    "page_count": 8,
+    "sections_count": 4,
+    "charts_requested": 12,
+    "charts_rendered": 12,
+    "tables_requested": 5,
+    "tables_rendered": 5,
+    "datasets_count": 5,
+    "dataset_details": {
+      "dataset_1": 38,
+      "dataset_2": 33,
+      "dataset_3": 5,
+      "curated_channel_breakdown": 4,
+      "curated_payment_breakdown": 6
+    },
+    "failed_components": [],
+    "completion_status": "complete",
+    "warnings": [
+      "Deduplicated 1 redundant intermediate dataset(s): primary.",
+      "Chart 'Order Count Share by Status (All Available Periods)' omitted: X-axis column 'status' not found in dataset columns: ['month', 'order_count', 'total_revenue']",
+      "Chart 'Revenue Share by Channel (All Available Periods)' omitted: X-axis column 'channel' not found in dataset columns: ['month', 'order_count', 'total_revenue']",
+      "Chart 'Orders & Revenue by Channel (All Available Periods)' omitted: X-axis column 'channel' not found in dataset columns: ['month', 'order_count', 'total_revenue']",
+      "Chart 'Payment Method Distribution (All Available Periods)' omitted: X-axis column 'payment_method' not found in dataset columns: ['month', 'order_count', 'total_revenue']"
+    ],
+    "requested_period": "",
+    "actual_data_period": "2024-01, 2024-02, 2024-03, 2024-04, 2024-05, 2024-06, 2024-07, 2024-08, 2024-09, 2024-10, 2024-11, 2024-12, 2025-01, 2025-02, 2025-03, 2025-04, 2025-05, 2025-06, 2025-07, 2025-08, 2025-09, 2025-10, 2025-11, 2025-12, 2026-01, 2026-02, 2026-03, 2026-04, 2026-05, 2026-06, 2026-07, 2026-08, 2026-09",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {
+      "min_date": "2024-01-01 00:08:26",
+      "max_date": "2026-09-29 23:22:24"
+    },
+    "kpis": [
+      {
+        "label": "Total Records",
+        "value": "5",
+        "note": "Dataset row count"
+      },
+      {
+        "label": "Total Orders",
+        "value": "180,000",
+        "note": "Summed from order_count"
+      },
+      {
+        "label": "Total Revenue",
+        "value": "$51,369,358.51",
+        "note": "Calculated from total_revenue"
+      },
+      {
+        "label": "Average Order Value",
+        "value": "$285.39",
+        "note": "Revenue / Orders"
+      }
+    ],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": "This report analyzes 90,000 orders spanning from January 2024 to September 2026. Key findings include a total of 35,871 orders processed, with delivered status representing 85.21% of all orders. Average order value ranged from $545.58 (May 2024) to $590.04 (March 2024), showing consistent performance across the reporting period."
+  },
+  {
+    "report_id": "7717efff",
+    "title": "Top 10 Products by Revenue",
+    "description": "Analysis of the highest-performing products based on total revenue generated from order items in the e-commerce database.",
+    "user_request": "Top 10 Products by Revenue",
+    "sql_query": "",
+    "output_format": "PDF",
+    "file_name": "top_10_products_by_revenue_20261110_141012_9fe876.pdf",
+    "output_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reports/top_10_products_by_revenue_20261110_141012_9fe876.pdf",
+    "record_count": 22,
+    "total_input_records": 22,
+    "truncated": false,
+    "column_names": [
+      "product_id",
+      "product_name",
+      "total_revenue"
+    ],
+    "file_size_bytes": 54295,
+    "created_at": "2026-11-10 14:10:12",
+    "status": "completed",
+    "error_message": null,
+    "page_count": 3,
+    "sections_count": 3,
+    "charts_requested": 4,
+    "charts_rendered": 4,
+    "tables_requested": 2,
+    "tables_rendered": 2,
+    "datasets_count": 2,
+    "dataset_details": {
+      "dataset_1": 10,
+      "curated_historical_monthly": 12
+    },
+    "failed_components": [],
+    "completion_status": "complete",
+    "warnings": [
+      "Deduplicated 1 redundant intermediate dataset(s): primary.",
+      "Chart 'Historical Monthly Order Volume (2025-10 to 2026-09 (12 Months Historical))' omitted: X-axis column 'month' not found in dataset columns: ['product_id', 'product_name', 'total_revenue']",
+      "Chart 'Historical Monthly Revenue & Sales Trend (2025-10 to 2026-09 (12 Months Historical))' omitted: X-axis column 'month' not found in dataset columns: ['product_id', 'product_name', 'total_revenue']",
+      "Chart 'Monthly Performance Matrix (2025-10 to 2026-09 (12 Months Historical))' omitted: X-axis column 'month' not found in dataset columns: ['product_id', 'product_name', 'total_revenue']"
+    ],
+    "requested_period": "",
+    "actual_data_period": "2025-10, 2025-11, 2025-12, 2026-01, 2026-02, 2026-03, 2026-04, 2026-05, 2026-06, 2026-07, 2026-08, 2026-09",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {
+      "min_date": "2024-01-01 00:08:26",
+      "max_date": "2026-09-29 23:22:24"
+    },
+    "kpis": [
+      {
+        "label": "Total Records",
+        "value": "10",
+        "note": "Dataset row count"
+      },
+      {
+        "label": "Total Revenue",
+        "value": "$10,041,832.31",
+        "note": "Calculated from total_revenue"
+      }
+    ],
+    "comparison_kpis": [],
+    "omitted_analyses": [
+      "Breakdown 'category breakdown' was not present in the executed query results."
+    ],
+    "executive_summary": "The top 10 products by revenue are dominated by outdoor and camping gear, with Tundra Hydration Pack (Moss) leading at $2.93M in total revenue. The dataset shows strong performance in hydration packs, backpacks, sleeping bags, and GPS devices."
+  },
+  {
+    "report_id": "54a235a6",
+    "title": "Top 10 Products by Revenue",
+    "description": "Analysis of the highest-performing products based on total revenue generated from order items in the e-commerce database.",
+    "user_request": "Top 10 Products by Revenue",
+    "sql_query": "",
+    "output_format": "PDF",
+    "file_name": "top_10_products_by_revenue_20261110_140344_b5ebbc.pdf",
+    "output_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reports/top_10_products_by_revenue_20261110_140344_b5ebbc.pdf",
+    "record_count": 22,
+    "total_input_records": 22,
+    "truncated": false,
+    "column_names": [
+      "product_id",
+      "product_name",
+      "category",
+      "brand",
+      "total_revenue",
+      "order_count"
+    ],
+    "file_size_bytes": 55092,
+    "created_at": "2026-11-10 14:03:44",
+    "status": "completed",
+    "error_message": null,
+    "page_count": 3,
+    "sections_count": 2,
+    "charts_requested": 5,
+    "charts_rendered": 5,
+    "tables_requested": 2,
+    "tables_rendered": 2,
+    "datasets_count": 2,
+    "dataset_details": {
+      "dataset_1": 10,
+      "curated_historical_monthly": 12
+    },
+    "failed_components": [],
+    "completion_status": "complete",
+    "warnings": [
+      "Deduplicated 1 redundant intermediate dataset(s): primary.",
+      "Chart 'Historical Monthly Order Volume (2025-10 to 2026-09 (12 Months Historical))' omitted: X-axis column 'month' not found in dataset columns: ['product_id', 'product_name', 'category', 'brand', 'total_revenue', 'order_count']",
+      "Chart 'Historical Monthly Revenue & Sales Trend (2025-10 to 2026-09 (12 Months Historical))' omitted: X-axis column 'month' not found in dataset columns: ['product_id', 'product_name', 'category', 'brand', 'total_revenue', 'order_count']",
+      "Chart 'Monthly Performance Matrix (2025-10 to 2026-09 (12 Months Historical))' omitted: X-axis column 'month' not found in dataset columns: ['product_id', 'product_name', 'category', 'brand', 'total_revenue', 'order_count']"
+    ],
+    "requested_period": "",
+    "actual_data_period": "2025-10, 2025-11, 2025-12, 2026-01, 2026-02, 2026-03, 2026-04, 2026-05, 2026-06, 2026-07, 2026-08, 2026-09",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {
+      "min_date": "2024-01-01 00:08:26",
+      "max_date": "2026-09-29 23:22:24"
+    },
+    "kpis": [
+      {
+        "label": "Total Orders",
+        "value": "31,734",
+        "note": "Summed from order_count"
+      },
+      {
+        "label": "Total Revenue",
+        "value": "$10,041,832.31",
+        "note": "Calculated from total_revenue"
+      },
+      {
+        "label": "Average Order Value",
+        "value": "$316.44",
+        "note": "Revenue / Orders"
+      }
+    ],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": "The top 10 products by revenue are led by Tundra Hydration Pack (Moss) with $2,927,650.32 in total revenue across 11,562 orders. Footwear and Backpacks dominate the top positions, with Stonebrook and Northpeak brands leading performance metrics."
+  },
+  {
     "report_id": "fc8f6228",
     "title": "Test Long SQL Query Dynamic",
     "description": "Test Long SQL Query Dynamic",
@@ -30,7 +420,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "23a2f244f1c349ef92513c208415dd67",
@@ -61,7 +460,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "edf5b230",
@@ -104,7 +512,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "77f3a24b",
@@ -138,7 +555,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "35f66f8e",
@@ -177,7 +603,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "426e902b",
@@ -212,7 +647,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "c7210ea4",
@@ -241,7 +685,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "a02a8ba9",
@@ -270,7 +723,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "301ea8eb",
@@ -304,7 +766,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "e5dd541e",
@@ -343,7 +814,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "6586f95a093448a69f31ce494346c425",
@@ -376,7 +856,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "f701d07f",
@@ -414,7 +903,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "be57a9b1",
@@ -450,7 +948,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "cc65fb57",
@@ -489,7 +996,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "ff201b07",
@@ -526,7 +1042,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "c33997f3",
@@ -564,7 +1089,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "c9c6cd91",
@@ -604,7 +1138,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "e8c2805d",
@@ -646,7 +1189,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "1eb38abe",
@@ -683,7 +1235,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "67ef45e0",
@@ -720,7 +1281,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "f5846b1f",
@@ -760,7 +1330,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "eb806171",
@@ -798,7 +1377,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "81bd32fe",
@@ -836,7 +1424,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "c5e160f9",
@@ -874,7 +1471,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "f8fcc93b",
@@ -912,7 +1518,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "7e42ecc2",
@@ -949,7 +1564,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "5ceda485",
@@ -987,7 +1611,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "f227991a",
@@ -1024,7 +1657,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "f8cf26a7",
@@ -1065,7 +1707,16 @@
     },
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "dc290d6c65f9417987135603aceb48a0",
@@ -1098,7 +1749,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "f2c24c710b444db68f895361b4e548a6",
@@ -1134,7 +1794,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "8a8ad9135c354df1b00fe4d2be210895",
@@ -1167,7 +1836,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "38052919c2574e9b82ff6cfad974aefa",
@@ -1200,7 +1878,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "2030be6304e240638683041df24f7fbc",
@@ -1235,7 +1922,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "e70ac3f46ce14d62a5c646535255fad8",
@@ -1268,7 +1964,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "1ad36fe3e67640f6b80025d4fadc9843",
@@ -1301,7 +2006,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "d8483d98e4984ef09dda28fdff85e510",
@@ -1334,7 +2048,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "b83dd70a4c0348ebbce57bb71fb57f23",
@@ -1368,7 +2091,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "3fa4e038d8a046009a8f38481d78abf0",
@@ -1402,7 +2134,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "448f176084e0435eb0d6c35618cf0b7a",
@@ -1435,7 +2176,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "52754f37e8aa4f26ac9ffb95862022d3",
@@ -1470,7 +2220,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "6da1e0a0ecf94859a41e13c5298ad530",
@@ -1505,7 +2264,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "d574259ef278463c81157a29a056b423",
@@ -1538,7 +2306,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "56d9f58f5438425e95dae0f3de46b7e1",
@@ -1572,7 +2349,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "fb9588afab2b49508a68f79fbdaa444c",
@@ -1607,7 +2393,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "107d2db833684f2e9d087cedf6d8a0f9",
@@ -1641,7 +2436,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "814f4244ffb04c9881449df38a9e319d",
@@ -1673,7 +2477,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "334ccee8cf304819b58d4921d1041703",
@@ -1705,7 +2518,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "4f3947970ee5429aa192143c3a710d84",
@@ -1739,7 +2561,16 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   },
   {
     "report_id": "1f692d85f4b74b11ae557ca5e565227b",
@@ -1773,6 +2604,15 @@
     "dataset_details": {},
     "failed_components": [],
     "completion_status": "complete",
-    "warnings": []
+    "warnings": [],
+    "requested_period": "",
+    "actual_data_period": "",
+    "historical_comparison_period": "",
+    "requested_period_has_data": true,
+    "available_data_range": {},
+    "kpis": [],
+    "comparison_kpis": [],
+    "omitted_analyses": [],
+    "executive_summary": ""
   }
 ]

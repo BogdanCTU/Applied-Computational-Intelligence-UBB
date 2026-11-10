@@ -63,7 +63,7 @@ The project set out to design and engineer a complete, production-quality local 
 | **NFR-04** | Concurrency & UI responsiveness | **Met** | `AgentWorker` runs on private `QThread` with dedicated `asyncio` event loop. |
 | **NFR-05** | Clean application termination | **Met** | `closeEvent` hook terminates background workers and MCP subprocesses cleanly. |
 | **NFR-06** | Cross-platform standalone packaging | **Met** | Native macOS ARM64 `.app` bundle built (193 MB) via PyInstaller. |
-| **NFR-07** | Automated test coverage | **Met** | **106 automated tests** passing with 0 failures and 0 skips. |
+| **NFR-07** | Automated test coverage | **Met** | **457 automated tests** passing across 36 modules with 0 failures and 0 skips (100% pass rate). |
 
 ---
 
@@ -88,7 +88,12 @@ The project set out to design and engineer a complete, production-quality local 
 * **Milestone 3 — FastMCP Server & Report Generation**: Official Python FastMCP stdio server (`mcp_layer/server.py`), six MCP tools (`inspect_database_schema`, `get_table_sample`, `prepare_sql_query`, `execute_readonly_sql`, `generate_pdf_report`, `generate_csv_report`), ReportLab PDF builder, CSV exporter, and persistent history manager.
 * **Milestone 4 — Local Ollama Agent & Orchestration**: `OllamaClient`, schema parameter flattening (`_clean_schema_for_ollama`), context manager with tool-call pairing guarantees, `AgentOrchestrator` multi-turn loop, format steering, and mandatory user approval gate.
 * **Milestone 5 — PySide6 Desktop GUI**: Modern dark dashboard interface (`app/style.py`), asymmetric split layout (`MainWindow`), native PDF viewer (`QPdfView`), tabular CSV viewer (`QTableView`), conversational chat view (`ChatView`), modal approval dialog (`SqlApprovalDialog`), history view (`HistoryView`), settings dialog (`SettingsView`), and background thread decoupling (`AgentWorker`).
-* **Milestone 6 — Final Integration, Verification & Packaging**: Elimination of circular imports, chain-of-thought `<think>` display filtering, cross-platform path handling for packaged mode (`user_data_root()`), PyInstaller build (`ReportSQLAgent.spec`), automated macOS ARM64 bundle (`dist/ReportSQLAgent.app`), Windows build script (`scripts/build_windows.ps1`), 8 end-to-end integration tests, and comprehensive technical documentation.
+* **Milestone 6 — Final Integration, Verification & Packaging**: Elimination of circular imports, chain-of-thought `<think>` display filtering, cross-platform path handling for packaged mode (`user_data_root()`), PyInstaller build (`ReportSQLAgent.spec`), automated macOS ARM64 bundle (`dist/ReportSQLAgent.app`), Windows build script (`scripts/build_windows.ps1`), and end-to-end integration tests.
+* **Milestone 7 — Agent Intelligence & Context Windows**: Dynamic context window management (32K to 256K tiers), priority-based token budgeting via `ContextBuilder`, and PII sanitization.
+* **Milestone 8 — Task Planning, Checkpoints & Recovery**: Directed Acyclic Graph (DAG) task planning, SQLite-backed checkpoint state persistence, and automatic crash recovery without execution replays.
+* **Milestone 9 — Configurable Approval & Multi-Component Reporting**: Dual approval modes (interactive modal vs automated execution with audit logging), LongTable pagination, and Page X of Y canvas.
+* **Milestone 10 — Advanced 25-Chart Visualization Engine**: Full catalog of 25 vector chart types across Comparison, Trend, Distribution, Relationship, Hierarchical, and Matrix categories rendered natively in ReportLab.
+* **Final Release — Reporting Pipeline Remediation**: 11 analytical and data presentation defects resolved; `CanonicalSQLDataset` single source of truth; `PeriodAvailabilityContext` calendar period semantics; Red/Pink Data Availability Notice banner; dual KPI grids; and 18-scenario regression test suite.
 
 ---
 
@@ -138,10 +143,10 @@ qwen3.5:4b                                            ▼  [JSON-RPC 2.0 Stdio]
 
 ## 8. Testing Summary
 
-* **Automated Test Suite:** **106 automated tests** across 7 test suites.
-* **Execution Result:** **106 passed**, 0 failed, 0 skipped in 327 seconds.
-* **End-to-End Workflows:** All 6 core workflows (conversational greeting, schema discovery, rejection safety, approval & PDF generation, explicit CSV export, and error handling) verified against genuine FastMCP subprocesses.
-* **Environment Verification:** Verified 11/11 system checks (Python 3.13, PySide6, MCP SDK, ReportLab, Ollama connectivity, model presence, database records, and SHA-256 integrity).
+* **Automated Test Suite:** **457 automated tests** across 36 specialized test modules.
+* **Execution Result:** **457 passed**, 0 failed, 0 skipped (100% pass rate).
+* **End-to-End Workflows:** Complete analytical workflows (conversational greeting, schema discovery, rejection safety, approval & PDF generation, explicit CSV export, multi-series charts, and error handling) verified against genuine FastMCP subprocesses.
+* **Environment Verification:** Verified all system checks (Python 3.13, PySide6, MCP SDK, ReportLab, Ollama connectivity, model presence, database records, and SHA-256 integrity).
 
 ---
 

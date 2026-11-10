@@ -27,8 +27,18 @@ from mcp_layer.client import MCPClientError, MCPStdioClient
 from mcp_layer.tools.sql_tools import SQLValidationError, validate_and_prepare_sql
 from memory.models import TaskDecision, TaskToolCallRecord
 from memory.repository import SQLiteMemoryRepository
-from reporting import ReportHistoryManager, ReportingPeriod, calculate_previous_calendar_month
-from reporting.canonical_data import CanonicalSQLDataset, ChartSpecification, ReportConsistencyValidator
+from reporting import (
+    ReportHistoryManager,
+    ReportingPeriod,
+    calculate_previous_calendar_month,
+    resolve_requested_period,
+)
+from reporting.canonical_data import (
+    CanonicalSQLDataset,
+    ChartSpecification,
+    ReportConsistencyValidator,
+    validate_tabular_rows_structure,
+)
 
 from .conversation import ConversationManager, compact_tool_result_for_llm
 from .ollama_client import (
@@ -179,6 +189,11 @@ def _synthesize_charts_from_intent(
     if not columns or not rows:
         return []
 
+    is_struct_valid, sanitized_rows, _ = validate_tabular_rows_structure(columns, rows)
+    if not is_struct_valid or not sanitized_rows:
+        return []
+    rows = sanitized_rows
+
     charts: list[dict[str, Any]] = []
     p_lower = user_prompt.lower()
     cols_lower = [c.lower() for c in columns]
@@ -247,6 +262,17 @@ def _synthesize_charts_from_intent(
     if not num_cols:
         return []
 
+    def _distinct_count(col_name: str | None) -> int:
+        if not col_name or col_name not in columns:
+            return 0
+        c_idx = columns.index(col_name)
+        vals = {
+            str(r.get(col_name) if isinstance(r, Mapping) else (r[c_idx] if c_idx < len(r) else None))
+            for r in rows
+            if (r.get(col_name) if isinstance(r, Mapping) else (r[c_idx] if c_idx < len(r) else None)) is not None
+        }
+        return len(vals)
+
     want_historical = any(
         k in p_lower for k in ["historical", "trend over time", "timeline", "trend of", "trends over time"]
     ) or ("trend" in p_lower and "multi" not in p_lower and "compare" not in p_lower)
@@ -274,8 +300,8 @@ def _synthesize_charts_from_intent(
     want_corr = any(k in p_lower for k in ["correlation", "correlation heatmap", "correlation matrix"])
     want_treemap = any(k in p_lower for k in ["treemap", "hierarchical", "tree map", "hierarchy", "subcategory"])
 
-    # 1. Historical & Trend
-    if want_historical and date_col and num_cols:
+    # 1. Historical & Trend (requires >= 2 distinct time periods)
+    if want_historical and date_col and num_cols and _distinct_count(date_col) >= 2:
         if want_hist_bar:
             charts.append(
                 {
@@ -296,7 +322,7 @@ def _synthesize_charts_from_intent(
             )
 
     # 2. Treemap
-    if want_treemap and (cat_col or date_col) and num_cols:
+    if want_treemap and (cat_col or date_col) and num_cols and len(rows) >= 2:
         l_col = cat_col or date_col
         charts.append(
             {
@@ -347,11 +373,17 @@ def _synthesize_charts_from_intent(
             }
         )
 
-    # 5. Pie & Donut
-    if (want_pie or want_donut) and num_cols and not want_histogram:
+    # 5. Pie & Donut (requires >= 2 distinct categories; never synthesize a 100% single-slice pie)
+    if (want_pie or want_donut) and num_cols and not want_histogram and len(rows) >= 2:
         c_type = "donut" if want_donut else "pie"
-        pie_cat = cat_col or (date_col if not any(c.get("x_column") == date_col for c in charts) else None)
-        if not pie_cat and len(columns) > 1:
+        pie_cat = None
+        if cat_col and _distinct_count(cat_col) >= 2:
+            pie_cat = cat_col
+        elif date_col and _distinct_count(date_col) >= 2:
+            pie_cat = date_col
+        elif cat_col and len(rows) >= 2:
+            pie_cat = cat_col
+        elif len(columns) > 1 and _distinct_count(columns[0]) >= 2:
             pie_cat = columns[0]
         if pie_cat:
             charts.append(
@@ -363,9 +395,13 @@ def _synthesize_charts_from_intent(
                 }
             )
 
-    # 6. Matrix & Heatmap
-    if want_matrix and (cat_col or date_col or len(columns) >= 2) and num_cols:
-        m_row = cat_col or (columns[0] if columns[0] not in num_cols else date_col) or columns[0]
+    # 6. Matrix & Heatmap (requires >= 2 rows)
+    if want_matrix and (cat_col or date_col or len(columns) >= 2) and num_cols and len(rows) >= 2:
+        m_row = (
+            cat_col
+            if (cat_col and _distinct_count(cat_col) >= 2)
+            else (date_col if (date_col and _distinct_count(date_col) >= 2) else (cat_col or date_col or columns[0]))
+        )
         m_vals = [c for c in num_cols if c != m_row][:4]
         if not m_vals and len(columns) > 1:
             m_vals = [columns[1]]
@@ -511,6 +547,66 @@ def _synthesize_charts_from_intent(
         )
 
     return charts
+
+
+def _build_verified_report_feedback_summary(rep: Mapping[str, Any]) -> str:
+    """Build an authoritative user-facing report feedback summary from verified ReportMetadata."""
+    out_path = str(rep.get("output_path") or "")
+    fmt = str(rep.get("output_format") or "PDF").upper()
+    req_period = str(rep.get("requested_period") or "Unspecified / Full Range")
+    actual_period = str(rep.get("actual_data_period") or req_period)
+    comp_period = str(rep.get("historical_comparison_period") or "")
+    has_req_data = bool(rep.get("requested_period_has_data", True))
+    avail_range = rep.get("available_data_range") or {}
+    charts_ren = int(rep.get("charts_rendered", 0))
+    tables_ren = int(rep.get("tables_rendered", 1))
+    pages = int(rep.get("page_count", 1))
+    kpis = rep.get("kpis") or []
+    comp_kpis = rep.get("comparison_kpis") or []
+    warnings = list(rep.get("warnings") or [])
+    omitted = list(rep.get("omitted_analyses") or [])
+
+    lines: list[str] = [
+        f"### Verified {fmt} Report Summary",
+        f"- **Generated File Path:** `{out_path}` ({pages} page(s))",
+        f"- **Requested Reporting Period:** {req_period}",
+    ]
+
+    if not has_req_data and rep.get("requested_period"):
+        avail_str = ""
+        if isinstance(avail_range, Mapping) and (avail_range.get("min_date") or avail_range.get("max_date")):
+            avail_str = f" (Available DB Range: {avail_range.get('min_date', 'N/A')} to {avail_range.get('max_date', 'N/A')})"
+        lines.append(
+            f"- **Data Availability:** No records exist for {req_period} (0 rows){avail_str}."
+        )
+    else:
+        lines.append(f"- **Data Availability:** Verified records present ({rep.get('record_count', 0)} total rows across curated datasets).")
+
+    lines.append(f"- **Actual Reporting Period Covered:** {actual_period or 'Verified SQL Query Scope'}")
+    if comp_period:
+        lines.append(f"- **Historical Comparison Period:** {comp_period} (explicitly labeled as historical comparison)")
+
+    lines.append(
+        f"- **Actual Rendered Components:** {charts_ren} chart(s), {tables_ren} table(s)"
+    )
+
+    if kpis:
+        kpi_strs = [f"{k.get('label')}: {k.get('value')}" for k in kpis if isinstance(k, Mapping)]
+        if kpi_strs:
+            lines.append(f"- **Requested Period Metrics:** {' | '.join(kpi_strs)}")
+
+    if comp_kpis:
+        comp_strs = [f"{k.get('label')}: {k.get('value')}" for k in comp_kpis if isinstance(k, Mapping)]
+        if comp_strs:
+            lines.append(f"- **Historical Comparison Metrics ({comp_period}):** {' | '.join(comp_strs)}")
+
+    all_notes = warnings + omitted
+    if all_notes:
+        lines.append("- **Warnings & Omitted Analyses:**")
+        for note in all_notes[:6]:
+            lines.append(f"  - {note}")
+
+    return "\n".join(lines)
 
 
 def _synthesize_schema_summary(schema_data: dict[str, Any]) -> str:
@@ -820,6 +916,21 @@ class AgentOrchestrator:
             t_args["columns"] = sql_columns
         if not t_args.get("rows") and sql_rows:
             t_args["rows"] = sql_rows
+        elif t_args.get("rows") is not None:
+            is_valid_rows, sanitized_rows, row_err = validate_tabular_rows_structure(
+                t_args.get("columns") or sql_columns,
+                t_args.get("rows"),
+            )
+            if not is_valid_rows:
+                log.warning(
+                    "LLM supplied invalid tabular rows to report tool (%s); substituting verified SQL execution rows.",
+                    row_err,
+                )
+                t_args["rows"] = sql_rows
+                if sql_columns:
+                    t_args["columns"] = sql_columns
+            else:
+                t_args["rows"] = sanitized_rows
         if not t_args.get("sql_query") and executed_sql:
             t_args["sql_query"] = executed_sql
         t_args["user_request"] = cleaned_user_msg
@@ -838,7 +949,7 @@ class AgentOrchestrator:
         if synth_kpis:
             t_args["kpis"] = synth_kpis
             component_status["kpi_generation"] = "success"
-        elif not t_args.get("kpis") and (cols or rws):
+        elif not t_args.get("kpis") and (cols or rws or self.session_datasets):
             synth_kpis = _synthesize_kpis(cols, rws, self.session_datasets)
             if synth_kpis:
                 t_args["kpis"] = synth_kpis
@@ -846,9 +957,10 @@ class AgentOrchestrator:
 
         # 2. Auto-inject findings if omitted
         if not t_args.get("findings"):
-            prev_period = calculate_previous_calendar_month()
+            req_period = resolve_requested_period(cleaned_user_msg, str(t_args.get("title", "")))
+            period_obj = req_period or calculate_previous_calendar_month()
             t_args["findings"] = [
-                f"Reporting period: {prev_period.period_label} ({prev_period.start_date_str} to {prev_period.end_date_str} exclusive).",
+                f"Reporting period: {period_obj.period_label} ({period_obj.start_date_str} to {period_obj.end_date_str} exclusive).",
                 "All requested metrics (orders, sales volume, net revenue, and transactions) were aggregated from SQLite database tables.",
                 "Revenue calculations verified to prevent double-counting across multi-item transactions.",
             ]
@@ -2376,7 +2488,7 @@ class AgentOrchestrator:
                 except Exception:
                     pass
             else:
-                if not curr_task.status.is_terminal:
+                if not curr_task.is_terminal:
                     try:
                         curr_task.transition_to(TaskStatus.FAILED, error=error_msg or final_message)
                         self.task_manager.repository.save(curr_task)
@@ -2395,8 +2507,7 @@ class AgentOrchestrator:
             if overall_status == "success":
                 if generated_reports:
                     rep = generated_reports[-1]
-                    rep_path = rep.get("output_path", "")
-                    final_message = f"Report successfully generated and saved to:\n`{rep_path}`"
+                    final_message = _build_verified_report_feedback_summary(rep)
                     termination_reason = "report_delivery_response_synthesized"
                 elif executed_sql and (sql_rows or sql_columns):
                     final_message = _synthesize_sql_execution_summary(executed_sql, sql_columns, sql_rows)
@@ -2412,6 +2523,11 @@ class AgentOrchestrator:
                 overall_status = "error"
                 final_message = error_msg or "Agent completed execution but failed to produce a user-facing response."
                 termination_reason = "empty_final_message_invariant_failure"
+        elif overall_status == "success" and generated_reports:
+            rep = generated_reports[-1]
+            verified_summary = _build_verified_report_feedback_summary(rep)
+            if "### Verified " not in final_message:
+                final_message = f"{final_message.strip()}\n\n{verified_summary}"
 
         log.info(
             "Orchestration loop terminating: reason='%s' iterations=%d status=%s final_msg_len=%d",

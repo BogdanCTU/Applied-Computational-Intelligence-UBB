@@ -5,7 +5,7 @@
 [![Ollama](https://img.shields.io/badge/LLM-Ollama%20qwen3.5%3A4b-orange.svg)](https://ollama.com/)
 [![MCP](https://img.shields.io/badge/Protocol-Model%20Context%20Protocol%20(FastMCP)-purple.svg)](https://modelcontextprotocol.io/)
 [![ReportLab](https://img.shields.io/badge/Reporting-ReportLab%205.1-red.svg)](https://www.reportlab.com/)
-[![Tests](https://img.shields.io/badge/Tests-156%20Passed-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-457%20Passed-brightgreen.svg)]()
 
 > **Final Project Submission & Architectural Specification**  
 > **Course:** Declarative Programming & Machine Learning (Year 2, Semester 1)  
@@ -56,7 +56,7 @@ Key architectural goals achieved:
 
 ### 1.3 Scope of the Solution
 * **Functional Scope**: Schema introspection, exploratory data sampling, natural language understanding, SQL preparation, safe read-only SQL execution, dynamic multi-section PDF document authoring with charts and KPI summaries, CSV data extraction, persistent report cataloging, and an embedded PDF/CSV viewer workspace.
-* **Non-Functional Scope**: Strict local privacy, deterministic database immutability, asynchronous responsive GUI (60 FPS UI thread), sub-second chart rendering, and automated regression test coverage (156 passing pytest tests).
+* **Non-Functional Scope**: Strict local privacy, deterministic database immutability, asynchronous responsive GUI (60 FPS UI thread), sub-second chart rendering, canonical data validation pipeline, and automated regression test coverage (457 passing pytest tests across 36 modules).
 
 ---
 
@@ -655,17 +655,26 @@ FinalProject_SQLAgent/
 │   ├── build_macos.sh                # macOS ARM64 PyInstaller packaging script
 │   └── build_windows.ps1             # Windows packaging automation script
 │
-├── tests/                            # Automated Pytest Suite (156 passing tests)
+├── tests/                            # Automated Pytest Suite (457 passing tests across 36 modules)
 │   ├── test_advanced_visualization_engine.py # Tests for all 25 chart types & registry
+│   ├── test_reporting_pipeline_fixes.py # 18 regression scenarios for canonical reporting pipeline
+│   ├── test_reporting_accuracy.py    # Numerical reconciliation & metric definitions
 │   ├── test_approval_config.py       # SQL approval toggle & auto-approval tests
 │   ├── test_dynamic_pdf_milestone9.py # Multi-component PDF composer tests
 │   ├── test_agent.py                 # Orchestrator, Ollama client & tool handler tests
-│   ├── test_database.py              # Importer, inspector & connection tests
-│   ├── test_e2e_workflows.py         # End-to-end integration workflows
-│   ├── test_gui.py                   # Headless PySide6 GUI component tests
-│   ├── test_mcp_tools.py             # FastMCP stdio server & tool execution tests
-│   ├── test_reporting.py             # PDF & CSV generator unit tests
-│   └── test_sql_validation.py        # Lexical, AST & C-authorizer security tests
+│   ├── test_agent_intelligence_integration.py # Task planning, DAG & checkpoint integration
+│   ├── test_context_*.py             # Context window, relevance, security & models (63 tests)
+│   ├── test_checkpoint_*.py          # Checkpoint repository, models & rollback (17 tests)
+│   ├── test_task_*.py                # Task planning, execution lifecycle & recovery (64 tests)
+│   ├── test_skill_*.py               # Domain skill discovery, security & execution (42 tests)
+│   ├── test_memory_*.py              # Working memory SQLite persistence & migrations (27 tests)
+│   ├── test_database.py              # Importer, inspector & connection tests (26 tests)
+│   ├── test_sql_validation.py        # Lexical, AST & C-authorizer security tests (32 tests)
+│   ├── test_mcp_*.py                 # FastMCP stdio server, reliability & discovery (22 tests)
+│   ├── test_gui.py                   # Headless PySide6 GUI component tests (21 tests)
+│   ├── test_macos_startup.py         # macOS resource resolution & startup lifecycle (7 tests)
+│   ├── test_reporting.py             # PDF & CSV generator unit tests (10 tests)
+│   └── test_e2e_workflows.py         # End-to-end integration workflows (8 tests)
 │
 ├── README.md                         # Project documentation and quick-start guide
 ├── SOLUTION.md                       # Comprehensive architectural & solution documentation
@@ -744,7 +753,7 @@ The project enforces rigorous quality gates combining automated unit testing, en
 
 ### 16.1 Automated Pytest Results Breakdown
 
-All **156 tests** pass with zero failures and zero skipped tests:
+All **457 tests** across 36 specialized test modules pass with zero failures and 100% pass rate:
 
 ```
 ============================= test session starts ==============================
@@ -752,20 +761,47 @@ platform darwin -- Python 3.13.16, pytest-9.2.0, pluggy-1.7.0
 rootdir: /FinalProject_SQLAgent
 configfile: pytest.ini
 plugins: anyio-4.16.0, asyncio-1.4.1.post1
-collected 156 items                                                            
+collected 457 items
 
-tests/test_advanced_visualization_engine.py .....                        [  3%]
-tests/test_agent.py .....................................                [ 26%]
-tests/test_approval_config.py ........                                   [ 32%]
-tests/test_database.py ..........................                        [ 48%]
-tests/test_dynamic_pdf_milestone9.py .....                               [ 51%]
-tests/test_e2e_workflows.py ........                                     [ 57%]
-tests/test_gui.py .....................                                  [ 70%]
-tests/test_mcp_tools.py ....                                             [ 73%]
-tests/test_reporting.py ..........                                       [ 79%]
-tests/test_sql_validation.py ................................            [100%]
+tests/test_advanced_visualization_engine.py .....                        [  1%]
+tests/test_agent.py .................................................... [ 13%]
+..                                                                       [ 13%]
+tests/test_agent_intelligence_integration.py .....                       [ 14%]
+tests/test_approval_config.py ........                                   [ 16%]
+tests/test_checkpoint_manager.py ......                                  [ 17%]
+tests/test_checkpoint_models.py ......                                   [ 19%]
+tests/test_checkpoint_repository.py .....                                [ 20%]
+tests/test_context_builder.py .............                              [ 23%]
+tests/test_context_models.py ........                                    [ 24%]
+tests/test_context_relevance.py .....                                    [ 25%]
+tests/test_context_security.py ......                                    [ 27%]
+tests/test_context_window.py ....................................         [ 35%]
+tests/test_database.py ..........................                        [ 40%]
+tests/test_database_discovery_reporting.py ........                      [ 42%]
+tests/test_dynamic_pdf_milestone9.py .....                               [ 43%]
+tests/test_e2e_workflows.py ........                                     [ 45%]
+tests/test_gui.py .....................                                  [ 50%]
+tests/test_macos_startup.py .......                                      [ 51%]
+tests/test_mcp_reliability.py .....                                      [ 52%]
+tests/test_mcp_tool_discovery_and_capability.py ........                 [ 54%]
+tests/test_mcp_tools.py ....                                             [ 55%]
+tests/test_memory_migrations.py .........                                [ 57%]
+tests/test_memory_repository.py ..................                       [ 61%]
+tests/test_reporting.py ..........                                       [ 63%]
+tests/test_reporting_accuracy.py ...............                         [ 66%]
+tests/test_reporting_pipeline_fixes.py ..................                [ 70%]
+tests/test_skill_manager.py ...........                                  [ 73%]
+tests/test_skill_models.py ..............                                 [ 76%]
+tests/test_skill_security.py ........                                    [ 77%]
+tests/test_skill_selection.py .........                                  [ 79%]
+tests/test_sql_validation.py ................................            [ 86%]
+tests/test_task_manager.py ..................                            [ 90%]
+tests/test_task_manager_sqlite.py ....                                   [ 91%]
+tests/test_task_models.py ...........                                    [ 94%]
+tests/test_task_planner.py ..................                            [ 97%]
+tests/test_task_recovery.py .............                                [100%]
 
-============================= 156 passed in 32.40s =============================
+============================= 457 passed in 48.72s =============================
 ```
 
 ### 16.2 Acceptance Suite Coverage (`scripts/verify_milestone10_acceptance.py`)
