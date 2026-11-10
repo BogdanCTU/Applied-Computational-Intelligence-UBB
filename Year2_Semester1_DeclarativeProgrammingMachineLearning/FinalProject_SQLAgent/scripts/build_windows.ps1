@@ -51,8 +51,8 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # 5. Run automated tests before building
-Write-Host "[2/5] Running automated tests (excluding live Ollama test)..." -ForegroundColor Green
-& $VenvPython -m pytest tests\ -k "not test_live_local_ollama_integration_end_to_end" -q
+Write-Host "[2/5] Running automated tests (excluding live Ollama tests)..." -ForegroundColor Green
+& $VenvPython -m pytest tests\ -k "not test_live_local_ollama_integration_end_to_end and not test_13_live_ollama_qwen_reporting_workflow" -q
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Automated test suite failed. Build aborted to prevent packaging broken code."
     exit 1

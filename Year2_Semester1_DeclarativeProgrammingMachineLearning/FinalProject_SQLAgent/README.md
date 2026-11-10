@@ -5,319 +5,164 @@
 [![Ollama](https://img.shields.io/badge/LLM-Ollama%20qwen3.5%3A4b-orange.svg)](https://ollama.com/)
 [![MCP](https://img.shields.io/badge/Protocol-Model%20Context%20Protocol%20(FastMCP)-purple.svg)](https://modelcontextprotocol.io/)
 [![ReportLab](https://img.shields.io/badge/Reporting-ReportLab%205.1-red.svg)](https://www.reportlab.com/)
-[![Tests](https://img.shields.io/badge/Tests-457%20Passed-brightgreen.svg)]()
-[![Documentation](https://img.shields.io/badge/Specification-SOLUTION.md-blueviolet.svg)](SOLUTION.md)
+[![Tests](https://img.shields.io/badge/Tests-463%20Passed-brightgreen.svg)]()
 
-> [!IMPORTANT]
-> **COMPREHENSIVE SOLUTION DOCUMENTATION AVAILABLE**:  
-> For the complete university final project documentation, including in-depth architectural specifications, sequence diagrams, the 25-chart visualization engine catalog, SQLite relational schema details, canonical reporting pipeline architecture, and 457-test verification evidence, please consult [**`SOLUTION.md`**](SOLUTION.md).
+A production-grade, 100% offline desktop application that empowers users to query relational databases and synthesize publication-quality executive reports using natural language. 
 
-A production-grade, 100% offline desktop application that empowers users to query relational databases and generate publication-quality reports using natural language. 
-
-Powered by a locally hosted Large Language Model (**Ollama `qwen3.5:4b`**), the official Python **Model Context Protocol (MCP)** stdio SDK, a strictly read-only **SQLite** data engine, an advanced **25-chart vector visualization engine**, and an asynchronous **PySide6** GUI with integrated native PDF and tabular CSV viewers.
+Powered by a locally hosted Large Language Model (**Ollama `qwen3.5:4b`**), the official Python **Model Context Protocol (FastMCP)** stdio SDK, an immutable read-only **SQLite** data engine, an advanced **22-chart vector visualization engine**, and an asynchronous **PySide6** desktop interface with an integrated vector PDF previewer.
 
 ---
 
-## Key Highlights & Privacy Guarantees
+## Authoritative Documentation Suite
 
-* **Zero Cloud Dependency & Absolute Data Privacy**: Operates entirely on the local loopback interface (`127.0.0.1`). Prompts, schema definitions, query results, and generated reports **never leave your local machine**.
-* **Model Context Protocol (FastMCP)**: Genuine MCP architecture implementing separate tool modules for database discovery, SQL preparation, safe execution, and ReportLab PDF/CSV generation.
-* **Defense-in-Depth SQL Security**: Lexical scanner, AST structure verification, `EXPLAIN QUERY PLAN` validation, SQLite `mode=ro` URI parameter, `PRAGMA query_only = ON`, and a low-level SQLite C-authorizer blocking all mutation/DDL/PRAGMA/ATTACH operations.
-* **Configurable Human-in-the-Loop SQL Approval**: SQL execution can be configured for interactive modal confirmation or automated execution with audit logging in the Agent Activity Inspector.
-* **Advanced 25-Chart Visualization Engine**: Supports 25 native vector chart types across Comparison, Trend, Distribution, Relationship, Hierarchical, and Matrix categories rendered directly in ReportLab.
-* **Embedded Workspace**: Dual-engine workspace featuring an embedded Qt native PDF viewer (`QPdfView` / `QPdfDocument`) and a virtualized tabular CSV viewer (`QTableView` / `CsvTableModel`).
+This repository is fully documented across five core root guides:
+
+1. [**`README.md`**](README.md) — System overview, quick start, architecture, and primary entry point (this file).
+2. [**`DEPLOY.md`**](DEPLOY.md) — End-to-end deployment instructions for macOS and Windows, packaging scripts, and troubleshooting.
+3. [**`STRUCTURE.md`**](STRUCTURE.md) — Complete repository layout, Python package responsibilities, and module mappings.
+4. [**`FEATURE.md`**](FEATURE.md) — Exhaustive technical specification of all system features, security controls, and pipelines.
+5. [**`PRESENTATION.md`**](PRESENTATION.md) — 10-minute slide script for university evaluation with demonstration walkthrough and defense Q&A.
 
 ---
 
-## Architecture Overview
+## 1. Problem Statement
 
-```text
-┌────────────────────────────────────────────────────────────────────────┐
-│                        PySide6 Desktop GUI                             │
-│       (Asymmetric Splitter: Native PDF / CSV Workspace + Chat)        │
-└───────────────────────────────────┬────────────────────────────────────┘
-                                    │ Worker Thread (QThread + asyncio)
-                                    ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│                      Agent Orchestrator Loop                           │
-│   Intent Steering • Conversation Manager • Context Compaction Guard   │
-└───────────────────┬────────────────────────────────┬───────────────────┘
-                    │                                │
-    Async HTTP (JSON/Tools)                          │ Python stdio
-                    ▼                                ▼
-┌───────────────────────────────┐  ┌─────────────────────────────────────┐
-│    Local Ollama Server        │  │     Local MCP Stdio Server          │
-│   (http://localhost:11434)    │  │    (mcp_layer.server Subprocess)    │
-│      Model: qwen3.5:4b        │  ├─────────────────────────────────────┤
-│  • Tool Calling & JSON Modes  │  │  1. inspect_database_schema         │
-│  • CoT Reasoning Filter       │  │  2. get_table_sample                │
-└───────────────────────────────┘  │  3. prepare_sql_query               │
-                                   │  4. execute_readonly_sql            │
-                                   │  5. generate_pdf_report             │
-                                   │  6. generate_csv_report             │
-                                   └───────────────┬─────────────────────┘
-                                                   │
-                           ┌───────────────────────┴─────────────────────┐
-                           │                                             │
-                           ▼                                             ▼
-             ┌───────────────────────────┐                 ┌───────────────────────────┐
-             │   SQLite Database (ro)    │                 │   ReportLab / CSV Engine  │
-             │   (data/ecommerce.db)     │                 │   • Styled Paginated PDF  │
-             │   499,385 Relational Rows │                 │   • RFC-4180 UTF-8 CSV    │
-             │   7 Tables + Foreign Keys │                 │   • report_history.json   │
-             └───────────────────────────┘                 └───────────────────────────┘
+In enterprise environments, operational databases contain sensitive transactional records that cannot be exposed to third-party cloud LLM APIs due to privacy regulations (GDPR), proprietary business secrets, or data sovereignty constraints. 
+
+Furthermore, generic LLM "text-to-SQL" interfaces suffer from severe operational risks:
+- **Hallucinated Metrics**: Small language models frequently fabricate numbers or calculate mathematically invalid ratios (e.g. averaging row-level averages).
+- **Security Vulnerabilities**: Naive database connections expose data to SQL injection or destructive `DROP`/`UPDATE` mutations.
+- **Silent Data Substitution**: If asked for October data and none exists, naive tools often substitute September without alerting the user.
+- **Poor Output Formats**: Most AI agents return plain text or raw tables rather than styled, executive-ready multi-page documents.
+
+---
+
+## 2. Project Objectives & Solution
+
+The **Local Report SQL Agent** addresses these challenges by enforcing a strict division of responsibilities:
+
+> **The LLM interprets user intent and formulates SQL queries.**  
+> **Deterministic Python executes queries, reconciles numbers, verifies chart eligibility, and renders vector PDF/CSV reports.**
+
+### Core Capabilities
+- **100% Offline & Private**: Zero external network requests. Prompts, schemas, queries, and reports never leave your local workstation.
+- **Model Context Protocol (FastMCP)**: Decoupled database and reporting tools executing in an isolated subprocess over standard input/output (`stdio`).
+- **Defense-in-Depth SQL Security**: AST syntax parsing, single-statement verification, keyword blacklisting, SQLite C-authorizer callbacks, and read-only connection handles (`mode=ro`).
+- **Deterministic Reporting Engine**: Canonical reconciliation of Gross Sales, Net Revenue, Orders, Transactions, and vertical Average Order Value (AOV).
+- **Data Availability Protection**: Detects zero-record periods and displays verified zeros alongside an explicit Red Data Availability Notice banner, promoting comparison months to dedicated historical sections.
+- **22 ReportLab Vector Chart Renderers**: Native vector graphics (bars, lines, areas, pies, donuts, matrix heatmaps, scatter plots) with automatic single-category suppression.
+- **Desktop Concurrency & Preview**: Responsive PySide6 interface featuring live chat, an Activity Inspector with DAG execution tracking, and an embedded `QPdfView` previewer.
+
+---
+
+## 3. Technology Stack
+
+- **GUI Framework**: PySide6 6.10 (Qt6 Widgets, QtPdf, QThread concurrency)
+- **Local Inference Engine**: Ollama (`http://localhost:11434`) running `qwen3.5:4b`
+- **Tool Protocol**: Official Model Context Protocol SDK (`mcp` 1.30.0 / FastMCP)
+- **Database Engine**: SQLite 3.x (Relational schema: 7 tables, 499,385 records; immutable)
+- **Reporting Engine**: ReportLab 5.1 (Platypus flowables, `LongTable` pagination, vector graphics)
+- **Testing & Verification**: Pytest 9.2 (463 automated tests: 461 deterministic + 2 live Ollama workflows)
+- **Packaging**: PyInstaller 6.22 (Standalone macOS `.app` bundle and Windows `.exe`)
+
+---
+
+## 4. System Architecture
+
+```mermaid
+flowchart TD
+    User([User Prompt]) --> GUI[PySide6 GUI: Chat & Activity Inspector]
+    
+    subgraph DesktopApp["Main Application Process (run_app.py)"]
+        GUI <--> Worker[AgentWorker QThread Bridge]
+        Worker <--> Orch[AgentOrchestrator Loop]
+        Orch <--> Planner[TaskPlanner & DAG Manager]
+        Orch <--> CB[ContextBuilder: 128K Token Budget]
+        Orch <--> Memory[(SQLite Agent Memory WAL)]
+        Orch <--> Client[MCPStdioClient]
+    end
+    
+    subgraph LocalOllama["Local Inference (localhost:11434)"]
+        Orch <== "Async HTTP (/api/chat)" ==> OllamaModel[Ollama Daemon: qwen3.5:4b]
+    end
+    
+    subgraph MCPProcess["Isolated Subprocess (mcp_layer.server)"]
+        Client <== "JSON-RPC 2.0 (stdio)" ==> Server[FastMCP Server]
+        Server --- DBTools[Database Tools: inspect_schema, get_sample]
+        Server --- SQLTools[SQL Tools: prepare_sql, execute_sql]
+        Server --- RepTools[Reporting Tools: generate_pdf, generate_csv]
+    end
+    
+    DBTools --> SQLiteDB[(ecommerce.db [Read-Only])]
+    SQLTools --> SQLiteDB
+    RepTools --> RepEngine[Deterministic Report Engine & Validator]
+    RepEngine --> OutputFiles[reports/*.pdf & reports/*.csv]
+    OutputFiles --> EmbeddedViewer[Embedded QtPdf Previewer]
 ```
 
-### Technical Documentation Index (`docs/`)
+---
 
-Comprehensive technical and academic documentation is available in the [`docs/`](docs/) directory:
+## 5. Prerequisites
 
-* [**`SOLUTION.md`**](SOLUTION.md): Comprehensive architectural specification, 25-chart visualization engine catalog, sequence diagrams, and end-to-end verification report.
-* [**`docs/ARCHITECTURE.md`**](docs/ARCHITECTURE.md): High-level system architecture, component responsibilities, concurrency model, and 4 detailed Mermaid flow/sequence diagrams.
-* [**`docs/DATABASE.md`**](docs/DATABASE.md): Relational data model, Entity-Relationship diagram, 7-table specifications (499,385 records), and multi-layer read-only SQLite security.
-* [**`docs/AGENT_WORKFLOW.md`**](docs/AGENT_WORKFLOW.md): Natural language request lifecycle, format steering (PDF default vs explicit CSV), Ollama integration, and configurable human approval gate.
-* [**`docs/SECURITY.md`**](docs/SECURITY.md): Local-only boundary, defense-in-depth SQL protections (lexical, AST, query-only pragma, C-authorizer), path traversal defenses, and privacy guarantees.
-* [**`docs/TESTING.md`**](docs/TESTING.md): Testing architecture, full 457-test breakdown across 36 test modules, regression test suite, manual acceptance test checklist, and known limitations.
-* [**`docs/DEMO_GUIDE.md`**](docs/DEMO_GUIDE.md): Step-by-step 10–15 minute academic demonstration script with exact prompts, expected dialogs, and presenter talking points.
-* [**`docs/PROJECT_SUMMARY.md`**](docs/PROJECT_SUMMARY.md): Academic project summary, functional/non-functional requirements compliance matrix, technology stack, and conclusions.
-
-### Module Responsibilities
-
-| Directory | Core Role & Responsibilities |
-| :--- | :--- |
-| [`app/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/app) | PySide6 desktop interface: `MainWindow` layout, `ReportPreviewWidget` (PDF/CSV viewers), `ChatView`, modal `SqlApprovalDialog`, `HistoryView`, `SettingsView`, and asynchronous `AgentWorker` threading. |
-| [`agent/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/agent) | Autonomous orchestration: `OllamaClient` (HTTP API with exponential retry), `ToolHandler` (FastMCP parameter normalization), `ConversationManager` (turn/token bounding), `AgentOrchestrator`, and `ContextBuilder`. |
-| [`mcp_layer/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/mcp_layer) | MCP implementation: `FastMCP` stdio server (`server.py`), `MCPStdioClient` (`client.py`), and modular tool packages for database inspection, SQL tools, and report generators. |
-| [`database/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/database) | Relational engine: batch CSV/ZIP dataset importer (`importer.py`), schema introspection (`inspector.py`), and multi-layer read-only query executor with C-authorizer (`executor.py`). |
-| [`reporting/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/reporting) | Output generation: Centralized `ChartRegistry` (25 chart types), canonical data layer (`canonical_data.py`), dataset registry (`dataset_registry.py`), 4-stage validator (`report_validator.py`), date utilities (`date_utils.py`), dynamic PDF composer (`dynamic_pdf_composer.py`), CSV exporter, and persistent catalog manager (`report_manager.py`). |
-| [`config/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/config) | System configuration: layered settings (`settings.py`), cross-platform path resolution (`paths.py`), system prompts (`prompts.py`), and logging (`logging_setup.py`). |
-| [`scripts/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/scripts) | Automation scripts: environment and database hash verifier (`verify_environment.py`), acceptance test suite (`verify_milestone10_acceptance.py`), and packaging scripts. |
-| [`tests/`](file:///Users/stefanapopa/Documents/8)%20DOCUMENTE%20BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/tests) | Automated pytest suite: 457 automated tests covering database, SQL validator, MCP tools, report generators, reporting pipeline fixes, agent orchestrator, headless GUI, and E2E workflows. |
+1. **Operating System**: macOS 12+ (Apple Silicon or Intel) or Windows 10/11 (64-bit).
+2. **Python**: Python 3.10 to 3.13 (Python 3.13 certified).
+3. **Local Ollama Daemon**: Download and install from [ollama.com](https://ollama.com).
+4. **Certified Model**:
+   ```bash
+   ollama pull qwen3.5:4b
+   ```
 
 ---
 
-## MCP Server & Tool Catalog
+## 6. Quick Start
 
-All operations between the LLM and the local environment pass through standard MCP tools over `stdio` pipes:
-
-| Tool Name | Parameters | Description | Security & Execution Rules |
-| :--- | :--- | :--- | :--- |
-| `inspect_database_schema` | `table_name` *(optional)* | Returns table definitions, columns, SQLite affinities, primary/foreign keys, and row counts. | Strictly read-only; queries `sqlite_master` and `PRAGMA table_info`. |
-| `get_table_sample` | `table_name`, `num_records` *(default: 5)* | Retrieves sample rows to help the LLM understand value distributions. | Capped at 50 records maximum; table name validated against schema whitelist. |
-| `prepare_sql_query` | `sql_query`, `explanation` | Validates syntax, structure, and schema compliance **without executing the query**. | Scans for forbidden keywords (`INSERT`, `UPDATE`, `DROP`, `PRAGMA`, etc.) and runs `EXPLAIN QUERY PLAN`. |
-| `execute_readonly_sql` | `sql_query`, `max_rows` *(optional)* | Re-validates and executes the query against SQLite over a read-only connection. | **Mandatory user approval required**. Enforces row limit (default: 1,000) and execution timeout (default: 120.0s). |
-| `generate_pdf_report` | `title`, `description`, `sql_query`, `columns`, `rows`, `summary` | Compiles a formatted, paginated ReportLab PDF report saved in `reports/pdf/`. | **Default format**. Includes metadata header, KPI cards, query snippet, and `Page X of Y` footers. Never executes SQL. |
-| `generate_csv_report` | `title`, `description`, `sql_query`, `columns`, `rows`, `summary` | Compiles an RFC-4180 compliant UTF-8 CSV report saved in `reports/csv/`. | Used when user explicitly requests CSV. Sanitizes filenames against path traversal. Never executes SQL. |
-
----
-
-## Prerequisites & Installation
-
-### 1. System Requirements
-
-* **Operating System**: macOS (ARM64 or x86_64), Windows 10/11, or Modern Linux.
-* **Python**: Python **3.13** (mandatory).
-* **Ollama**: Local Ollama daemon running with `qwen3.5:4b`:
-  ```bash
-  ollama serve
-  ollama pull qwen3.5:4b
-  ```
-
-### 2. Environment Setup
-
-Clone or place the repository in your workspace, then create a local virtual environment:
-
-**macOS / Linux**:
+### 6.1 Running in Development Mode
 ```bash
-# Create local .venv using Python 3.13
-python3.13 -m venv .venv
-source .venv/bin/activate
+# 1. Clone repository and navigate to root
+cd FinalProject_SQLAgent
 
-# Install dependencies
-pip install --upgrade pip
-pip install -r requirements.txt
-```
+# 2. Activate virtual environment
+source .venv/bin/activate        # macOS / Linux
+# .\.venv\Scripts\Activate.ps1    # Windows PowerShell
 
-**Windows (PowerShell)**:
-```powershell
-# Create local .venv using Python 3.13
-py -3.13 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-
-# Install dependencies
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-```
-
-### 3. Database Import & Integrity Verification
-
-Build the SQLite database from the raw Kaggle e-commerce dataset:
-
-```bash
-# Import the 7 relational tables into data/ecommerce.db
-python scripts/import_dataset.py --run-validation-queries
-
-# Verify environment, packages, Ollama connectivity, and database SHA-256 hash
+# 3. Verify environment and database integrity
 python scripts/verify_environment.py
+
+# 4. Launch the desktop GUI
+python run_app.py
 ```
 
-Expected verification output:
-```text
-== Local Report SQL Agent: environment verification ==
-[ OK ] Python 3.13.16
-[ OK ] PySide6 6.10.3
-[ OK ] mcp 1.30.0
-[ OK ] httpx 0.28.1
-[ OK ] reportlab 5.1.0
-[ OK ] pytest 9.2.0
-[ OK ] MCP SDK exposes FastMCP server + stdio client APIs
-[ OK ] Ollama reachable at http://localhost:11434 (version 0.40.14)
-[ OK ] Model 'qwen3.5:4b' is installed
-[ OK ] Database ecommerce.db: 7 tables, 499,385 total records
-[ OK ] SHA-256 integrity verified: c5a5965e000becdb...
-== RESULT: PASS ==
-```
-
----
-
-## User Guide & Workflows
-
-### Launching the Application
-
-Start the graphical interface:
-
+### 6.2 Packaging Standalone Executables
 ```bash
-# macOS / Linux
-.venv/bin/python run_app.py
-
-# Windows
-.\.venv\Scripts\python.exe run_app.py
-```
-
-### Supported Reporting Queries
-
-The agent accepts complex natural language queries and automatically resolves schema joins across customers, orders, order items, products, payments, reviews, and returns:
-
-* **Executive Sales Summary (PDF)**:
-  > *"Generate a report showing total revenue grouped by product category for 2023."*
-* **Customer Insights (PDF)**:
-  > *"Who are the top 10 customers by total spend, including their country and total orders?"*
-* **Payment Methods Breakdown (PDF)**:
-  > *"Show me monthly revenue breakdown grouped by payment method."*
-* **Explicit CSV Data Export (CSV)**:
-  > *"Generate a CSV report of all returned orders with customer names and refund amounts."*
-* **Schema Discovery**:
-  > *"What tables and columns are available in the database?"*
-
-### Mandatory SQL Review & Approval
-
-Before executing any database query, the application displays a dedicated modal **SQL Approval Dialog**:
-* Displays the complete proposed SQL query with syntax highlighting.
-* Displays the agent's natural-language justification.
-* Prominently highlights the target database name.
-* **Safety First**: The default button is **Reject**. Pressing `Esc`, clicking the window close button (`X`), or selecting **Reject Query** halts the execution pipeline safely and returns control to the user.
-
----
-
-## Security Architecture & Local Protection
-
-1. **Local Network Boundary**:
-   The application strictly restricts communication to `localhost` and `127.0.0.1`. Remote Ollama endpoints or external API URLs are rejected during validation.
-2. **SQLite Read-Only Enforcement**:
-   - Connections are opened with URI parameter `mode=ro`.
-   - `PRAGMA query_only = ON` is executed on connection initialization.
-   - Low-level C SQLite authorizer hook (`sqlite3_set_authorizer`) systematically rejects action codes for `SQLITE_INSERT`, `SQLITE_UPDATE`, `SQLITE_DELETE`, `SQLITE_DROP_TABLE`, `SQLITE_ALTER_TABLE`, `SQLITE_ATTACH`, `SQLITE_PRAGMA`, etc.
-3. **Execution Limits**:
-   - Hard row limits (default 1,000, max configurable 100,000) prevent memory exhaustion.
-   - Timeout protection (default 15.0s) cancels run-away queries.
-4. **Path Traversal Protection**:
-   All report file generation routines sanitize title strings and enforce destination containment within the designated `reports/` folder.
-
----
-
-## Packaging & Distribution
-
-### macOS (.app Bundle)
-
-Build a self-contained macOS application using PyInstaller:
-
-```bash
-chmod +x scripts/build_macos.sh
+# macOS Build (.app bundle & standalone folder)
 ./scripts/build_macos.sh
+
+# Windows Build (.exe standalone folder)
+.\scripts\build_windows.ps1
 ```
-
-* Output: `dist/ReportSQLAgent.app`
-* Architecture: Native ARM64 / Universal
-* Launch: `open dist/ReportSQLAgent.app`
-
-### Windows (.exe Standalone)
-
-Build a self-contained Windows executable:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\build_windows.ps1
-```
-
-* Output: `dist\ReportSQLAgent\ReportSQLAgent.exe`
-* Launch: `.\dist\ReportSQLAgent\ReportSQLAgent.exe`
-
-### Cross-Platform Path Handling
-
-The application automatically adapts to its runtime environment (`config/paths.py`):
-* **Development Mode**: Reads and writes relative to the project directory.
-* **Packaged Mode (`sys.frozen`)**:
-  - Bundled read-only assets (database, fonts) are read from `sys._MEIPASS` (`resource_root()`).
-  - Mutable user files (`settings.json`, generated reports, log files) are written to the standard OS user data directory:
-    - macOS: `~/Library/Application Support/ReportSQLAgent`
-    - Windows: `%APPDATA%\ReportSQLAgent`
-    - Linux: `~/.local/share/ReportSQLAgent`
-  - Child MCP server processes are launched directly via `[sys.executable, "--mcp-server"]`, removing any dependency on system Python interpreters.
+For detailed packaging flags (`--with-live-tests`, `--skip-tests`), consult [**`DEPLOY.md`**](DEPLOY.md).
 
 ---
 
-## Testing & Quality Assurance
+## 7. Example Natural-Language Requests
 
-The test suite runs 100% offline using temporary databases and mocks:
+The agent accepts conversational, reporting, and analytical prompts:
 
-```bash
-# Run complete test suite (457 tests)
-.venv/bin/pytest tests/ -v
-```
-
-### Test Coverage Breakdown
-
-The 457 automated tests span 36 specialized test modules across the complete stack:
-
-| Test Module Category | Files | Tests | Coverage Scope |
-| :--- | :---: | :---: | :--- |
-| **Reporting & Visualizations** | 6 | 63 | 25 vector chart renderers (`test_advanced_visualization_engine.py`), dynamic PDF composition (`test_dynamic_pdf_milestone9.py`), ReportLab generation & typography (`test_reporting.py`), reporting numerical accuracy (`test_reporting_accuracy.py`), and 18-defect regression suite (`test_reporting_pipeline_fixes.py`). |
-| **Agent Orchestration & Intelligence** | 10 | 185 | Ollama client HTTP/retries & tool calling (`test_agent.py`), checkpoint models & recovery (`test_checkpoint_models.py`, `test_checkpoint_manager.py`, `test_task_recovery.py`), context window & relevance (`test_context_window.py`, `test_context_builder.py`, `test_context_models.py`, `test_context_security.py`), and task planning (`test_task_planner.py`, `test_task_manager.py`). |
-| **Model Context Protocol (MCP)** | 4 | 22 | FastMCP stdio server/client lifecycle (`test_mcp_tools.py`), connection recovery (`test_mcp_reliability.py`), tool schema parity (`test_mcp_tool_discovery_and_capability.py`), and discovery reporting. |
-| **Database & SQL Security** | 3 | 66 | Batch CSV importer, schema discovery, C-authorizer, read-only guarantees (`test_database.py`), lexical scanning, AST validation, and injection prevention (`test_sql_validation.py`). |
-| **Skills & Domain Knowledge** | 4 | 42 | Skill parsing, models, security isolation, and selection matching (`test_skill_manager.py`, `test_skill_models.py`, `test_skill_security.py`, `test_skill_selection.py`). |
-| **Memory & Migrations** | 2 | 27 | SQLite working memory repository (`test_memory_repository.py`) and schema migrations (`test_memory_migrations.py`). |
-| **Desktop GUI & E2E Workflows** | 4 | 44 | Headless PySide6 GUI (`test_gui.py`), approval toggles (`test_approval_config.py`), end-to-end workflows (`test_e2e_workflows.py`), and macOS startup lifecycle (`test_macos_startup.py`). |
-| **Total Test Suite** | **36** | **457** | **All 457 tests passing (100% pass rate).** |
+- **Executive Reporting (Full Pipeline)**:
+  > *"I want an output report in PDF file, exporting last month orders, sales, revenue, transactions. I want graphical historical bar charts, some distribution pies and matrix graphs. Provide also at the end of the report data in table format."*
+- **Rankings & Comparison**:
+  > *"Retrieve the most profitable 10 Orders of all time and present them on an output PDF with bar charts, distribution pies, and a data table."*
+- **Category & Channel Analysis**:
+  > *"Analyze our monthly sales trends for the past year and visualize revenue growth by product category with a line chart and matrix heatmap."*
+- **Raw CSV Data Export**:
+  > *"Export the monthly captured revenue by payment method to a CSV file."*
 
 ---
 
-## Troubleshooting
+## 8. Current System Limitations
 
-| Issue | Cause | Solution |
-| :--- | :--- | :--- |
-| **"Cannot connect to Ollama"** | Local Ollama service is stopped | Start the service in terminal: `ollama serve` |
-| **"Model 'qwen3.5:4b' not found"** | Model has not been pulled locally | Run: `ollama pull qwen3.5:4b` |
-| **"Database not found at data/ecommerce.db"** | Database import was not executed | Run: `python scripts/import_dataset.py --run-validation-queries` |
-| **"SHA-256 checksum mismatch"** | Database was altered or corrupted | Rebuild database: `python scripts/import_dataset.py --overwrite` |
-| **GUI does not appear on Linux** | Missing Qt Wayland / X11 platform plugin | Set `export QT_QPA_PLATFORM=xcb` or install `libxcb-cursor0` |
-| **SQL query rejected** | Query contains prohibited write or DDL operations | The agent strictly allows `SELECT` and `WITH ... SELECT` queries. |
+- **Local Inference Latency**: On CPUs without GPU or Metal hardware acceleration, local generation with `qwen3.5:4b` may take 30–90 seconds per multi-step analytical turn.
+- **Database Immutability**: `ecommerce.db` is strictly read-only. The system does not support writing analytical results back to transactional tables.
+- **Complex Multi-Way Joins**: When joining 4 or more tables (`orders`, `order_items`, `products`, `payments`), small local models require explicit schema reminders to avoid column misattributions. The built-in `ContextBuilder` dynamically injects these definitions.
 
----
-
-## University Project Metadata
-
-* **Institution**: Babeș-Bolyai University (UBB)
-* **Program**: Master in Applied Computational Intelligence
-* **Course**: Declarative Programming & Machine Learning
-* **Project**: Local Report SQL Agent
-* **Deliverable**: Final Course Project (Milestones 1–6 Complete)
+For in-depth architectural details, see [**`FEATURE.md`**](FEATURE.md).
