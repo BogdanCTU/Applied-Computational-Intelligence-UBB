@@ -58,7 +58,11 @@ Operating systems prohibit writing mutable files (`settings.json`, `agent_memory
 ### macOS Build Pipeline (`scripts/build_macos.sh`)
 Executes a 5-stage build and post-packaging validation pipeline:
 1. Runs `.venv/bin/python scripts/verify_environment.py --build` (verifies Python 3.13, packages, MCP SDK, and `data/ecommerce.db` SHA-256 checksum).
-2. Runs the offline `pytest` suite.
+2. Runs automated tests:
+   - Default: Deterministic unit, integration, and reporting pipeline tests (461 tests).
+   - `--with-live-tests`: Runs full test suite including live local Ollama acceptance tests.
+   - `--live-tests-only`: Runs only live local Ollama acceptance tests.
+   - `--skip-tests`: Skips automated test suite while preserving mandatory smoke testing in stage 5.
 3. Cleans `build/` and `dist/`.
 4. Invokes `.venv/bin/pyinstaller --clean --noconfirm ReportSQLAgent.spec`.
 5. Validates the built `dist/ReportSQLAgent.app`:

@@ -7,6 +7,59 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
+# Configuration flags
+SKIP_TESTS="${SKIP_TESTS:-0}"
+RUN_LIVE_TESTS="${RUN_LIVE_TESTS:-0}"
+LIVE_TESTS_ONLY="${LIVE_TESTS_ONLY:-0}"
+
+show_help() {
+    cat << EOF
+Usage: $(basename "$0") [OPTIONS]
+
+Build Report SQL Agent for macOS (.app bundle and standalone directory).
+
+Options:
+  --with-live-tests     Run both deterministic tests and live Ollama acceptance tests.
+  --live-tests-only     Run only live Ollama acceptance tests before packaging.
+  --skip-tests          Skip automated test suite (packaged smoke test in step 5/5 is always executed).
+  -h, --help            Show this help message and exit.
+
+Environment Variables:
+  RUN_LIVE_TESTS=1      Equivalent to --with-live-tests.
+  LIVE_TESTS_ONLY=1     Equivalent to --live-tests-only.
+  SKIP_TESTS=1          Equivalent to --skip-tests.
+
+By default, deterministic unit and integration tests (455 tests) are executed.
+Live Ollama acceptance tests are excluded by default to ensure reproducible, offline-capable builds.
+EOF
+    exit 0
+}
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --with-live-tests)
+            RUN_LIVE_TESTS=1
+            shift
+            ;;
+        --live-tests-only)
+            LIVE_TESTS_ONLY=1
+            shift
+            ;;
+        --skip-tests)
+            SKIP_TESTS=1
+            shift
+            ;;
+        -h|--help)
+            show_help
+            ;;
+        *)
+            echo "ERROR: Unknown option: $1"
+            echo "Run '$(basename "$0") --help' for usage."
+            exit 1
+            ;;
+    esac
+done
+
 echo "=========================================================="
 echo " Building Report SQL Agent for macOS"
 echo " Project root: ${PROJECT_ROOT}"
@@ -24,30 +77,48 @@ if [ ! -f "${VENV_PYTHON}" ]; then
     exit 1
 fi
 
-# 2. Verify build dependencies (PyInstaller)
+# Verify build dependencies (PyInstaller)
 if ! "${VENV_PYTHON}" -c "import PyInstaller" 2>/dev/null; then
     echo "PyInstaller not found in .venv. Installing build dependency..."
     "${VENV_PYTHON}" -m pip install "pyinstaller>=6.10"
 fi
 
-# 3. Environment and database integrity check
+# 2. Environment and database integrity check
 echo "[1/5] Verifying environment and database integrity..."
 "${VENV_PYTHON}" scripts/verify_environment.py --build
 
-# 4. Run automated test suite
-echo "[2/5] Running automated tests (excluding live Ollama test)..."
-"${VENV_PYTHON}" -m pytest tests/ -k "not test_live_local_ollama_integration_end_to_end" -q
+# 3. Automated testing phase
+echo "[2/5] Automated Testing Phase..."
+if [ "${SKIP_TESTS}" = "1" ]; then
+    echo "  [SKIPPED] Deterministic Unit & Integration Tests (skipped via --skip-tests / SKIP_TESTS=1)"
+    echo "  [SKIPPED] Live Local Ollama Acceptance Tests (skipped via --skip-tests / SKIP_TESTS=1)"
+    echo "  Notice: Automated tests skipped by operator. Packaged smoke test will still run in step 5/5."
+elif [ "${LIVE_TESTS_ONLY}" = "1" ]; then
+    echo "  [SKIPPED] Deterministic Unit & Integration Tests (skipped via --live-tests-only)"
+    echo "  [EXECUTING] Live Local Ollama Acceptance Tests (test_13_live_ollama_qwen_reporting_workflow & test_live_local_ollama_integration_end_to_end)..."
+    "${VENV_PYTHON}" -m pytest tests/ -k "test_13_live_ollama_qwen_reporting_workflow or test_live_local_ollama_integration_end_to_end" -v -s
+    echo "  [PASSED] Live Local Ollama Acceptance Tests passed successfully."
+elif [ "${RUN_LIVE_TESTS}" = "1" ]; then
+    echo "  [EXECUTING] Full Test Suite (Deterministic Suite + Live Local Ollama Acceptance Tests)..."
+    "${VENV_PYTHON}" -m pytest tests/ -q
+    echo "  [PASSED] Complete test suite passed successfully."
+else
+    echo "  [EXECUTING] Deterministic Unit & Integration Tests (455 tests)..."
+    echo "  [INFO] Live Ollama tests excluded from default build (selectable via --with-live-tests or --live-tests-only)."
+    "${VENV_PYTHON}" -m pytest tests/ -k "not test_live_local_ollama_integration_end_to_end and not test_13_live_ollama_qwen_reporting_workflow" -q
+    echo "  [PASSED] Deterministic Unit & Integration Tests passed successfully."
+fi
 
-# 5. Clean previous build artifacts safely
+# 4. Clean previous build artifacts safely
 echo "[3/5] Cleaning previous build artifacts..."
 rm -rf "${PROJECT_ROOT}/build" "${PROJECT_ROOT}/dist"
 
-# 6. Build macOS distribution with PyInstaller
+# 5. Build macOS distribution with PyInstaller
 echo "[4/5] Packaging application with PyInstaller..."
 "${PYINSTALLER}" --clean --noconfirm ReportSQLAgent.spec
 
-# 7. Validate output artifacts
-echo "[5/5] Validating built macOS application bundle..."
+# 6. Validate output artifacts and execute packaged smoke test
+echo "[5/5] Validating built macOS application bundle and running smoke test..."
 APP_PATH="${PROJECT_ROOT}/dist/ReportSQLAgent.app"
 BIN_PATH="${APP_PATH}/Contents/MacOS/ReportSQLAgent"
 STANDALONE_DIR="${PROJECT_ROOT}/dist/ReportSQLAgent"

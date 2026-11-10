@@ -89,6 +89,12 @@ chmod +x scripts/build_macos.sh
 ./scripts/build_macos.sh
 ```
 
+**Build Options**:
+- `./scripts/build_macos.sh` (default): Runs deterministic unit, integration, and reporting pipeline tests (461 tests) before clean build, packaging, and GUI smoke test.
+- `./scripts/build_macos.sh --with-live-tests`: Runs the full test suite including live local Ollama (`qwen3.5:4b`) acceptance workflows.
+- `./scripts/build_macos.sh --live-tests-only`: Runs only live local Ollama acceptance tests prior to packaging.
+- `./scripts/build_macos.sh --skip-tests`: Skips the automated test phase for rapid iteration (packaged smoke test in stage 5/5 is always executed).
+
 **Build Artifacts Created**:
 - **Application Bundle**: `dist/ReportSQLAgent.app`
 - **Standalone Directory**: `dist/ReportSQLAgent/`
@@ -137,7 +143,7 @@ Both `scripts/build_macos.sh` and `scripts/build_windows.ps1` execute the follow
 | Stage | Name | Description |
 |:---|:---|:---|
 | **[1/5]** | **Environment Verification** | Runs `scripts/verify_environment.py --build` to confirm Python version compatibility, package dependencies (`PySide6`, `reportlab`, `mcp`, `httpx`, `pydantic`), and SQLite database file presence. |
-| **[2/5]** | **Automated Test Suite** | Runs `pytest tests/ -k "not test_live_local_ollama_integration_end_to_end" -q` to guarantee 100% of offline unit, integration, and reporting pipeline tests (456 tests) pass before packaging. |
+| **[2/5]** | **Automated Test Suite** | Runs `pytest tests/ -k "not test_live_local_ollama_integration_end_to_end and not test_13_live_ollama_qwen_reporting_workflow" -q` to guarantee 100% of offline unit, integration, and reporting pipeline tests (461 tests) pass before packaging. Live Ollama acceptance tests can be enabled with `--with-live-tests` or `--live-tests-only`. |
 | **[3/5]** | **Clean Artifacts** | Safely deletes stale `build/` and `dist/` folders to ensure a reproducible, clean build. |
 | **[4/5]** | **PyInstaller Packaging** | Executes PyInstaller against `ReportSQLAgent.spec` with optimizations and hidden imports. |
 | **[5/5]** | **Output Validation** | Validates the output binaries, checks file permissions, and runs a live smoke test against `--mcp-server` to verify stdio JSON-RPC initialization. |

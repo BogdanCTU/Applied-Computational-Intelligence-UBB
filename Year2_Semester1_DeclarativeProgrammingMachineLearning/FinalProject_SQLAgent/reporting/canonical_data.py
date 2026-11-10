@@ -15,6 +15,8 @@ from dataclasses import dataclass, field
 from typing import Any, Literal, Mapping, Sequence
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from reporting.report_manager import ReportValidationError
+
 log = logging.getLogger(__name__)
 
 # Supported chart types
@@ -888,6 +890,115 @@ class ValidationResult(tuple):
             return default
 
 
+def normalize_kpi_entry(raw_kpi: Any, *, strict: bool = False) -> dict[str, Any]:
+    """Normalize a single KPI entry into canonical dict format: {'label': str, 'value': str, 'note': str}.
+
+    Handles:
+    - Mapping: extracts label/name/metric/title, value/val/amount/count, note/delta/change/subtitle.
+      Raises ReportValidationError if empty mapping or missing non-empty label.
+    - String:
+      * With delimiter (':', '=', ' - '): splits into label and value.
+      * Without delimiter: uses whole string as label, empty string as value (for dataset reconciliation).
+      Raises ReportValidationError if empty string.
+    - Other types (int, float, bool, list, None):
+      Raises ReportValidationError.
+    """
+    if raw_kpi is None:
+        raise ReportValidationError("Malformed KPI entry: KPI entry cannot be None.")
+
+    if isinstance(raw_kpi, Mapping):
+        label_raw = (
+            raw_kpi.get("label")
+            or raw_kpi.get("name")
+            or raw_kpi.get("metric")
+            or raw_kpi.get("title")
+        )
+        if label_raw is None or not str(label_raw).strip():
+            raise ReportValidationError(
+                f"Malformed KPI mapping: missing or empty label/metric in {raw_kpi!r}."
+            )
+        val_raw = (
+            raw_kpi.get("value")
+            if "value" in raw_kpi
+            else raw_kpi.get("val")
+            if "val" in raw_kpi
+            else raw_kpi.get("amount")
+            if "amount" in raw_kpi
+            else raw_kpi.get("count")
+        )
+        note_raw = (
+            raw_kpi.get("note")
+            or raw_kpi.get("change")
+            or raw_kpi.get("delta")
+            or raw_kpi.get("subtitle")
+            or ""
+        )
+        return {
+            "label": str(label_raw).strip(),
+            "value": "" if val_raw is None else str(val_raw).strip(),
+            "note": str(note_raw).strip(),
+        }
+
+    if isinstance(raw_kpi, str):
+        clean_str = raw_kpi.strip()
+        if not clean_str:
+            raise ReportValidationError(
+                "Malformed KPI string: empty string is not a valid KPI entry."
+            )
+        if ":" in clean_str:
+            parts = clean_str.split(":", 1)
+            lbl = parts[0].strip()
+            val = parts[1].strip()
+        elif " = " in clean_str or (clean_str.count("=") == 1 and not clean_str.startswith("=")):
+            parts = clean_str.split("=", 1)
+            lbl = parts[0].strip()
+            val = parts[1].strip()
+        elif " - " in clean_str:
+            parts = clean_str.split(" - ", 1)
+            lbl = parts[0].strip()
+            val = parts[1].strip()
+        else:
+            lbl = clean_str
+            val = ""
+        if not lbl:
+            raise ReportValidationError(
+                f"Malformed KPI string: could not extract non-empty label from {raw_kpi!r}."
+            )
+        return {
+            "label": lbl,
+            "value": val,
+            "note": "",
+        }
+
+    raise ReportValidationError(
+        f"Invalid KPI entry type: expected mapping or string, got {type(raw_kpi).__name__} ({raw_kpi!r})."
+    )
+
+
+def normalize_kpi_collection(raw_kpis: Any, *, strict: bool = False) -> list[dict[str, Any]]:
+    """Normalize a collection of KPI entries into a list of canonical KPI dicts.
+
+    Raises ReportValidationError on invalid collection types or malformed entries.
+    """
+    if raw_kpis is None:
+        return []
+    if isinstance(raw_kpis, (str, bytes, Mapping)):
+        raise ReportValidationError(
+            f"Invalid KPI collection type: expected list/sequence of KPI entries, got {type(raw_kpis).__name__}."
+        )
+    if not isinstance(raw_kpis, (Sequence, set)):
+        raise ReportValidationError(
+            f"Invalid KPI collection type: expected list/sequence of KPI entries, got {type(raw_kpis).__name__}."
+        )
+    result = []
+    for idx, item in enumerate(raw_kpis):
+        try:
+            result.append(normalize_kpi_entry(item, strict=strict))
+        except ReportValidationError as exc:
+            raise ReportValidationError(f"Invalid KPI entry at index {idx}: {exc}") from exc
+    return result
+
+
 class ReportConsistencyValidator:
     """Deterministic validation of reporting data consistency before rendering."""
 
@@ -896,7 +1007,7 @@ class ReportConsistencyValidator:
         cls,
         datasets: Mapping[str, CanonicalSQLDataset] | CanonicalSQLDataset,
         *,
-        kpis: Sequence[Mapping[str, Any]] | None = None,
+        kpis: Sequence[Mapping[str, Any] | str] | None = None,
         charts: Sequence[ChartSpecification | TransformedChartData | Mapping[str, Any]] | None = None,
         executive_summary: str = "",
         requested_period: str = "",
@@ -910,11 +1021,19 @@ class ReportConsistencyValidator:
         errors: list[str] = []
         warnings: list[str] = []
 
+        # Normalize and validate KPIs data contract
+        normalized_kpis: list[dict[str, Any]] = []
+        if kpis is not None:
+            try:
+                normalized_kpis = normalize_kpi_collection(kpis)
+            except ReportValidationError as exc:
+                errors.append(f"KPI collection validation error: {exc}")
+
         if isinstance(datasets, CanonicalSQLDataset):
             datasets = {datasets.name: datasets}
 
         if not datasets:
-            return ValidationResult(True, [], ["No datasets present in report."])
+            return ValidationResult(len(errors) == 0, errors, ["No datasets present in report."])
 
         # 0. Check dataset structural validation errors (e.g. scalar strings passed as rows)
         seen_signatures: dict[tuple[Any, ...], str] = {}
@@ -941,7 +1060,7 @@ class ReportConsistencyValidator:
         # 1. Validate empty SQL result
         if all(ds.is_empty for ds in datasets.values()):
             warnings.append("All SQL query results returned 0 rows. A clean 'No Data' report should be produced.")
-            return ValidationResult(True, [], warnings)
+            return ValidationResult(len(errors) == 0, errors, warnings)
 
         # 2. Validate Period Separation & Executive Summary vs KPI consistency
         if requested_period and not requested_period_has_data:
@@ -950,11 +1069,11 @@ class ReportConsistencyValidator:
                     warnings.append(
                         f"Executive summary does not explicitly state that requested period '{requested_period}' had 0 records."
                     )
-            if kpis:
-                for k in kpis:
+            if normalized_kpis:
+                for k in normalized_kpis:
                     val_str = str(k.get("value", "")).strip()
                     lbl_str = str(k.get("label", "")).strip()
-                    if val_str in {"$0.00", "0", "0.0"} and executive_summary:
+                    if val_str in {"$0.00", "0", "0.0", "0 (No Data)"} and executive_summary:
                         # Check if executive summary mentions non-zero comparison numbers without period separation
                         if comparison_period and comparison_period.lower() not in lbl_str.lower():
                             warnings.append(
@@ -1003,15 +1122,21 @@ class ReportConsistencyValidator:
                             )
 
         # 4. Validate KPI Alignment
-        if kpis and not primary_ds.is_empty:
+        if normalized_kpis and not primary_ds.is_empty:
             computed = primary_ds.compute_deterministic_kpis()
             computed_map = {k["label"].lower(): k["value"] for k in computed}
-            for k in kpis:
+            for k in normalized_kpis:
                 lbl = str(k.get("label", "")).lower()
                 val = str(k.get("value", ""))
-                if lbl in computed_map and computed_map[lbl] != val:
+                matched_comp_val = computed_map.get(lbl)
+                if not matched_comp_val:
+                    for c_lbl, c_val in computed_map.items():
+                        if c_lbl in lbl or lbl in c_lbl:
+                            matched_comp_val = c_val
+                            break
+                if matched_comp_val and val and matched_comp_val != val:
                     warnings.append(
-                        f"KPI '{k.get('label')}' supplied value '{val}' adjusted to match SQL dataset calculation '{computed_map[lbl]}'."
+                        f"KPI '{k.get('label')}' supplied value '{val}' adjusted to match SQL dataset calculation '{matched_comp_val}'."
                     )
 
         return ValidationResult(len(errors) == 0, errors, warnings)

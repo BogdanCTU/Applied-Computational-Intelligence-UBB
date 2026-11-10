@@ -218,7 +218,7 @@ def generate_pdf_file(
     charts: Sequence[Mapping[str, Any]] | None = None,
     sections: Sequence[Mapping[str, Any]] | None = None,
     datasets: Mapping[str, Any] | None = None,
-    kpis: Sequence[Mapping[str, Any]] | None = None,
+    kpis: Sequence[Mapping[str, Any] | str] | None = None,
     findings: Sequence[str] | None = None,
     db_path: str | Path | None = None,
     reference_date: datetime | None = None,
@@ -246,7 +246,7 @@ def generate_pdf_file(
         or (kpis and len(kpis) > 0)
         or (findings and len(findings) > 0)
     ):
-        from .canonical_data import CanonicalSQLDataset, ChartSpecification
+        from .canonical_data import CanonicalSQLDataset, ChartSpecification, normalize_kpi_collection
         from .dataset_registry import CuratedDataset, ReportDatasetRegistry
         from .date_utils import resolve_requested_period
         from .dynamic_pdf_composer import compose_dynamic_pdf
@@ -328,10 +328,11 @@ def generate_pdf_file(
         )
 
         # Validate & reconcile KPIs, Comparison KPIs, Executive Summary, and Key Findings
+        norm_supplied_kpis = normalize_kpi_collection(kpis) if kpis else None
         norm_kpis, comp_kpis, reconciled_summary, period_findings = (
             ReportDataValidator.build_reconciled_kpis_and_summary(
                 registry,
-                supplied_kpis=kpis,
+                supplied_kpis=norm_supplied_kpis,
                 supplied_summary=summary or "",
             )
         )

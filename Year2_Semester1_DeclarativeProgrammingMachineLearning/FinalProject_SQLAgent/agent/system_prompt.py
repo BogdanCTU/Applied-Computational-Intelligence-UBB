@@ -69,7 +69,8 @@ def build_system_prompt(
         if start_d and end_d:
             sections.append(
                 f"ACTIVE REPORTING PERIOD ({label}): "
-                f"start_date >= '{start_d}' AND order_date < '{end_d}'."
+                f"Filter using column 'o.order_date' on table 'orders' (e.g. o.order_date >= '{start_d}' AND o.order_date < '{end_d}'). "
+                f"Note: table 'orders' has NO column named 'start_date'."
             )
 
     if schema_overview and schema_overview.strip():

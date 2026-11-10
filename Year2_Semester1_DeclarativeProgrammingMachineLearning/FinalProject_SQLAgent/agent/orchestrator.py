@@ -29,6 +29,7 @@ from memory.models import TaskDecision, TaskToolCallRecord
 from memory.repository import SQLiteMemoryRepository
 from reporting import (
     ReportHistoryManager,
+    ReportValidationError,
     ReportingPeriod,
     calculate_previous_calendar_month,
     resolve_requested_period,
@@ -37,6 +38,7 @@ from reporting.canonical_data import (
     CanonicalSQLDataset,
     ChartSpecification,
     ReportConsistencyValidator,
+    normalize_kpi_collection,
     validate_tabular_rows_structure,
 )
 
@@ -180,6 +182,37 @@ def _synthesize_kpis(
     return []
 
 
+def _generate_sql_remediation(err_text: str) -> str:
+    """Generate targeted, actionable guidance to correct SQL errors based on database schema."""
+    remediations: list[str] = []
+    low = (err_text or "").lower()
+    if "union" in low or "result columns" in low:
+        remediations.append(
+            "Do NOT use UNION or UNION ALL to combine different tables or queries with different columns. Write a single SELECT query with GROUP BY."
+        )
+    if "subtotal" in low and ("oi." in low or "order_items" in low or "no such column" in low):
+        remediations.append(
+            "Table 'order_items' does NOT have a 'subtotal' column; use 'oi.line_total' for item line totals, or 'o.subtotal' on the 'orders' table."
+        )
+    if "order_date" in low and ("oi." in low or "order_items" in low):
+        remediations.append(
+            "Table 'order_items' does NOT have 'order_date'. Join with 'orders o' ON o.order_id = oi.order_id to filter by 'o.order_date'."
+        )
+    if "ambiguous" in low and "status" in low:
+        remediations.append(
+            "Column 'status' is ambiguous because both orders and payments (or shipments) have a status column. Qualify it as 'o.status' or 'p.status'."
+        )
+    if "start_date" in low:
+        remediations.append(
+            "Table 'orders' has NO 'start_date' column. The date column is 'order_date' (e.g. o.order_date >= '...')."
+        )
+    if "category" in low and "no such column" in low:
+        remediations.append(
+            "Table 'orders' does NOT have a 'category' column. 'category' is in table 'products'. Join 'orders o JOIN order_items oi ON o.order_id = oi.order_id JOIN products pr ON oi.product_id = pr.product_id' to group by category."
+        )
+    return " ".join(remediations)
+
+
 def _synthesize_charts_from_intent(
     user_prompt: str,
     columns: Sequence[str],
@@ -192,6 +225,7 @@ def _synthesize_charts_from_intent(
     is_struct_valid, sanitized_rows, _ = validate_tabular_rows_structure(columns, rows)
     if not is_struct_valid or not sanitized_rows:
         return []
+
     rows = sanitized_rows
 
     charts: list[dict[str, Any]] = []
@@ -945,6 +979,14 @@ class AgentOrchestrator:
         primary_ds = CanonicalSQLDataset(cols, rws, name="primary", sql_query=executed_sql or "")
 
         # 1. Deterministic KPIs from single source of truth
+        if t_args.get("kpis"):
+            try:
+                t_args["kpis"] = normalize_kpi_collection(t_args["kpis"])
+                component_status["kpi_generation"] = "success"
+            except ReportValidationError as exc:
+                log.warning("Invalid KPIs supplied by LLM (%s); resetting to deterministic synthesis.", exc)
+                t_args["kpis"] = []
+
         synth_kpis = primary_ds.compute_deterministic_kpis() if not primary_ds.is_empty else []
         if synth_kpis:
             t_args["kpis"] = synth_kpis
@@ -1242,9 +1284,21 @@ class AgentOrchestrator:
                 "end_date_exclusive": prev_period_info.end_date_str,
             }
 
+        schema_summary = (
+            "TABLES AND COLUMNS:\n"
+            "- orders (order_id, customer_id, order_date, status, channel, subtotal, discount_amount, shipping_fee, tax_amount, total_amount, currency)\n"
+            "- order_items (order_item_id, order_id, product_id, quantity, unit_price, line_total)\n"
+            "- customers (customer_id, first_name, last_name, email, phone, country, city, signup_date, loyalty_tier, marketing_opt_in)\n"
+            "- payments (payment_id, order_id, method, amount, paid_at, status)\n"
+            "- products (product_id, sku, product_name, category, brand, unit_price, unit_cost, weight_kg, is_active, created_at)\n"
+            "- shipments (shipment_id, order_id, carrier, tracking_number, shipped_at, delivered_at, status)\n"
+            "- returns (return_id, order_item_id, reason, refund_amount, requested_at, status)"
+        )
+
         system_prompt = build_system_prompt(
             self.settings,
             tool_mode=self.active_tool_mode,
+            schema_overview=schema_summary,
             discovered_tools=self.tool_handler.registry,
             reporting_period=reporting_period_dict,
         )
@@ -1262,6 +1316,8 @@ class AgentOrchestrator:
         sql_columns: list[str] = []
         sql_rows: list[Any] = []
         approved_queries: set[str] = set()
+        seen_failed_sql: set[str] = set()
+        consecutive_sql_failures = 0
         generated_reports: list[dict[str, Any]] = []
         last_schema_result: dict[str, Any] | None = None
         last_sample_result: dict[str, Any] | None = None
@@ -1486,7 +1542,13 @@ class AgentOrchestrator:
                         exc,
                     )
                     self.active_tool_mode = "json"
-                    system_prompt = build_system_prompt(self.settings, tool_mode="json")
+                    system_prompt = build_system_prompt(
+                        self.settings,
+                        tool_mode="json",
+                        schema_overview=schema_summary,
+                        discovered_tools=self.tool_handler.registry,
+                        reporting_period=reporting_period_dict,
+                    )
                     ollama_tools = None
                     messages_for_llm = self.conversation.get_messages_for_llm(
                         system_prompt=system_prompt
@@ -2248,9 +2310,28 @@ class AgentOrchestrator:
                     )
 
                 # Execute permitted tool through MCP handler
-                t0 = time.perf_counter()
-                tool_res = await self.tool_handler.execute_tool(t_name, t_args)
-                duration_ms = round((time.perf_counter() - t0) * 1000, 2)
+                cand_sql = str(t_args.get("sql_query") or "").strip()
+                if t_name in {"prepare_sql_query", "execute_readonly_sql"} and cand_sql and cand_sql in seen_failed_sql:
+                    log.warning("Blocked duplicate execution of known failing SQL query: %s", cand_sql[:80])
+                    from mcp_layer.client import MCPToolCallResult
+                    duration_ms = 0.0
+                    tool_res = MCPToolCallResult(
+                        tool_name=t_name,
+                        is_error=True,
+                        data={
+                            "status": "error",
+                            "error_code": "DUPLICATE_FAILED_QUERY",
+                            "error": (
+                                "You already submitted this exact failing SQL query. "
+                                "Do NOT retry identical failed queries. Check table and column names in the schema."
+                            ),
+                        },
+                        raw_text="Blocked duplicate failing query",
+                    )
+                else:
+                    t0 = time.perf_counter()
+                    tool_res = await self.tool_handler.execute_tool(t_name, t_args)
+                    duration_ms = round((time.perf_counter() - t0) * 1000, 2)
 
                 # Defensive normalization if tool_res is a raw dictionary
                 if isinstance(tool_res, dict):
@@ -2283,19 +2364,31 @@ class AgentOrchestrator:
                 if t_name == "prepare_sql_query":
                     component_status["sql_preparation"] = "failed" if tool_res.is_error else "success"
                     if tool_res.is_error:
+                        if cand_sql:
+                            seen_failed_sql.add(cand_sql)
+                        consecutive_sql_failures += 1
                         err_text = str(tool_res.data.get("error", ""))
-                        if "UNION" in err_text.upper() or "result columns" in err_text.lower():
-                            remediation = (
-                                "Do NOT use UNION or UNION ALL to combine different tables or queries with different columns. "
-                                "Write a single SELECT query with GROUP BY on a single table, or execute separate queries."
-                            )
+                        remediation = _generate_sql_remediation(err_text)
+                        if remediation:
                             tool_res.data["remediation"] = remediation
                             tool_res.data["error"] += f" Remediation: {remediation}"
+                    else:
+                        consecutive_sql_failures = 0
 
                 # Capture executed SQL results
                 if t_name == "execute_readonly_sql":
                     component_status["sql_execution"] = "failed" if tool_res.is_error else "success"
-                    if not tool_res.is_error:
+                    if tool_res.is_error:
+                        if cand_sql:
+                            seen_failed_sql.add(cand_sql)
+                        consecutive_sql_failures += 1
+                        err_text = str(tool_res.data.get("error", ""))
+                        remediation = _generate_sql_remediation(err_text)
+                        if remediation:
+                            tool_res.data["remediation"] = remediation
+                            tool_res.data["error"] += f" Remediation: {remediation}"
+                    else:
+                        consecutive_sql_failures = 0
                         executed_sql = t_args.get("sql_query")
                         sql_columns = tool_res.data.get("columns", [])
                         sql_rows = tool_res.data.get("rows", [])

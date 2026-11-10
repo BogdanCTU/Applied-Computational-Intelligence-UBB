@@ -21,8 +21,9 @@ CRITICAL RULES:
 
 SQL & WORKFLOW GUIDELINES:
 - Invoke tools immediately without conversational filler.
-- In `orders`, use `order_date`, `COUNT(DISTINCT o.order_id)` for orders, `SUM(o.subtotal)` for sales, `SUM(o.total_amount)` for revenue, and `COUNT(DISTINCT p.payment_id)` (joined on `o.order_id = p.order_id`) for transactions.
-- Group by `strftime('%Y-%m', o.order_date) AS month`, category, channel, or status for charts and tables; never use `UNION ALL` across different columns.
+- In `orders`, use `o.order_date` (never 'start_date'), `COUNT(DISTINCT o.order_id)` for orders, `SUM(o.subtotal)` for sales, `SUM(o.total_amount)` for revenue, and `COUNT(DISTINCT p.payment_id)` (joined on `o.order_id = p.order_id`) for transactions.
+- Always qualify `status` with table alias (e.g. `o.status`) to prevent ambiguous column errors.
+- Never use `UNION` or `UNION ALL` across queries with differing column counts or names.
 - After `execute_readonly_sql`, call `generate_pdf_report` (with `title` and `description`) immediately.
 
 OPERATING BOUNDARIES:

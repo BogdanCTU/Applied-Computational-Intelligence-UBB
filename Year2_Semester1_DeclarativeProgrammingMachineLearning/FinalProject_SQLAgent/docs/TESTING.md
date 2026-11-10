@@ -17,7 +17,7 @@ The project employs an automated, 100% offline testing strategy:
 
 ## 2. Test Suite Breakdown
 
-The automated test suite contains **457 tests** across 36 specialized test modules:
+The automated test suite contains **463 tests** across 36 specialized test modules (461 deterministic offline tests + 2 live Ollama acceptance workflows):
 
 ```text
 tests/
@@ -40,13 +40,13 @@ tests/
 ├── test_gui.py                                (21 tests) • Offscreen PySide6 GUI, preview widgets, thread bridges
 ├── test_macos_startup.py                      ( 7 tests) • macOS bundle path resolution & resource finding
 ├── test_mcp_reliability.py                    ( 5 tests) • Subprocess auto-reconnection & timeout handling
-├── test_mcp_tool_discovery_and_capability.py  ( 8 tests) • MCP 6-tool discovery & Ollama capability awareness
+├── test_mcp_tool_discovery_and_capability.py  (13 tests) • MCP 6-tool discovery, Ollama awareness & live workflow
 ├── test_mcp_tools.py                          ( 4 tests) • FastMCP stdio protocol & tool execution
 ├── test_memory_migrations.py                  ( 9 tests) • Working memory database schema migrations
 ├── test_memory_repository.py                  (18 tests) • Task & step working memory SQLite persistence
 ├── test_reporting.py                          (10 tests) • ReportLab PDF compilation, CSV escaping, path traversal
 ├── test_reporting_accuracy.py                 (15 tests) • Numerical reconciliation, metric definitions & AOV
-├── test_reporting_pipeline_fixes.py           (18 tests) • Canonical reporting pipeline 18-defect regression suite
+├── test_reporting_pipeline_fixes.py           (24 tests) • Canonical reporting pipeline & KPI normalization suite
 ├── test_skill_manager.py                      (11 tests) • Domain skill discovery & prompt injection
 ├── test_skill_models.py                       (14 tests) • Skill metadata parsing, validation & execution
 ├── test_skill_security.py                     ( 8 tests) • Skill sandbox isolation & path sanitization
@@ -58,7 +58,7 @@ tests/
 ├── test_task_planner.py                       (18 tests) • Natural language plan formulation & JSON parsing
 └── test_task_recovery.py                      (13 tests) • Crash recovery, step resumption & checkpoint rollback
 ------------------------------------------------------------------------------------------------------
-Total Automated Tests:                         457 tests (All passing)
+Total Automated Tests:                         463 tests (461 deterministic + 2 live Ollama)
 ```
 
 ---
@@ -87,6 +87,12 @@ A dedicated 18-scenario regression and integration test suite verifies the canon
 | **16. Page X of Y Numbering** | `NumberedCanvas` performs two-pass total page count calculation and footer timestamping. |
 | **17. Multi-page Table Splitting** | `LongTable` pagination wraps table rows across page boundaries cleanly with repeated headers. |
 | **18. End-to-End October 2026 Scenario** | Full pipeline runs from user prompt to 10-page verified PDF with numerical reconciliation. |
+| **19. KPI Dictionary Normalization** | Validates structured KPI dictionaries (`{"label": ..., "value": ..., "note": ...}`) pass through unchanged. |
+| **20. Delimited String KPI Normalization** | Parses string KPIs with delimiters (`"Total Orders: 2,885"`, `"Gross Sales = $1,576,149.69"`) into canonical dicts. |
+| **21. Plain String KPI Normalization** | Converts plain string metrics (`"Total Orders (September 2026)"`) to canonical dict with reconciliation fallback. |
+| **22. Invalid KPI Type Rejection** | Confirms `ReportValidationError` is raised when invalid types (int, empty dict, None) are passed. |
+| **23. SQL Dataset KPI Reconciliation** | Reconciles unpopulated KPI values against registered `CanonicalSQLDataset` dynamically. |
+| **24. Period Consistency Invariant** | Validates requested period vs comparison period label alignment across narrative and KPI components. |
 
 ---
 

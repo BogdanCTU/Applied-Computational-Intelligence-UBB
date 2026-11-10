@@ -7,6 +7,8 @@ from dataclasses import asdict, dataclass, field
 from enum import Enum
 from typing import Any, Mapping, Sequence
 
+from reporting.canonical_data import normalize_kpi_collection
+
 
 class ChartType(str, Enum):
     # Comparison
@@ -425,8 +427,8 @@ class ReportSpecification:
         self.title = title
         self.subtitle = subtitle
         self.executive_summary = executive_summary
-        self.kpis = kpis or []
-        self.comparison_kpis = comparison_kpis or []
+        self.kpis = normalize_kpi_collection(kpis) if kpis else []
+        self.comparison_kpis = normalize_kpi_collection(comparison_kpis) if comparison_kpis else []
         self.findings = findings or key_findings or []
         self.sections = sections or []
         self.datasets = datasets or {}
@@ -580,11 +582,11 @@ class ReportSpecification:
         raw_sections = data.get("sections") or []
         sections = [ReportSection.from_dict(s) for s in raw_sections if isinstance(s, dict)]
 
-        raw_kpis = data.get("kpis") or []
-        kpis = [dict(k) for k in raw_kpis if isinstance(k, dict)]
+        raw_kpis = data.get("kpis")
+        kpis = normalize_kpi_collection(raw_kpis) if raw_kpis else []
 
-        raw_comp_kpis = data.get("comparison_kpis") or []
-        comparison_kpis = [dict(k) for k in raw_comp_kpis if isinstance(k, dict)]
+        raw_comp_kpis = data.get("comparison_kpis")
+        comparison_kpis = normalize_kpi_collection(raw_comp_kpis) if raw_comp_kpis else []
 
         raw_findings = data.get("findings") or []
         findings = [str(f) for f in raw_findings if f]

@@ -7,6 +7,8 @@ from .canonical_data import (
     ReportConsistencyValidator,
     TransformedChartData,
     extract_and_transform_chart,
+    normalize_kpi_collection,
+    normalize_kpi_entry,
     safe_float,
     validate_tabular_rows_structure,
 )
@@ -54,6 +56,8 @@ __all__ = [
     "extract_and_transform_chart",
     "generate_csv_file",
     "generate_pdf_file",
+    "normalize_kpi_collection",
+    "normalize_kpi_entry",
     "normalize_tabular_data",
     "resolve_requested_period",
     "resolve_safe_report_path",

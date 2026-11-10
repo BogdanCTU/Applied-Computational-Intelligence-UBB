@@ -42,6 +42,8 @@ from reporting.canonical_data import (
     CanonicalSQLDataset,
     ChartSpecification,
     ReportConsistencyValidator,
+    normalize_kpi_collection,
+    normalize_kpi_entry,
     validate_tabular_rows_structure,
 )
 from reporting.date_utils import (
@@ -53,7 +55,7 @@ from reporting.date_utils import (
 from reporting.dataset_registry import CuratedDataset, ReportDatasetRegistry
 from reporting.dynamic_pdf_composer import compose_dynamic_pdf
 from reporting.pdf_generator import generate_pdf_file
-from reporting.report_manager import ReportMetadata
+from reporting.report_manager import ReportMetadata, ReportValidationError
 from reporting.report_spec import (
     ChartConfiguration,
     ChartType,
@@ -723,3 +725,150 @@ def test_acceptance_october_2026_sales_performance_report(tmp_path: Path, qcore_
     assert meta.charts_rendered == meta.charts_requested or meta.charts_rendered >= 1
     assert meta.tables_rendered >= 1
     assert meta.warnings is not None
+
+
+# =============================================================================
+# SCENARIO 18: KPI Data Contract & Normalization Boundary Tests
+# =============================================================================
+def test_kpi_contract_dictionary_entries() -> None:
+    """Dictionary-based KPI entries with canonical and alternative keys normalize cleanly."""
+    raw_kpis = [
+        {"label": "Total Orders", "value": "2,885", "note": "Verified"},
+        {"name": "Total Revenue", "amount": "$1,576,149.69", "change": "+5.2%"},
+        {"metric": "Average Order Value", "val": "$546.33", "delta": "+1.1%"},
+        {"title": "Transactions", "count": "2,885"},
+    ]
+    norm = normalize_kpi_collection(raw_kpis)
+    assert len(norm) == 4
+    assert norm[0] == {"label": "Total Orders", "value": "2,885", "note": "Verified"}
+    assert norm[1] == {"label": "Total Revenue", "value": "$1,576,149.69", "note": "+5.2%"}
+    assert norm[2] == {"label": "Average Order Value", "value": "$546.33", "note": "+1.1%"}
+    assert norm[3] == {"label": "Transactions", "value": "2,885", "note": ""}
+
+
+def test_kpi_contract_string_entries_with_and_without_delimiters() -> None:
+    """String KPI entries with or without delimiters normalize into canonical dict format."""
+    # With colon delimiter
+    k1 = normalize_kpi_entry("Total Orders: 2,885")
+    assert k1 == {"label": "Total Orders", "value": "2,885", "note": ""}
+
+    # With equals delimiter
+    k2 = normalize_kpi_entry("Total Revenue = $1,576,149.69")
+    assert k2 == {"label": "Total Revenue", "value": "$1,576,149.69", "note": ""}
+
+    # With dash delimiter
+    k3 = normalize_kpi_entry("Average Order Value - $546.33")
+    assert k3 == {"label": "Average Order Value", "value": "$546.33", "note": ""}
+
+    # Without delimiter (e.g. from LLM passing metric names)
+    k4 = normalize_kpi_entry("Total Orders (September 2026)")
+    assert k4 == {"label": "Total Orders (September 2026)", "value": "", "note": ""}
+
+    # Collection of mixed strings
+    norm = normalize_kpi_collection([
+        "Total Orders (September 2026)",
+        "Total Revenue (September 2026)",
+        "Average Order Value: $546.33",
+    ])
+    assert len(norm) == 3
+    assert norm[0]["label"] == "Total Orders (September 2026)"
+    assert norm[0]["value"] == ""
+    assert norm[2]["value"] == "$546.33"
+
+
+def test_kpi_contract_invalid_types_raise_validation_error() -> None:
+    """Invalid KPI types and malformed objects raise ReportValidationError."""
+    with pytest.raises(ReportValidationError, match="cannot be None"):
+        normalize_kpi_entry(None)
+
+    with pytest.raises(ReportValidationError, match="missing or empty label"):
+        normalize_kpi_entry({})
+
+    with pytest.raises(ReportValidationError, match="missing or empty label"):
+        normalize_kpi_entry({"value": "100"})
+
+    with pytest.raises(ReportValidationError, match="empty string"):
+        normalize_kpi_entry("   ")
+
+    with pytest.raises(ReportValidationError, match="Invalid KPI entry type"):
+        normalize_kpi_entry(12345)
+
+    with pytest.raises(ReportValidationError, match="Invalid KPI entry type"):
+        normalize_kpi_entry(["nested", "list"])
+
+    with pytest.raises(ReportValidationError, match="Invalid KPI collection type"):
+        normalize_kpi_collection("not_a_collection")
+
+    with pytest.raises(ReportValidationError, match="Invalid KPI collection type"):
+        normalize_kpi_collection({"key": "val"})
+
+
+def test_kpi_contract_empty_collections() -> None:
+    """Empty KPI collections return empty lists without error."""
+    assert normalize_kpi_collection(None) == []
+    assert normalize_kpi_collection([]) == []
+    assert normalize_kpi_collection(()) == []
+
+
+def test_kpi_reconciliation_against_canonical_sql_dataset() -> None:
+    """String KPIs without values are reconciled deterministically from CanonicalSQLDataset."""
+    cols = ["order_id", "order_date", "subtotal", "total_amount"]
+    rows = [
+        (1, "2026-09-05", 100.0, 110.0),
+        (2, "2026-09-12", 200.0, 220.0),
+        (3, "2026-09-20", 300.0, 330.0),
+    ]
+    ds = CanonicalSQLDataset(cols, rows, name="september_orders")
+    registry = ReportDatasetRegistry()
+    registry.register("primary", cols, rows)
+
+    # Pass strings without values
+    supplied_kpis = [
+        "Total Orders (September 2026)",
+        "Total Revenue (September 2026)",
+        "Sales Volume",
+    ]
+    p_kpis, c_kpis, summary, findings = ReportDataValidator.build_reconciled_kpis_and_summary(
+        registry,
+        supplied_kpis=supplied_kpis,
+    )
+
+    assert len(p_kpis) >= 3
+    kpi_map = {k["label"]: k["value"] for k in p_kpis}
+    assert kpi_map["Total Orders (September 2026)"] == "3"
+    assert kpi_map["Total Revenue (September 2026)"] == "$660.00"
+    assert kpi_map["Sales Volume"] == "$600.00"
+
+    # Validator gate must pass cleanly without AttributeError
+    val_res = ReportConsistencyValidator.validate_report_components(
+        ds,
+        kpis=supplied_kpis,
+        executive_summary=summary,
+    )
+    assert val_res.is_valid is True
+    assert len(val_res.errors) == 0
+
+
+def test_kpi_requested_period_vs_comparison_period_consistency() -> None:
+    """Validator detects when requested period is zero while comparison period has data."""
+    cols = ["month", "order_count", "sales", "revenue"]
+    rows = [("2026-09", 2885, 1400000.0, 1576149.69)]
+    ds = CanonicalSQLDataset(cols, rows, name="historical_summary")
+
+    # When requested period has no data, validator warns if summary doesn't clarify 0 records
+    kpis = [
+        {"label": "Total Orders (October 2026)", "value": "0 (No Data)"},
+        {"label": "Total Orders (September 2026 Comparison)", "value": "2,885"},
+    ]
+    val_res = ReportConsistencyValidator.validate_report_components(
+        ds,
+        kpis=kpis,
+        executive_summary="September had 2,885 orders and strong growth.",
+        requested_period="October 2026",
+        requested_period_has_data=False,
+        comparison_period="September 2026",
+    )
+    assert val_res.is_valid is True
+    # Should flag that executive summary does not explicitly state requested period had 0 records
+    assert any("October 2026" in w for w in val_res.warnings)
+

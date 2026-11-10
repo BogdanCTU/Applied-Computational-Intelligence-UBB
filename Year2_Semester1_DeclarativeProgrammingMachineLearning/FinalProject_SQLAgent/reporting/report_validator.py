@@ -10,6 +10,7 @@ from reporting.canonical_data import (
     CanonicalSQLDataset,
     ChartSpecification,
     ReportConsistencyValidator,
+    normalize_kpi_collection,
     safe_float,
 )
 from reporting.dataset_registry import CuratedDataset, ReportDatasetRegistry
@@ -50,7 +51,7 @@ class ReportDataValidator:
         cls,
         registry: ReportDatasetRegistry,
         *,
-        supplied_kpis: Sequence[Mapping[str, Any]] | None = None,
+        supplied_kpis: Sequence[Mapping[str, Any] | str] | None = None,
         supplied_summary: str = "",
     ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], str, list[str]]:
         """Compute authoritative KPIs, comparison KPIs, executive summary, and key findings.
@@ -172,24 +173,33 @@ class ReportDataValidator:
 
         if target_ds and target_ds.canonical and not target_ds.canonical.is_empty:
             computed_kpis = target_ds.canonical.compute_deterministic_kpis()
-            if not supplied_kpis:
+            norm_supplied = normalize_kpi_collection(supplied_kpis) if supplied_kpis else []
+            if not norm_supplied:
                 primary_kpis = computed_kpis
             else:
                 computed_map = {k["label"].lower(): k["value"] for k in computed_kpis}
                 seen_labels: set[str] = set()
-                for k in supplied_kpis:
+                for k in norm_supplied:
                     lbl = str(k.get("label", "Metric"))
                     val = str(k.get("value", ""))
-                    if lbl.lower() in computed_map:
-                        val = computed_map[lbl.lower()]
+                    # Reconcile value from computed_map if empty or if label matches
+                    matched_val = computed_map.get(lbl.lower())
+                    if not matched_val:
+                        for c_lbl, c_val in computed_map.items():
+                            if c_lbl in lbl.lower() or lbl.lower() in c_lbl:
+                                matched_val = c_val
+                                break
+                    if matched_val:
+                        val = matched_val
                     primary_kpis.append({
                         "label": lbl,
                         "value": val or "—",
-                        "note": str(k.get("note") or k.get("change") or k.get("delta") or ""),
+                        "note": str(k.get("note") or ""),
                     })
                     seen_labels.add(lbl.lower())
                 for ck in computed_kpis:
-                    if ck["label"].lower() not in seen_labels:
+                    ck_lower = ck["label"].lower()
+                    if ck_lower not in seen_labels and not any(ck_lower in sl for sl in seen_labels):
                         primary_kpis.append(ck)
 
             # Reconcile executive summary if supplied summary contradicts KPIs or is empty
@@ -222,8 +232,8 @@ class ReportDataValidator:
         cls,
         registry: ReportDatasetRegistry,
         *,
-        kpis: Sequence[Mapping[str, Any]] | None = None,
-        comparison_kpis: Sequence[Mapping[str, Any]] | None = None,
+        kpis: Sequence[Mapping[str, Any] | str] | None = None,
+        comparison_kpis: Sequence[Mapping[str, Any] | str] | None = None,
         executive_summary: str = "",
         charts: Sequence[Mapping[str, Any]] | None = None,
         required_breakdowns: Sequence[str] | None = None,
