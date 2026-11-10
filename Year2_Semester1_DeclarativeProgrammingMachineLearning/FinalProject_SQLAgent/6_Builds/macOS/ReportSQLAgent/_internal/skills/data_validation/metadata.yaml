@@ -1,0 +1,23 @@
+skill_id: data_validation
+name: Canonical Dataset & Numerical Integrity Validation
+description: Verification checklist to enforce structural consistency, non-empty results, percentage bounds, and sum reconciliation before document generation.
+version: 1.0.0
+category: data_validation
+tags:
+  - validation
+  - integrity
+  - reconciliation
+  - data_quality
+supported_task_types:
+  - validation
+  - reconciliation
+  - analytics
+  - report
+required_capabilities:
+  - dataset_validation
+dependencies:
+  - sql_generation
+is_enabled: true
+min_system_version: 1
+author: system
+
