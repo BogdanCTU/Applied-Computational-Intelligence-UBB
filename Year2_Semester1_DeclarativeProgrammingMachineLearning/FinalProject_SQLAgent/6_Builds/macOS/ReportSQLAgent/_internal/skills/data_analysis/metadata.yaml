@@ -1,0 +1,23 @@
+skill_id: ecommerce_analysis
+name: E-Commerce Data Analysis & Metric Definitions
+description: Standardized metric definitions, aggregation grain guidance, and analytical formulas for e-commerce reporting.
+version: 1.0.0
+category: data_analysis
+tags:
+  - analytics
+  - ecommerce
+  - metrics
+  - kpi
+supported_task_types:
+  - analytics
+  - metric_computation
+  - trend_analysis
+  - report
+required_capabilities:
+  - readonly_sql
+dependencies:
+  - sql_generation
+is_enabled: true
+min_system_version: 1
+author: system
+
