@@ -1,0 +1,41 @@
+# Environment and Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local Application Data & Repositories
+data/repositories/*
+!data/repositories/.gitkeep
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/database/*.db
+data/database/*.sqlite
+!data/database/.gitkeep
+
+# Models and Exports
+models/*.joblib
+!models/.gitkeep
+exports/*.csv
+exports/*.json
+!exports/.gitkeep
+reports/*.html
+reports/*.json
+!reports/.gitkeep
+
+# Secrets and Local Settings
+.env
+*.token
+
+# .NET / Roslyn Analyzer build artifacts
+roslyn_analyzer/bin/
+roslyn_analyzer/obj/
+*.user
+*.suo
+
