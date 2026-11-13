@@ -1,12 +1,12 @@
 # Features Specification: Roslyn Static Code Metrics
 
-The .NET Roslyn Analyzer (`Microsoft.CodeAnalysis.CSharp`) extracts a deterministic vector of 24 method-level structural and complexity features:
+The .NET Roslyn Analyzer (`Microsoft.CodeAnalysis.CSharp`) extracts a deterministic vector of 26 method-level structural and complexity features:
 
 | Category | Metric Name | Definition & Roslyn Calculation Rule | Theoretical Defect Rationale |
 | :--- | :--- | :--- | :--- |
 | **Basic Size** | `loc` | Non-empty physical lines spanning the method syntax node. | Larger methods correlate with higher bug probability. |
 | **Basic Size** | `logical_loc` | Count of executable statements + 1 for expression body. | Measures procedural density regardless of formatting. |
-| **Basic Size** | `method_length` | Total character length (`Span.Length`) of the method text. | Captures overall body breadth. |
+| **Basic Size** | `method_length` | Total raw character count (`rawText.Length`) of the method text including whitespace and trivia. | Captures overall body breadth and character footprint; distinct from physical line count. |
 | **Basic Size** | `parameter_count` | Count of formal parameters in `method.ParameterList.Parameters`. | High parameter count increases cognitive load and interface mismatch bugs. |
 | **Basic Size** | `local_variable_count` | Count of `VariableDeclaratorSyntax` nodes owned by the method. | Indicates complex internal mutable state. |
 | **Basic Size** | `statement_count` | Count of `StatementSyntax` descendants (excluding the outer method block). | Procedural statement complexity. |
@@ -27,7 +27,9 @@ The .NET Roslyn Analyzer (`Microsoft.CodeAnalysis.CSharp`) extracts a determinis
 | **Structure / OOP**| `property_access_count`| Member access expressions targeting properties (PascalCase). | Encapsulation interaction density. |
 | **Structure / OOP**| `assignment_count` | Count of `AssignmentExpressionSyntax` expressions. | State mutation frequency. |
 | **Structure / OOP**| `object_creation_count`| Count of `new Foo(...)` object allocations. | Coupling to concrete implementations. |
-| **Structure / OOP**| `is_static`, `is_async`, `is_generic` | Boolean method signature flags (1 or 0). | Architectural paradigms (statelessness, async state machines, generics). |
+| **Structure / OOP**| `is_static` | Boolean flag (1 if method contains `static` modifier, else 0). | Stateless routines avoid instance-level mutation bugs but may indicate procedural coupling. |
+| **Structure / OOP**| `is_async` | Boolean flag (1 if method contains `async` modifier, else 0). | Async state machines and task scheduling introduce concurrency/deadlock edge cases. |
+| **Structure / OOP**| `is_generic` | Boolean flag (1 if method has type parameter list, else 0). | Type-parameterized methods handle arbitrary types, increasing polymorphic edge-case risks. |
 
 ---
 

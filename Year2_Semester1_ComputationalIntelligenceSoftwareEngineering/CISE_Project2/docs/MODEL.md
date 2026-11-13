@@ -34,9 +34,11 @@ flowchart LR
 - **Variance Thresholding**: Identifies and strips zero-variance (constant) features across observations.
 - **Repository-Aware Partitioning**: `split_by_repository()` uses scikit-learn's `GroupShuffleSplit` on `repository_id` ensuring zero repository overlap between train and test sets.
 
-### 2.2 Model Training (`src/ml/trainer.py`)
-- **Ensemble Training**: Trains `sklearn.ensemble.RandomForestClassifier` with deterministic random seeds.
-- **GroupKFold Cross-Validation**: Evaluates cross-validation performance across repository folds strictly within the training set.
+### 2.2 Model Training & Cross-Validation (`src/ml/trainer.py`, `src/ml/cross_validation.py`)
+- **Ensemble Training**: Trains `sklearn.ensemble.RandomForestClassifier` across a 26-dimensional static code feature vector with deterministic random seeds.
+- **Strict GroupKFold Cross-Validation**: Evaluates cross-validation performance across repository folds strictly within the training set. Preprocessing (median imputation and zero-variance pruning) is fitted independently within each training fold to guarantee zero cross-fold leakage.
+- **Repository Corpus Requirements for 5-Fold CV**: Running 5-fold GroupKFold requires at least 5 distinct repository groups in the training partition (plus holdout repositories). In the current 3-repository corpus (2 training, 1 holdout), cross-validation operates on $K=2$ repository folds. The evaluation engine automatically checks readiness and refuses silent fallback to non-grouped splits.
+- **Automated Experimentation (`src/ml/experiment_runner.py`)**: Evaluates diverse hyperparameter profiles, computes fold-level and aggregate metrics, compares against Dummy baselines, and selects models based strictly on CV score prior to any holdout evaluation.
 - **Dummy Baseline Comparison**: Evaluates `DummyClassifier(strategy="most_frequent")` under identical cross-validation folds to demonstrate statistical lift above naïve majority guessing.
 
 ### 2.3 Evaluation & Interpretability (`src/ml/evaluator.py`)

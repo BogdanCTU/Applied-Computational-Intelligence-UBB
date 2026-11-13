@@ -8,8 +8,9 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.dummy import DummyClassifier
 from sklearn.model_selection import GroupKFold
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, average_precision_score
 
+from src.ml.cross_validation import InsufficientRepositoriesError
 from src.utils.logger import setup_logger
 
 logger = setup_logger("trainer")
@@ -46,16 +47,38 @@ class ModelTrainer:
         y_train: pd.Series,
         meta_train: pd.DataFrame,
         n_splits: int = 5,
+        strict_repo_count: bool = False,
     ) -> Tuple[RandomForestClassifier, Dict[str, Any], Dict[str, Any], float]:
-        """Perform GroupKFold CV on training data, compare with Dummy baseline, and fit final model."""
+        """Perform GroupKFold CV on training data, compare with Dummy baseline, and fit final model.
+        
+        Args:
+            X_train: Feature matrix.
+            y_train: Target labels (0 or 1).
+            meta_train: Metadata containing 'repository_id'.
+            n_splits: Number of cross-validation folds.
+            strict_repo_count: If True, strictly requires at least n_splits distinct repository groups,
+                               raising InsufficientRepositoriesError instead of fallback.
+        """
         start_time = time.time()
         groups = meta_train["repository_id"].values
         unique_repos = np.unique(groups)
+        n_repos = len(unique_repos)
 
-        cv_splits = min(n_splits, len(unique_repos))
+        if strict_repo_count and n_repos < n_splits:
+            missing = n_splits - n_repos
+            raise InsufficientRepositoriesError(
+                f"Strict GroupKFold requested {n_splits} folds, but training dataset contains only {n_repos} "
+                f"distinct repositories. Missing {missing} repositories. At least {missing} additional independent "
+                f"repositories must be added before running {n_splits}-fold CV without intra-repository leakage."
+            )
+
+        cv_splits = min(n_splits, n_repos)
         if cv_splits < 2:
-            logger.warning(f"Only {len(unique_repos)} repository in training set; CV folds set to 2 with duplicated grouping for technical validation.")
-            # Fallback for single-repo testing
+            if strict_repo_count:
+                raise InsufficientRepositoriesError(
+                    f"GroupKFold requires at least 2 distinct repositories to form folds, found only {n_repos}."
+                )
+            logger.warning(f"Only {n_repos} repository in training set; CV folds set to 2 with duplicated grouping for technical validation.")
             cv_splits = 2
             groups = np.arange(len(y_train)) % 2
 
@@ -67,6 +90,7 @@ class ModelTrainer:
             "recall": [],
             "f1": [],
             "roc_auc": [],
+            "average_precision": [],
         }
         baseline_metrics: Dict[str, List[float]] = {
             "accuracy": [],
@@ -88,29 +112,35 @@ class ModelTrainer:
             dummy.fit(X_f_tr, y_f_tr)
             y_dummy_pred = dummy.predict(X_f_val)
 
-            acc = accuracy_score(y_f_val, y_pred)
-            prec = precision_score(y_f_val, y_pred, zero_division=0)
-            rec = recall_score(y_f_val, y_pred, zero_division=0)
-            f1 = f1_score(y_f_val, y_pred, zero_division=0)
+            acc = float(accuracy_score(y_f_val, y_pred))
+            prec = float(precision_score(y_f_val, y_pred, zero_division=0))
+            rec = float(recall_score(y_f_val, y_pred, zero_division=0))
+            f1 = float(f1_score(y_f_val, y_pred, zero_division=0))
 
-            # ROC-AUC requires both classes present in fold validation set
+            # ROC-AUC & PR-AUC require probability estimates
             if len(np.unique(y_f_val)) > 1 and hasattr(fold_rf, "predict_proba"):
                 try:
                     y_prob = fold_rf.predict_proba(X_f_val)[:, 1]
-                    auc = roc_auc_score(y_f_val, y_prob)
+                    auc = float(roc_auc_score(y_f_val, y_prob))
                 except Exception:
                     auc = 0.5
+                try:
+                    ap = float(average_precision_score(y_f_val, y_prob))
+                except Exception:
+                    ap = float(np.mean(y_f_val == 1))
             else:
                 auc = 0.5
+                ap = float(np.mean(y_f_val == 1)) if len(y_f_val) > 0 else 0.0
 
             cv_metrics["accuracy"].append(acc)
             cv_metrics["precision"].append(prec)
             cv_metrics["recall"].append(rec)
             cv_metrics["f1"].append(f1)
             cv_metrics["roc_auc"].append(auc)
+            cv_metrics["average_precision"].append(ap)
 
-            baseline_metrics["accuracy"].append(accuracy_score(y_f_val, y_dummy_pred))
-            baseline_metrics["f1"].append(f1_score(y_f_val, y_dummy_pred, zero_division=0))
+            baseline_metrics["accuracy"].append(float(accuracy_score(y_f_val, y_dummy_pred)))
+            baseline_metrics["f1"].append(float(f1_score(y_f_val, y_dummy_pred, zero_division=0)))
 
         cv_summary = {
             metric: {
@@ -139,4 +169,3 @@ class ModelTrainer:
             f"(vs Baseline Dummy F1: {baseline_summary['f1']['mean']:.3f})"
         )
         return final_model, cv_summary, baseline_summary, duration
-

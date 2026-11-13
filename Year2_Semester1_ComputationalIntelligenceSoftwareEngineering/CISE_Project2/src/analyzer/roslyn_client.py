@@ -77,7 +77,7 @@ class RoslynClient:
         return methods[0] if methods else None
 
     def calculate_method_metrics(self, code: str) -> Optional[Dict[str, Any]]:
-        """Calculate the 24 static code metrics for an isolated method or file."""
+        """Calculate the 26 static code metrics for an isolated method or file."""
         methods = self.extract_methods(code=code)
         if not methods:
             return None

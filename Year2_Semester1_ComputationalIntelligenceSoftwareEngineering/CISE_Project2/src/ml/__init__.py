@@ -10,6 +10,21 @@ from src.ml.predictor import (
     NoMethodsFoundError,
     ModelCompatibilityError,
 )
+from src.ml.cross_validation import (
+    CrossValidationError,
+    InsufficientRepositoriesError,
+    RepositoryReadinessReport,
+    check_repository_readiness,
+    RepositoryGroupKFoldValidator,
+    FoldMetrics,
+    CrossValidationResults,
+)
+from src.ml.experiment_runner import (
+    ExperimentConfig,
+    ExperimentRunner,
+    ConfigurationResult,
+    DEFAULT_EXPERIMENT_GRID,
+)
 
 __all__ = [
     "DataPreprocessor",
@@ -24,5 +39,15 @@ __all__ = [
     "PredictorError",
     "NoMethodsFoundError",
     "ModelCompatibilityError",
+    "CrossValidationError",
+    "InsufficientRepositoriesError",
+    "RepositoryReadinessReport",
+    "check_repository_readiness",
+    "RepositoryGroupKFoldValidator",
+    "FoldMetrics",
+    "CrossValidationResults",
+    "ExperimentConfig",
+    "ExperimentRunner",
+    "ConfigurationResult",
+    "DEFAULT_EXPERIMENT_GRID",
 ]
-

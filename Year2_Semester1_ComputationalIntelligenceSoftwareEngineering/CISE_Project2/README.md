@@ -10,7 +10,7 @@ Developed for the Computational Intelligence in Software Engineering curriculum.
 
 - **Automated GitHub Discovery & Cloning**: Query public C# repositories via GitHub REST API, clone full histories, and track commit diffs incrementally.
 - **Bug-Fix & SZZ Traceability**: Identify bug-fixing commits via commit message heuristics and issue/PR references; trace candidate Bug-Inducing Commits (BICs) using `git blame -w -M -C`.
-- **Roslyn Static Code Metrics**: Cross-platform .NET 9.0 CLI calculating 24 structural, complexity, and OOP metrics using `Microsoft.CodeAnalysis.CSharp`. Isolates enclosing methods from nested lambdas/local functions and normalizes newlines across platforms.
+- **Roslyn Static Code Metrics**: Cross-platform .NET 9.0 CLI calculating 26 structural, complexity, and OOP metrics using `Microsoft.CodeAnalysis.CSharp`. Isolates enclosing methods from nested lambdas/local functions and normalizes newlines across platforms.
 - **Zero-Leakage ML Pipeline**: Enforces repository-aware data partitioning (`GroupShuffleSplit` on `repository_id`), ensuring code from the same repository never leaks between training and test sets.
 - **Random Forest Modeling & Dual Importances**: Supervised classification evaluated with internal `GroupKFold` cross-validation, compared against `DummyClassifier` baselines, and analyzed via **MDI (Gini)** and **Permutation Feature Importance**.
 - **Real-Time Method & File Bug Prediction**: Interactive Streamlit interface to paste C# snippets or upload complete `.cs` files, extract Roslyn metrics live, estimate defect risk scores, identify influential metrics, and export CSV reports.

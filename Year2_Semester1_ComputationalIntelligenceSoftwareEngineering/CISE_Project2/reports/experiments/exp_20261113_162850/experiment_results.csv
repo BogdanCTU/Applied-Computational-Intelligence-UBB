@@ -1,0 +1,9 @@
+config_id,rank,selection_score,n_estimators,max_depth,min_samples_split,min_samples_leaf,max_features,class_weight,cv_f1_mean,cv_f1_std,cv_roc_auc_mean,cv_roc_auc_std,cv_accuracy_mean,cv_accuracy_std,cv_precision_mean,cv_precision_std,cv_recall_mean,cv_recall_std,cv_average_precision_mean,cv_average_precision_std,mean_train_duration_s,mean_val_duration_s
+rf_compact_regularized,1,0.7206,100,8,5,4,sqrt,balanced,0.7206,0.0595,0.7052,0.1209,0.6682,0.1187,0.641,0.1282,0.8608,0.0694,0.6173,0.0824,0.0931,0.0178
+rf_heavy_bagging_300,2,0.6885,300,15,4,2,sqrt,balanced,0.6885,0.083,0.6581,0.168,0.6538,0.1263,0.633,0.133,0.7722,0.0048,0.5753,0.1186,0.2649,0.0452
+rf_baseline_balanced,3,0.6849,100,10,4,2,sqrt,balanced,0.6849,0.0794,0.6288,0.199,0.6503,0.1229,0.6294,0.1294,0.7686,0.0012,0.5712,0.1279,0.0981,0.023
+rf_ultra_bagging_500,4,0.682,500,15,5,2,sqrt,balanced,0.682,0.0894,0.6735,0.1561,0.6483,0.1318,0.6291,0.1368,0.7606,0.0164,0.5847,0.1143,0.4127,0.059
+rf_feature_constrained_log2,5,0.6741,200,10,4,2,log2,balanced,0.6741,0.0946,0.6954,0.1305,0.6411,0.1356,0.6225,0.1381,0.749,0.028,0.5972,0.0965,0.1717,0.0288
+rf_deep_capacity,6,0.6683,200,15,2,1,sqrt,balanced,0.6683,0.0889,0.5956,0.2203,0.6359,0.1304,0.6181,0.1337,0.7418,0.0208,0.536,0.1477,0.1738,0.0273
+rf_unweighted_log2,7,0.6666,200,12,5,2,log2,None,0.6666,0.0925,0.6868,0.1437,0.6339,0.1393,0.6236,0.1467,0.7346,0.0136,0.5953,0.1075,0.1659,0.0339
+rf_unlimited_depth,8,0.6607,300,None,5,2,sqrt,balanced,0.6607,0.1222,0.6568,0.1628,0.6315,0.1589,0.6168,0.1578,0.7213,0.0701,0.5722,0.1134,0.2473,0.0405

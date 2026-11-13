@@ -1,0 +1,12 @@
+config_id,rank,algorithm,selection_score,n_estimators,max_depth,min_samples_split,min_samples_leaf,max_features,class_weight,cv_f1_mean,cv_f1_std,cv_roc_auc_mean,cv_roc_auc_std,cv_accuracy_mean,cv_accuracy_std,cv_precision_mean,cv_precision_std,cv_recall_mean,cv_recall_std,cv_average_precision_mean,cv_average_precision_std,cv_brier_score_mean,cv_brier_score_std,mean_train_duration_s,mean_val_duration_s
+rf_feature_constrained_log2,1,random_forest,0.6801,200,10,4,2,log2,balanced,0.6801,0.0908,0.6525,0.1675,0.639,0.1445,0.6288,0.1506,0.765,0.0024,0.5875,0.1134,0.2317,0.0587,0.1601,0.0319
+rf_baseline_balanced,2,random_forest,0.6768,100,10,4,2,sqrt,balanced,0.6768,0.0896,0.6349,0.1795,0.6428,0.1373,0.6313,0.1465,0.7498,0.0056,0.5664,0.1267,0.2336,0.0587,0.0904,0.0164
+rf_heavy_bagging_300,3,random_forest,0.6729,300,15,4,2,sqrt,balanced,0.6729,0.0935,0.6386,0.1904,0.6428,0.1373,0.6311,0.1467,0.7382,0.0172,0.5726,0.1294,0.2343,0.0622,0.231,0.0374
+rf_compact_regularized,4,random_forest,0.6721,100,8,5,4,sqrt,balanced,0.6721,0.0932,0.697,0.1214,0.6246,0.1521,0.6165,0.1517,0.765,0.0024,0.621,0.0711,0.2182,0.0461,0.0881,0.0215
+dt_depth8,5,decision_tree,0.6388,,8,5,2,None,balanced,0.6388,0.1272,0.643,0.1359,0.6558,0.1174,0.6334,0.1218,0.6443,0.1327,0.5859,0.1218,0.3423,0.1234,0.0016,0.0005
+rf_deep_capacity,6,random_forest,0.6381,200,15,2,1,sqrt,balanced,0.6381,0.0773,0.6107,0.2112,0.6146,0.1311,0.6187,0.1499,0.6834,0.0143,0.552,0.1524,0.2484,0.0745,0.1573,0.0278
+lr_balanced_c1,7,logistic_regression,0.6362,,None,,,None,balanced,0.6362,0.0097,0.6858,0.0797,0.6534,0.027,0.647,0.0621,0.641,0.0799,0.6493,0.0585,0.2884,0.0308,0.0067,0.0007
+lr_standard_c1,8,logistic_regression,0.6187,,None,,,None,None,0.6187,0.0017,0.6862,0.0796,0.6424,0.038,0.6428,0.0742,0.6106,0.0638,0.6495,0.0589,0.2877,0.0285,0.0065,0.0005
+dt_shallow_depth4,9,decision_tree,0.6102,,4,5,4,None,balanced,0.6102,0.1352,0.6769,0.1178,0.6507,0.1122,0.6393,0.1258,0.5842,0.1424,0.6306,0.1094,0.3025,0.0875,0.0018,0.0007
+dummy_stratified,10,dummy,0.417,,None,,,None,None,0.417,0.0074,0.4536,0.0045,0.4559,0.0057,0.4247,0.0003,0.4099,0.0146,0.4544,0.0007,0.5441,0.0057,0.0003,0.0003
+dummy_most_frequent,11,dummy,0.0,,None,,,None,None,0.0,0.0,0.5,0.0,0.5249,0.0026,0.0,0.0,0.0,0.0,0.4751,0.0026,0.4751,0.0026,0.0003,0.0001
