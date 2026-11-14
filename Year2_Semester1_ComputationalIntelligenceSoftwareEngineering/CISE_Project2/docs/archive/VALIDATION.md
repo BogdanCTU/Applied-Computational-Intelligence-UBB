@@ -104,4 +104,4 @@ The empirical validation protocol was executed across 3 public GitHub repositori
   - Holdout Precision: **50.70%**
   - Holdout F1-Score: **0.6261**
   - Holdout ROC-AUC: **0.6118**
-- Complete findings and error analysis are documented in [docs/FINAL_REPORT.md](FINAL_REPORT.md).
+- Complete findings and error analysis are documented in [docs/../FINAL_REPORT.md](../FINAL_REPORT.md).

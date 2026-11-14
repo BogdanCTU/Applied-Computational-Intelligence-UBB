@@ -4,7 +4,7 @@
 > [!NOTE]
 > **Superceded by Corrected Report v2:**  
 > This document records the initial pilot run (v1). An audit revealed that 3 test fixture methods from `src/FluentValidation.Tests/` entered Label 1 due to regex limitations on nested project directories.  
-> See [docs/FLUENTVALIDATION_PILOT_CORRECTION_REPORT.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB/Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project2/docs/FLUENTVALIDATION_PILOT_CORRECTION_REPORT.md) and artifact `reports/pilot/fluentvalidation_pilot_v2_corrected.json` for the corrected, production-only recalculation (14 production buggy methods, 14 clean methods, total 28 observations, 0% test leakage).
+> See [docs/FLUENTVALIDATION_PILOT_CORRECTION_REPORT.md](FLUENTVALIDATION_PILOT_CORRECTION_REPORT.md) and artifact `reports/pilot/fluentvalidation_pilot_v2_corrected.json` for the corrected, production-only recalculation (14 production buggy methods, 14 clean methods, total 28 observations, 0% test leakage).
 
 **Document Version:** 1.0.0 (Historical Baseline)  
 **Date:** November 2026  

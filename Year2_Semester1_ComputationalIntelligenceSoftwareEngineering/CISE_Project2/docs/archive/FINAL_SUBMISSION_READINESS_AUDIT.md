@@ -26,18 +26,18 @@ All 121 unit and integration tests pass deterministically, and the .NET 9.0 Rosl
 
 | Requirement | Prescribed University Objective | Assigned Rating | Concrete Verification Evidence |
 | :--- | :--- | :---: | :--- |
-| **Requirement 1** | Identify a real-world software engineering problem suitable for ML | **COMPLETE** | Method-level software defect prediction in C#. Problem formulation clearly articulated in [FINAL_REPORT.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB/Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\docs\FINAL_REPORT.md) Section 2. Method-level granularity directly addresses practical code review needs. |
-| **Requirement 2** | Collect relevant and representative real-world data | **COMPLETE** | Automated pipeline mines public GitHub C# repositories. Two versioned dataset snapshots exist in SQLite and CSV ([csharp_empirical_v1](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB/Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\data\processed\csharp_empirical_v1_v1.0.0.csv): 483 obs; [csharp_empirical_v2](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\data\processed\csharp_empirical_v2_v2.0.0.csv): 578 obs across 5 repos). Strict production filtering eliminates test fixtures (0% test leakage). |
-| **Requirement 3** | Select and justify an appropriate machine learning technique | **COMPLETE** | Multi-model benchmark evaluates 11 configurations across 4 algorithm families (Dummy, Logistic Regression, Decision Trees, Random Forest). Selection of `rf_compact_regularized` is empirically and theoretically justified in [FINAL_EXPERIMENTAL_RESULTS.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\docs\FINAL_EXPERIMENTAL_RESULTS.md) by depth constraints preventing project-specific memorization. |
+| **Requirement 1** | Identify a real-world software engineering problem suitable for ML | **COMPLETE** | Method-level software defect prediction in C#. Problem formulation clearly articulated in [FINAL_REPORT.md](../) Section 2. Method-level granularity directly addresses practical code review needs. |
+| **Requirement 2** | Collect relevant and representative real-world data | **COMPLETE** | Automated pipeline mines public GitHub C# repositories. Two versioned dataset snapshots exist in SQLite and CSV ([csharp_empirical_v1](../): 483 obs; [csharp_empirical_v2](../): 578 obs across 5 repos). Strict production filtering eliminates test fixtures (0% test leakage). |
+| **Requirement 3** | Select and justify an appropriate machine learning technique | **COMPLETE** | Multi-model benchmark evaluates 11 configurations across 4 algorithm families (Dummy, Logistic Regression, Decision Trees, Random Forest). Selection of `rf_compact_regularized` is empirically and theoretically justified in [FINAL_EXPERIMENTAL_RESULTS.md](../) by depth constraints preventing project-specific memorization. |
 | **Requirement 4** | Implement preprocessing, training and evaluation | **COMPLETE** | Genuine 5-Fold GroupKFold CV ($N=5, K=5$). Preprocessing (median imputation, constant feature pruning, scaling) fitted strictly in-fold. Probability calibration measured via Brier score (0.2144). Out-of-fold threshold tuning ($\tau^*=0.40$) executed without test-set leakage. |
-| **Requirement 5** | Validate model using real-world examples and gather user feedback where feasible | **COMPLETE WITH LIMITATIONS** | Real-world validation is extensive: independent holdout on quarantined `Newtonsoft.Json` (159 methods, Recall=89.87%, F1=0.7845) and 12-case qualitative audit. **Limitation:** User feedback from external human developers was **not collected** due to academic course constraints. The formal study protocol was published ([DEVELOPER_STUDY_TEMPLATE.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\docs\DEVELOPER_STUDY_TEMPLATE.md)) and evaluated qualitatively without data fabrication ([DEVELOPER_FEEDBACK_REPORT.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\docs\DEVELOPER_FEEDBACK_REPORT.md)). |
-| **Requirement 6** | Produce a comprehensive report covering problem, data, ML methodology, results, threats | **COMPLETE** | [FINAL_REPORT.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\docs\FINAL_REPORT.md) contains all 22 required academic sections, including formal mathematical formulations, architecture flowcharts, empirical benchmark tables, and detailed threats to validity. |
+| **Requirement 5** | Validate model using real-world examples and gather user feedback where feasible | **COMPLETE WITH LIMITATIONS** | Real-world validation is extensive: independent holdout on quarantined `Newtonsoft.Json` (159 methods, Recall=89.87%, F1=0.7845) and 12-case qualitative audit. **Limitation:** User feedback from external human developers was **not collected** due to academic course constraints. The formal study protocol was published ([DEVELOPER_STUDY_TEMPLATE.md](../)) and evaluated qualitatively without data fabrication ([DEVELOPER_FEEDBACK_REPORT.md](../)). |
+| **Requirement 6** | Produce a comprehensive report covering problem, data, ML methodology, results, threats | **COMPLETE** | [FINAL_REPORT.md](../) contains all 22 required academic sections, including formal mathematical formulations, architecture flowcharts, empirical benchmark tables, and detailed threats to validity. |
 
 ---
 
 ## 3. Dataset #2 Integrity & Reconciled Verification
 
-We independently verified the physical CSV export ([csharp_empirical_v2_v2.0.0.csv](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\data\processed\csharp_empirical_v2_v2.0.0.csv)), SQLite database (`data/database/bug_detection.db`), metadata file, and summary reports.
+We independently verified the physical CSV export ([csharp_empirical_v2_v2.0.0.csv](../)), SQLite database (`data/database/bug_detection.db`), metadata file, and summary reports.
 
 ### 3.1 Empirical Observation Counts
 
@@ -50,7 +50,7 @@ We independently verified the physical CSV export ([csharp_empirical_v2_v2.0.0.c
 | **Repo #14** | `FluentValidation/FluentValidation` | 14 | 14 | 28 | 28 | 4.84% |
 | **Total** | **5 Repositories** | **279 (48.27%)** | **299 (51.73%)** | **578** | **578** | **100.0%** |
 
-- **Total Observations:** Exactly **578 rows**, matching the reported count in [DATASET_EXPANSION_FINAL_REPORT.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\docs\DATASET_EXPANSION_FINAL_REPORT.md).
+- **Total Observations:** Exactly **578 rows**, matching the reported count in [DATASET_EXPANSION_FINAL_REPORT.md](../).
 - **Class Balance:** 279 positive (48.27%) and 299 candidate-clean (51.73%).
 - **Feature Schema:** Exactly **26 Roslyn numerical features** are present.
 - **Missing Values:** Exactly **0 missing values** across all 26 features across all 578 observations.
@@ -70,7 +70,7 @@ We independently verified the physical CSV export ([csharp_empirical_v2_v2.0.0.c
 
 ## 4. Five-Fold Cross-Validation Verification
 
-We independently inspected [experiment_results.json](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\reports\experiments\final\experiment_results.json), recalculating all fold statistics and checking group assignments:
+We independently inspected [experiment_results.json](../), recalculating all fold statistics and checking group assignments:
 
 ### 4.1 Fold Assignment & Zero-Leakage Audit
 
@@ -151,7 +151,7 @@ We audited the serialized model bundle on disk:
 
 ## 6. Independent Holdout Verification (`JamesNK/Newtonsoft.Json`)
 
-We audited the holdout evaluation records in `reports/holdout/newtonsoft_holdout_results.json` and [INDEPENDENT_VALIDATION_REPORT.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\docs\INDEPENDENT_VALIDATION_REPORT.md):
+We audited the holdout evaluation records in `reports/holdout/newtonsoft_holdout_results.json` and [INDEPENDENT_VALIDATION_REPORT.md](../):
 
 ### 6.1 Independence & Anti-Snooping Verification
 1. **Quarantine Audit:** `JamesNK/Newtonsoft.Json` (Repo #17) is completely absent from all training folds and from Dataset Snapshots #1 and #2.
@@ -182,7 +182,7 @@ We audited the holdout evaluation records in `reports/holdout/newtonsoft_holdout
 
 ## 7. Qualitative Prediction Sample Audit
 
-We audited the qualitative cases documented in [INDEPENDENT_VALIDATION_REPORT.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\docs\INDEPENDENT_VALIDATION_REPORT.md) and `reports/holdout/newtonsoft_holdout_results.json`:
+We audited the qualitative cases documented in [INDEPENDENT_VALIDATION_REPORT.md](../) and `reports/holdout/newtonsoft_holdout_results.json`:
 - **Cases Inspected:** 12 structured cases (3 True Positives, 3 False Positives, 3 False Negatives, 3 True Negatives).
 - **Evidence Backing:** Each case includes method signatures, source file paths, ground-truth SZZ labels, predicted probabilities, and detailed Roslyn metrics (LOC, cyclomatic complexity, nesting depth, parameter counts, method call counts).
 - **Critical Findings:**
@@ -195,10 +195,10 @@ We audited the qualitative cases documented in [INDEPENDENT_VALIDATION_REPORT.md
 
 ## 8. Developer Feedback Assessment
 
-We inspected [DEVELOPER_FEEDBACK_REPORT.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\docs\DEVELOPER_FEEDBACK_REPORT.md) and [DEVELOPER_STUDY_TEMPLATE.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\docs\DEVELOPER_STUDY_TEMPLATE.md):
+We inspected [DEVELOPER_FEEDBACK_REPORT.md](../) and [DEVELOPER_STUDY_TEMPLATE.md](../):
 
 - **External Human Participant Feedback:** **NOT COLLECTED**.
-- **Transparent Disclosure:** [DEVELOPER_FEEDBACK_REPORT.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\docs\DEVELOPER_FEEDBACK_REPORT.md) Section 2 and [FINAL_REPORT.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\docs\FINAL_REPORT.md) Section 19 explicitly disclose that:
+- **Transparent Disclosure:** [DEVELOPER_FEEDBACK_REPORT.md](../) Section 2 and [FINAL_REPORT.md](../) Section 19 explicitly disclose that:
   > *"In strict accordance with academic ethics and research reproducibility guidelines, no external participant responses or fabricated survey cohorts are simulated. ... the study protocol is formally documented as a reproducible research instrument accompanied by expert qualitative analysis."*
 - **Curriculum Requirement Evaluation:** University Requirement 5 states: *"Validate the model using real-world examples and gather user feedback where feasible."* The project satisfies the primary clause through extensive real-world holdout evaluation (`Newtonsoft.Json`), and ethically discloses the absence of external user survey responses. Rating assigned: **COMPLETE WITH LIMITATIONS**.
 
@@ -213,10 +213,10 @@ We inspected [DEVELOPER_FEEDBACK_REPORT.md](file:///e:/PERSONAL/GitHub/1_Applied
   - True Positives: $50 \times 0.90 = 45$
   - False Positives: $950 \times (1 - 0.60) = 380$
   - Operational Precision: $\frac{45}{45 + 380} = \mathbf{10.6\%}$
-- **Assessment:** [FINAL_REPORT.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\docs\FINAL_REPORT.md) must be read with the explicit understanding that reported precision reflects a balanced evaluation benchmark rather than operational triage precision in low-prevalence production codebases.
+- **Assessment:** [FINAL_REPORT.md](../) must be read with the explicit understanding that reported precision reflects a balanced evaluation benchmark rather than operational triage precision in low-prevalence production codebases.
 
 ### 9.2 SZZ Label Limitations
-- [FINAL_REPORT.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\CISE_Project2\docs\FINAL_REPORT.md) Section 20.1 appropriately discusses SZZ construct validity threats (e.g. `git blame` noise, refactoring attribution). SZZ labels are heuristic approximations of defect-inducing revisions, not infallible ground truth.
+- [FINAL_REPORT.md](../) Section 20.1 appropriately discusses SZZ construct validity threats (e.g. `git blame` noise, refactoring attribution). SZZ labels are heuristic approximations of defect-inducing revisions, not infallible ground truth.
 
 ### 9.3 Probability Calibration (Brier Score)
 - The report notes that `rf_compact_regularized` achieved a low Brier score ($0.2144$ on CV, $0.1713$ on holdout). While lower than uninformative baselines ($0.50$), Brier score measures mean squared probability error; it is an aggregate proper scoring metric rather than proof of decile-by-decile calibration (which requires reliability diagrams).

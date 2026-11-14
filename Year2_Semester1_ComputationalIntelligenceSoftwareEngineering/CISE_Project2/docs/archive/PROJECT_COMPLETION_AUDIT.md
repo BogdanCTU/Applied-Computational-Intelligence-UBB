@@ -119,7 +119,7 @@ Every requirement was rigorously verified against executable artifacts, versione
   - Result: Succeeded in 2.1 seconds; correctly parsed AST, extracted metrics, and computed risk score ($0.5067$, Medium risk).
 
 ### 4.4 Documentation Consistency Audit
-- [README.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB/Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project2/README.md) fully synchronized with Dataset #2, 5-fold CV results, and `Newtonsoft.Json` holdout metrics.
+- [README.md](../../README.md) fully synchronized with Dataset #2, 5-fold CV results, and `Newtonsoft.Json` holdout metrics.
 - All historical discrepancies (Humanizer 291 vs 178, MediatR 91 vs 105, FluentValidation 28 vs 34, 2-fold vs 5-fold CV) fully reconciled across all documents.
 - Datasets, frozen models, scripts, and reports verified on disk.
 

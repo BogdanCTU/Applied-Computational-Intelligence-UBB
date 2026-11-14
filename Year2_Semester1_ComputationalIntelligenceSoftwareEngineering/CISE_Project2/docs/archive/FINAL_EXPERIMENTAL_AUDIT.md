@@ -271,7 +271,7 @@ An inspection of the repository commit logs, previous report drafts, and code co
 
 ## 6. Developer Study Audit (`docs/DEVELOPER_STUDY_TEMPLATE.md`)
 
-An audit of the human validation protocol in [docs/DEVELOPER_STUDY_TEMPLATE.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB/Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project2/docs/DEVELOPER_STUDY_TEMPLATE.md) revealed both strong design elements and two methodological flaws:
+An audit of the human validation protocol in [docs/DEVELOPER_STUDY_TEMPLATE.md](../DEVELOPER_STUDY_TEMPLATE.md) revealed both strong design elements and two methodological flaws:
 
 ### 6.1 Strengths:
 1. **Balanced Stratified Sampling**: Exactly 6 methods were sampled from each of the four confusion matrix quadrants (6 TP, 6 FP, 6 TN, 6 FN), providing an ideal testbed for analyzing false alarms and subtle misses.

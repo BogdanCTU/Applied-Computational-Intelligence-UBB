@@ -198,7 +198,7 @@ To ensure unassailable academic validity during final evaluation:
 
 ## 8. Human Validation Study Protocol Rigor
 
-In [docs/DEVELOPER_STUDY_TEMPLATE.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB/Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project2/docs/DEVELOPER_STUDY_TEMPLATE.md):
+In [docs/DEVELOPER_STUDY_TEMPLATE.md](../DEVELOPER_STUDY_TEMPLATE.md):
 1. **Sampling Transparency**: The 24 methods are explicitly stratified across confusion matrix quadrants (6 TP, 6 FP, 6 TN, 6 FN) to evaluate why false alarms and subtle misses occur.
 2. **Double-Blind Protection**: Reviewers receive zero model risk scores, SZZ labels, commit hashes, or repository identities.
 3. **Public Searchability Limitation**: Evaluators with public GitHub access could search unique string literals or signatures. The protocol discloses this limitation and prescribes identifier de-anonymization (`Method_01`, `Tokenize_Args`) when executing strict blinded studies.

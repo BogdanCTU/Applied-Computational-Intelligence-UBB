@@ -16,7 +16,7 @@ The current empirical defect prediction system for C# source code evaluates meth
 - **Training Repositories:** `LuckyPennySoftware/MediatR` (91 observations) and `Humanizr/Humanizer` (291 observations), totaling **382 training observations**.
 - **Holdout Repository:** `commandlineparser/commandline` (101 observations: 44 Buggy, 57 Clean).
 
-While the existing implementation achieves methodological rigor in zero intra-repository leakage and in-fold preprocessing isolation, an independent academic audit ([docs/FINAL_EXPERIMENTAL_AUDIT.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB/Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project2/docs/FINAL_EXPERIMENTAL_AUDIT.md)) identified two major structural limitations:
+While the existing implementation achieves methodological rigor in zero intra-repository leakage and in-fold preprocessing isolation, an independent academic audit ([docs/FINAL_EXPERIMENTAL_AUDIT.md](FINAL_EXPERIMENTAL_AUDIT.md)) identified two major structural limitations:
 1. **Underpowered Cross-Validation ($K=2$):** With only two training repositories, repository-aware `GroupKFold` cross-validation is restricted to $K=2$ folds, producing high fold-level variance ($\pm 0.0908$ to $\pm 0.1284$ F1 standard deviation) and restricting hyperparameter exploration.
 2. **Exploratory Holdout Invalidation:** `commandlineparser/commandline` was inspected post-hoc during earlier prototype phases to diagnose error quadrants and evaluate feature importances. While physically isolated from model weights, it is subject to researcher confirmation bias.
 
@@ -123,7 +123,7 @@ Assuming a standard mining depth of **400 commits per repository**:
 | **`CsvHelper` (Backup)** | 500 | $40 - 60$ | $30 - 50$ | $50 - 75$ | $50 - 75$ | **$100 - 150$** | Standby Projection |
 
 > [!NOTE] Empirical Calibration from FluentValidation Pilot (November 2026)
-> The controlled pilot on `FluentValidation` (350 commits mined) yielded 11 verified bug fixes, 14 unique BICs, and 34 balanced method observations (17 Buggy, 17 Candidate-Clean) with a 100% Roslyn extraction success rate (see [docs/FLUENTVALIDATION_PILOT_REPORT.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB/Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project2/docs/FLUENTVALIDATION_PILOT_REPORT.md)). The lower defect density per commit (3.1% vs 27.7% in Humanizer) demonstrated that mature libraries require deeper commit sampling (500–600 commits) to achieve 60–100 observations. Overall training corpus projections are calibrated accordingly to **~636 – 816 methods** across the 5 training repositories.
+> The controlled pilot on `FluentValidation` (350 commits mined) yielded 11 verified bug fixes, 14 unique BICs, and 34 balanced method observations (17 Buggy, 17 Candidate-Clean) with a 100% Roslyn extraction success rate (see [docs/FLUENTVALIDATION_PILOT_REPORT.md](FLUENTVALIDATION_PILOT_REPORT.md)). The lower defect density per commit (3.1% vs 27.7% in Humanizer) demonstrated that mature libraries require deeper commit sampling (500–600 commits) to achieve 60–100 observations. Overall training corpus projections are calibrated accordingly to **~636 – 816 methods** across the 5 training repositories.
 
 ### 4.3 Aggregate Corpus Projections
 - **Proposed Training Partition (5 Repositories):**

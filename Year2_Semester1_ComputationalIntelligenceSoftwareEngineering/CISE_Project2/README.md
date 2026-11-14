@@ -154,45 +154,57 @@ The repository maintains two versioned dataset snapshots stored in SQLite (`data
 
 ---
 
-## 🧠 Final Experimental Findings
+## 📚 Academic Documentation Suite
 
-Detailed findings from the 5-fold cross-validation and independent holdout evaluation are documented in:
-👉 **[docs/FINAL_REPORT.md](docs/FINAL_REPORT.md)**  
-👉 **[docs/FINAL_EXPERIMENTAL_RESULTS.md](docs/FINAL_EXPERIMENTAL_RESULTS.md)**  
-👉 **[docs/INDEPENDENT_VALIDATION_REPORT.md](docs/INDEPENDENT_VALIDATION_REPORT.md)**  
-👉 **[docs/DEVELOPER_FEEDBACK_REPORT.md](docs/DEVELOPER_FEEDBACK_REPORT.md)**  
+The complete academic narrative and technical documentation are consolidated into four canonical references:
 
-### Multi-Model 5-Fold GroupKFold Benchmark (Dataset #2, 578 Methods)
+- 📄 **[docs/FINAL_REPORT.md](docs/FINAL_REPORT.md)** — **Authoritative Academic Research Report**: Complete 22-section academic paper covering problem formulation, SZZ mining, Roslyn static metrics, 5-fold repository-aware cross-validation, probability calibration, threshold tuning, quarantined holdout evaluation, threats to validity, and CI/CD recommendations.
+- 🛠️ **[docs/PROJECT_METHODOLOGY.md](docs/PROJECT_METHODOLOGY.md)** — **Technical Methodology Reference**: In-depth specification of repository discovery, commit collection, bug-fixing heuristics, SZZ line blame tracing, production source-path classification, and the 26 Roslyn code metric suite.
+- 📊 **[docs/EXPERIMENTAL_RESULTS.md](docs/EXPERIMENTAL_RESULTS.md)** — **Consolidated Empirical Results**: Benchmark tables for all 11 model configurations, exact cross-validation fold breakdowns, reconciled accuracy metrics, threshold sweep curves, and holdout performance.
+- ⚖️ **[docs/VALIDATION_AND_LIMITATIONS.md](docs/VALIDATION_AND_LIMITATIONS.md)** — **Verification, Validation & Limitations**: Software verification (121 passing tests, Roslyn .NET 9.0 build, model smoke tests), empirical holdout validation, base-rate fallacy calculations, SZZ heuristic limitations, and future research directions.
+- 📋 **[docs/DEVELOPER_STUDY_TEMPLATE.md](docs/DEVELOPER_STUDY_TEMPLATE.md)** — **Developer Study Protocol**: Formal, reproducible 24-method double-blind review instrument for human evaluation.
 
-| Rank | Configuration ID | Algorithm Family | F1 (Mean ± Std) | Recall (Mean ± Std) | Precision (Mean ± Std) | Brier Score |
-| :---: | :--- | :--- | :---: | :---: | :---: | :---: |
-| **1** | `rf_compact_regularized` | Random Forest | **$0.6859 \pm 0.0247$** | $0.7403 \pm 0.1557$ | $0.6824 \pm 0.1202$ | **$0.2144 \pm 0.0396$** |
-| 2 | `rf_feature_constrained_log2` | Random Forest | $0.6385 \pm 0.0641$ | $0.6831 \pm 0.1706$ | $0.6384 \pm 0.1197$ | $0.2209 \pm 0.0375$ |
-| 3 | `rf_heavy_bagging_300` | Random Forest | $0.6262 \pm 0.0633$ | $0.6788 \pm 0.1738$ | $0.6117 \pm 0.0984$ | $0.2265 \pm 0.0376$ |
-| 4 | `rf_baseline_balanced` | Random Forest | $0.6108 \pm 0.1176$ | $0.6678 \pm 0.1982$ | $0.6046 \pm 0.1157$ | $0.2249 \pm 0.0410$ |
-| 5 | `dt_shallow_depth4` | Decision Tree | $0.5734 \pm 0.2172$ | $0.6166 \pm 0.2646$ | $0.5573 \pm 0.1884$ | $0.2807 \pm 0.0699$ |
-| 6 | `rf_deep_capacity` | Random Forest | $0.5577 \pm 0.0739$ | $0.5794 \pm 0.1737$ | $0.5811 \pm 0.1147$ | $0.2429 \pm 0.0435$ |
-| 7 | `lr_balanced_c1` | Logistic Regression | $0.4989 \pm 0.1252$ | $0.4538 \pm 0.1469$ | $0.5994 \pm 0.1557$ | $0.2620 \pm 0.0368$ |
-| 8 | `dummy_stratified` | Baseline (Prior) | $0.4919 \pm 0.0821$ | $0.4644 \pm 0.1328$ | $0.5259 \pm 0.0526$ | $0.4726 \pm 0.0700$ |
-| 9 | `lr_standard_c1` | Logistic Regression | $0.4890 \pm 0.1409$ | $0.4360 \pm 0.1651$ | $0.6095 \pm 0.1593$ | $0.2643 \pm 0.0366$ |
-| 10 | `dt_depth8` | Decision Tree | $0.4695 \pm 0.2194$ | $0.4907 \pm 0.2529$ | $0.4844 \pm 0.1983$ | $0.3993 \pm 0.1017$ |
-| 11 | `dummy_most_frequent` | Baseline (Majority) | $0.0000 \pm 0.0000$ | $0.0000 \pm 0.0000$ | $0.0000 \pm 0.0000$ | $0.4885 \pm 0.0218$ |
+---
+
+## 🧠 Summary of Final Experimental Results  
+
+### Multi-Model 5-Fold GroupKFold Benchmark (Dataset #2, 578 Methods Across 5 Repositories)
+
+Cross-validation was evaluated using strict repository-level grouping (`GroupKFold`, $N_{\text{repos}}=5$, $K=5$), ensuring zero intra-repository leakage between training and validation sets:
+
+| Rank | Configuration ID | Algorithm Family | F1 (Mean ± Std) | Recall (Mean ± Std) | Precision (Mean ± Std) | Accuracy (Mean ± Std) | Brier Score |
+| :---: | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **1** | `rf_compact_regularized` | Random Forest | **$0.6859 \pm 0.0247$** | $0.7403 \pm 0.1557$ | $0.6824 \pm 0.1202$ | **$0.6734 \pm 0.0491$** | **$0.2144 \pm 0.0396$** |
+| 2 | `rf_feature_constrained_log2` | Random Forest | $0.6385 \pm 0.0641$ | $0.6831 \pm 0.1706$ | $0.6384 \pm 0.1197$ | $0.6369 \pm 0.0673$ | $0.2209 \pm 0.0375$ |
+| 3 | `rf_heavy_bagging_300` | Random Forest | $0.6262 \pm 0.0633$ | $0.6788 \pm 0.1738$ | $0.6117 \pm 0.0984$ | $0.6212 \pm 0.0617$ | $0.2265 \pm 0.0376$ |
+| 4 | `rf_baseline_balanced` | Random Forest | $0.6108 \pm 0.1176$ | $0.6678 \pm 0.1982$ | $0.6046 \pm 0.1157$ | $0.6074 \pm 0.0827$ | $0.2249 \pm 0.0410$ |
+| 5 | `dt_shallow_depth4` | Decision Tree | $0.5734 \pm 0.2172$ | $0.6166 \pm 0.2646$ | $0.5573 \pm 0.1884$ | $0.5721 \pm 0.1345$ | $0.2807 \pm 0.0699$ |
+| 6 | `rf_deep_capacity` | Random Forest | $0.5577 \pm 0.0739$ | $0.5794 \pm 0.1737$ | $0.5811 \pm 0.1147$ | $0.5815 \pm 0.0647$ | $0.2429 \pm 0.0435$ |
+| 7 | `lr_balanced_c1` | Logistic Regression | $0.4989 \pm 0.1252$ | $0.4538 \pm 0.1469$ | $0.5994 \pm 0.1557$ | $0.5709 \pm 0.0894$ | $0.2620 \pm 0.0368$ |
+| 8 | `dummy_stratified` | Baseline (Prior) | $0.4919 \pm 0.0821$ | $0.4644 \pm 0.1328$ | $0.5259 \pm 0.0526$ | $0.4984 \pm 0.0592$ | $0.4726 \pm 0.0700$ |
+| 9 | `lr_standard_c1` | Logistic Regression | $0.4890 \pm 0.1409$ | $0.4360 \pm 0.1651$ | $0.6095 \pm 0.1593$ | $0.5744 \pm 0.0877$ | $0.2643 \pm 0.0366$ |
+| 10 | `dt_depth8` | Decision Tree | $0.4695 \pm 0.2194$ | $0.4907 \pm 0.2529$ | $0.4844 \pm 0.1983$ | $0.5050 \pm 0.1425$ | $0.3993 \pm 0.1017$ |
+| 11 | `dummy_most_frequent` | Baseline (Majority) | $0.0000 \pm 0.0000$ | $0.0000 \pm 0.0000$ | $0.0000 \pm 0.0000$ | $0.5173 \pm 0.0210$ | $0.4885 \pm 0.0218$ |
+
+### Reconciled Accuracy Metrics
+- **5-Fold CV Mean Accuracy ($\tau = 0.50$):** **$0.6734 \pm 0.0491$** (unweighted mean across 5 validation folds).
+- **Pooled Out-of-Fold Nominal Accuracy ($\tau = 0.50$):** **$67.13\%$** ($TN=183, FP=116, FN=74, TP=205$, $N=578$).
+- **Pooled Out-of-Fold Tuned Accuracy ($\tau^* = 0.40$):** **$70.42\%$** ($TN=163, FP=136, FN=35, TP=244$, $N=578$).
 
 ### Independent Holdout Evaluation (`JamesNK/Newtonsoft.Json`, 159 Methods)
+Evaluated blindly on an independent repository after model architecture and decision thresholds were frozen:
+- **Nominal Threshold ($\tau = 0.50$):** Accuracy **74.21%**, Precision **69.79%**, Recall **84.81%**, F1 **0.7657**, ROC-AUC **0.8209**, Brier **0.1713** ($TN=51, FP=29, FN=12, TP=67$).
+- **In-Training Tuned Threshold ($\tau^* = 0.40$):** Accuracy **75.47%**, Precision **69.61%**, Recall **89.87%** (71/79 defects caught), F1 **0.7845** ($TN=49, FP=31, FN=8, TP=71$).
 
-- **Nominal Threshold ($\tau = 0.50$):**
-  - **Accuracy:** 74.21% (118/159)
-  - **Precision:** 69.79% (67/96)
-  - **Recall:** **84.81%** (67/79 bugs caught)
-  - **F1-Score:** **0.7657**
-  - **ROC-AUC:** **0.8209** | **PR-AUC:** **0.7917** | **Brier Score:** **0.1713**
-  - **Confusion Matrix:** $TN=51, FP=29, FN=12, TP=67$
-- **In-Training Tuned Threshold ($\tau^* = 0.40$):**
-  - **Accuracy:** **75.47%** (120/159)
-  - **Precision:** 69.61% (71/102)
-  - **Recall:** **89.87%** (71/79 bugs caught)
-  - **F1-Score:** **0.7845**
-  - **Confusion Matrix:** $TN=49, FP=31, FN=8, TP=71$
+---
+
+## ⚠️ Documented Academic Limitations
+
+1. **Base-Rate Fallacy in Production:** Evaluated on balanced ~1:1 corpora (~48%–50% defect prevalence). In industrial codebases where defects affect 2%–10% of methods, operational precision will decline (e.g. ~10.9% expected precision at 5% prevalence based on Bayes' theorem; see [docs/VALIDATION_AND_LIMITATIONS.md](docs/VALIDATION_AND_LIMITATIONS.md)).
+2. **SZZ Label Approximations:** Defect labels are derived heuristically via Git blame and bug-fixing commit messages rather than certified ground truth.
+3. **Open-World Assumption:** Candidate-clean methods sampled from stable HEAD are free of recorded bug-fixing traces in the mined commit window, but may contain undiscovered latent defects.
+4. **Threshold Selection Coupling:** Decision threshold 0.40 was optimized on aggregated out-of-fold cross-validation predictions without nested CV, though its generalizability was confirmed on the independent holdout.
+5. **Absence of External Human Feedback:** External human survey feedback was not collected; the evaluation protocol is published as a research instrument ([docs/DEVELOPER_STUDY_TEMPLATE.md](docs/DEVELOPER_STUDY_TEMPLATE.md)), and qualitative analyses were conducted via automated AST inspection.
 
 ---
 

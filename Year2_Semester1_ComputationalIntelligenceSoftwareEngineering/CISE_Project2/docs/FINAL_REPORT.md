@@ -35,7 +35,7 @@ To eliminate data snooping, an independent sixth repository, `JamesNK/Newtonsoft
 | **Model Selection** | Multi-Model 5-Fold GroupKFold | Random Forest (`rf_compact_regularized`) wins: CV F1 = **0.6859**, Brier = **0.2144** |
 | **Decision Boundary** | Out-of-Fold Threshold Tuning | Optimal threshold $\tau^* = 0.40$ achieves Accuracy **70.42%**, elevates Recall to **87.46%**, F1 to **0.7405** |
 | **Quarantined Holdout** | `JamesNK/Newtonsoft.Json` (159 methods) | Frozen model achieves **75.47% Accuracy**, **89.87% Recall**, **0.7845 F1**, **0.8209 ROC-AUC** |
-| **Developer Feedback** | 24-Method Stratified Review Protocol | Strong qualitative alignment on complex methods; identifies semantic blind spots in tiny methods |
+| **Developer Validation** | Formal Protocol & Automated Qualitative Review | Protocol published as reproducible research instrument (`DEVELOPER_STUDY_TEMPLATE.md`); automated qualitative audit confirms alignment on complex methods and identifies semantic limits on concise methods |
 
 ---
 
@@ -161,7 +161,7 @@ data/processed/
 
 ## 9. Reconciled Discrepancies & Historical Documentation Audit
 
-Prior documentation drafts contained numerical inconsistencies that were rigorously audited and reconciled in `docs/FINAL_DATASET_INTEGRITY_AUDIT.md`:
+Prior documentation drafts contained numerical inconsistencies that were rigorously audited and reconciled in historical audits (see [docs/archive/FINAL_DATASET_INTEGRITY_AUDIT.md](archive/FINAL_DATASET_INTEGRITY_AUDIT.md) and [docs/EXPERIMENTAL_RESULTS.md](EXPERIMENTAL_RESULTS.md)):
 
 1. **Humanizer Observation Count (291 vs 178):** Reconciled. 178 was an erroneous documentation artifact caused by doubling True Positives (89); the true empirical observation count in Dataset 1 is **291**.
 2. **MediatR Observation Count (91 vs 105):** Reconciled. 105 was an erroneous documentation artifact; the true empirical observation count in Dataset 1 is **91**.
@@ -339,14 +339,13 @@ To understand the decision boundaries and failure modes of the model on real-wor
 
 ---
 
-## 19. Developer Feedback & Validation Study
+## 19. Developer Feedback Protocol & Qualitative Review
 
-To fulfill University Requirement 5, we designed and analyzed a double-blind human review protocol (`docs/DEVELOPER_STUDY_TEMPLATE.md`, evaluated in `docs/DEVELOPER_FEEDBACK_REPORT.md`):
+To address University Requirement 5 regarding real-world validation and developer evaluation instruments, we designed a structured evaluation protocol accompanied by automated qualitative code analysis:
 
-- **Study Instrument:** 24 anonymized C# methods balanced across all four confusion matrix quadrants evaluated on 5-point Likert scales for Defect Proneness (Q1), Cognitive Complexity (Q2), and Review Urgency (Q3).
-- **Consensus on Complex Methods:** Software engineers exhibited strong concordance with model warnings on True Positives (Average Q1 = 4.3, Q2 = 4.2), agreeing that methods with high cyclomatic complexity and large parameter counts represent fragile maintenance liabilities.
-- **Constructive Value of False Positives:** Engineers confirmed that False Positives (e.g. low-level binary parsers) represent dense technical debt that justifies additional test coverage.
-- **Academic Ethics Disclosure:** In accordance with academic transparency, no external participants were fabricated; the study protocol is formally documented as a reproducible research instrument accompanied by expert qualitative analysis.
+- **Formal Research Instrument:** A reproducible evaluation protocol ([DEVELOPER_STUDY_TEMPLATE.md](DEVELOPER_STUDY_TEMPLATE.md)) was constructed, specifying 24 anonymized C# methods sampled from `Newtonsoft.Json` across all four confusion matrix quadrants. The instrument defines evaluation rubrics on 5-point Likert scales for Defect Proneness (Q1), Cognitive Complexity (Q2), and Review Urgency (Q3), with inter-rater reliability scoring via Krippendorff's ordinal $\alpha$ and Fleiss' $\kappa$.
+- **Disclosure of Study Status:** In strict accordance with academic ethics and research reproducibility guidelines, **no external human developer participants or survey responses were collected**. The protocol template is provided as a formal research instrument for future human evaluation rather than evidence of a completed human study.
+- **Automated Qualitative Code Inspection:** Rather than human survey data, qualitative code analysis was conducted algorithmically through automated AST inspection and Git history analysis across representative cases (detailed in Section 18). This confirmed that model predictions align closely with structural complexity metrics (True Positives), while identifying the architectural boundary of static AST metrics on concise generic wrapper methods (False Negatives). Detailed qualitative findings and methodological disclosures are documented in [VALIDATION_AND_LIMITATIONS.md](VALIDATION_AND_LIMITATIONS.md).
 
 ---
 
@@ -366,6 +365,7 @@ To fulfill University Requirement 5, we designed and analyzed a double-blind hum
 
 ### 20.4 Conclusion Validity
 - **Statistical Power:** Evaluated across 578 training methods and 159 holdout methods using non-parametric rank metrics (ROC-AUC, PR-AUC, Spearman correlation) and cross-validation standard deviations.
+- **Artificial Class Balancing vs. Operational Base Rate:** Training and holdout sets were sampled at a 1:1 balanced ratio (~48%–50% buggy). In industrial production codebases with typical defect base rates of 2%–10%, operational precision will decline substantially due to the base-rate fallacy (e.g. ~10.9% expected precision at a hypothetical 5% prevalence based on Bayes' theorem; see [VALIDATION_AND_LIMITATIONS.md](VALIDATION_AND_LIMITATIONS.md) Section 4.1).
 
 ---
 

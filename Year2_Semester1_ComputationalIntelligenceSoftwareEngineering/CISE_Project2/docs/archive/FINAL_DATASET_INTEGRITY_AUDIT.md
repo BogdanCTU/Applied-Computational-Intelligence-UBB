@@ -167,7 +167,7 @@ The machine learning evaluation architecture was audited directly from `src/ml/`
 
 ## 6. README Claim Verification
 
-Every technical and empirical claim in [README.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB/Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project2/README.md) was audited against the codebase and authoritative artifacts:
+Every technical and empirical claim in [README.md](../../README.md) was audited against the codebase and authoritative artifacts:
 
 | # | Location in README | Claimed Statement | Audit Classification | Evidence & Ground Truth | Action Taken |
 | :- | :- | :- | :-: | :- | :- |
