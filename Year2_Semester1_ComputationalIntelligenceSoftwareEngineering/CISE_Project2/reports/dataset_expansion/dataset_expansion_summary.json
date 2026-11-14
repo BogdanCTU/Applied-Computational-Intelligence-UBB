@@ -1,0 +1,101 @@
+{
+  "timestamp": "2026-11-14 13:54:38",
+  "expansion_duration_s": 364.9,
+  "processed_repositories": [
+    {
+      "repository_id": 15,
+      "full_name": "serilog/serilog",
+      "commits_mined": 350,
+      "bug_fixing_commits": 23,
+      "szz_traces": 147,
+      "unique_bics": 57,
+      "buggy_methods": 68,
+      "clean_methods": 68,
+      "total_methods": 136,
+      "features_extracted": 134,
+      "duration_seconds": 219.06
+    },
+    {
+      "repository_id": 16,
+      "full_name": "App-vNext/Polly",
+      "commits_mined": 350,
+      "bug_fixing_commits": 16,
+      "szz_traces": 48,
+      "unique_bics": 16,
+      "buggy_methods": 17,
+      "clean_methods": 17,
+      "total_methods": 34,
+      "features_extracted": 34,
+      "duration_seconds": 143.61
+    }
+  ],
+  "dataset_snapshot_1": {
+    "id": 1,
+    "name": "csharp_empirical_v1",
+    "version": "1.0.0",
+    "total_count": 483,
+    "buggy_count": 226,
+    "non_buggy_count": 257
+  },
+  "dataset_snapshot_2": {
+    "id": 2,
+    "name": "csharp_empirical_v2",
+    "version": "2.0.0",
+    "csv_path": "E:\\PERSONAL\\GitHub\\1_Applied-Computational-Intelligence-UBB\\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\\CISE_Project2\\data\\processed\\csharp_empirical_v2_v2.0.0.csv",
+    "metadata_path": "E:\\PERSONAL\\GitHub\\1_Applied-Computational-Intelligence-UBB\\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\\CISE_Project2\\data\\processed\\csharp_empirical_v2_v2.0.0_metadata.json",
+    "statistics": {
+      "total_observations": 578,
+      "buggy_count": 279,
+      "clean_count": 299,
+      "uncertain_count": 0,
+      "buggy_ratio": 0.4827,
+      "clean_ratio": 0.5173,
+      "repository_distribution": {
+        "Humanizr/Humanizer": 291,
+        "serilog/serilog": 134,
+        "LuckyPennySoftware/MediatR": 91,
+        "App-vNext/Polly": 34,
+        "FluentValidation/FluentValidation": 28
+      },
+      "missing_values_per_feature": {
+        "loc": 0,
+        "logical_loc": 0,
+        "method_length": 0,
+        "parameter_count": 0,
+        "local_variable_count": 0,
+        "statement_count": 0,
+        "return_count": 0,
+        "cyclomatic_complexity": 0,
+        "max_nesting_depth": 0,
+        "boolean_operator_count": 0,
+        "logical_operator_count": 0,
+        "conditional_expression_count": 0,
+        "if_count": 0,
+        "switch_count": 0,
+        "loop_count": 0,
+        "try_catch_count": 0,
+        "throw_count": 0,
+        "break_continue_count": 0,
+        "method_call_count": 0,
+        "field_access_count": 0,
+        "property_access_count": 0,
+        "assignment_count": 0,
+        "object_creation_count": 0,
+        "is_static": 0,
+        "is_async": 0,
+        "is_generic": 0
+      },
+      "test_files_excluded": 0,
+      "uncertain_excluded": 0,
+      "missing_features_excluded": 11,
+      "duplicates_excluded": 11
+    },
+    "training_repositories": [
+      "Humanizr/Humanizer",
+      "LuckyPennySoftware/MediatR",
+      "FluentValidation/FluentValidation",
+      "serilog/serilog",
+      "App-vNext/Polly"
+    ]
+  }
+}
