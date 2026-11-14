@@ -654,3 +654,16 @@ The 24 methods represent a stratified sample covering all four quadrants of the 
 | **M23** | ID 41 | 1 (Buggy) | 1 (Buggy) | **TP** | 0.824 | `OptionMapper.MapValues` | Overloaded mapper with complex converter delegate; true defect confirmed. |
 | **M24** | ID 54 | 1 (Buggy) | 0 (Clean) | **FN** | 0.362 | `TokenPartitioner.Partition` | 26 LOC switch partitioner; subtle boundary bug missed by static threshold. |
 
+---
+
+## 7. Empirical Study Status & Data Management Protocol
+
+> [!IMPORTANT]
+> **Study Administration Status: PENDING EMPIRICAL EVALUATION**  
+> In strict accordance with academic ethics and research reproducibility guidelines, this developer validation protocol is published as a formal review instrument. **No synthetic, simulated, or author-fabricated participant ratings are reported.**
+
+### Data Management & Response Isolation
+1. **Separate Response Storage:** When the study is administered to external C# developers or graduate researchers, individual completed response sheets (Section 4) must be saved into dedicated, anonymized CSV/JSON files under `reports/developer_study/responses/rater_{id}.json` rather than committed into this protocol template.
+2. **Double-Blind Key Separation:** Evaluators must only receive Sections 1 through 4. Section 6 (Researcher Grading Key) and Section 5 (Statistical Protocol) must be retained exclusively by the study administrator until all ratings are locked.
+3. **Reproducible Analysis Pipeline:** Once empirical ratings are collected, an automated script will read the response files, compute Krippendorff's $\alpha$, ICC(2,k), Kendall's $W$, and Spearman's $\rho$, and output a verified report to `reports/developer_study/evaluation_results.md`.
+

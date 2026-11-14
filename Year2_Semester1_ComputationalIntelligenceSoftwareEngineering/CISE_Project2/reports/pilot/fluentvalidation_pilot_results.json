@@ -1,0 +1,38 @@
+{
+  "repository": {
+    "id": 14,
+    "full_name": "FluentValidation/FluentValidation",
+    "url": "https://github.com/FluentValidation/FluentValidation.git",
+    "license": "Apache-2.0",
+    "default_branch": "main",
+    "local_path": "E:\\PERSONAL\\GitHub\\1_Applied-Computational-Intelligence-UBB\\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\\CISE_Project2\\data\\repositories\\FluentValidation\\FluentValidation"
+  },
+  "mining_stats": {
+    "commits_requested": 350,
+    "commits_mined": 350,
+    "total_repo_commits": 2515,
+    "bug_fixing_commits": 11,
+    "bug_fix_rate": 0.0314,
+    "high_confidence_fixes": 4,
+    "moderate_confidence_fixes": 7
+  },
+  "szz_stats": {
+    "total_fixing_commits_analyzed": 11,
+    "total_bic_line_traces": 28,
+    "unique_bug_inducing_commits": 14,
+    "traces_per_fix": 2.55
+  },
+  "observation_stats": {
+    "buggy_label_1": 17,
+    "candidate_clean_label_0": 17,
+    "uncertain_label_minus_1": 0,
+    "total_observations": 34
+  },
+  "feature_extraction_stats": {
+    "total_processed": 34,
+    "success": 34,
+    "failed": 0,
+    "success_rate": 1.0
+  },
+  "execution_duration_s": 66.65
+}

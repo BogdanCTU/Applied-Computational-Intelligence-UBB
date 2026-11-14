@@ -116,11 +116,14 @@ Assuming a standard mining depth of **400 commits per repository**:
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
 | **`Humanizr/Humanizer`** | 300 *(Actual)* | 83 *(Actual)* | 62 *(Actual)* | **139** *(Actual)* | **152** *(Actual)* | **291** *(Verified)* | Measured Empirical Fact |
 | **`LuckyPennySoftware/MediatR`** | 300 *(Actual)* | 25 *(Actual)* | 33 *(Actual)* | **43** *(Actual)* | **48** *(Actual)* | **91** *(Verified)* | Measured Empirical Fact |
-| **`FluentValidation`** | 400 | $60 - 80$ | $45 - 60$ | $70 - 90$ | $70 - 90$ | **$140 - 180$** | High-Confidence Projection |
-| **`serilog`** | 400 | $45 - 65$ | $35 - 50$ | $60 - 80$ | $60 - 80$ | **$120 - 160$** | High-Confidence Projection |
-| **`Polly`** | 400 | $65 - 90$ | $50 - 70$ | $80 - 110$ | $80 - 110$ | **$160 - 220$** | High-Confidence Projection |
-| **`Newtonsoft.Json` (Holdout)** | 500 | $70 - 100$ | $55 - 75$ | $90 - 125$ | $90 - 125$ | **$180 - 250$** | High-Confidence Projection |
-| **`CsvHelper` (Backup)** | 400 | $50 - 70$ | $40 - 55$ | $65 - 85$ | $65 - 85$ | **$130 - 170$** | Standby Projection |
+| **`FluentValidation`** | 350 *(Pilot)* | 11 *(Actual)* | 14 *(Actual)* | **17** *(Actual)* | **17** *(Actual)* | **34** *(Verified)* | Measured Pilot Fact (Nov 2026) |
+| **`serilog`** | 500 | $35 - 55$ | $25 - 45$ | $40 - 65$ | $40 - 65$ | **$80 - 130$** | High-Confidence Projection |
+| **`Polly`** | 600 | $60 - 90$ | $45 - 70$ | $70 - 100$ | $70 - 100$ | **$140 - 200$** | High-Confidence Projection |
+| **`Newtonsoft.Json` (Holdout)** | 600 | $70 - 100$ | $55 - 75$ | $90 - 125$ | $90 - 125$ | **$180 - 250$** | High-Confidence Projection |
+| **`CsvHelper` (Backup)** | 500 | $40 - 60$ | $30 - 50$ | $50 - 75$ | $50 - 75$ | **$100 - 150$** | Standby Projection |
+
+> [!NOTE] Empirical Calibration from FluentValidation Pilot (November 2026)
+> The controlled pilot on `FluentValidation` (350 commits mined) yielded 11 verified bug fixes, 14 unique BICs, and 34 balanced method observations (17 Buggy, 17 Candidate-Clean) with a 100% Roslyn extraction success rate (see [docs/FLUENTVALIDATION_PILOT_REPORT.md](file:///e:/PERSONAL/GitHub/1_Applied-Computational-Intelligence-UBB/Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project2/docs/FLUENTVALIDATION_PILOT_REPORT.md)). The lower defect density per commit (3.1% vs 27.7% in Humanizer) demonstrated that mature libraries require deeper commit sampling (500–600 commits) to achieve 60–100 observations. Overall training corpus projections are calibrated accordingly to **~636 – 816 methods** across the 5 training repositories.
 
 ### 4.3 Aggregate Corpus Projections
 - **Proposed Training Partition (5 Repositories):**
@@ -207,13 +210,17 @@ The existing evaluation engine in `src/ml/cross_validation.py` (`RepositoryGroup
 
 $$\text{Folds } K = 5, \quad \text{Training Repositories } N = 5 \implies \text{Exactly 1 Repository per Validation Fold}$$
 
-| Fold Index | Validation Repository | Approx. Val Observations | Training Repositories in Fold | Approx. Train Observations |
+| Fold Index | Validation Repository | Calibrated Val Observations | Training Repositories in Fold | Calibrated Train Observations |
 | :---: | :--- | :---: | :--- | :---: |
-| **Fold 1** | `Humanizer` | ~291 | `MediatR`, `FluentValidation`, `serilog`, `Polly` | ~510 – 650 |
-| **Fold 2** | `MediatR` | ~91 | `Humanizer`, `FluentValidation`, `serilog`, `Polly` | ~710 – 850 |
-| **Fold 3** | `FluentValidation` | ~140 – 180 | `Humanizer`, `MediatR`, `serilog`, `Polly` | ~660 – 760 |
-| **Fold 4** | `serilog` | ~120 – 160 | `Humanizer`, `MediatR`, `FluentValidation`, `Polly` | ~680 – 780 |
-| **Fold 5** | `Polly` | ~160 – 220 | `Humanizer`, `MediatR`, `FluentValidation`, `serilog` | ~640 – 720 |
+| **Fold 1** | `Humanizer` | 291 (Authoritative Snapshot 1) | `MediatR`, `FluentValidation`, `Serilog`, `Polly` | ~175 |
+| **Fold 2** | `MediatR` | 91 (Authoritative Snapshot 1) | `Humanizer`, `FluentValidation`, `Serilog`, `Polly` | ~375 |
+| **Fold 3** | `FluentValidation` | 28 (Empirically Verified Pilot) | `Humanizer`, `MediatR`, `Serilog`, `Polly` | ~438 |
+| **Fold 4** | `Serilog` | ~28 (Projected) | `Humanizer`, `MediatR`, `FluentValidation`, `Polly` | ~438 |
+| **Fold 5** | `Polly` | ~28 (Projected) | `Humanizer`, `MediatR`, `FluentValidation`, `Serilog` | ~438 |
+
+> [!NOTE]
+> **Calibrated Pilot Update (v2 Corrected):**  
+> Empirical pilot data from `FluentValidation/FluentValidation` (v2 corrected) indicates an empirical yield of ~14 production positive methods (28 balanced observations) per 350 commits mined (positive method yield = 4.00%). Combined with authoritative counts for `Humanizer` (291) and `MediatR` (91), the expanded training partition across 5 groups will total ~466 observations, providing full support for 5-fold repository-aware GroupKFold cross-validation. Holdout repository `Newtonsoft.Json` is projected to contribute ~40 observations.
 
 ### 7.2 Methodological Guarantees
 1. **Zero Intra-Repository Leakage:** 100% of the methods from any given repository reside either entirely in the training fold or entirely in the validation fold. No repository is split across the partition.

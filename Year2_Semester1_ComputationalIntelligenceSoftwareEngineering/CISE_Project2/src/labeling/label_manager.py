@@ -9,6 +9,7 @@ import git
 from src.analyzer.roslyn_client import RoslynClient
 from src.database.repository import RepositoryDB
 from src.utils.logger import setup_logger
+from src.utils.source_classifier import is_production_csharp_file
 
 logger = setup_logger("label_manager")
 
@@ -50,7 +51,7 @@ class LabelManager:
             file_path = trace["file_path"]
             deleted_line = trace["deleted_line_number"]
 
-            if not deleted_line:
+            if not deleted_line or not is_production_csharp_file(file_path):
                 continue
 
             fix_commit = repo.commit(fix_sha)
@@ -125,8 +126,8 @@ class LabelManager:
             for o in self.db.list_observations(repository_id=repository_id, label=1)
         }
 
-        # Find all .cs files in repository tree at HEAD
-        cs_files = [f for f in repo.git.ls_files().splitlines() if f.lower().endswith(".cs") and not any(p.search(f) for p in [re.compile(r"test|obj|bin", re.I)])]
+        # Find all production .cs files in repository tree at HEAD
+        cs_files = [f for f in repo.git.ls_files().splitlines() if is_production_csharp_file(f)]
 
         clean_observations: List[Dict[str, Any]] = []
 

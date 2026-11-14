@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 from src.database.repository import RepositoryDB
 from src.utils.logger import setup_logger
+from src.utils.source_classifier import is_production_csharp_file
 
 logger = setup_logger("dataset_builder")
 
@@ -67,22 +68,32 @@ class DatasetBuilder:
         exclude_uncertain: bool = True,
         feature_names: Optional[List[str]] = None,
         repository_id: Optional[int] = None,
+        repository_ids: Optional[List[int]] = None,
     ) -> Tuple[int, Dict[str, Any]]:
         """Create a versioned dataset snapshot and return (dataset_id, stats)."""
         selected_features = feature_names or DEFAULT_NUMERICAL_FEATURES
 
         # 1. Fetch observations
-        all_obs = self.db.list_observations(repository_id=repository_id)
+        if repository_ids is not None:
+            all_obs = [obs for rid in repository_ids for obs in self.db.list_observations(repository_id=rid)]
+        else:
+            all_obs = self.db.list_observations(repository_id=repository_id)
         if not all_obs:
             raise ValueError("No observations available in database to build dataset.")
 
         valid_observation_ids: List[int] = []
         uncertain_excluded = 0
         missing_features = 0
+        test_files_excluded = 0
         seen_fingerprints: Set[str] = set()
         duplicates_count = 0
 
         for obs in all_obs:
+            # Filter non-production source files (test files, fixtures, build artifacts)
+            if not is_production_csharp_file(obs["file_path"]):
+                test_files_excluded += 1
+                continue
+
             # Filter uncertain labels
             if exclude_uncertain and obs["label"] == -1:
                 uncertain_excluded += 1
@@ -117,6 +128,7 @@ class DatasetBuilder:
 
         stats = self.compute_dataset_statistics(dataset_id, selected_features)
         stats.update({
+            "test_files_excluded": test_files_excluded,
             "uncertain_excluded": uncertain_excluded,
             "missing_features_excluded": missing_features,
             "duplicates_excluded": duplicates_count,

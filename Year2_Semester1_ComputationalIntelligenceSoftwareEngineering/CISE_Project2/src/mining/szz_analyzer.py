@@ -11,6 +11,7 @@ from git.exc import GitCommandError
 
 from src.database.repository import RepositoryDB
 from src.utils.logger import setup_logger
+from src.utils.source_classifier import is_production_csharp_file
 
 logger = setup_logger("szz_analyzer")
 
@@ -30,13 +31,13 @@ class SZZAnalyzer:
         self.db = db
 
     def is_target_file(self, file_path: str, custom_exclusions: Optional[List[re.Pattern]] = None) -> bool:
-        """Check if file is a non-test C# source file."""
-        if not file_path.lower().endswith(".cs"):
-            return False
-
-        exclusions = custom_exclusions or self.DEFAULT_EXCLUSIONS
-        normalized = file_path.replace("\\", "/")
-        return not any(pat.search(normalized) for pat in exclusions)
+        """Check if file is a non-test production C# source file."""
+        if custom_exclusions:
+            if not file_path.lower().endswith(".cs"):
+                return False
+            normalized = file_path.replace("\\", "/")
+            return not any(pat.search(normalized) for pat in custom_exclusions)
+        return is_production_csharp_file(file_path)
 
     def analyze_commit(
         self,

@@ -1,0 +1,210 @@
+{
+  "audit_metadata": {
+    "audit_name": "Final Dataset Integrity, Reproducibility and Documentation Audit",
+    "date": "2026-11-14",
+    "auditor_role": "Senior ML4SE Research Engineer and Independent Academic Auditor",
+    "database_path": "E:\\PERSONAL\\GitHub\\1_Applied-Computational-Intelligence-UBB\\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\\CISE_Project2\\data\\database\\bug_detection.db",
+    "authoritative_dataset_id": 1,
+    "authoritative_dataset_name": "csharp_empirical_v1",
+    "authoritative_dataset_version": "1.0.0",
+    "authoritative_dataset_total_observations": 483,
+    "authoritative_experiment_id": "exp_20261113_170914"
+  },
+  "repository_statistics": {
+    "1": {
+      "repository_id": 1,
+      "full_name": "commandlineparser/commandline",
+      "name": "commandline",
+      "commits_mined": 450,
+      "candidate_bug_fixing_commits": 47,
+      "szz_line_traces": 267,
+      "unique_candidate_bics": 70,
+      "db_observations": {
+        "total": 116,
+        "positive_label_1": 58,
+        "candidate_clean_label_0": 58,
+        "uncertain_label_minus_1": 0
+      },
+      "feature_extractions": {
+        "success": 109,
+        "failed": 7,
+        "success_rate": 0.9397
+      },
+      "dataset_1_membership": {
+        "is_member": true,
+        "total_samples": 101,
+        "positive_samples": 44,
+        "candidate_clean_samples": 57,
+        "role": "holdout"
+      }
+    },
+    "3": {
+      "repository_id": 3,
+      "full_name": "LuckyPennySoftware/MediatR",
+      "name": "MediatR",
+      "commits_mined": 300,
+      "candidate_bug_fixing_commits": 25,
+      "szz_line_traces": 272,
+      "unique_candidate_bics": 33,
+      "db_observations": {
+        "total": 98,
+        "positive_label_1": 49,
+        "candidate_clean_label_0": 49,
+        "uncertain_label_minus_1": 0
+      },
+      "feature_extractions": {
+        "success": 97,
+        "failed": 1,
+        "success_rate": 0.9898
+      },
+      "dataset_1_membership": {
+        "is_member": true,
+        "total_samples": 91,
+        "positive_samples": 43,
+        "candidate_clean_samples": 48,
+        "role": "training"
+      }
+    },
+    "4": {
+      "repository_id": 4,
+      "full_name": "Humanizr/Humanizer",
+      "name": "Humanizer",
+      "commits_mined": 300,
+      "candidate_bug_fixing_commits": 83,
+      "szz_line_traces": 543,
+      "unique_candidate_bics": 62,
+      "db_observations": {
+        "total": 304,
+        "positive_label_1": 152,
+        "candidate_clean_label_0": 152,
+        "uncertain_label_minus_1": 0
+      },
+      "feature_extractions": {
+        "success": 296,
+        "failed": 8,
+        "success_rate": 0.9737
+      },
+      "dataset_1_membership": {
+        "is_member": true,
+        "total_samples": 291,
+        "positive_samples": 139,
+        "candidate_clean_samples": 152,
+        "role": "training"
+      }
+    },
+    "14": {
+      "repository_id": 14,
+      "full_name": "FluentValidation/FluentValidation",
+      "name": "FluentValidation",
+      "commits_mined": 350,
+      "candidate_bug_fixing_commits": 11,
+      "szz_line_traces": 25,
+      "unique_candidate_bics": 12,
+      "db_observations": {
+        "total": 28,
+        "positive_label_1": 14,
+        "candidate_clean_label_0": 14,
+        "uncertain_label_minus_1": 0
+      },
+      "feature_extractions": {
+        "success": 28,
+        "failed": 0,
+        "success_rate": 1.0
+      },
+      "dataset_1_membership": {
+        "is_member": false,
+        "total_samples": 0,
+        "positive_samples": 0,
+        "candidate_clean_samples": 0,
+        "role": "none"
+      }
+    }
+  },
+  "discrepancy_reconciliations": {
+    "humanizer_291_vs_178": {
+      "authoritative_count_in_dataset_1": 291,
+      "raw_db_observations": 304,
+      "failed_feature_extractions_excluded": 8,
+      "deduplicated_observations_excluded": 5,
+      "erroneous_documented_figure": 178,
+      "root_cause_of_discrepancy": "An agent mistakenly doubled the threshold TP count (TP=89 at threshold 0.60 -> 89*2=178) in expansion planning documents. 178 is unverified and incorrect. Authoritative count is 291 in Dataset 1."
+    },
+    "mediatr_91_vs_105": {
+      "authoritative_count_in_dataset_1": 91,
+      "raw_db_observations": 98,
+      "failed_feature_extractions_excluded": 1,
+      "deduplicated_observations_excluded": 6,
+      "erroneous_documented_figure": 105,
+      "root_cause_of_discrepancy": "An agent estimated 52 positive + 53 clean = 105 in expansion planning documents. 105 is unverified and incorrect. Authoritative count is 91 in Dataset 1."
+    },
+    "fluentvalidation_34_vs_28": {
+      "v1_pilot_unfiltered": 34,
+      "v2_pilot_corrected": 28,
+      "count_in_dataset_1": 0,
+      "root_cause_of_discrepancy": "v1 pilot allowed 3 test fixture methods to enter Label 1 (src/FluentValidation.Tests/ChainedValidationTester.cs and TestExtensions.cs) due to incomplete regex coverage on nested projects, and sampled 17 clean methods (total 34). v2 pilot corrected this using src/utils/source_classifier.py, purging the 3 test fixtures (leaving 14 production positive methods) and resampling exactly 14 clean methods (total 28 observations). FluentValidation is not in Dataset 1."
+    }
+  },
+  "fluentvalidation_v2_audit": {
+    "verified_positive_observations": 14,
+    "verified_clean_observations": 14,
+    "total_observations": 28,
+    "test_code_leakage_detected": false,
+    "duplicate_fingerprints_count": 0,
+    "candidate_bug_fixing_commits": 11,
+    "fixes_producing_szz_traces": 10,
+    "false_positive_commit_sha": "91e78489",
+    "false_positive_commit_description": "Packaging compatibility overload (issue #1860); modified 0 C# source lines, produced 0 SZZ traces and 0 observations.",
+    "szz_line_traces_count": 25,
+    "unique_bics_count": 12,
+    "dataset_1_tampering_detected": false
+  },
+  "machine_learning_methodology_audit": {
+    "cross_validation_scheme": "2-fold GroupKFold across MediatR (91) and Humanizer (291)",
+    "five_fold_cv_actually_executed": false,
+    "five_fold_cv_claim_status": "Strictly disallowed until 5 distinct training repos are collected and evaluated",
+    "in_fold_preprocessing_isolated": true,
+    "in_fold_preprocessing_details": "Imputation, constant removal, and scaling fitted strictly on fold training data",
+    "holdout_repository": "commandlineparser/commandline",
+    "holdout_samples": 101,
+    "holdout_quarantine_status": "Previously inspected by researcher; serves as diagnostic benchmark, not blind gold standard",
+    "decision_threshold_optimization": "Tuned on pooled out-of-fold CV predictions; exhibits post-selection optimism on CV F1",
+    "brier_score_interpretation": "Measures mean squared error in predicted probabilities; lowest Brier score in CV was 0.1983 (rf_deep_unconstrained) and 0.2283 (logistic_regression), whereas best F1 model had Brier 0.2317 in CV and 0.2627 on holdout",
+    "class_balance_impact": "Candidate-clean methods sampled 1:1 against positive methods (~50% prevalence); operational precision in low-prevalence production (5%-15%) will be lower via Bayes rule"
+  },
+  "readme_audit": {
+    "roslyn_metrics_count_claim": {
+      "claim": "24 metrics (page guide) vs 26 metrics (capabilities)",
+      "status": "Inconsistent / Incorrect (guide)",
+      "authoritative_value": 26
+    },
+    "model_families_claim": {
+      "claim": "Random Forest only",
+      "status": "Outdated",
+      "authoritative_value": "DummyClassifier, Logistic Regression, Decision Tree, Random Forest"
+    },
+    "repository_aware_validation_claim": {
+      "claim": "GroupShuffleSplit & GroupKFold",
+      "status": "Verified",
+      "authoritative_value": "GroupShuffleSplit for holdout, 2-fold GroupKFold for training CV"
+    },
+    "dataset_size_claim": {
+      "claim": "483 observations across 3 repos",
+      "status": "Verified",
+      "authoritative_value": "Humanizer (291), MediatR (91), CommandLineParser (101)"
+    },
+    "holdout_results_claim": {
+      "claim": "Recall 81.82%, F1 0.6261",
+      "status": "Outdated (prototype run exp_20261113_162850)",
+      "authoritative_value": "At tau=0.50: Recall 77.27%, F1 0.5812, Brier 0.2627; At tau=0.30: Recall 95.45%, F1 0.6316"
+    }
+  },
+  "verdict": {
+    "go_no_go_decision": "GO_CONDITIONAL",
+    "conditions": [
+      "Do not start collection until authoritative counts are reconciled in all documents.",
+      "Maintain strict separation between Dataset 1 (483) and future expansion snapshots.",
+      "Acknowledge that 5-fold CV is a future capability requiring 5 training repositories.",
+      "Preserve independent quarantine for holdout repository."
+    ]
+  }
+}

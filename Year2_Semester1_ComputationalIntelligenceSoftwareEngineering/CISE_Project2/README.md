@@ -1,6 +1,6 @@
 # C# Defect Predictor: Machine Learning-Based Software Bug Detection
 
-An academic-grade, fully local Machine Learning system for predicting software defect proneness in C# source code methods using **Supervised Learning (Random Forest Classification)** and static code metrics extracted via **Microsoft Roslyn**.
+An academic-grade, fully local Machine Learning system for predicting software defect proneness in C# source code methods using **Multi-Model Supervised Learning (Random Forest Ensembles, Decision Trees, Logistic Regression, Dummy Baselines)** and static code metrics extracted via **Microsoft Roslyn**.
 
 Developed for the Computational Intelligence in Software Engineering curriculum.
 
@@ -12,7 +12,7 @@ Developed for the Computational Intelligence in Software Engineering curriculum.
 - **Bug-Fix & SZZ Traceability**: Identify bug-fixing commits via commit message heuristics and issue/PR references; trace candidate Bug-Inducing Commits (BICs) using `git blame -w -M -C`.
 - **Roslyn Static Code Metrics**: Cross-platform .NET 9.0 CLI calculating 26 structural, complexity, and OOP metrics using `Microsoft.CodeAnalysis.CSharp`. Isolates enclosing methods from nested lambdas/local functions and normalizes newlines across platforms.
 - **Zero-Leakage ML Pipeline**: Enforces repository-aware data partitioning (`GroupShuffleSplit` on `repository_id`), ensuring code from the same repository never leaks between training and test sets.
-- **Random Forest Modeling & Dual Importances**: Supervised classification evaluated with internal `GroupKFold` cross-validation, compared against `DummyClassifier` baselines, and analyzed via **MDI (Gini)** and **Permutation Feature Importance**.
+- **Multi-Model Benchmarking & Dual Importances**: Supervised classification benchmarked across Random Forest, Decision Tree, Logistic Regression, and DummyClassifier baselines. Evaluated with repository-aware `GroupKFold` cross-validation and analyzed via **MDI (Gini)** and **Permutation Feature Importance** with out-of-fold threshold tuning.
 - **Real-Time Method & File Bug Prediction**: Interactive Streamlit interface to paste C# snippets or upload complete `.cs` files, extract Roslyn metrics live, estimate defect risk scores, identify influential metrics, and export CSV reports.
 - **Privacy-Preserving & Fully Local**: Operates 100% on the local workstation. No external LLMs, no paid APIs, no telemetry, and raw source code is never stored without explicit user consent.
 
@@ -135,8 +135,8 @@ All tests execute deterministically offline without network dependencies.
 | **📊 Dashboard** | High-level repository, commit, observation, model, and health statistics. |
 | **📥 Repository Collection** | Search GitHub public repositories, clone full histories, and track commit diffs. |
 | **🔍 Bug Analysis & SZZ** | Detect bug-fixing commits, trace bug-inducing commits (SZZ), and label methods. |
-| **📁 Dataset Management** | Extract 24 Roslyn static code metrics, inspect distributions, and export versioned CSV snapshots. |
-| **🧠 Model Training** | Train Random Forest models with repository-aware `GroupKFold` CV and compare with dummy baselines. |
+| **📁 Dataset Management** | Extract 26 Roslyn static code metrics, inspect distributions, and export versioned CSV snapshots. |
+| **🧠 Model Training** | Train models across 4 algorithm families with repository-aware `GroupKFold` CV and compare with dummy baselines. |
 | **📈 Model Evaluation** | Inspect holdout test metrics, confusion matrices, ROC/PR curves, and MDI vs Permutation feature importances. |
 | **🎯 Real-World Bug Prediction** | Paste C# snippets or upload `.cs` files for real-time defect risk scoring, influential metric attribution, and validation benchmarks. |
 | **⚙️ Settings** | Configure GitHub PAT, local storage paths, Roslyn project path, prediction thresholds, and privacy options. |
@@ -168,10 +168,18 @@ An empirical study across 3 real-world open-source repositories (`commandlinepar
 
 👉 **[docs/FINAL_REPORT.md](docs/FINAL_REPORT.md)**
 
-Key experimental findings:
-- **Holdout Defect Recall**: **81.82%** (36/44 buggy methods identified in holdout repository `commandlineparser/commandline`).
-- **Holdout F1-Score**: **0.6261** (vs baseline 0.0000).
-- **Most Predictive Features**: `method_length`, `loc`, `object_creation_count`, `logical_loc`, and `parameter_count`.
-- **Reproducible Pipeline**: `python scripts/run_empirical_experiment.py`.
+Key experimental findings (Authoritative multi-model experiment `exp_20261113_170914`):
+- **Training Partition**: 382 methods across `Humanizer` (291) and `MediatR` (91) evaluated with 2-fold `GroupKFold` cross-validation.
+- **Holdout Evaluation**: Evaluated on independent repository `commandlineparser/commandline` (101 methods: 44 buggy, 57 clean).
+- **Best Model Configuration**: `rf_feature_constrained_log2` (CV Mean F1: **0.6801** vs Dummy baseline 0.0000).
+- **Holdout Results at Nominal Threshold ($\tau = 0.50$)**:
+  - Defect Recall: **77.27%** (34/44 buggy methods identified)
+  - Precision: **46.58%** | F1-Score: **0.5812** | Accuracy: **51.49%** | Brier Score: **0.2627**
+- **Holdout Results at CV-Optimized Threshold ($\tau = 0.30$)**:
+  - Defect Recall: **95.45%** (42/44 buggy methods identified)
+  - Precision: **47.19%** | F1-Score: **0.6316** | Accuracy: **51.49%**
+- **Top MDI Predictive Features**: `method_length` (0.1354), `loc` (0.0964), `parameter_count` (0.0775), `method_call_count` (0.0550), and `statement_count` (0.0443).
+- **Reproducible Multi-Model Pipeline**: `python scripts/run_experiments.py`.
+- **Pilot Expansion Status**: Controlled pilot collection v2 on `FluentValidation/FluentValidation` completed (28 production observations: 14 buggy, 14 clean, 0% test leakage); verified in SQLite and ready for expansion once authorized.
 
 
