@@ -2,7 +2,73 @@
 
 An academic-grade, fully local Machine Learning system for predicting software defect proneness in C# source code methods using **Multi-Model Supervised Learning (Random Forest Ensembles, Decision Trees, Logistic Regression, Dummy Baselines)** and static code metrics extracted via **Microsoft Roslyn**.
 
-Developed for the Computational Intelligence in Software Engineering curriculum at Babeș-Bolyai University.
+Developed for the Computational Intelligence in Software Engineering curriculum at Babeș-Bolyai University (Master in Applied Computational Intelligence).
+
+---
+
+## 🧭 Repository Structure & Main Project Areas
+
+The repository is organized into six sequential, self-contained functional domains:
+
+```text
+CISE_Project2/
+│
+├── README.md                                  # Repository overview and quick start
+├── app.py                                     # Root application launcher
+├── pytest.ini                                 # Automated testing configuration
+├── requirements.txt                           # Python dependencies
+│
+├── 1_Database/                                # Persistent database and datasets
+│   ├── SQLite/                                # SQLite databases (bug_detection.db)
+│   ├── Datasets/                              # Versioned CSV datasets (Original v1, Processed v2)
+│   └── Schema/                                # Relational database & dataset schemas
+│
+├── 2_SourceCode/                              # Implementation & test source code
+│   ├── Python/                                # Python application modules & Streamlit workbench
+│   │   ├── application/pages/                 # Interactive Streamlit UI pages (8 tabs)
+│   │   ├── core/                              # Settings, project root resolution, defaults
+│   │   ├── database/                          # SQLite connection, schema, repository DB
+│   │   ├── ml/                                # Training, cross-validation, predictor
+│   │   ├── repositories/                      # GitHub API client, git manager, commit collector
+│   │   ├── services/                          # Roslyn bridge, SZZ analyzer, dataset builder
+│   │   ├── utils/                             # Logging & production source code classifier
+│   │   ├── src/                               # Backward-compatibility facade layer
+│   │   └── app.py                             # Core Streamlit application entrypoint
+│   ├── RoslynAnalyzer/                        # .NET 9.0 C# AST static metric analyzer
+│   ├── Tests/                                 # 16 automated test modules (121 tests)
+│   └── Scripts/                               # Operational and maintenance scripts
+│
+├── 3_TestResults/                             # Empirical results & evaluation evidence
+│   ├── AutomatedTests/                        # Automated pytest test execution reports
+│   ├── CrossValidation/                      # 5-fold CV reports, results JSON, and CSVs
+│   ├── HoldoutEvaluation/                     # Independent holdout (Newtonsoft.Json) results
+│   ├── ModelEvaluation/                       # 11-model comparison benchmark metrics
+│   └── AuditReports/                          # SZZ and dataset integrity audits
+│
+├── 4_AppBuild/                                # Distributable runtime packages
+│   ├── Windows/                               # Windows 1-click launcher (run_app.bat)
+│   ├── Assets/Models/                         # Frozen serialized ML model bundles
+│   └── ReleaseNotes/                          # Release notes and changelog (v1.0.0)
+│
+├── 5_Documentation/                           # Technical and academic documentation
+│   ├── 01_Architecture/                       # System architecture and data flows
+│   ├── 02_Database/                           # Database design, schema, and provenance
+│   ├── 03_SourceCode/                         # Source code guide and developer instructions
+│   ├── 04_MachineLearning/                    # SZZ, Roslyn features, and ML methodology
+│   ├── 05_Validation/                         # Empirical validation and academic limitations
+│   ├── 06_UserGuide/                          # Step-by-step user manual & troubleshooting
+│   ├── 07_AcademicReport/                     # Authoritative academic paper (FINAL_REPORT.md)
+│   └── 08_Archive/                            # 20 historical reports and audit provenance
+│
+└── 6_Presentation/                            # University defense presentation material
+    ├── 01_ProjectOverview.md                  # Project overview and motivation
+    ├── 02_ProblemAndObjectives.md              # Problem definition and research questions
+    ├── 03_SystemArchitecture.md               # Pipeline architecture and technology stack
+    ├── 04_DatasetAndMethodology.md            # SZZ, production filtering, and 26 Roslyn metrics
+    ├── 05_MachineLearningResults.md           # 11-model benchmark & reconciled accuracy
+    ├── 06_ApplicationDemo.md                  # Interactive Streamlit UI and prediction workflow
+    └── 07_ConclusionAndFutureWork.md          # Conclusions, limitations, and future research
+```
 
 ---
 
@@ -70,7 +136,7 @@ flowchart LR
 
 ---
 
-## 💻 Installation & Setup
+## 💻 Installation & Quick Execution
 
 ### Windows (PowerShell)
 
@@ -86,13 +152,14 @@ python -m venv .venv
 pip install --upgrade pip
 pip install -r requirements.txt
 
-# 4. Verify .NET SDK installation and build Roslyn Analyzer
-dotnet --version
-dotnet build roslyn_analyzer\RoslynAnalyzer.csproj -c Release
+# 4. Build the .NET 9 Roslyn Analyzer
+dotnet build 2_SourceCode\RoslynAnalyzer\RoslynAnalyzer.csproj -c Release
 
 # 5. Run the Streamlit Application
 streamlit run app.py
 ```
+
+*Tip (Windows 1-Click Launch):* Double-click `4_AppBuild\Windows\run_app.bat` to automatically activate the environment, build the analyzer if needed, and start Streamlit.
 
 ### macOS / Linux (Bash / Zsh)
 
@@ -108,9 +175,8 @@ source .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 
-# 4. Verify .NET SDK installation and build Roslyn Analyzer
-dotnet --version
-dotnet build roslyn_analyzer/RoslynAnalyzer.csproj -c Release
+# 4. Build the .NET 9 Roslyn Analyzer
+dotnet build 2_SourceCode/RoslynAnalyzer/RoslynAnalyzer.csproj -c Release
 
 # 5. Run the Streamlit Application
 streamlit run app.py
@@ -120,31 +186,29 @@ The application will launch in your browser at `http://localhost:8501`.
 
 ---
 
-## 🧪 Running the Test Suite
+## 🧪 Running Automated Tests
 
 Run the full automated test suite (121 passing tests):
 
 ```powershell
-# On Windows
-.\.venv\Scripts\pytest.exe -v
-
-# On macOS/Linux
-pytest -v
+# From repository root
+pytest
 ```
 
-All tests execute deterministically offline without network dependencies.
+All 121 tests execute deterministically offline without external database or network dependencies.  
+View execution details in [3_TestResults/AutomatedTests/TEST_EXECUTION_REPORT.md](3_TestResults/AutomatedTests/TEST_EXECUTION_REPORT.md).
 
 ---
 
 ## 📊 Empirical Datasets
 
-The repository maintains two versioned dataset snapshots stored in SQLite (`data/database/bug_detection.db`) and exported to `data/processed/`:
+The repository maintains persistent datasets in SQLite ([1_Database/SQLite/bug_detection.db](1_Database/SQLite/bug_detection.db)) and exported versioned CSV snapshots in [1_Database/Datasets/](1_Database/Datasets/):
 
-1. **Dataset Snapshot #1 (`csharp_empirical_v1`, v1.0.0)**:
-   - **483 methods** (226 Buggy, 257 Clean).
-   - Repositories: `Humanizer` (291), `MediatR` (91), `CommandLineParser` (101).
-   - Historical baseline used during exploratory development.
-2. **Dataset Snapshot #2 (`csharp_empirical_v2`, v2.0.0)**:
+1. **Dataset Snapshot #1 (`csharp_empirical_v1`, v1.0.0)** — [1_Database/Datasets/Original/](1_Database/Datasets/Original/):
+   - **483 methods** (242 Buggy, 241 Clean).
+   - Repositories: `Humanizer` (291), `CommandLineParser` (101), `MediatR` (91).
+   - Baseline dataset used during exploratory development.
+2. **Dataset Snapshot #2 (`csharp_empirical_v2`, v2.0.0)** — [1_Database/Datasets/Processed/](1_Database/Datasets/Processed/):
    - **578 methods** (279 Buggy, 299 Clean, 48.27% / 51.73% balance).
    - Repositories: `Humanizer` (291), `Serilog` (134), `MediatR` (91), `Polly` (34), `FluentValidation` (28).
    - Authoritative benchmark used for 5-Fold GroupKFold cross-validation.
@@ -154,15 +218,34 @@ The repository maintains two versioned dataset snapshots stored in SQLite (`data
 
 ---
 
-## 📚 Academic Documentation Suite
+## 📚 Academic Documentation & Research References
 
-The complete academic narrative and technical documentation are consolidated into four canonical references:
+Detailed technical and research material is organized in [5_Documentation/](5_Documentation/):
 
-- 📄 **[docs/FINAL_REPORT.md](docs/FINAL_REPORT.md)** — **Authoritative Academic Research Report**: Complete 22-section academic paper covering problem formulation, SZZ mining, Roslyn static metrics, 5-fold repository-aware cross-validation, probability calibration, threshold tuning, quarantined holdout evaluation, threats to validity, and CI/CD recommendations.
-- 🛠️ **[docs/PROJECT_METHODOLOGY.md](docs/PROJECT_METHODOLOGY.md)** — **Technical Methodology Reference**: In-depth specification of repository discovery, commit collection, bug-fixing heuristics, SZZ line blame tracing, production source-path classification, and the 26 Roslyn code metric suite.
-- 📊 **[docs/EXPERIMENTAL_RESULTS.md](docs/EXPERIMENTAL_RESULTS.md)** — **Consolidated Empirical Results**: Benchmark tables for all 11 model configurations, exact cross-validation fold breakdowns, reconciled accuracy metrics, threshold sweep curves, and holdout performance.
-- ⚖️ **[docs/VALIDATION_AND_LIMITATIONS.md](docs/VALIDATION_AND_LIMITATIONS.md)** — **Verification, Validation & Limitations**: Software verification (121 passing tests, Roslyn .NET 9.0 build, model smoke tests), empirical holdout validation, base-rate fallacy calculations, SZZ heuristic limitations, and future research directions.
-- 📋 **[docs/DEVELOPER_STUDY_TEMPLATE.md](docs/DEVELOPER_STUDY_TEMPLATE.md)** — **Developer Study Protocol**: Formal, reproducible 24-method double-blind review instrument for human evaluation.
+- 📄 **[5_Documentation/07_AcademicReport/FINAL_REPORT.md](5_Documentation/07_AcademicReport/FINAL_REPORT.md)** — **Authoritative Academic Research Report**: Complete 22-section academic paper covering problem formulation, SZZ mining, Roslyn static metrics, 5-fold repository-aware cross-validation, probability calibration, threshold tuning, quarantined holdout evaluation, threats to validity, and CI/CD recommendations.
+- 🏛️ **[5_Documentation/01_Architecture/SYSTEM_ARCHITECTURE.md](5_Documentation/01_Architecture/SYSTEM_ARCHITECTURE.md)** — **System Architecture**: High-level component responsibilities, subprocess bridge, and data flows.
+- 🗄️ **[5_Documentation/02_Database/DATABASE_ARCHITECTURE.md](5_Documentation/02_Database/DATABASE_ARCHITECTURE.md)** — **Database Architecture**: SQLite entity relationships, schema documentation, and data provenance.
+- 💻 **[5_Documentation/03_SourceCode/SOURCE_CODE_GUIDE.md](5_Documentation/03_SourceCode/SOURCE_CODE_GUIDE.md)** — **Source Code Guide**: Python package layout, Roslyn AST visitor details, and developer guide.
+- 🔬 **[5_Documentation/04_MachineLearning/PROJECT_METHODOLOGY.md](5_Documentation/04_MachineLearning/PROJECT_METHODOLOGY.md)** — **Methodology Reference**: Specification of repository discovery, commit mining, SZZ blame tracing, and 26 Roslyn metrics.
+- 📊 **[5_Documentation/04_MachineLearning/EXPERIMENTAL_RESULTS.md](5_Documentation/04_MachineLearning/EXPERIMENTAL_RESULTS.md)** — **Consolidated Empirical Results**: Benchmark tables for all 11 model configurations, fold breakdowns, and threshold curves.
+- ⚖️ **[5_Documentation/05_Validation/VALIDATION_AND_LIMITATIONS.md](5_Documentation/05_Validation/VALIDATION_AND_LIMITATIONS.md)** — **Verification, Validation & Limitations**: 121 passing tests, empirical validation, Bayes Base-Rate Fallacy derivations, and academic limitations.
+- 📖 **[5_Documentation/06_UserGuide/USER_GUIDE.md](5_Documentation/06_UserGuide/USER_GUIDE.md)** — **User Guide**: Step-by-step UI walkthrough and troubleshooting.
+- 📋 **[5_Documentation/07_AcademicReport/DEVELOPER_STUDY_TEMPLATE.md](5_Documentation/07_AcademicReport/DEVELOPER_STUDY_TEMPLATE.md)** — **Developer Study Protocol**: Formal 24-method double-blind review instrument.
+- 🗃️ **[5_Documentation/08_Archive/](5_Documentation/08_Archive/)** — **Historical Archives**: Catalog of 20 historical audits, baseline reports, and superseded documents.
+
+---
+
+## 🎓 University Defense Presentation Material
+
+A concise 7-part presentation sequence for academic examination is available in [6_Presentation/](6_Presentation/):
+
+1. 📌 **[01_ProjectOverview.md](6_Presentation/01_ProjectOverview.md)**: Project overview, motivation, and core contributions.
+2. 🎯 **[02_ProblemAndObjectives.md](6_Presentation/02_ProblemAndObjectives.md)**: Problem definition, research questions (RQ1–RQ4), and measurable objectives.
+3. ⚙️ **[03_SystemArchitecture.md](6_Presentation/03_SystemArchitecture.md)**: End-to-end processing pipeline, tech stack, and subprocess bridge.
+4. 🔬 **[04_DatasetAndMethodology.md](6_Presentation/04_DatasetAndMethodology.md)**: 7 mined repositories, SZZ algorithm, and 26 Roslyn static features.
+5. 📈 **[05_MachineLearningResults.md](6_Presentation/05_MachineLearningResults.md)**: 11-classifier benchmark, accuracy reconciliation, and holdout results.
+6. 🖥️ **[06_ApplicationDemo.md](6_Presentation/06_ApplicationDemo.md)**: 8-page Streamlit web app demonstration and real-time prediction flow.
+7. 🔮 **[07_ConclusionAndFutureWork.md](6_Presentation/07_ConclusionAndFutureWork.md)**: Summary of findings, academic limitations (Bayes theorem), and future directions.
 
 ---
 
@@ -173,7 +256,7 @@ The complete academic narrative and technical documentation are consolidated int
 Cross-validation was evaluated using strict repository-level grouping (`GroupKFold`, $N_{\text{repos}}=5$, $K=5$), ensuring zero intra-repository leakage between training and validation sets:
 
 | Rank | Configuration ID | Algorithm Family | F1 (Mean ± Std) | Recall (Mean ± Std) | Precision (Mean ± Std) | Accuracy (Mean ± Std) | Brier Score |
-| :---: | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| :---: | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **1** | `rf_compact_regularized` | Random Forest | **$0.6859 \pm 0.0247$** | $0.7403 \pm 0.1557$ | $0.6824 \pm 0.1202$ | **$0.6734 \pm 0.0491$** | **$0.2144 \pm 0.0396$** |
 | 2 | `rf_feature_constrained_log2` | Random Forest | $0.6385 \pm 0.0641$ | $0.6831 \pm 0.1706$ | $0.6384 \pm 0.1197$ | $0.6369 \pm 0.0673$ | $0.2209 \pm 0.0375$ |
 | 3 | `rf_heavy_bagging_300` | Random Forest | $0.6262 \pm 0.0633$ | $0.6788 \pm 0.1738$ | $0.6117 \pm 0.0984$ | $0.6212 \pm 0.0617$ | $0.2265 \pm 0.0376$ |
@@ -200,37 +283,11 @@ Evaluated blindly on an independent repository after model architecture and deci
 
 ## ⚠️ Documented Academic Limitations
 
-1. **Base-Rate Fallacy in Production:** Evaluated on balanced ~1:1 corpora (~48%–50% defect prevalence). In industrial codebases where defects affect 2%–10% of methods, operational precision will decline (e.g. ~10.9% expected precision at 5% prevalence based on Bayes' theorem; see [docs/VALIDATION_AND_LIMITATIONS.md](docs/VALIDATION_AND_LIMITATIONS.md)).
+1. **Base-Rate Fallacy in Production:** Evaluated on balanced ~1:1 corpora (~48%–50% defect prevalence). In industrial codebases where defects affect 2%–10% of methods, operational precision will decline (e.g. ~10.9% expected precision at 5% prevalence based on Bayes' theorem; see [5_Documentation/05_Validation/VALIDATION_AND_LIMITATIONS.md](5_Documentation/05_Validation/VALIDATION_AND_LIMITATIONS.md)).
 2. **SZZ Label Approximations:** Defect labels are derived heuristically via Git blame and bug-fixing commit messages rather than certified ground truth.
 3. **Open-World Assumption:** Candidate-clean methods sampled from stable HEAD are free of recorded bug-fixing traces in the mined commit window, but may contain undiscovered latent defects.
 4. **Threshold Selection Coupling:** Decision threshold 0.40 was optimized on aggregated out-of-fold cross-validation predictions without nested CV, though its generalizability was confirmed on the independent holdout.
-5. **Absence of External Human Feedback:** External human survey feedback was not collected; the evaluation protocol is published as a research instrument ([docs/DEVELOPER_STUDY_TEMPLATE.md](docs/DEVELOPER_STUDY_TEMPLATE.md)), and qualitative analyses were conducted via automated AST inspection.
-
----
-
-## 🖥️ Streamlit Multi-Page Interface Guide
-
-| Page | Description |
-| :--- | :--- |
-| **📊 Dashboard** | High-level repository, commit, observation, model, and health statistics. |
-| **📥 Repository Collection** | Search GitHub public repositories, clone full histories, and track commit diffs. |
-| **🔍 Bug Analysis & SZZ** | Detect bug-fixing commits, trace bug-inducing commits (SZZ), and label methods. |
-| **📁 Dataset Management** | Extract 26 Roslyn static code metrics, inspect distributions, and export versioned CSV snapshots. |
-| **🧠 Model Training** | Train models across 4 algorithm families with repository-aware `GroupKFold` CV and compare with dummy baselines. |
-| **📈 Model Evaluation** | Inspect holdout test metrics, confusion matrices, ROC/PR curves, and calibration scores. |
-| **🎯 Real-World Bug Prediction** | Paste C# snippets or upload `.cs` files for real-time defect risk scoring, influential metric attribution, and validation benchmarks. |
-| **⚙️ Settings** | Configure GitHub PAT, local storage paths, Roslyn project path, prediction thresholds, and privacy options. |
-
----
-
-## 📊 Defect Risk Score Interpretation
-
-- **0.00 – 0.39 (🟢 Low risk)**: Metrics are within standard clean method baselines.
-- **0.40 – 0.69 (🟡 Medium risk)**: Moderate structural complexity or branching; review logic flow and verify test coverage.
-- **0.70 – 1.00 (🔴 High risk)**: Severe structural complexity, high cyclomatic complexity, or deep nesting strongly matching historical defect patterns. Mandatory senior review recommended.
-
-> [!IMPORTANT]
-> **Defect Risk Caveat**: The risk score is an estimated metric propensity indicating structural complexity. It is **not** a formal proof that a method contains a bug, nor does a low-risk score guarantee code correctness (e.g. subtle semantic flaws in 1-line methods).
+5. **Absence of External Human Feedback:** External human survey feedback was not collected; the evaluation protocol is published as a research instrument ([5_Documentation/07_AcademicReport/DEVELOPER_STUDY_TEMPLATE.md](5_Documentation/07_AcademicReport/DEVELOPER_STUDY_TEMPLATE.md)), and qualitative analyses were conducted via automated AST inspection.
 
 ---
 

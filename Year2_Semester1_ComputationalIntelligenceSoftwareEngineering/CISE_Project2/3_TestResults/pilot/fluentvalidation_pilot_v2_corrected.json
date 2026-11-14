@@ -1,0 +1,281 @@
+{
+  "repository": {
+    "id": 14,
+    "full_name": "FluentValidation/FluentValidation",
+    "url": "https://github.com/FluentValidation/FluentValidation.git",
+    "license": "Apache-2.0",
+    "default_branch": "main",
+    "local_path": "E:\\PERSONAL\\GitHub\\1_Applied-Computational-Intelligence-UBB\\Year2_Semester1_ComputationalIntelligenceSoftwareEngineering\\CISE_Project2\\data\\repositories\\FluentValidation\\FluentValidation",
+    "total_commits_in_git": 2515
+  },
+  "commit_sampling_audit": {
+    "sampling_strategy": "reverse_chronological_from_head",
+    "target_branch": "main",
+    "commits_requested": 350,
+    "commits_mined": 350,
+    "earliest_commit_date": "2021-11-11T16:37:44+01:00",
+    "latest_commit_date": "2026-11-13T21:05:09+11:00",
+    "temporal_span_years": 5.0,
+    "merge_commit_policy": "included_in_mining_mainline_parent_0_isolated_in_szz"
+  },
+  "bug_fixing_commit_audit": {
+    "total_classified_fixes": 11,
+    "high_confidence_fixes": 4,
+    "moderate_confidence_fixes": 7,
+    "manual_audit_verified_true_defects": 10,
+    "manual_audit_false_positives": 1,
+    "false_positive_details": "Commit 91e78489 is package validation/compatibility; yielded 0 SZZ traces and 0 observations.",
+    "classified_commits": [
+      {
+        "commit_sha": "a8ca6ac34b82d338f0d86e0fc21c9a174066060c",
+        "short_sha": "a8ca6ac3",
+        "date": "2026-10-27T23:01:57+00:00",
+        "author": "John Karam",
+        "message": "Fix OverflowException in IsInEnum for ulong flags enums",
+        "confidence": 0.65,
+        "evidence": "Keyword matched: 'fix' (+0.35); Keyword matched: 'exception' (+0.30)",
+        "manual_audit_verified": true,
+        "category": "runtime_exception_fix",
+        "affected_component": "Validators/EnumValidator.cs",
+        "szz_line_traces": 1,
+        "methods_yielded": 1
+      },
+      {
+        "commit_sha": "bae891656ec5e3cf7aece4206e8642ca0f074d25",
+        "short_sha": "bae89165",
+        "date": "2026-07-02T17:52:14+05:30",
+        "author": "Manibh Sain",
+        "message": "Fix ArgumentNullException in TestValidationResult when a failure has a null PropertyName",
+        "confidence": 0.9,
+        "evidence": "Linked closing issue/PR: #2361; Keyword matched: 'fix' (+0.35)",
+        "manual_audit_verified": true,
+        "category": "null_reference_fix",
+        "affected_component": "TestHelper/TestValidationResult.cs",
+        "szz_line_traces": 1,
+        "methods_yielded": 1
+      },
+      {
+        "commit_sha": "419380cb03597d3f443b7e80f9aa129189680ee4",
+        "short_sha": "419380cb",
+        "date": "2023-11-23T00:18:57+03:00",
+        "author": "kronic",
+        "message": "fix memory leak enumerator (#2174)",
+        "confidence": 1.0,
+        "evidence": "Referenced issue/PR: #2174; Keyword matched: 'fix' (+0.35); Keyword matched: 'memory leak' (+0.45)",
+        "manual_audit_verified": true,
+        "category": "resource_leak_fix",
+        "affected_component": "Validators/EmptyValidator.cs & NotEmptyValidator.cs",
+        "szz_line_traces": 3,
+        "methods_yielded": 2
+      },
+      {
+        "commit_sha": "a4377610fa789c1f6cbe19c72e668600a9fa9329",
+        "short_sha": "a4377610",
+        "date": "2023-10-11T22:01:06+01:00",
+        "author": "Jeremy Skinner",
+        "message": "Fix ChildRules with hierarchies #2165",
+        "confidence": 0.6,
+        "evidence": "Referenced issue/PR: #2165; Keyword matched: 'fix' (+0.35)",
+        "manual_audit_verified": true,
+        "category": "logic_hierarchy_fix",
+        "affected_component": "DefaultValidatorExtensions.cs & Syntax.cs",
+        "szz_line_traces": 2,
+        "methods_yielded": 1
+      },
+      {
+        "commit_sha": "7d91ccb1bdf626c9053fa2d75f280a9d9e4cbf86",
+        "short_sha": "7d91ccb1",
+        "date": "2023-10-04T16:06:57+01:00",
+        "author": "Jeremy Skinner",
+        "message": "Fix bug introduced in AbstractValidator.SetExecutedRuleSets",
+        "confidence": 0.75,
+        "evidence": "Keyword matched: 'bug' (+0.40); Keyword matched: 'fix' (+0.35)",
+        "manual_audit_verified": true,
+        "category": "regression_bug_fix",
+        "affected_component": "AbstractValidator.cs",
+        "szz_line_traces": 3,
+        "methods_yielded": 1
+      },
+      {
+        "commit_sha": "0c24fd92751515ef50e5015e574fb245b736b7bc",
+        "short_sha": "0c24fd92",
+        "date": "2023-10-04T15:56:37+01:00",
+        "author": "Jeremy Skinner",
+        "message": "Fix bug introduced in NotEmptyValidator",
+        "confidence": 0.75,
+        "evidence": "Keyword matched: 'bug' (+0.40); Keyword matched: 'fix' (+0.35)",
+        "manual_audit_verified": true,
+        "category": "regression_bug_fix",
+        "affected_component": "Validators/NotEmptyValidator.cs",
+        "szz_line_traces": 1,
+        "methods_yielded": 1
+      },
+      {
+        "commit_sha": "3e3e29f43f1e9f0d1ea0e20601f0535aa40ec62f",
+        "short_sha": "3e3e29f4",
+        "date": "2023-04-07T15:52:33+01:00",
+        "author": "Jeremy Skinner",
+        "message": "Resolve issue with ruleset propogation for multiple levels of child rules (fixes #2097)",
+        "confidence": 0.55,
+        "evidence": "Linked closing issue/PR: #2097",
+        "manual_audit_verified": true,
+        "category": "ruleset_propagation_fix",
+        "affected_component": "DefaultValidatorExtensions.cs",
+        "szz_line_traces": 2,
+        "methods_yielded": 1
+      },
+      {
+        "commit_sha": "9c0c58728d2222ae72d6f22e7054f0a0614a806c",
+        "short_sha": "9c0c5872",
+        "date": "2022-08-28T13:08:38+01:00",
+        "author": "Jeremy Skinner",
+        "message": "Fix test helper .Only() not taking into account parent-level unmatched failures (#1986)",
+        "confidence": 0.6,
+        "evidence": "Referenced issue/PR: #1986; Keyword matched: 'fix' (+0.35)",
+        "manual_audit_verified": true,
+        "category": "test_helper_api_fix",
+        "affected_component": "TestHelper/ValidatorTestExtensions.cs",
+        "szz_line_traces": 9,
+        "methods_yielded": 3
+      },
+      {
+        "commit_sha": "d37d15f5c35ff64bfcf984928f6f59bf53c45b73",
+        "short_sha": "d37d15f5",
+        "date": "2022-08-06T20:20:32+10:00",
+        "author": "Frank",
+        "message": "Fix the issue that the ChildRules will corrupt the RuleSets of a validator passed to the SetValidator (#1982)",
+        "confidence": 0.6,
+        "evidence": "Referenced issue/PR: #1982; Keyword matched: 'fix' (+0.35)",
+        "manual_audit_verified": true,
+        "category": "ruleset_corruption_fix",
+        "affected_component": "DefaultValidatorExtensions.cs",
+        "szz_line_traces": 1,
+        "methods_yielded": 1
+      },
+      {
+        "commit_sha": "eae767d60ce1aa72111d4eb6117ebae746e3e582",
+        "short_sha": "eae767d6",
+        "date": "2022-05-07T15:09:12+04:00",
+        "author": "Aleksei Pankratev",
+        "message": "Fix assertions for With/Without test methods when there are multiple failures (#1937) (#1938)",
+        "confidence": 0.6,
+        "evidence": "Referenced issue/PR: #1937, #1938; Keyword matched: 'fix' (+0.35)",
+        "manual_audit_verified": true,
+        "category": "test_helper_assertion_fix",
+        "affected_component": "TestHelper/ValidatorTestExtensions.cs",
+        "szz_line_traces": 2,
+        "methods_yielded": 2
+      },
+      {
+        "commit_sha": "91e78489c0a6b73841a0219665bc7ceb2ef24072",
+        "short_sha": "91e78489",
+        "date": "2021-12-11T12:21:51+00:00",
+        "author": "Jeremy Skinner",
+        "message": "Enable package validation and add backwards compatibility overloads. Fixes #1860.",
+        "confidence": 0.55,
+        "evidence": "Linked closing issue/PR: #1860",
+        "manual_audit_verified": false,
+        "category": "packaging_compatibility_overload",
+        "affected_component": "Build/Packaging configuration",
+        "szz_line_traces": 0,
+        "methods_yielded": 0,
+        "notes": "Non-defect maintenance commit. Modified zero deleted C# lines in SZZ; contributed 0 traces and 0 observations."
+      }
+    ]
+  },
+  "filtering_comparison_v1_vs_v2": {
+    "v1_pilot_unfiltered": {
+      "szz_bic_traces": 28,
+      "buggy_methods": 17,
+      "test_methods_in_buggy": 3,
+      "clean_methods": 17,
+      "total_observations": 34,
+      "test_code_leakage_detected": true,
+      "leaked_test_files": [
+        "src/FluentValidation.Tests/ChainedValidationTester.cs",
+        "src/FluentValidation.Tests/TestExtensions.cs"
+      ]
+    },
+    "v2_corrected_production_only": {
+      "szz_bic_traces": 25,
+      "buggy_methods": 14,
+      "test_methods_in_buggy": 0,
+      "clean_methods": 14,
+      "total_observations": 28,
+      "test_code_leakage_detected": false,
+      "leaked_test_files": []
+    }
+  },
+  "calibrated_yield_metrics": {
+    "definition_bug_fix_detection_rate": "bug_fixing_commits / sampled_commits",
+    "bug_fix_detection_rate": 0.0314,
+    "bug_fix_detection_rate_pct": "3.14%",
+    "definition_szz_trace_success_rate": "successfully_traced_bug_fixes / bug_fixing_commits",
+    "szz_trace_success_rate": 0.9091,
+    "szz_trace_success_rate_pct": "90.91%",
+    "definition_positive_method_yield": "production_buggy_methods / sampled_commits",
+    "positive_method_yield": 0.04,
+    "positive_method_yield_pct": "4.00%",
+    "candidate_clean_sampling_count": 14,
+    "total_usable_production_observations": 28,
+    "class_balance_ratio": 0.5
+  },
+  "feature_extraction_stats": {
+    "total_processed": 28,
+    "success": 28,
+    "failed": 0,
+    "success_rate": 1.0,
+    "features_per_observation": 26
+  },
+  "calibrated_expansion_projections": {
+    "assumed_positive_yield_per_350_commits": 14,
+    "assumed_clean_sampling_ratio": 1.0,
+    "projections": {
+      "FluentValidation": {
+        "role": "training_group_3",
+        "commits_mined": 350,
+        "production_buggy": 14,
+        "production_clean": 14,
+        "total_usable": 28,
+        "status": "collected_and_verified"
+      },
+      "Serilog": {
+        "role": "training_group_4_candidate",
+        "projected_commits_to_mine": 350,
+        "projected_production_buggy": 14,
+        "projected_production_clean": 14,
+        "projected_usable_observations": 28,
+        "status": "pending_user_decision"
+      },
+      "Polly": {
+        "role": "training_group_5_candidate",
+        "projected_commits_to_mine": 350,
+        "projected_production_buggy": 14,
+        "projected_production_clean": 14,
+        "projected_usable_observations": 28,
+        "status": "pending_user_decision"
+      },
+      "Newtonsoft.Json": {
+        "role": "independent_holdout_candidate",
+        "projected_commits_to_mine": 350,
+        "projected_production_buggy": 20,
+        "projected_production_clean": 20,
+        "projected_usable_observations": 40,
+        "status": "pending_user_decision"
+      }
+    },
+    "five_fold_cv_feasibility_assessment": {
+      "supported": true,
+      "training_groups_required": 5,
+      "group_1_humanizer": 291,
+      "group_2_mediatr": 91,
+      "group_3_fluentvalidation": 28,
+      "group_4_serilog_projected": 28,
+      "group_5_polly_projected": 28,
+      "projected_training_set_total": 466,
+      "independent_holdout_projected": 40,
+      "conclusion": "5-fold GroupKFold is structurally feasible across 5 distinct training repository groups, provided Serilog and Polly are collected."
+    }
+  },
+  "execution_duration_s": 13.52
+}
