@@ -12,8 +12,8 @@ flowchart TD
         A["GitHub Repositories"] --> B["Git Commit Mining"]
         B --> C["Bug-Fix Classification<br/>(Regex Confidence)"]
         C --> D["SZZ Algorithm<br/>(git blame -w -M -C)"]
-        D --> E["Pre-Fix Buggy Methods"]
-        B --> F["Stable HEAD Clean Methods"]
+        D --> E["Pre-Fix Defect-Prone Methods"]
+        B --> F["Stable HEAD Candidate-Clean Methods"]
     end
 
     subgraph Stage2["Stage 2: Roslyn AST Engine"]
@@ -42,7 +42,7 @@ flowchart TD
 - **Static Code Analysis:** C# 13, .NET 9.0 SDK, `Microsoft.CodeAnalysis.CSharp` (Roslyn AST compiler API)
 - **Data Persistence:** SQLite 3 with Write-Ahead Logging (WAL) and foreign keys
 - **Version Control Engine:** Git CLI via GitPython and subprocess line blame
-- **Testing & Quality Assurance:** pytest (121 automated tests), GitHub Actions compatible
+- **Testing & Quality Assurance:** pytest (123 automated tests), GitHub Actions compatible
 
 ---
 

@@ -24,7 +24,7 @@ Predicting defects at the method level presents specific technical challenges:
 2. **Static Metric Extraction:** Develop a Roslyn-based AST analyzer extracting 26 structural, complexity, and object-oriented metrics directly from C# source code.
 3. **Leakage-Free Cross-Validation:** Evaluate multi-model supervised classifiers using strict repository-level 5-fold `GroupKFold` partitioning ($N_{\text{repos}}=5$, $K=5$).
 4. **Probability Calibration and Threshold Tuning:** Analyze Brier score calibration and optimize decision thresholds on out-of-fold validation distributions.
-5. **Independent Holdout Evaluation:** Verify generalization on a quarantined external repository (`Newtonsoft.Json`, 159 methods) untouched during model exploration and threshold selection.
+5. **Independent Holdout Evaluation:** Verify generalization on an independent external repository (`Newtonsoft.Json`, 159 methods) evaluated post-freeze according to dated experiment records.
 6. **Local Desktop Workbench:** Provide an interactive Streamlit application for real-time method analysis, file scanning, and model inspection without external network dependencies.
 
 ---
@@ -86,7 +86,7 @@ CISE_Project2/
 │   │   └── app.py                             # Streamlit launcher and navigation
 │   ├── RoslynAnalyzer/                        # .NET 9.0 C# AST static metric analyzer
 │   ├── Scripts/                               # Operational, maintenance, and verification scripts
-│   └── Tests/                                 # Automated regression test suite (121 tests)
+│   └── Tests/                                 # Automated regression test suite (123 tests)
 │
 ├── 3_TestResults/                             # Empirical validation artifacts
 │   ├── AuditReports/                          # Dataset integrity and SZZ reconciliation reports
@@ -145,7 +145,7 @@ flowchart TD
     end
 
     subgraph S4["4. Evaluation and Inference"]
-        L --> M["Quarantined Holdout (Newtonsoft.Json, 159 Methods)"]
+        L --> M["Independent Holdout (Newtonsoft.Json, 159 Methods)"]
         L --> N["Frozen Model Bundle (.joblib)"]
         N --> O["Streamlit Workbench / C# Defect Predictor"]
     end
@@ -217,7 +217,7 @@ The application interface opens locally at `http://localhost:8501`.
 The test suite covers unit logic, database transactions, SZZ analysis, Roslyn metric parsing, and machine learning pipelines. All tests run offline without external network or live GitHub API dependencies.
 
 ```powershell
-# Execute the full automated regression suite (121 tests)
+# Execute the full automated regression suite (123 tests)
 pytest
 ```
 
@@ -240,13 +240,13 @@ Test execution evidence is recorded in [3_TestResults/AutomatedTests/TEST_EXECUT
 
 ## 8. Dataset Overview
 
-The project manages two primary datasets and one quarantined independent holdout repository:
+The project manages two primary datasets and one independent holdout repository:
 
 | Dataset Identifier | Observations | Positive Class (Defect-Prone) | Negative Class (Candidate-Clean) | Repositories Included | Primary Purpose |
 | :--- | :---: | :---: | :---: | :--- | :--- |
-| **Dataset #1 (`csharp_empirical_v1`)** | 483 | 242 (50.10%) | 241 (49.90%) | `Humanizer` (291), `CommandLineParser` (101), `MediatR` (91) | Exploratory feature selection and baseline modeling |
+| **Dataset #1 (`csharp_empirical_v1`)** | 483 | 226 (46.79%) | 257 (53.21%) | `Humanizer` (291), `CommandLineParser` (101), `MediatR` (91) | Exploratory feature selection and baseline modeling |
 | **Dataset #2 (`csharp_empirical_v2`)** | 578 | 279 (48.27%) | 299 (51.73%) | `Humanizer` (291), `Serilog` (134), `MediatR` (91), `Polly` (34), `FluentValidation` (28) | Authoritative benchmark corpus for 5-fold GroupKFold cross-validation |
-| **Independent Holdout** | 159 | 79 (49.69%) | 80 (50.31%) | `JamesNK/Newtonsoft.Json` (159) | Quarantined external validation of the frozen model |
+| **Independent Holdout** | 159 | 79 (49.69%) | 80 (50.31%) | `JamesNK/Newtonsoft.Json` (159) | Independent external validation of the frozen model |
 
 ### Labeling Methodology and Open-World Assumption
 
@@ -287,7 +287,7 @@ To prevent reporting ambiguities, evaluation distinguishes between unweighted fo
 
 ### Independent Holdout Evaluation (`JamesNK/Newtonsoft.Json`, 159 Methods)
 
-The selected Random Forest model (`rf_compact_regularized`) was evaluated on an external repository that was strictly quarantined during model exploration and hyperparameter selection:
+The selected Random Forest model (`rf_compact_regularized`) was evaluated on an independent external repository whose evaluation was executed post-freeze as supported by dated artifacts:
 
 | Threshold Setting | Accuracy | Precision | Recall | F1-Score | ROC-AUC | Brier Score | Confusion Matrix |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -298,10 +298,12 @@ At the tuned threshold $\tau^* = 0.40$, the model captures 71 of 79 defect-prone
 
 ### Documented Academic Limitations
 
-1. **Base-Rate Fallacy in Production:** Real-world software defect prevalence typically ranges between 2% and 10%, compared to the balanced ~48% to 50% distribution in the experimental datasets. Under Bayes' theorem, an operational deployment with 5% prevalence would yield an expected precision of approximately 10.9% despite high nominal recall.
+1. **Base-Rate Fallacy in Production:** Real-world software defect prevalence typically ranges between 2% and 10%, compared to the balanced ~48% to 50% distribution in the experimental datasets. Under Bayes' theorem, an illustrative hypothetical scenario with 5% prevalence would yield an expected precision of approximately 10.9% despite high nominal recall.
 2. **Heuristic Labeling Approximations:** SZZ annotations rely on commit message heuristics and line blame histories, which may misattribute defects to formatting edits or refactorings.
 3. **Absence of External Human Feedback:** The double-blind review framework ([DEVELOPER_STUDY_TEMPLATE.md](5_Documentation/07_AcademicReport/DEVELOPER_STUDY_TEMPLATE.md)) is published as a formal research instrument; no external human developer trials were conducted. Qualitative code analyses were performed via automated AST inspection.
-4. **Threshold-Selection Coupling:** The operational threshold $\tau^* = 0.40$ was identified on aggregated out-of-fold cross-validation predictions without nested cross-validation, though its robustness was supported by independent holdout results.
+4. **Threshold-Selection Bias:** The operational threshold $\tau^* = 0.40$ was identified on aggregated out-of-fold cross-validation predictions without nested cross-validation, which introduces mild threshold-selection bias, though its performance was subsequently evaluated without change on the independent holdout repository.
+5. **Temporal Asymmetry in Ground Truth:** Defect-prone methods capture historical pre-fix revisions at the time the defect was introduced, whereas candidate-clean methods are sampled from the latest stable HEAD revision. While this ensures candidate-clean methods survived historical bug fixes, it introduces a temporal asymmetry between historical and contemporary code snapshots.
+6. **Generalization Scope:** Empirical findings and statistical inferences are strictly bounded to the 6 open-source C# repositories and 26 static AST metrics evaluated. Findings should not be generalized to closed-source enterprise monoliths or non-C# languages without domain-specific re-evaluation.
 
 ---
 
@@ -320,4 +322,6 @@ Comprehensive technical, experimental, and academic documentation is available i
 | **Validation & Limits** | [5_Documentation/05_Validation/VALIDATION_AND_LIMITATIONS.md](5_Documentation/05_Validation/VALIDATION_AND_LIMITATIONS.md) | Verification tests, threats to validity, Bayes derivations, and operational limitations |
 | **User Manual** | [5_Documentation/06_UserGuide/USER_GUIDE.md](5_Documentation/06_UserGuide/USER_GUIDE.md) | Step-by-step user instructions for all 8 application pages and troubleshooting |
 | **Study Protocol** | [5_Documentation/07_AcademicReport/DEVELOPER_STUDY_TEMPLATE.md](5_Documentation/07_AcademicReport/DEVELOPER_STUDY_TEMPLATE.md) | 24-method double-blind review research instrument and protocol template |
+| **Quality Review** | [5_Documentation/08_Archive/FINAL_QUALITY_REVIEW_REPORT.md](5_Documentation/08_Archive/FINAL_QUALITY_REVIEW_REPORT.md) | Comprehensive quality audit, defect resolution, and parity verification report |
+| **Academic Sign-Off** | [5_Documentation/08_Archive/FINAL_ACADEMIC_SIGNOFF.md](5_Documentation/08_Archive/FINAL_ACADEMIC_SIGNOFF.md) | Final academic compliance matrix, limitation boundaries, and readiness verdict |
 | **Defense Slides** | [6_Presentation/](6_Presentation/) | 7 presentation decks prepared for academic defense and project examination |

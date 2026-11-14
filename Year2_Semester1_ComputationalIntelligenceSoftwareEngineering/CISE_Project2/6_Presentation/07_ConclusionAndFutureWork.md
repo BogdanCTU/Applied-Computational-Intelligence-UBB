@@ -32,8 +32,8 @@
 flowchart TD
     Current["Current Approach:<br/>26 Roslyn Static Metrics + Random Forest"] --> A["1. Multi-Modal Embeddings<br/>Combine AST Metrics with CodeBERT / Graph Neural Networks"]
     Current --> B["2. Just-In-Time (JIT) Metrics<br/>Incorporate Author Experience, Churn, and Commit Timestamps"]
-    Current --> C["3. Industry Developer Studies<br/>Conduct Controlled Double-Blind Trials in Software Teams"]
-    Current --> D["4. IDE Integration<br/>VS Code / Visual Studio Extension for Inline Squiggly Warnings"]
+    Current --> C["3. Industry Developer Studies<br/>Administer Controlled Review Protocols with Software Engineering Teams"]
+    Current --> D["4. IDE Integration<br/>VS Code / Visual Studio Extension for Inline Static Defect Warnings"]
 ```
 
 ---
@@ -41,6 +41,6 @@ flowchart TD
 ## 4. Final Verdict & Submission Readiness
 
 - **Curriculum Compliance:** Fully satisfies all 6 requirements of the CISE curriculum.
-- **Reproducibility:** 121 automated regression tests passing (100%); zero external database or cloud dependencies.
+- **Reproducibility:** 123 automated regression tests passing (100%); zero external database or cloud dependencies.
 - **Integrity:** 100% bitwise parity preserved across all databases, datasets, and frozen models.
 

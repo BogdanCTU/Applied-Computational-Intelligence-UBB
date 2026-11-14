@@ -93,6 +93,7 @@ class ModelManager:
         if not path.exists():
             raise ModelManagerError(f"Model artifact not found at {path}")
 
+        register_unpickle_aliases()
         try:
             bundle = joblib.load(path)
         except Exception as e:
@@ -115,6 +116,7 @@ class ModelManager:
                 return db_models
 
         # Fallback: scan models directory
+        register_unpickle_aliases()
         models = []
         for p in self.models_dir.glob("*.joblib"):
             try:

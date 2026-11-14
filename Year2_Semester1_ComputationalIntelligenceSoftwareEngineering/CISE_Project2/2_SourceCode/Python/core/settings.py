@@ -30,34 +30,34 @@ def register_unpickle_aliases() -> None:
     """Register in-memory module aliases in sys.modules so serialized models unpickle cleanly without legacy directories."""
     import sys
     import types
-    if "src" in sys.modules and "src.ml.preprocessing" in sys.modules:
+
+    if "src.ml.preprocessing" in sys.modules and getattr(sys.modules.get("src.ml.preprocessing"), "__name__", None) == "ml.preprocessing":
         return
+
     try:
-        import ml.preprocessing
         import ml
+        import ml.preprocessing as ml_prep
         import database
         import repositories
         import services
         import utils
 
-        src_mod = types.ModuleType("src")
+        src_mod = sys.modules.get("src") or types.ModuleType("src")
         src_mod.database = database
         src_mod.ml = ml
         src_mod.repositories = repositories
         src_mod.services = services
         src_mod.utils = utils
+
         sys.modules.setdefault("src", src_mod)
         sys.modules.setdefault("src.database", database)
         sys.modules.setdefault("src.ml", ml)
-        sys.modules.setdefault("src.ml.preprocessing", ml.preprocessing)
+        sys.modules["src.ml.preprocessing"] = ml_prep
         sys.modules.setdefault("src.repositories", repositories)
         sys.modules.setdefault("src.services", services)
         sys.modules.setdefault("src.utils", utils)
-    except ImportError:
+    except (ImportError, AttributeError):
         pass
-
-
-register_unpickle_aliases()
 
 
 def _resolve_first_existing(*candidates: Path) -> Path:

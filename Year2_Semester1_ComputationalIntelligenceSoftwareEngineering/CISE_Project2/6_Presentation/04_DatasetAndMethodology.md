@@ -25,14 +25,14 @@ flowchart LR
     FixCommit["Bug-Fixing Commit<br/>(e.g., 'Fix null pointer in retry')"] --> Blame["git blame -w -M -C<br/>(Trace deleted lines)"]
     Blame --> BIC["Bug-Inducing Commit (BIC)"]
     BIC --> PreFix["Enclosing Method at BIC<br/>(Pre-Fix State)"]
-    PreFix --> Label1["Label 1: Buggy Method"]
+    PreFix --> Label1["Label 1: Defect-Prone Method"]
     
     HEAD["Stable HEAD Revision<br/>(Zero fix traces)"] --> Clean["Candidate Clean Method"]
-    Clean --> Label0["Label 0: Clean Method"]
+    Clean --> Label0["Label 0: Candidate-Clean Method"]
 ```
 
 ### Key Methodological Controls
-1. **The Open-World Assumption (OWA):** Non-buggy methods are defined as *candidate-clean* rather than defect-free, acknowledging that unobserved latent bugs may exist in production code.
+1. **The Open-World Assumption (OWA):** Methods without recorded bug fixes are defined as *candidate-clean* rather than defect-free, acknowledging that unobserved latent defects may exist in production code.
 2. **Production Code Filtering:** All candidate source files must pass `is_production_csharp_file()`:
    - Excludes test projects (`*.Tests/`, `*.Specs/`, `*.UnitTests/`).
    - Excludes test files (`*Tests.cs`, `*Test.cs`, `*Fixture.cs`).
@@ -56,7 +56,9 @@ The Roslyn analyzer calculates 26 static features spanning 5 metric families:
 
 ## 4. Benchmark Datasets Summary
 
-- **Dataset #1 (Baseline):** 483 methods (242 buggy, 241 clean) across 5 repositories.
-- **Dataset #2 (Expanded Final):** 578 methods (279 buggy, 299 clean) across 7 repositories.
+- **Dataset #1 (Baseline):** 483 methods (226 defect-prone, 257 candidate-clean) across 3 repositories (`Humanizer`, `CommandLineParser`, `MediatR`).
+- **Dataset #2 (Expanded Benchmark):** 578 methods (279 defect-prone, 299 candidate-clean) across 5 training repositories (`Humanizer`, `Serilog`, `MediatR`, `Polly`, `FluentValidation`).
+- **Independent Holdout:** 159 methods (79 defect-prone, 80 candidate-clean) from `Newtonsoft.Json`.
+- **Combined Corpus:** 737 method observations evaluated across training and independent holdout stages.
 - **Holdout Partition:** 159 observations from `Newtonsoft.Json` reserved strictly for final generalization testing.
 

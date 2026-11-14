@@ -8,7 +8,7 @@ from database.repository import RepositoryDB
 
 
 def render_settings(db: RepositoryDB, settings: AppSettings) -> None:
-    st.header("⚙️ Application & Environment Settings")
+    st.header("Application and Environment Settings")
     st.markdown("Configure local storage paths, GitHub API authentication, Roslyn Analyzer, and defect prediction guardrails.")
 
     with st.form("settings_form"):
@@ -44,9 +44,9 @@ def render_settings(db: RepositoryDB, settings: AppSettings) -> None:
         roslyn_proj = st.text_input("Roslyn Analyzer Project Path (.csproj)", value=str(settings.roslyn.project_path))
         proj_exists = Path(roslyn_proj).exists()
         if proj_exists:
-            st.success(f"✅ Roslyn project found at `{roslyn_proj}`")
+            st.success(f"Roslyn project found at `{roslyn_proj}`")
         else:
-            st.warning(f"⚠️ Roslyn project file not found at `{roslyn_proj}`")
+            st.warning(f"Roslyn project file not found at `{roslyn_proj}`")
 
         st.markdown("---")
 
@@ -82,7 +82,7 @@ def render_settings(db: RepositoryDB, settings: AppSettings) -> None:
             def_idx = 0
             st.selectbox("Default Model for Quick Predictions", list(model_opts.keys()), index=def_idx)
 
-        submitted = st.form_submit_button("💾 Save Session Configuration", use_container_width=True)
+        submitted = st.form_submit_button("Save Session Configuration", use_container_width=True)
         if submitted:
             # Update settings in session memory
             if token.strip():
@@ -97,15 +97,15 @@ def render_settings(db: RepositoryDB, settings: AppSettings) -> None:
             settings.prediction.persist_history = persist_hist
             settings.prediction.persist_source_code = persist_src
 
-            st.success("✅ Configuration saved for the current session! (To persist across application restarts, set environment variables or `.env`).")
+            st.success("Configuration saved for the current session. (To persist across application restarts, set environment variables or `.env`).")
 
     # Clear History Utility
     st.markdown("---")
-    st.subheader("🧹 Privacy Actions")
+    st.subheader("Privacy Actions")
     col_cl1, col_cl2 = st.columns([2, 1])
     with col_cl1:
         st.write("Erase all logged predictions from local SQLite storage permanently.")
     with col_cl2:
-        if st.button("🗑️ Erase Prediction History", use_container_width=True):
+        if st.button("Erase Prediction History", use_container_width=True):
             deleted = db.clear_predictions()
             st.success(f"Cleared {deleted} prediction records.")

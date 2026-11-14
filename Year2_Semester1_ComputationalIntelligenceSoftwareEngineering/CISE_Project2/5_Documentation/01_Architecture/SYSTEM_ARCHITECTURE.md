@@ -17,8 +17,8 @@ flowchart TD
         GH["GitHub Repositories<br/>(7 Open-Source Projects)"] --> GitClone["Git Engine<br/>(GitPython & Subprocess)"]
         GitClone --> BF["Bug-Fix Detector<br/>(Regex Pattern Engine)"]
         BF --> SZZ["SZZ Line Tracer<br/>(git blame -w -M -C)"]
-        SZZ --> BIC["Bug-Inducing Commits<br/>(Pre-Fix Parent Methods)"]
-        GitClone --> HEAD["Clean Sampler<br/>(Stable HEAD Methods)"]
+        SZZ --> BIC["Defect-Inducing Commits<br/>(Pre-Fix Parent Methods)"]
+        GitClone --> HEAD["Candidate-Clean Sampler<br/>(Stable HEAD Methods)"]
     end
 
     subgraph Analysis["2. C# Roslyn Analysis"]
@@ -72,7 +72,7 @@ flowchart TD
 1. **Repository Ingestion:** Target C# projects are cloned into local workspace.
 2. **Commit Filtering:** Commits modifying `.cs` files are inspected for bug-fixing keywords (`fix`, `bug`, `issue`, `resolve`, etc.).
 3. **SZZ Attribution:** Deleted or modified code lines are traced back to their introducing commit using `git blame -w -M -C`.
-4. **AST Metric Extraction:** Roslyn extracts the enclosing method and calculates 26 static features directly on the pre-fix revision for buggy instances and stable HEAD for clean instances.
+4. **AST Metric Extraction:** Roslyn extracts the enclosing method and calculates 26 static features directly on the pre-fix revision for defect-prone instances and stable HEAD for candidate-clean instances.
 5. **Observation Persistence:** Methods and feature vectors are stored in SQLite and exported to versioned CSVs (`1_Database/Datasets/`).
 6. **Group-Aware Evaluation:** Models are evaluated using 5-fold `GroupKFold` split on repository boundaries, guaranteeing that no methods from the same repository appear in both training and test sets simultaneously.
 7. **Serving & Inference:** The champion Random Forest model is bundled with its preprocessor and deployed via the Streamlit interface for live interactive developer risk scoring.

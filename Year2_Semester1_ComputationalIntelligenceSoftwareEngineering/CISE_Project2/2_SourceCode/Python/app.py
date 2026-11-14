@@ -18,8 +18,7 @@ from database.repository import RepositoryDB
 
 # Configure main page settings
 st.set_page_config(
-    page_title="C# Defect Predictor | ML Bug Detection",
-    page_icon="🐛",
+    page_title="C# Defect Predictor",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -37,19 +36,19 @@ if "db" not in st.session_state:
 def main() -> None:
     # Sidebar navigation
     with st.sidebar:
-        st.title("🐛 C# Defect Predictor")
-        st.caption("Machine Learning-Based Bug Detection for C#")
+        st.title("C# Defect Predictor")
+        st.caption("Machine Learning Software Defect Prediction")
         st.markdown("---")
 
         page_options = [
-            "📊 Dashboard",
-            "📥 Repository Collection",
-            "🔍 Bug Analysis & SZZ",
-            "📁 Dataset Management",
-            "🧠 Model Training",
-            "📈 Model Evaluation",
-            "🎯 Real-World Bug Prediction",
-            "⚙️ Settings",
+            "Dashboard",
+            "Repository Collection",
+            "Bug Analysis & SZZ",
+            "Dataset Management",
+            "Model Training",
+            "Model Evaluation",
+            "Real-World Bug Prediction",
+            "Settings",
         ]
 
         if "current_page" not in st.session_state:
@@ -66,43 +65,43 @@ def main() -> None:
         # Global quick stats
         try:
             stats = st.session_state.repo_db.get_summary_statistics()
-            st.markdown("### 📌 Workspace Stats")
+            st.markdown("### Workspace Statistics")
             st.write(f"**Repositories:** {stats['repositories_total']} ({stats['repositories_cloned']} cloned)")
-            st.write(f"**Commits:** {stats['commits_total']} ({stats['commits_bug_fix']} bug-fixes)")
+            st.write(f"**Commits:** {stats['commits_total']} ({stats['commits_bug_fix']} bug-fixing)")
             st.write(f"**Observations:** {stats['observations_total']}")
-            st.write(f"  • Buggy (1): `{stats['observations_buggy']}`")
-            st.write(f"  • Non-buggy (0): `{stats['observations_non_buggy']}`")
-            st.write(f"  • Uncertain (-1): `{stats['observations_uncertain']}`")
+            st.write(f"  * Defect-prone (1): `{stats['observations_buggy']}`")
+            st.write(f"  * Candidate-clean (0): `{stats['observations_non_buggy']}`")
+            st.write(f"  * Uncertain (-1): `{stats['observations_uncertain']}`")
             st.write(f"**Datasets:** {stats['datasets_count']} | **Models:** {stats['models_count']}")
         except Exception:
             pass
 
         st.markdown("---")
-        st.caption("Academic CISE Project 2 • Antigravity AI")
+        st.caption("CISE Project 2 | Babeș-Bolyai University")
 
     # Render selected page
-    if selected_page == "📊 Dashboard":
+    if selected_page == "Dashboard":
         from application.pages.dashboard import render_dashboard
         render_dashboard(st.session_state.repo_db, st.session_state.settings)
-    elif selected_page == "📥 Repository Collection":
+    elif selected_page == "Repository Collection":
         from application.pages.repository_collection import render_repository_collection
         render_repository_collection(st.session_state.repo_db, st.session_state.settings)
-    elif selected_page == "🔍 Bug Analysis & SZZ":
+    elif selected_page == "Bug Analysis & SZZ":
         from application.pages.bug_analysis import render_bug_analysis
         render_bug_analysis(st.session_state.repo_db, st.session_state.settings)
-    elif selected_page == "📁 Dataset Management":
+    elif selected_page == "Dataset Management":
         from application.pages.dataset_management import render_dataset_management
         render_dataset_management(st.session_state.repo_db, st.session_state.settings)
-    elif selected_page == "🧠 Model Training":
+    elif selected_page == "Model Training":
         from application.pages.model_training import render_model_training
         render_model_training(st.session_state.repo_db, st.session_state.settings)
-    elif selected_page == "📈 Model Evaluation":
+    elif selected_page == "Model Evaluation":
         from application.pages.model_evaluation import render_model_evaluation
         render_model_evaluation(st.session_state.repo_db, st.session_state.settings)
-    elif selected_page == "🎯 Real-World Bug Prediction":
+    elif selected_page == "Real-World Bug Prediction":
         from application.pages.bug_prediction import render_bug_prediction
         render_bug_prediction(st.session_state.repo_db, st.session_state.settings)
-    elif selected_page == "⚙️ Settings":
+    elif selected_page == "Settings":
         from application.pages.settings import render_settings
         render_settings(st.session_state.repo_db, st.session_state.settings)
 

@@ -16,9 +16,9 @@ from services.dataset.exporter import DatasetExporter
 
 
 def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
-    st.header("📁 Dataset Management, Feature Engineering & Versioning")
+    st.header("Dataset Management, Feature Engineering, and Versioning")
     st.markdown("""
-    Extract 24 Roslyn static code metrics from method observations, audit distributions,
+    Extract 26 Roslyn static code metrics from method observations, audit distributions,
     inspect feature correlations, and build reproducible, versioned ML datasets for training.
     """)
 
@@ -27,10 +27,10 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
     exporter = DatasetExporter(db, settings.storage.exports_dir)
 
     tab1, tab2, tab3, tab4 = st.tabs([
-        "⚡ Feature Extraction",
-        "📊 Dataset Overview",
-        "📈 Feature Analysis & Distributions",
-        "💾 Dataset Snapshots & CSV Export",
+        "Feature Extraction",
+        "Dataset Overview",
+        "Feature Analysis & Distributions",
+        "Dataset Snapshots & CSV Export",
     ])
 
     # -------------------------------------------------------------
@@ -57,7 +57,7 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
 
         col_b1, col_b2 = st.columns([1, 1])
         with col_b1:
-            if st.button("🚀 Run Batch Feature Extraction", use_container_width=True, disabled=len(needing_extraction) == 0):
+            if st.button("Run Batch Feature Extraction", use_container_width=True, disabled=len(needing_extraction) == 0):
                 p_bar = st.progress(0.1, text="Extracting Roslyn metrics...")
                 def on_feat_prog(msg: str, pct: float) -> None:
                     p_bar.progress(pct, text=msg)
@@ -67,7 +67,7 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
                 st.rerun()
 
         with col_b2:
-            if st.button("🔄 Force Re-Extract All Observations", use_container_width=True, disabled=total_obs == 0):
+            if st.button("Force Re-Extract All Observations", use_container_width=True, disabled=total_obs == 0):
                 p_bar = st.progress(0.1, text="Re-extracting all Roslyn metrics...")
                 def on_feat_prog2(msg: str, pct: float) -> None:
                     p_bar.progress(pct, text=msg)
@@ -97,14 +97,29 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
             df_obs = pd.DataFrame(obs_records)
             col_o1, col_o2 = st.columns(2)
             with col_o1:
-                label_counts = df_obs["label"].value_counts().rename({1: "Buggy (1)", 0: "Candidate Clean (0)", -1: "Uncertain (-1)"})
-                fig_pie = px.pie(
-                    values=label_counts.values,
-                    names=label_counts.index,
+                label_df = pd.DataFrame([
+                    {"Class": "Defect-Prone (1)", "Count": int((df_obs["label"] == 1).sum())},
+                    {"Class": "Candidate-Clean (0)", "Count": int((df_obs["label"] == 0).sum())},
+                    {"Class": "Uncertain (-1)", "Count": int((df_obs["label"] == -1).sum())},
+                ])
+                label_df["Ratio"] = (label_df["Count"] / len(df_obs) * 100).round(1).astype(str) + "%"
+                fig_bar = px.bar(
+                    label_df,
+                    x="Count",
+                    y="Class",
+                    orientation="h",
                     title="Defect Label Distribution",
-                    color_discrete_sequence=["#e74c3c", "#2ecc71", "#f39c12"],
+                    text="Ratio",
+                    color="Class",
+                    color_discrete_map={
+                        "Defect-Prone (1)": "#4a7bb0",
+                        "Candidate-Clean (0)": "#5b9e78",
+                        "Uncertain (-1)": "#8e9aa8",
+                    },
                 )
-                st.plotly_chart(fig_pie, use_container_width=True)
+                fig_bar.update_layout(showlegend=False, height=220, margin=dict(l=20, r=20, t=40, b=20))
+                st.plotly_chart(fig_bar, use_container_width=True)
+                st.dataframe(label_df, hide_index=True, use_container_width=True)
             with col_o2:
                 st.markdown("**Evidence Categories:**")
                 ev_counts = df_obs["evidence_category"].value_counts()
@@ -117,7 +132,7 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
     # -------------------------------------------------------------
     with tab3:
         st.subheader("3. Static Code Metric Statistical Analysis")
-        st.caption("Inspect distributions, correlations, and differences between buggy and clean methods.")
+        st.caption("Inspect distributions, correlations, and differences between defect-prone and candidate-clean methods.")
 
         # Pull all observations with features
         query_sql = """
@@ -133,9 +148,9 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
             st.warning("No successful feature records found. Please run Feature Extraction in Tab 1 first.")
         else:
             df_feat = pd.DataFrame([dict(r) for r in feat_rows])
-            df_feat["Label_Text"] = df_feat["label"].map({1: "Buggy (1)", 0: "Candidate Clean (0)"})
+            df_feat["Label_Text"] = df_feat["label"].map({1: "Defect-Prone (1)", 0: "Candidate-Clean (0)"})
 
-            st.info("⚠️ **Notice:** Statistical correlations between code metrics and defect labels describe historical patterns and do NOT establish direct causality.")
+            st.info("Statistical correlations between code metrics and defect labels describe historical patterns and do not establish direct causality.")
 
             col_s1, col_s2 = st.columns([1, 2])
             available_metrics = [m for m in DEFAULT_NUMERICAL_FEATURES if m in df_feat.columns]
@@ -152,8 +167,9 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
                     y=selected_metric,
                     color="Label_Text",
                     title=f"Distribution of '{selected_metric}' by Label",
-                    color_discrete_map={"Buggy (1)": "#e74c3c", "Candidate Clean (0)": "#2ecc71"},
+                    color_discrete_map={"Defect-Prone (1)": "#4a7bb0", "Candidate-Clean (0)": "#5b9e78"},
                 )
+                fig_box.update_layout(showlegend=False, margin=dict(l=20, r=20, t=40, b=20))
                 st.plotly_chart(fig_box, use_container_width=True)
 
             st.markdown("---")
@@ -186,14 +202,14 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
 
         exclude_uncert = st.checkbox("Exclude Uncertain Observations (Label = -1)", value=True, help="Removes ambiguous observations to keep supervised training pure.")
 
-        with st.expander("Feature Selection (24 Metrics)", expanded=False):
+        with st.expander("Feature Selection (26 Metrics)", expanded=False):
             selected_metrics = st.multiselect(
                 "Features to include in ML matrix",
                 options=DEFAULT_NUMERICAL_FEATURES,
                 default=DEFAULT_NUMERICAL_FEATURES,
             )
 
-        if st.button("🔨 Build Versioned Dataset Snapshot", use_container_width=True):
+        if st.button("Build Versioned Dataset Snapshot", use_container_width=True):
             try:
                 ds_id, stats = builder.generate_dataset_snapshot(
                     name=snap_name,
@@ -204,7 +220,7 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
                 )
                 st.success(
                     f"Created Dataset Snapshot #{ds_id} ('{snap_name}' v{snap_version})! "
-                    f"Total: {stats['total_observations']} (Buggy: {stats['buggy_count']}, Clean: {stats['clean_count']}, Excluded: {stats['uncertain_excluded']})"
+                    f"Total: {stats['total_observations']} (Defect-Prone: {stats['buggy_count']}, Candidate-Clean: {stats['clean_count']}, Excluded: {stats['uncertain_excluded']})"
                 )
                 st.rerun()
             except Exception as e:
@@ -223,7 +239,7 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
 
             col_exp1, col_exp2 = st.columns(2)
             with col_exp1:
-                if st.button("📁 Export to Local Disk (exports/)", use_container_width=True):
+                if st.button("Export to Local Disk (exports/)", use_container_width=True):
                     try:
                         exp_res = exporter.export_to_csv(chosen_id, overwrite=True)
                         st.success(f"Exported {exp_res['rows_exported']} rows to `{exp_res['csv_path']}` and metadata to `{exp_res['metadata_path']}`!")
@@ -236,7 +252,7 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
                 if records:
                     csv_bytes = pd.DataFrame(records).to_csv(index=False).encode("utf-8")
                     st.download_button(
-                        label="⬇️ Download CSV Directly",
+                        label="Download CSV Directly",
                         data=csv_bytes,
                         file_name=f"dataset_{chosen_id}.csv",
                         mime="text/csv",

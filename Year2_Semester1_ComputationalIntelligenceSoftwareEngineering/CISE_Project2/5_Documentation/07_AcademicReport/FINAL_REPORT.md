@@ -22,7 +22,7 @@ We construct an automated mining and labeling pipeline integrating Git history a
 
 To eliminate cross-project data leakage, we enforce strict 5-fold repository-aware cross-validation ($N_{\text{repos}}=5$, $K=5$), evaluating eleven configurations across four classifier families: Dummy baselines, Logistic Regression, Decision Trees, and Random Forests. The regularized Random Forest model (`rf_compact_regularized`, max depth 8, min leaf 4) achieved superior cross-validation generalization, yielding an **F1-score of $0.6859 \pm 0.0247$**, **Accuracy of $0.6734 \pm 0.0491$**, **ROC-AUC of 0.7025**, and the lowest Brier calibration error (**$0.2144 \pm 0.0396$**) at nominal threshold $\tau=0.50$. In-training out-of-fold threshold optimization revealed an optimal boundary at $\tau^* = 0.40$, elevating out-of-fold Recall to **87.46%** (catching 244/279 bugs) and F1 to **0.7405**.
 
-To eliminate data snooping, an independent sixth repository, `JamesNK/Newtonsoft.Json`, was held in strict quarantine throughout model selection and hyperparameter tuning. Evaluating the frozen model on 159 newly mined production methods from `Newtonsoft.Json` yielded **75.47% Accuracy**, **69.61% Precision**, **89.87% Recall** (71/79 bugs caught), **0.7845 F1-Score**, **0.8209 ROC-AUC**, and **0.1713 Brier score** at $\tau^*=0.40$. A qualitative audit of predictions demonstrates that static metrics reliably detect complex orchestration bugs but are inherently bounded when addressing localized semantic flaws in concise methods.
+To evaluate real-world generalization, an independent sixth repository, `JamesNK/Newtonsoft.Json`, was evaluated separately from the 5-fold cross-validation training corpus post-model-freeze, as supported by dated experiment records. Evaluating the frozen model on 159 newly mined production methods from `Newtonsoft.Json` yielded **75.47% Accuracy**, **69.61% Precision**, **89.87% Recall** (71/79 bugs caught), **0.7845 F1-Score**, **0.8209 ROC-AUC**, and **0.1713 Brier score** at $\tau^*=0.40$. A qualitative audit of predictions demonstrates that static metrics reliably detect complex orchestration bugs but are inherently bounded when addressing localized semantic flaws in concise methods.
 
 ### Keywords
 `Software Defect Prediction`, `Machine Learning for Software Engineering (ML4SE)`, `C# Source Code`, `Roslyn Compiler Platform`, `SZZ Algorithm`, `Repository-Aware Cross-Validation`, `GroupKFold`, `Out-of-Fold Threshold Tuning`, `Probability Calibration`, `Independent Holdout Validation`.
@@ -34,7 +34,7 @@ To eliminate data snooping, an independent sixth repository, `JamesNK/Newtonsoft
 | **Data Corpus #2** | Multi-Repo Expansion (`csharp_empirical_v2`) | 578 methods, 5 repos, 1:1 balanced production code, 0 test leaks |
 | **Model Selection** | Multi-Model 5-Fold GroupKFold | Random Forest (`rf_compact_regularized`) wins: CV F1 = **0.6859**, Brier = **0.2144** |
 | **Decision Boundary** | Out-of-Fold Threshold Tuning | Optimal threshold $\tau^* = 0.40$ achieves Accuracy **70.42%**, elevates Recall to **87.46%**, F1 to **0.7405** |
-| **Quarantined Holdout** | `JamesNK/Newtonsoft.Json` (159 methods) | Frozen model achieves **75.47% Accuracy**, **89.87% Recall**, **0.7845 F1**, **0.8209 ROC-AUC** |
+| **Independent Holdout** | `JamesNK/Newtonsoft.Json` (159 methods) | Frozen model achieves **75.47% Accuracy**, **89.87% Recall**, **0.7845 F1**, **0.8209 ROC-AUC** |
 | **Developer Validation** | Formal Protocol & Automated Qualitative Review | Protocol published as reproducible research instrument (`DEVELOPER_STUDY_TEMPLATE.md`); automated qualitative audit confirms alignment on complex methods and identifies semantic limits on concise methods |
 
 ---
@@ -110,15 +110,15 @@ To locate the historical code revisions where bugs were introduced, we implement
 
 To establish method-level ground truth:
 1. **Enclosing Method Identification:** Using Roslyn AST parsing, the deleted line number is mapped to its innermost enclosing `MethodDeclarationSyntax` node in the pre-fix parent commit $P_0$.
-2. **Buggy Observation (Label 1):** The pre-fix source code of the enclosing method is extracted and labeled **Label 1 (Defect-Inducing / Buggy)**.
-3. **Candidate-Clean Observation (Label 0):** To prevent severe class imbalance that skews machine learning estimators, stable methods at repository `HEAD` are sampled at a strict 1:1 ratio with positive methods. Any method whose signature appears in historical SZZ defect traces is rejected from the clean candidate pool.
+2. **Defect-Prone Observation (Label 1):** The pre-fix source code of the enclosing method is extracted and labeled **Label 1 (Defect-Prone)**.
+3. **Candidate-Clean Observation (Label 0):** To prevent severe class imbalance that skews machine learning estimators, stable methods at repository `HEAD` are sampled at a strict 1:1 ratio with positive methods under the Open-World Assumption (OWA). Any method whose signature appears in historical SZZ defect traces is rejected from the clean candidate pool.
 4. **Ambiguous Observation (Label -1):** Changes occurring outside method declarations (e.g. enum declarations, field initializers) are assigned Label -1 and excluded from dataset snapshots.
 
 ---
 
 ## 7. Static Code Metric Suite (26 Roslyn-Extracted Features)
 
-Features are extracted using a custom C# console analyzer built on .NET 9.0 and Microsoft Roslyn (`roslyn_analyzer/RoslynAnalyzer.csproj`). The analyzer parses method source code into full ASTs and computes 26 orthogonal metrics spanning five structural dimensions:
+Features are extracted using a custom C# console analyzer built on .NET 9.0 and Microsoft Roslyn (`2_SourceCode/RoslynAnalyzer/RoslynAnalyzer.csproj`). The analyzer parses method source code into full ASTs and computes 26 orthogonal metrics spanning five structural dimensions:
 
 | Dimension | Metrics Extracted | Software Engineering Significance |
 | :--- | :--- | :--- |
@@ -137,7 +137,7 @@ All 26 metrics are purely static and computable in milliseconds per method witho
 The project formally maintains two versioned dataset snapshots stored in SQLite and exported to CSV:
 
 ```
-data/processed/
+1_Database/Datasets/
 ├── csharp_empirical_v1_v1.0.0.csv       (Snapshot #1: 483 rows, 3 repos)
 ├── csharp_empirical_v1_v1.0.0_metadata.json
 ├── csharp_empirical_v2_v2.0.0.csv       (Snapshot #2: 578 rows, 5 repos)
@@ -150,8 +150,8 @@ data/processed/
 | :--- | :---: | :---: |
 | **Release Version** | `1.0.0` (Historical Baseline) | `2.0.0` (Authoritative Benchmark) |
 | **Total Observations** | 483 methods | **578 methods** |
-| **Positive Class (Buggy)** | 226 (46.79%) | **279 (48.27%)** |
-| **Negative Class (Clean)** | 257 (53.21%) | **299 (51.73%)** |
+| **Positive Class (Defect-Prone)** | 226 (46.79%) | **279 (48.27%)** |
+| **Negative Class (Candidate-Clean)** | 257 (53.21%) | **299 (51.73%)** |
 | **Repositories Included** | 3 (`Humanizer`, `MediatR`, `CommandLineParser`) | **5 (`Humanizer`, `Serilog`, `MediatR`, `Polly`, `FluentValidation`)** |
 | **Purpose** | Preliminary development & exploratory 2-fold CV | **Rigorous 5-Fold GroupKFold Cross-Validation** |
 | **Missing Feature Values** | 0 | **0 across all 26 metrics** |
@@ -174,7 +174,7 @@ Prior documentation drafts contained numerical inconsistencies that were rigorou
 
 During pilot testing on `FluentValidation`, audit inspections revealed that test fixture methods (e.g. `TestValidator.cs`, `ShouldHaveChildValidatorTester.cs`) occasionally leaked into the observation pool. Because test fixtures exhibit artificially high branching and non-standard assertion patterns, including them skews defect prediction models.
 
-We implemented a centralized classification guard (`src/utils/source_classifier.py`) enforced across all mining and dataset construction pipelines:
+We implemented a centralized classification guard (`2_SourceCode/Python/utils/source_classifier.py`) enforced across all mining and dataset construction pipelines:
 - **Path Exclusions:** Rejects `/tests/`, `/test/`, `/specs/`, `/testing/`, `/samples/`, `/demo/`, `/benchmark/`, `obj/`, `bin/`.
 - **Project Exclusions:** Rejects projects ending in `.Tests`, `.Test`, `.Specs`, `.UnitTests`.
 - **Filename Exclusions:** Rejects `*Tests.cs`, `*Test.cs`, `*Tester.cs`, `*Fixture.cs`, `*.Designer.cs`, `*.g.cs`.
@@ -209,7 +209,7 @@ We evaluated four diverse machine learning algorithm families to contextualize p
 
 Standard K-Fold cross-validation randomly shuffles rows, allowing methods from the same repository to appear in both training and test folds. This creates severe cross-repository data leakage because coding conventions, naming styles, and architectural patterns leak across splits.
 
-To enforce strict zero-leakage validation, we implemented **5-Fold GroupKFold Cross-Validation** (`src/ml/cross_validation.py`) over Dataset Snapshot #2:
+To enforce strict zero-leakage validation, we implemented **5-Fold GroupKFold Cross-Validation** (`2_SourceCode/Python/ml/cross_validation.py`) over Dataset Snapshot #2:
 - Exactly 5 distinct repository groups ($N_{\text{repos}}=5$, $K=5$).
 - Each fold leaves out exactly **one entire repository** as the validation set, while training strictly on the remaining four repositories:
   - **Fold 1:** Validation on `FluentValidation` (28 obs); Train on `Humanizer`, `Serilog`, `MediatR`, `Polly` (550 obs).
@@ -294,7 +294,7 @@ We evaluated the performance of `rf_compact_regularized` across out-of-fold pred
 
 ## 17. Independent Real-World Holdout Validation (`Newtonsoft.Json`)
 
-To provide an indisputable, scientifically defensible evaluation of real-world generalization, `JamesNK/Newtonsoft.Json` (11,000 GitHub stars) was maintained in strict quarantine until all training models, preprocessing transformers, and decision thresholds from Phase 3 were frozen.
+To provide an evaluation of real-world generalization, `JamesNK/Newtonsoft.Json` (11,000 GitHub stars) was evaluated as an independent holdout repository post-freeze, as documented by dated artifacts.
 
 ### 17.1 Mining & Holdout Composition
 Mining 350 commits from `Newtonsoft.Json` yielded 61 bug fixes, 564 SZZ line blame traces, and an audited dataset of **159 production C# methods** (79 SZZ-derived buggy, 80 candidate-clean from stable HEAD). Zero test methods leaked into the sample.
@@ -353,11 +353,12 @@ To address University Requirement 5 regarding real-world validation and develope
 
 ### 20.1 Construct Validity
 - **SZZ Heuristic Attribution:** SZZ relies on `git blame`, which can attribute bugs to refactoring commits rather than true defect-inducing logic. We mitigated this by ignoring whitespace (`-w`), tracking line moves (`-M`, `-C`), and filtering comment-only modifications.
-- **Candidate-Clean Assumption:** Methods sampled from HEAD without recorded bug fixes are assumed clean; however, undiscovered latent bugs may exist.
+- **Candidate-Clean Assumption:** Methods sampled from HEAD without recorded bug fixes are assumed clean; however, undiscovered latent bugs may exist under the Open-World Assumption.
+- **Temporal Asymmetry:** Defect-prone methods capture historical pre-fix revisions at the time the defect was introduced, whereas candidate-clean methods are sampled from the latest stable HEAD revision. While this ensures candidate-clean methods survived historical bug fixes, it introduces a temporal asymmetry between pre-fix historical code and contemporary HEAD code.
 
 ### 20.2 Internal Validity
-- **Threshold Optimization & Model Selection Coupling:** The optimal decision threshold ($\tau^* = 0.40$) was selected by sweeping across aggregated out-of-fold predictions from the same 5-fold cross-validation used for model selection, rather than in a nested cross-validation loop or on an independent validation split. While tuning on out-of-fold predictions avoids in-sample training bias, it may introduce mild optimism into the cross-validation metrics (F1 = 0.7405, Accuracy = 70.42%). We rigorously controlled for this by freezing the threshold and evaluating it blindly on the quarantined independent holdout repository (`JamesNK/Newtonsoft.Json`), where the 0.40 cutoff confirmed genuine generalizability (Holdout F1 = 0.7845, Recall = 89.87%, Accuracy = 75.47%).
-- **Data Snooping:** Guaranteed absent; `Newtonsoft.Json` was completely quarantined until Phase 4.
+- **Threshold Optimization & Model Selection Coupling:** The optimal decision threshold ($\tau^* = 0.40$) was selected by sweeping across aggregated out-of-fold predictions from the same 5-fold cross-validation used for model selection, rather than in a nested cross-validation loop or on an independent validation split. While tuning on out-of-fold predictions avoids in-sample training bias, it may introduce mild optimism into the cross-validation metrics (F1 = 0.7405, Accuracy = 70.42%). We empirically evaluated this by freezing the threshold and evaluating it on the independent holdout repository (`JamesNK/Newtonsoft.Json`), where the 0.40 cutoff confirmed generalizability (Holdout F1 = 0.7845, Recall = 89.87%, Accuracy = 75.47%).
+- **Data Snooping:** Mitigated by repository-level partitioning; `Newtonsoft.Json` was processed and evaluated separately from the 5-fold cross-validation training corpus.
 
 ### 20.3 External Validity
 - **Generalizability Beyond C#:** Metrics and models are tailored to C# and .NET idioms. While McCabe complexity and Halstead metrics generalize cross-language, specific syntactic weights (async, LINQ) may differ in Java or Python.
@@ -365,7 +366,7 @@ To address University Requirement 5 regarding real-world validation and develope
 
 ### 20.4 Conclusion Validity
 - **Statistical Power:** Evaluated across 578 training methods and 159 holdout methods using non-parametric rank metrics (ROC-AUC, PR-AUC, Spearman correlation) and cross-validation standard deviations.
-- **Artificial Class Balancing vs. Operational Base Rate:** Training and holdout sets were sampled at a 1:1 balanced ratio (~48%–50% buggy). In industrial production codebases with typical defect base rates of 2%–10%, operational precision will decline substantially due to the base-rate fallacy (e.g. ~10.9% expected precision at a hypothetical 5% prevalence based on Bayes' theorem; see [VALIDATION_AND_LIMITATIONS.md](../05_Validation/VALIDATION_AND_LIMITATIONS.md) Section 4.1).
+- **Artificial Class Balancing vs. Operational Base Rate:** Training and holdout sets were sampled at a 1:1 balanced ratio (~48%–50% defect-prone). In industrial production codebases with typical defect base rates of 2%–10%, operational precision will decline substantially due to the base-rate fallacy (e.g. ~10.9% expected precision at a hypothetical 5% prevalence based on Bayes' theorem; see [VALIDATION_AND_LIMITATIONS.md](../05_Validation/VALIDATION_AND_LIMITATIONS.md) Section 4.1).
 
 ---
 
@@ -385,14 +386,14 @@ Based on our empirical findings, we propose a concrete integration architecture 
 ## 22. Conclusion, Reproducibility Statement & Future Directions
 
 ### Conclusion
-This project successfully designed, implemented, and validated a machine learning-based software defect prediction system for C# source code. By extracting 26 static AST metrics via Roslyn, enforcing 5-fold repository-aware cross-validation, optimizing decision thresholds out-of-fold, and testing on a strictly quarantined real-world holdout (`Newtonsoft.Json`), we demonstrated that regularized Random Forest models achieve high predictive accuracy (**75.47% Accuracy**, **89.87% Recall**, **0.7845 F1-Score**, **0.8209 ROC-AUC**) without intra-repository data leakage.
+This project successfully designed, implemented, and validated a machine learning-based software defect prediction system for C# source code. By extracting 26 static AST metrics via Roslyn, enforcing 5-fold repository-aware cross-validation, optimizing decision thresholds out-of-fold, and testing on an independent real-world holdout (`Newtonsoft.Json`), we demonstrated that regularized Random Forest models achieve high predictive accuracy (**75.47% Accuracy**, **89.87% Recall**, **0.7845 F1-Score**, **0.8209 ROC-AUC**) without intra-repository data leakage.
 
 ### Reproducibility Statement
 All code, models, datasets, and scripts are 100% locally reproducible and offline-executable:
-- **Datasets:** `data/processed/csharp_empirical_v1_v1.0.0.csv`, `data/processed/csharp_empirical_v2_v2.0.0.csv`.
-- **Frozen Models:** `reports/experiments/final/model/exp_final_5fold_v2_best_rf_compact_regularized.joblib`.
-- **Executable Scripts:** `scripts/run_dataset_expansion.py`, `scripts/run_final_experiment.py`, `scripts/run_independent_holdout_validation.py`.
-- **Test Suite:** 121 automated tests passing via `pytest`.
+- **Datasets:** `1_Database/Datasets/csharp_empirical_v1_v1.0.0.csv`, `1_Database/Datasets/csharp_empirical_v2_v2.0.0.csv`.
+- **Frozen Models:** `4_AppBuild/Assets/Models/exp_final_5fold_v2_best_rf_compact_regularized.joblib`.
+- **Executable Scripts:** `2_SourceCode/Scripts/run_dataset_expansion.py`, `2_SourceCode/Scripts/run_final_experiment.py`, `2_SourceCode/Scripts/run_independent_holdout_validation.py`.
+- **Test Suite:** 123 automated tests passing via `pytest`.
 
 ### Future Research Directions
 1. **Semantic Embeddings:** Combining Roslyn static AST metrics with CodeBERT or Graph Neural Network (GNN) representations of control-flow graphs (CFGs) to detect semantic bugs in concise methods.

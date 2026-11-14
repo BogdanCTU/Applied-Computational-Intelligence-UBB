@@ -27,17 +27,17 @@ def parse_github_url(url: str) -> tuple[str, str]:
 
 
 def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> None:
-    st.header("📥 GitHub C# Repository Collection Engine")
+    st.header("GitHub C# Repository Collection Engine")
     st.markdown("""
     Discover public C# repositories via the GitHub REST API or register repositories manually.
-    Repositories are cloned locally with their **complete Git history** to enable historical SZZ bug-origin localization.
+    Repositories are cloned locally with complete Git history to enable historical SZZ defect localization.
     """)
 
     gh_client = GitHubClient(token=settings.github.token)
     repo_mgr = RepositoryManager(settings.storage.repositories_dir, db=db)
     commit_collector = CommitCollector(db)
 
-    tab1, tab2, tab3 = st.tabs(["🔎 GitHub Discovery", "➕ Manual Repository Import", "📦 Managed Local Repositories"])
+    tab1, tab2, tab3 = st.tabs(["GitHub Discovery", "Manual Repository Import", "Managed Local Repositories"])
 
     # -------------------------------------------------------------
     # TAB 1: GitHub Discovery
@@ -60,7 +60,7 @@ def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> Non
         with col_opts2:
             exclude_archived = st.checkbox("Exclude Archived Repositories", value=True)
 
-        if st.button("🔍 Search GitHub Repositories", use_container_width=True):
+        if st.button("Search GitHub Repositories", use_container_width=True):
             with st.spinner("Querying GitHub Search API..."):
                 try:
                     search_results = gh_client.search_repositories(
@@ -83,7 +83,7 @@ def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> Non
         if items:
             st.markdown("### Discovered Repositories")
             for repo_item in items:
-                with st.expander(f"⭐ {repo_item['stars']} | **{repo_item['full_name']}** — {repo_item['license']}"):
+                with st.expander(f"Stars: {repo_item['stars']} | {repo_item['full_name']} - {repo_item['license']}"):
                     st.write(f"**Description:** {repo_item['description'] or 'No description provided.'}")
                     st.write(f"**Default Branch:** `{repo_item['default_branch']}` | **Size:** {repo_item['size_kb']} KB")
                     st.write(f"**GitHub URL:** [{repo_item['url']}]({repo_item['url']})")
@@ -126,12 +126,12 @@ def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> Non
     # TAB 2: Manual Import
     # -------------------------------------------------------------
     with tab2:
-        st.subheader("Manually Register & Clone a C# Repository")
+        st.subheader("Manually Register and Clone a C# Repository")
         st.markdown("Enter any public Git or GitHub URL (e.g., `https://github.com/dotnet/roslyn` or `owner/repo`).")
         manual_url = st.text_input("Repository URL or Slug", placeholder="https://github.com/owner/repository")
         clone_immediately = st.checkbox("Clone full history immediately upon registration", value=True)
 
-        if st.button("➕ Register & Import Repository", use_container_width=True):
+        if st.button("Register and Import Repository", use_container_width=True):
             if not manual_url:
                 st.warning("Please provide a repository URL.")
             else:
@@ -207,7 +207,7 @@ def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> Non
                 col_h1, col_h2 = st.columns([3, 1])
                 with col_h1:
                     st.markdown(f"### **{repo['full_name']}**")
-                    st.caption(f"Status: :{status_color}[**{repo['status'].upper()}**] | Stars: ⭐ {repo['stars']} | Commits in DB: `{commits_count}`")
+                    st.caption(f"Status: :{status_color}[**{repo['status'].upper()}**] | Stars: {repo['stars']} | Commits in DB: `{commits_count}`")
                     st.write(f"**License:** {repo['license']} | **Default Branch:** `{repo['default_branch']}`")
                     if repo['local_path']:
                         st.code(repo['local_path'], language="text")
@@ -218,7 +218,7 @@ def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> Non
                 c_act1, c_act2, c_act3, c_act4 = st.columns(4)
 
                 with c_act1:
-                    clone_btn_label = "🔄 Pull / Update" if repo["is_cloned"] else "📥 Clone Repo"
+                    clone_btn_label = "Pull / Update" if repo["is_cloned"] else "Clone Repo"
                     if st.button(clone_btn_label, key=f"btn_sync_{repo_id}", use_container_width=True):
                         p_bar = st.progress(0.1, text="Syncing repository...")
                         def on_prog(msg: str, pct: float) -> None:
@@ -238,7 +238,7 @@ def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> Non
                             st.error(f"Sync failed: {e}")
 
                 with c_act2:
-                    if st.button("📜 Extract Commits", key=f"btn_commits_{repo_id}", disabled=not repo["is_cloned"], use_container_width=True):
+                    if st.button("Extract Commits", key=f"btn_commits_{repo_id}", disabled=not repo["is_cloned"], use_container_width=True):
                         if not repo["local_path"] or not Path(repo["local_path"]).exists():
                             st.error("Repository local directory is missing or not cloned.")
                         else:
@@ -258,7 +258,7 @@ def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> Non
                                 st.error(f"Commit extraction error: {e}")
 
                 with c_act3:
-                    with st.popover("👁️ View Commits"):
+                    with st.popover("View Commits"):
                         recent_commits = db.list_commits(repository_id=repo_id, limit=20)
                         if recent_commits:
                             df_c = pd.DataFrame(recent_commits)[["commit_sha", "committed_date", "author_name", "modifies_csharp", "message"]]
@@ -267,7 +267,7 @@ def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> Non
                             st.write("No commits extracted yet.")
 
                 with c_act4:
-                    if st.button("🗑️ Unlink from DB", key=f"btn_del_{repo_id}", use_container_width=True, help="Removes repository record from database. Local files are NOT deleted."):
+                    if st.button("Unlink from DB", key=f"btn_del_{repo_id}", use_container_width=True, help="Removes repository record from database. Local files are NOT deleted."):
                         db.delete_repository(repo_id)
                         st.warning(f"Unlinked {repo['full_name']} from database (local files preserved).")
                         st.rerun()

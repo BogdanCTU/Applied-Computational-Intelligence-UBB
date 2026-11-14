@@ -15,7 +15,7 @@ from ml.model_manager import ModelManager
 
 
 def render_model_training(db: RepositoryDB, settings: AppSettings) -> None:
-    st.header("🧠 Machine Learning Model Training: Random Forest Classifier")
+    st.header("Machine Learning Model Training: Random Forest Classifier")
     st.markdown("""
     Train a Supervised Random Forest Classifier to predict method defect proneness.
     To prevent data leakage, training uses **Repository-Aware Partitioning**: code from the same repository
@@ -40,8 +40,8 @@ def render_model_training(db: RepositoryDB, settings: AppSettings) -> None:
     stats = builder.compute_dataset_statistics(selected_ds_id, [])
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Total Methods", stats.get("total_observations", 0))
-    c2.metric("Buggy Methods (1)", stats.get("buggy_count", 0))
-    c3.metric("Candidate Clean (0)", stats.get("clean_count", 0))
+    c2.metric("Defect-Prone (1)", stats.get("buggy_count", 0))
+    c3.metric("Candidate-Clean (0)", stats.get("clean_count", 0))
     c4.metric("Repositories", len(stats.get("repository_distribution", {})))
 
     st.markdown("---")
@@ -74,7 +74,7 @@ def render_model_training(db: RepositoryDB, settings: AppSettings) -> None:
     model_save_name = st.text_input("Model Version Identifier", value=f"rf_csharp_v{selected_ds_id}")
 
     # 4. Train Action
-    if st.button("🚀 Train Model with GroupKFold", use_container_width=True):
+    if st.button("Train Model with GroupKFold", use_container_width=True):
         with st.spinner("Loading dataset and performing repository-aware splitting..."):
             try:
                 # 1. Load data
@@ -146,7 +146,7 @@ def render_model_training(db: RepositoryDB, settings: AppSettings) -> None:
                     st.write(f"- **Test F1-Score:** `{eval_results['f1']:.3f}`")
                     st.write(f"- **Test Accuracy:** `{eval_results['accuracy']:.3f}`")
 
-                st.info("Head to the **📈 Model Evaluation** page for detailed confusion matrices, ROC/PR curves, and feature importance analysis!")
+                st.info("Navigate to the **Model Evaluation** page for detailed confusion matrices, ROC/PR curves, and feature importance analysis.")
 
             except PreprocessingError as pe:
                 st.error(f"Preprocessing / Splitting Error: {pe}")

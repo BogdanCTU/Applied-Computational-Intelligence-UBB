@@ -22,19 +22,19 @@ from ml.predictor import (
 
 
 def render_risk_badge(risk_category: str, risk_score: float) -> str:
-    """Return colored markdown badge for risk presentation."""
+    """Return markdown badge for risk presentation."""
     if risk_category == "Low risk":
-        return f":green[🟢 **Low risk** (Estimated Risk Score: {risk_score:.3f})]"
+        return f":green[**Low Risk** (Estimated Risk Score: {risk_score:.3f})]"
     elif risk_category == "Medium risk":
-        return f":orange[🟡 **Medium risk** (Estimated Risk Score: {risk_score:.3f})]"
+        return f":orange[**Medium Risk** (Estimated Risk Score: {risk_score:.3f})]"
     else:
-        return f":red[🔴 **High risk** (Estimated Risk Score: {risk_score:.3f})]"
+        return f":red[**High Risk** (Estimated Risk Score: {risk_score:.3f})]"
 
 
 def render_bug_prediction(db: RepositoryDB, settings: AppSettings) -> None:
-    st.header("🎯 Real-Time C# Method Bug Prediction & Defect Risk Scoring")
+    st.header("Real-Time C# Method Defect Prediction and Risk Scoring")
     st.markdown("""
-    Analyze previously unseen C# source code, extract 24 static code metrics using **Microsoft Roslyn**,
+    Analyze C# source code, extract 26 static code metrics using **Microsoft Roslyn**,
     and estimate defect risk using a trained **Random Forest** model.
     """)
 
@@ -85,10 +85,10 @@ def render_bug_prediction(db: RepositoryDB, settings: AppSettings) -> None:
 
     # 2. Tabs
     tab_single, tab_file, tab_validation, tab_history = st.tabs([
-        "✏️ Single Method Analysis",
-        "📂 Full .cs File Analysis",
-        "🧪 Repository Ground-Truth Validation",
-        "📜 Prediction History & Privacy",
+        "Single Method Analysis",
+        "Full .cs File Analysis",
+        "Repository Ground-Truth Validation",
+        "Prediction History & Privacy",
     ])
 
     sample_method = """public int CalculateDiscount(int customerAge, int purchaseTotal, bool isMember)
@@ -132,9 +132,9 @@ def render_bug_prediction(db: RepositoryDB, settings: AppSettings) -> None:
             st.write(f"- Low: `0.00 – {predictor.low_threshold:.2f}`")
             st.write(f"- Medium: `{predictor.low_threshold + 0.01:.2f} – {predictor.medium_threshold:.2f}`")
             st.write(f"- High: `{predictor.medium_threshold + 0.01:.2f} – 1.00`")
-            st.caption("Thresholds can be adjusted in **⚙️ Settings**.")
+            st.caption("Thresholds can be adjusted in **Settings**.")
 
-        if st.button("🚀 Analyze Method & Predict Defect Risk", key="btn_single_predict", use_container_width=True):
+        if st.button("Analyze Method & Predict Defect Risk", key="btn_single_predict", use_container_width=True):
             with st.spinner("Extracting Roslyn AST metrics and evaluating model..."):
                 try:
                     preds = predictor.predict_code(method_code)
@@ -150,7 +150,7 @@ def render_bug_prediction(db: RepositoryDB, settings: AppSettings) -> None:
                         c_res1.metric("Method Name", p.method_name)
                         c_res2.metric("Enclosing Class", p.class_name or "(Standalone)")
                         c_res3.metric("Defect Risk Score", f"{p.risk_score:.3f}")
-                        c_res4.metric("Classification", "Buggy (1)" if p.predicted_label == 1 else "Clean (0)")
+                        c_res4.metric("Classification", "Defect-Prone (1)" if p.predicted_label == 1 else "Candidate-Clean (0)")
 
                         st.markdown(f"**Risk Level:** {render_risk_badge(p.risk_category, p.risk_score)}")
 
@@ -170,13 +170,13 @@ def render_bug_prediction(db: RepositoryDB, settings: AppSettings) -> None:
                             st.info("No structural complexity thresholds exceeded. Metrics are within normal operating ranges.")
 
                         st.caption(
-                            "💡 *Note:* Global feature importance represents the tree ensemble's aggregate weight across all training "
+                            "*Note:* Global feature importance represents the tree ensemble's aggregate weight across all training "
                             "repositories. The influential metrics above highlight structural indicators of this specific method that exceed "
                             "heuristic risk thresholds."
                         )
 
-                        # 3. All 24 Extracted Roslyn Metrics
-                        with st.expander("🔍 View All 24 Extracted Roslyn Static Code Metrics"):
+                        # 3. All 26 Extracted Roslyn Metrics
+                        with st.expander("View All 26 Extracted Roslyn Static Code Metrics"):
                             m_df = pd.DataFrame([{"Metric": k, "Extracted Value": v} for k, v in p.metrics.items()])
                             st.dataframe(m_df, use_container_width=True, hide_index=True)
 
@@ -200,7 +200,7 @@ def render_bug_prediction(db: RepositoryDB, settings: AppSettings) -> None:
             file_content = uploaded_cs.read().decode("utf-8", errors="replace")
             st.caption(f"Loaded `{uploaded_cs.name}` ({len(file_content.splitlines())} lines).")
 
-            if st.button("🚀 Analyze All Methods in File", key="btn_file_predict", use_container_width=True):
+            if st.button("Analyze All Methods in File", key="btn_file_predict", use_container_width=True):
                 with st.spinner(f"Extracting methods and analyzing '{uploaded_cs.name}'..."):
                     try:
                         file_preds = predictor.predict_code(file_content, file_name=uploaded_cs.name)
@@ -227,7 +227,7 @@ def render_bug_prediction(db: RepositoryDB, settings: AppSettings) -> None:
             c_f3.metric("Medium Risk Methods", med_count)
             c_f4.metric("Low Risk Methods", low_count)
 
-            st.caption("⚠️ *A file is not defective merely because one method has elevated risk; inspect methods individually.*")
+            st.caption("*A file is not defect-prone merely because one method has elevated risk; inspect methods individually.*")
 
             # Filters and sorting
             col_flt1, col_flt2 = st.columns(2)
@@ -260,7 +260,7 @@ def render_bug_prediction(db: RepositoryDB, settings: AppSettings) -> None:
                     "Lines": f"L{p.start_line}-L{p.end_line}",
                     "Risk Category": p.risk_category,
                     "Risk Score": p.risk_score,
-                    "Predicted Class": "Buggy (1)" if p.predicted_label == 1 else "Clean (0)",
+                    "Predicted Class": "Defect-Prone (1)" if p.predicted_label == 1 else "Candidate-Clean (0)",
                     "Complexity (CC)": p.metrics.get("cyclomatic_complexity", 0),
                     "LOC": p.metrics.get("loc", 0),
                     "Nesting Depth": p.metrics.get("max_nesting_depth", 0),
@@ -273,7 +273,7 @@ def render_bug_prediction(db: RepositoryDB, settings: AppSettings) -> None:
             csv_buf = io.StringIO()
             df_table.to_csv(csv_buf, index=False)
             st.download_button(
-                label="📥 Export Prediction Results to CSV",
+                label="Export Prediction Results to CSV",
                 data=csv_buf.getvalue(),
                 file_name=f"predictions_{st.session_state['file_name']}.csv",
                 mime="text/csv",
@@ -319,7 +319,7 @@ def render_bug_prediction(db: RepositoryDB, settings: AppSettings) -> None:
 
             val_limit = st.slider("Number of Observations to Benchmark", 5, min(100, len(eval_obs)), min(20, len(eval_obs)), 5)
 
-            if st.button("🧪 Run Validation Benchmark on Mined Observations", use_container_width=True):
+            if st.button("Run Validation Benchmark on Mined Observations", use_container_width=True):
                 with st.spinner("Extracting features and evaluating predictions..."):
                     results = []
                     for obs in eval_obs[:val_limit]:
@@ -358,12 +358,12 @@ def render_bug_prediction(db: RepositoryDB, settings: AppSettings) -> None:
                             "Repository ID": r_id,
                             "Partition": part_name,
                             "Method": obs["method_name"],
-                            "Actual Ground Truth": "Buggy (1)" if actual_label == 1 else "Clean (0)",
-                            "Predicted Class": "Buggy (1)" if predicted_label == 1 else "Clean (0)",
+                            "Actual Ground Truth": "Defect-Prone (1)" if actual_label == 1 else "Candidate-Clean (0)",
+                            "Predicted Class": "Defect-Prone (1)" if predicted_label == 1 else "Candidate-Clean (0)",
                             "Risk Score": pred.risk_score,
                             "Risk Category": pred.risk_category,
                             "Outcome": outcome,
-                            "Correct": "✅ Yes" if is_correct else "❌ No",
+                            "Correct": "Yes" if is_correct else "No",
                         })
 
                     if results:
@@ -371,7 +371,7 @@ def render_bug_prediction(db: RepositoryDB, settings: AppSettings) -> None:
                         st.markdown("#### Benchmark Validation Results")
 
                         # Summary stats
-                        acc = sum(1 for r in results if "✅" in r["Correct"]) / len(results)
+                        acc = sum(1 for r in results if r["Correct"] == "Yes") / len(results)
                         tp = sum(1 for r in results if r["Outcome"] == "True Positive")
                         fp = sum(1 for r in results if r["Outcome"] == "False Positive")
                         tn = sum(1 for r in results if r["Outcome"] == "True Negative")
@@ -391,7 +391,7 @@ def render_bug_prediction(db: RepositoryDB, settings: AppSettings) -> None:
                         if not err_df.empty:
                             st.dataframe(err_df, use_container_width=True, hide_index=True)
                             st.caption(
-                                "False Positives usually stem from clean methods with high structural complexity (e.g. parsers or dispatch tables). "
+                                "False Positives usually stem from candidate-clean methods with high structural complexity (e.g. parsers or dispatch tables). "
                                 "False Negatives often represent subtle semantic or one-line logic bugs with simple syntax structures."
                             )
                         else:
@@ -414,7 +414,7 @@ def render_bug_prediction(db: RepositoryDB, settings: AppSettings) -> None:
 
         col_act1, col_act2 = st.columns([1, 1])
         with col_act1:
-            if st.button("🗑️ Clear Prediction History", key="btn_clear_hist", use_container_width=True):
+            if st.button("Clear Prediction History", key="btn_clear_hist", use_container_width=True):
                 deleted = db.clear_predictions()
                 st.success(f"Cleared {deleted} prediction records from database.")
                 st.rerun()

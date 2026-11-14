@@ -10,6 +10,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace RoslynAnalyzer
 {
+    /// <summary>
+    /// Represents the 26 static code metrics extracted from a C# method syntax tree via Microsoft Roslyn.
+    /// </summary>
     public class MethodMetrics
     {
         // Basic metrics
@@ -96,6 +99,9 @@ namespace RoslynAnalyzer
         public bool IsGeneric { get; set; }
     }
 
+    /// <summary>
+    /// Represents the location, signature, and extracted metrics of a declared method in a syntax tree.
+    /// </summary>
     public class MethodLocation
     {
         [JsonPropertyName("class_name")]
@@ -129,6 +135,9 @@ namespace RoslynAnalyzer
         public MethodMetrics? Metrics { get; set; }
     }
 
+    /// <summary>
+    /// Represents the structured JSON response payload produced by the Roslyn analyzer CLI.
+    /// </summary>
     public class MethodLocatorResponse
     {
         [JsonPropertyName("analyzer_version")]
@@ -287,6 +296,9 @@ namespace RoslynAnalyzer
             ).OfType<T>();
         }
 
+        /// <summary>
+        /// Computes the 26 static code metrics for the specified method syntax node.
+        /// </summary>
         public static MethodMetrics CalculateMetrics(MethodDeclarationSyntax method, bool isStatic, bool isAsync, bool isGeneric)
         {
             var rawText = method.ToFullString();
@@ -424,6 +436,9 @@ namespace RoslynAnalyzer
             };
         }
 
+        /// <summary>
+        /// Computes the maximum control-flow nesting depth within the method body, excluding nested functions and lambdas.
+        /// </summary>
         private static int CalculateMaxNestingDepth(MethodDeclarationSyntax method)
         {
             int maxDepth = 0;

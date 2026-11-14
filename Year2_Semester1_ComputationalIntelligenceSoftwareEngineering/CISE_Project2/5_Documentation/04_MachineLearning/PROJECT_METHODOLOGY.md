@@ -57,13 +57,13 @@ Repositories are discovered via the GitHub REST API (`GET /search/repositories`)
 | **Repo #3** | `LuckyPennySoftware/MediatR` | In-process mediator messaging framework | Training (Fold 3 Val) |
 | **Repo #16** | `App-vNext/Polly` | Resilience and transient-fault-handling library | Training (Fold 4 Val) |
 | **Repo #14** | `FluentValidation/FluentValidation` | Fluent input validation rules engine | Training (Fold 5 Val) |
-| **Repo #17** | `JamesNK/Newtonsoft.Json` | Standard .NET JSON serialization library | **Quarantined Holdout** |
+| **Repo #17** | `JamesNK/Newtonsoft.Json` | Standard .NET JSON serialization library | **Independent Holdout** |
 
 ---
 
 ## 3. Full-History Git Mining & Incremental Synchronization
 
-Cloning and commit traversal are implemented in `src/mining/commit_collector.py` using `GitPython`:
+Cloning and commit traversal are implemented in `2_SourceCode/Python/repositories/` and `services/mining/` using `GitPython`:
 
 1. **Full-History Preservation:** Repositories are cloned without `--depth` constraints. SZZ line-level blame tracing strictly requires an unbroken commit DAG and ancestor walks.
 2. **Local Path Isolation:** Repositories reside under `data/repositories/{owner}/{name}`. Path slugs are validated against `^[a-zA-Z0-9_\-\.]+$` to block directory traversal vulnerabilities.
@@ -76,7 +76,7 @@ Cloning and commit traversal are implemented in `src/mining/commit_collector.py`
 
 ## 4. Bug-Fixing Commit (BFC) Detection
 
-Candidate bug-fixing commits are identified using a multi-pattern heuristic classifier (`src/mining/bug_fix_detector.py`):
+Candidate bug-fixing commits are identified using a multi-pattern heuristic classifier (`2_SourceCode/Python/services/mining/bug_fix_detector.py`):
 
 1. **Issue Reference Linking (Base Score $\ge 0.55$):**
    - Matches issue-closing directives: `(fix|fixes|fixed|resolve|resolves|resolved|close|closes|closed)\s+(gh-|#)?\d+`.
@@ -93,7 +93,7 @@ Candidate bug-fixing commits are identified using a multi-pattern heuristic clas
 
 ## 5. SZZ Algorithm: Blame Tracing & Bug-Inducing Commits (BICs)
 
-Defect-inducing historical revisions are identified using an enhanced implementation of the Śliwerski–Zimmermann–Zeller (SZZ) algorithm (`src/mining/szz_analyzer.py`):
+Defect-inducing historical revisions are identified using an enhanced implementation of the Śliwerski–Zimmermann–Zeller (SZZ) algorithm (`2_SourceCode/Python/services/mining/szz_analyzer.py`):
 
 ```
 [Candidate Bug-Fixing Commit (BFC)]
@@ -133,17 +133,18 @@ The atomic observation unit is an individual C# method syntax node:
 - Sampled from stable repository `HEAD` commits.
 - **Open-World Assumption (OWA):** In empirical software engineering, methods without recorded bug fixes cannot be proven to be permanently defect-free (latent or unreported bugs may exist). They are scientifically classified as *candidate clean*, indicating the absence of bug-fixing traces in the observed Git history.
 - To avoid temporal leakage, candidate-clean methods are sampled only from methods that have survived untouched by bug fixes throughout the mined commit history.
+- **Temporal Asymmetry:** Defect-prone methods capture historical pre-fix revisions at the time the defect was introduced, whereas candidate-clean methods are sampled from the latest stable HEAD revision. While this ensures candidate-clean methods survived historical bug fixes, it introduces a temporal asymmetry between historical pre-fix code and contemporary HEAD code that represents an inherent methodological characteristic of repository mining under OWA.
 
 ### 6.3 1:1 Class Balancing
 To prevent supervised estimators from degenerating into trivial majority predictors, candidate-clean methods are sampled to match the volume of SZZ-derived defective methods within each repository:
 - Dataset Snapshot #2: 279 positive (48.27%) and 299 candidate-clean (51.73%) across 5 training repositories ($N = 578$).
-- Quarantined Holdout: 79 positive (49.69%) and 80 candidate-clean (50.31%) in `Newtonsoft.Json` ($N = 159$).
+- Independent Holdout: 79 positive (49.69%) and 80 candidate-clean (50.31%) in `Newtonsoft.Json` ($N = 159$).
 
 ---
 
 ## 7. Production-Code Source-Path Classification
 
-To guarantee ecological validity and prevent test fixtures from biasing defect predictions, all candidate files pass through a strict classification filter (`src/utils/source_classifier.py`):
+To guarantee ecological validity and prevent test fixtures from biasing defect predictions, all candidate files pass through a strict classification filter (`2_SourceCode/Python/utils/source_classifier.py`):
 
 1. **Extension Verification:** Must have `.cs` extension (case-insensitive).
 2. **Build Artifact Rejection:** Files residing in `obj/`, `bin/`, `.vs/`, `packages/`, or `artifacts/` are excluded.
@@ -201,13 +202,13 @@ The .NET 9.0 Roslyn Analyzer (`Microsoft.CodeAnalysis.CSharp`) extracts 26 stati
 2. **In-Fold Preprocessing:**
    - Median imputation and constant feature pruning are fitted strictly on each fold's training slice.
    - For linear models, `StandardScaler` is fitted exclusively on training folds.
-3. **Quarantined Holdout Isolation:** `JamesNK/Newtonsoft.Json` was cloned and mined strictly after model architectures, hyperparameter selections, and decision thresholds were frozen.
+3. **Independent Holdout Separation:** `JamesNK/Newtonsoft.Json` was cloned, mined, and evaluated as an independent holdout repository evaluated post-freeze as supported by dated experiment records.
 
 ---
 
 ## 10. Dataset Versioning & Database Schema
 
-All raw and processed data are maintained in SQLite (`data/database/bug_detection.db`) with relational integrity:
+All raw and processed data are maintained in SQLite (`1_Database/SQLite/bug_detection.db`) with relational integrity:
 
 ```
 repositories (1) ───< commits (N) ───< commit_files (N)
@@ -220,7 +221,7 @@ repositories (1) ───< commits (N) ───< commit_files (N)
 ```
 
 ### Versioned Snapshots
-- **Snapshot #1 (`csharp_empirical_v1`, v1.0.0):** 483 observations across 3 repositories (`Humanizer`, `MediatR`, `commandline`). Preserved as historical baseline.
-- **Snapshot #2 (`csharp_empirical_v2`, v2.0.0):** 578 observations across 5 repositories (`Humanizer`, `Serilog`, `MediatR`, `Polly`, `FluentValidation`). Authoritative training corpus.
-- **Quarantined Holdout (`newtonsoft_holdout`):** 159 observations from `Newtonsoft.Json`. Evaluated once as an independent test set.
+- **Snapshot #1 (`csharp_empirical_v1`, v1.0.0):** 483 observations across 3 repositories (`Humanizer`, `MediatR`, `commandline`). Preserved as historical baseline (226 defect-prone, 257 candidate-clean).
+- **Snapshot #2 (`csharp_empirical_v2`, v2.0.0):** 578 observations across 5 repositories (`Humanizer`, `Serilog`, `MediatR`, `Polly`, `FluentValidation`). Authoritative training corpus (279 defect-prone, 299 candidate-clean).
+- **Independent Holdout (`newtonsoft_holdout`):** 159 observations from `Newtonsoft.Json`. Evaluated as an independent test set (79 defect-prone, 80 candidate-clean; total evaluated corpus: 737 observations).
 

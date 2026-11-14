@@ -6,7 +6,7 @@
 
 ### Limitations of Coarse Granularity
 Most traditional software engineering research operates at file or module granularity:
-- High-level prediction flags entire 2,000-line files as "buggy".
+- High-level prediction flags entire 2,000-line files as defect-prone.
 - Developers are overwhelmed and cannot pinpoint where the defect actually resides.
 - **Our Focus:** Fine-grained **method-level prediction** that pinpoints the specific function containing the defect.
 
@@ -22,7 +22,7 @@ Defect prediction models frequently suffer from two critical pitfalls:
 | Research Question | Objective |
 | :--- | :--- |
 | **RQ1: Feasibility** | Can static AST metrics extracted at method granularity reliably predict defect-proneness in C# source code? |
-| **RQ2: Classifier Performance** | Which machine learning algorithm delivers the highest defect detection capability under cross-project evaluation? |
+| **RQ2: Classifier Performance** | Which machine learning algorithm delivers the highest defect prediction capability under cross-project evaluation? |
 | **RQ3: Feature Importance** | Which syntactic and complexity metrics provide the strongest signal for software defect induction in C#? |
 | **RQ4: Generalization** | Does a model trained across diverse repositories generalize effectively to an unseen external codebase (Holdout)? |
 

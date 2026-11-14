@@ -45,7 +45,7 @@ Defect prediction models in software engineering depend heavily on ground-truth 
 
 1. **Bug-Fix Identification:** Mined commit messages are matched against standard regular expression patterns (`\b(fix(es|ed)?|bug(s)?|issue(s)?|resolve[sd]?)\b`).
 2. **Line Blaming:** For each deleted line in a bug-fixing commit, `git blame -w -M -C` identifies the candidate Bug-Inducing Commit (BIC) that originally introduced the line, ignoring whitespace-only adjustments and intra-file movements.
-3. **Pre-Fix Revision Extraction:** The enclosing method is extracted from the immediate parent commit of the bug-fix revision, capturing the exact buggy state of the method before corrective modification.
-4. **Candidate-Clean Sampling:** Non-buggy methods are sampled from stable HEAD commits that have zero bug-fix traces in the analyzed commit window.
-5. **Open-World Assumption (OWA):** Non-buggy observations are explicitly treated as *candidate clean* rather than mathematically verified bug-free, acknowledging that latent defects may exist.
+3. **Pre-Fix Revision Extraction:** The enclosing method is extracted from the immediate parent commit of the bug-fix revision, capturing the exact defect-prone state of the method before corrective modification.
+4. **Candidate-Clean Sampling:** Candidate-clean methods are sampled from stable HEAD commits that have zero bug-fix traces in the analyzed commit window.
+5. **Open-World Assumption (OWA):** Non-defect observations are explicitly treated as *candidate clean* rather than mathematically verified bug-free, acknowledging that latent defects may exist.
 

@@ -29,7 +29,7 @@
 │   ├── Program.cs             # C# AST visitor calculating 26 static metrics
 │   └── RoslynAnalyzer.csproj  # .NET 9 project file (Microsoft.CodeAnalysis.CSharp)
 │
-├── Tests/                     # 16 automated test modules (121 tests)
+├── Tests/                     # 16 automated test modules (123 tests)
 │
 └── Scripts/                   # Operational and maintenance scripts
 ```
@@ -49,7 +49,7 @@ Centralizes application configuration via Pydantic models. It includes a dynamic
 Provides the Python-to-.NET bridge. It invokes `RoslynAnalyzer.dll` via `subprocess.run`, transmits C# code via `stdin` or `--file` arguments, handles UTF-8 encoding and newline normalization, and parses structured JSON output containing method signatures, byte offsets, and the 26 static code metrics.
 
 ### `utils/source_classifier.py`
-Implements the production C# file filter (`is_production_csharp_file`). It eliminates test fixtures, test directories (`Tests/`, `Specs/`, `UnitTests/`), generated files (`*.Designer.cs`, `*.g.cs`), and build outputs (`bin/`, `obj/`), ensuring only real production code enters both the buggy and non-buggy datasets.
+Implements the production C# file filter (`is_production_csharp_file`). It eliminates test fixtures, test directories (`Tests/`, `Specs/`, `UnitTests/`), generated files (`*.Designer.cs`, `*.g.cs`), and build outputs (`bin/`, `obj/`), ensuring only real production code enters both the defect-prone and candidate-clean datasets.
 
 ### `ml/` (Machine Learning Engine)
 - `preprocessing.py`: Feature scaling, missing-value imputation, zero-variance filtering, and repository group splitting.

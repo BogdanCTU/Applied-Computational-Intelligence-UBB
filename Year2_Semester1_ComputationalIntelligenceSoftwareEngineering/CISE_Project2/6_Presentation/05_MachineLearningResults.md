@@ -36,18 +36,18 @@ In the final 5-fold cross-validation experiment, three distinct accuracy metrics
 
 ## 3. Independent Holdout Evaluation (`Newtonsoft.Json`)
 
-To test true out-of-sample generalization, the champion model was evaluated against an untouched holdout codebase (159 observations: 79 buggy, 80 clean):
+To test true out-of-sample generalization, the champion model was evaluated against an untouched holdout codebase (159 observations: 79 defect-prone, 80 candidate-clean):
 
-```mermaid
-pie title Holdout Defect Detection (Newtonsoft.Json)
-    "Detected Bugs (TP=71)": 71
-    "Missed Bugs (FN=8)": 8
-    "Correct Clean (TN=49)": 49
-    "False Alarms (FP=31)": 31
-```
+| Quadrant | Prediction Outcome | Observations | Proportion |
+| :--- | :--- | :---: | :---: |
+| **True Positive (TP)** | Correctly Intercepted Defect | 71 | 44.65% |
+| **True Negative (TN)** | Correctly Identified Candidate-Clean | 49 | 30.82% |
+| **False Positive (FP)** | False Alarm (Candidate-Clean Flagged) | 31 | 19.50% |
+| **False Negative (FN)** | Missed Defect | 8 | 5.03% |
+| **Total** | Independent Holdout Corpus | **159** | **100.0%** |
 
 - **Defect Recall:** **$89.87\%$** ($71 / 79$ defects captured)
-- **Specificity:** **$61.25\%$** ($49 / 80$ clean methods passed)
+- **Specificity:** **$61.25\%$** ($49 / 80$ candidate-clean methods passed)
 - **Holdout Accuracy:** **$75.47\%$** ($120 / 159$)
 - **Holdout F1 Score:** **$0.7845$**
 - **Holdout ROC-AUC:** **$0.7958$**

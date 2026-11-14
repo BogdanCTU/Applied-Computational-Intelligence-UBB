@@ -13,11 +13,11 @@ from database.repository import RepositoryDB
 
 
 def render_dashboard(db: RepositoryDB, settings: AppSettings) -> None:
-    st.header("📊 System Overview & Experiment Dashboard")
+    st.header("System Overview and Experiment Dashboard")
     st.markdown("""
-    Welcome to the **C# Defect Predictor**! This application implements an end-to-end academic machine learning pipeline
-    for identifying defect-prone C# methods using Git mining, SZZ-based bug localization, Roslyn AST static code metric extraction,
-    and Random Forest classification.
+    The **C# Defect Predictor** implements an academic machine learning pipeline
+    for identifying defect-prone C# methods using Git mining, SZZ-based defect localization,
+    Roslyn AST static code metric extraction, and Random Forest classification.
     """)
 
     stats = db.get_summary_statistics()
@@ -25,7 +25,7 @@ def render_dashboard(db: RepositoryDB, settings: AppSettings) -> None:
     # -------------------------------------------------------------
     # 1. Primary Metrics Row
     # -------------------------------------------------------------
-    st.markdown("### 1. Repository Collection & Mining Statistics")
+    st.markdown("### 1. Repository Collection and Mining Statistics")
     c1, c2, c3, c4 = st.columns(4)
     with c1:
         st.metric("Managed Repositories", stats["repositories_total"], f"{stats['repositories_cloned']} Cloned Locally")
@@ -41,7 +41,7 @@ def render_dashboard(db: RepositoryDB, settings: AppSettings) -> None:
     # -------------------------------------------------------------
     # 2. Observations & Feature Extraction Breakdown
     # -------------------------------------------------------------
-    st.markdown("### 2. Method Observations & Static Code Metrics")
+    st.markdown("### 2. Method Observations and Static Code Metrics")
     total_obs = stats["observations_total"]
     feat_count = stats["features_extracted"]
     feat_pct = (feat_count / total_obs * 100.0) if total_obs > 0 else 0.0
@@ -50,9 +50,9 @@ def render_dashboard(db: RepositoryDB, settings: AppSettings) -> None:
     with c_o1:
         st.metric("Total Observations", total_obs)
     with c_o2:
-        st.metric("Buggy Methods (Label 1)", stats["observations_buggy"])
+        st.metric("Defect-Prone (Label 1)", stats["observations_buggy"])
     with c_o3:
-        st.metric("Candidate Clean (Label 0)", stats["observations_non_buggy"])
+        st.metric("Candidate-Clean (Label 0)", stats["observations_non_buggy"])
     with c_o4:
         st.metric("Feature Extraction", f"{feat_count} / {total_obs}", f"{feat_pct:.1f}% Complete")
 
@@ -61,22 +61,45 @@ def render_dashboard(db: RepositoryDB, settings: AppSettings) -> None:
     with col_chart1:
         if total_obs > 0:
             labels_df = pd.DataFrame([
-                {"Label": "Buggy (1)", "Count": stats["observations_buggy"]},
-                {"Label": "Candidate Clean (0)", "Count": stats["observations_non_buggy"]},
-                {"Label": "Uncertain (-1)", "Count": stats["observations_uncertain"]},
+                {
+                    "Class": "Defect-Prone (1)",
+                    "Count": stats["observations_buggy"],
+                    "Ratio": f"{stats['observations_buggy'] / total_obs * 100:.1f}%",
+                },
+                {
+                    "Class": "Candidate-Clean (0)",
+                    "Count": stats["observations_non_buggy"],
+                    "Ratio": f"{stats['observations_non_buggy'] / total_obs * 100:.1f}%",
+                },
+                {
+                    "Class": "Uncertain (-1)",
+                    "Count": stats["observations_uncertain"],
+                    "Ratio": f"{stats['observations_uncertain'] / total_obs * 100:.1f}%",
+                },
             ])
-            fig_labels = px.pie(
+            fig_labels = px.bar(
                 labels_df,
-                values="Count",
-                names="Label",
+                x="Count",
+                y="Class",
+                orientation="h",
                 title="Observation Class Distribution",
-                color="Label",
-                color_discrete_map={"Buggy (1)": "#e74c3c", "Candidate Clean (0)": "#2ecc71", "Uncertain (-1)": "#95a5a6"},
-                hole=0.4,
+                text="Ratio",
+                color="Class",
+                color_discrete_map={
+                    "Defect-Prone (1)": "#4a7bb0",
+                    "Candidate-Clean (0)": "#5b9e78",
+                    "Uncertain (-1)": "#8e9aa8",
+                },
+            )
+            fig_labels.update_layout(
+                showlegend=False,
+                margin=dict(l=20, r=20, t=40, b=20),
+                height=260,
             )
             st.plotly_chart(fig_labels, use_container_width=True)
+            st.dataframe(labels_df, hide_index=True, use_container_width=True)
         else:
-            st.info("No method observations mined yet. Start by discovering repositories in **Repository Collection**.")
+            st.info("No method observations mined yet. Start by discovering repositories in Repository Collection.")
 
     with col_chart2:
         models = db.list_models()
@@ -101,31 +124,32 @@ def render_dashboard(db: RepositoryDB, settings: AppSettings) -> None:
                 for item in mdi_feats[:3]:
                     st.write(f"- `{item['feature']}`: importance = `{item['importance']:.3f}`")
         else:
-            st.info("No trained machine learning model recorded yet. Train one in **Model Training**.")
+            st.info("No trained machine learning model recorded yet. Train one in Model Training.")
 
     st.markdown("---")
 
     # -------------------------------------------------------------
     # 3. Machine Learning Lifecycle Pipeline Map
     # -------------------------------------------------------------
-    st.subheader("🔄 Machine Learning Lifecycle Pipeline")
+    st.subheader("Machine Learning Lifecycle Pipeline")
     cols = st.columns(5)
     with cols[0]:
         st.info("### 1. Discovery\n- GitHub REST API\n- Full Git history clone\n- File diff extraction")
     with cols[1]:
         st.info("### 2. SZZ Mining\n- Bug-fixing heuristics\n- Git blame BIC tracing\n- Method locator")
     with cols[2]:
-        st.info("### 3. Roslyn Metrics\n- 24 Code metrics\n- AST & OOP analysis\n- Snapshot generation")
+        st.info("### 3. Roslyn Metrics\n- 26 Code metrics\n- AST and OOP analysis\n- Snapshot generation")
     with cols[3]:
         st.info("### 4. RF Modeling\n- GroupKFold by repo\n- Leakage prevention\n- Permutation importance")
     with cols[4]:
         st.info("### 5. Prediction\n- Real-time inference\n- Multi-method files\n- Influential metrics")
 
     st.markdown("---")
-    st.subheader("📚 Academic Principles & Traceability Guarantees")
+    st.subheader("Academic Principles and Methodological Constraints")
     st.markdown("""
-    - **Defect Risk Indicator, Not Proof**: Predictions are continuous risk propensities indicating structural complexity, not formal proofs of defect presence or absence.
-    - **Zero Cross-Repository Leakage**: All cross-validation and holdout testing partition strictly by `repository_id` (`GroupShuffleSplit` / `GroupKFold`).
-    - **SZZ Traceability**: Every buggy observation links deterministically to the bug-introducing commit, fixing commit, and diff context.
-    - **Privacy Preserving**: Operates strictly on the local machine with zero telemetry and optional local history logging.
+    - **Defect Risk Indicator, Not Certified Defect Proof**: Predictions reflect continuous defect risk propensities based on structural complexity, not formal proofs of defect presence or absence.
+    - **Zero Cross-Repository Leakage**: All cross-validation and holdout testing partition strictly by repository (`GroupKFold`), preventing code from the same repository from leaking between train and test splits.
+    - **SZZ Traceability**: Every defect-prone observation links deterministically to the bug-introducing commit, fixing commit, and diff context.
+    - **Open-World Assumption**: Candidate-clean methods sampled from stable HEAD are free of recorded bug-fixing traces in the mined commit window, but may contain undiscovered latent defects.
+    - **Privacy-Preserving**: Operates strictly on the local machine with zero external network telemetry and optional local history logging.
     """)

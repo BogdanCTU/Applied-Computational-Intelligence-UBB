@@ -31,45 +31,45 @@ The application will open in your default browser at `http://localhost:8501`.
 
 The application sidebar provides navigation between 8 specialized tabs:
 
-### 📊 Tab 1: Dashboard
-- **Overview:** Displays global system statistics: total registered repositories, cloned repositories, mined commits, bug-fix commits, total observations (buggy vs. clean), generated datasets, and registered models.
-- **Workflow:** Review the current state of the database and quick metrics.
+### Tab 1: Dashboard
+- **Overview:** Displays global system statistics: total registered repositories, cloned repositories, mined commits, bug-fixing commits, total observations (defect-prone vs. candidate-clean), generated datasets, and registered models.
+- **Workflow:** Review the current state of the database and summary metrics.
 
-### 📥 Tab 2: Repository Collection
+### Tab 2: Repository Collection
 - **Overview:** Interface for discovering, registering, and cloning open-source C# projects from GitHub.
 - **Features:** Search GitHub by keywords or language; view star counts and sizes; trigger automated local cloning via Git.
 
-### 🔍 Tab 3: Bug Analysis & SZZ
+### Tab 3: Bug Analysis & SZZ
 - **Overview:** Inspect mined commit logs and run the SZZ heuristic.
 - **Features:** Filter commits by bug-fixing confidence; view regex evidence; execute line-blame tracing (`git blame -w -M -C`) to discover Bug-Inducing Commits (BICs); extract pre-fix method code.
 
-### 📁 Tab 4: Dataset Management
+### Tab 4: Dataset Management
 - **Overview:** Create, version, and export machine learning datasets.
 - **Features:** Select repository cohorts; inspect observation class balance; generate structured CSV datasets with the 26 Roslyn-extracted static code metrics; view dataset metadata JSON.
 
-### 🧠 Tab 5: Model Training
+### Tab 5: Model Training
 - **Overview:** Train candidate machine learning classifiers on exported datasets.
 - **Features:** Configure hyperparameters (e.g., number of trees, max depth); select validation schemes (Random Split vs. Repository GroupKFold); monitor training progress.
 
-### 📈 Tab 6: Model Evaluation
+### Tab 6: Model Evaluation
 - **Overview:** Detailed performance analysis and benchmark comparisons.
 - **Features:** Inspect confusion matrices, ROC curves, Precision-Recall curves, classification reports, threshold sweep curves, and cross-validation fold breakdowns.
 
-### 🎯 Tab 7: Real-World Bug Prediction
-- **Overview:** Interactive, real-time defect risk analysis for arbitrary C# code.
+### Tab 7: Real-World Bug Prediction
+- **Overview:** Interactive, real-time defect risk analysis for C# methods and files.
 - **Usage:**
-  1. Paste a C# class or method into the text editor.
-  2. Click **"Analyze Code & Predict Defects"**.
-  3. The system compiles the code via the Roslyn AST analyzer, extracts the 26 static features, and feeds them into the champion Random Forest model.
+  1. Paste a C# class or method into the text editor, or upload a `.cs` file.
+  2. Click **"Analyze Method & Predict Defect Risk"**.
+  3. The system parses the code via the Roslyn AST analyzer, extracts the 26 static features, and feeds them into the trained Random Forest model.
   4. View the resulting risk classification:
-     - 🟢 **Low Risk:** Probability $< 0.30$
-     - 🟡 **Medium Risk:** Probability $0.30 - 0.60$
-     - 🔴 **High Risk:** Probability $> 0.60$
-  5. Inspect the top influential features (e.g. `method_length`, `cyclomatic_complexity`, `parameter_count`) explaining the prediction.
+     - **Low Risk:** Risk score below low threshold ($\le 0.35$).
+     - **Medium Risk:** Risk score between thresholds ($0.35 - 0.65$).
+     - **High Risk:** Risk score exceeding high threshold ($> 0.65$).
+  5. Inspect the influential features (e.g. `method_length`, `cyclomatic_complexity`, `parameter_count`) explaining the prediction.
 
-### ⚙️ Tab 8: Settings
+### Tab 8: Settings
 - **Overview:** Application configuration and diagnostic tools.
-- **Features:** Inspect active file paths (database, models, datasets, Roslyn binary); test Roslyn analyzer connectivity; configure risk score thresholds.
+- **Features:** Inspect active file paths (database, models, datasets, Roslyn binary); test Roslyn analyzer connectivity; configure risk score thresholds and privacy logging.
 
 ---
 

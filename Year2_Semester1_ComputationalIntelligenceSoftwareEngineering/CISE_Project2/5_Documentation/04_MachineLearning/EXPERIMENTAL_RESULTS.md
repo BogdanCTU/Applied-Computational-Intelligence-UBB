@@ -5,23 +5,23 @@
 **Course:** Computational Intelligence in Software Engineering (CISE) — Project 2  
 **Role:** Canonical Experimental Results & Model Evaluation Reference  
 **Authoritative Artifacts:**  
-- Cross-Validation: `reports/experiments/final/experiment_results.json`, `reports/experiments/final/experiment_results.csv`  
-- Frozen Model: `reports/experiments/final/model/exp_final_5fold_v2_best_rf_compact_regularized.joblib`  
-- Independent Holdout: `reports/holdout/newtonsoft_holdout_results.json`  
+- Cross-Validation: `3_TestResults/FinalCrossValidation/experiment_results.json`, `3_TestResults/FinalCrossValidation/experiment_results.csv`  
+- Frozen Model: `4_AppBuild/Assets/Models/exp_final_5fold_v2_best_rf_compact_regularized.joblib`  
+- Independent Holdout: `3_TestResults/HoldoutValidation/newtonsoft_holdout_results.json`  
 
 ---
 
 ## 1. Dataset Corpora Overview
 
-| Dataset Snapshot | Semantic Version | Observations | Repositories Included | Defect Labels (Buggy / Clean) | Purpose |
+| Dataset Snapshot | Semantic Version | Observations | Repositories Included | Defect Labels (Defect-Prone / Candidate-Clean) | Purpose |
 | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Dataset #1** (`csharp_empirical_v1`) | `1.0.0` | 483 | 3 (`Humanizer`, `MediatR`, `commandline`) | 231 / 252 (47.8% buggy) | Exploratory baseline & 2-fold prototype |
-| **Dataset #2** (`csharp_empirical_v2`) | `2.0.0` | **578** | **5** (`Humanizer`, `Serilog`, `MediatR`, `Polly`, `FluentValidation`) | **279 / 299 (48.3% buggy)** | Authoritative 5-fold cross-validation corpus |
-| **Quarantined Holdout** (`newtonsoft_holdout`) | — | **159** | 1 (`JamesNK/Newtonsoft.Json`) | **79 / 80 (49.7% buggy)** | One-shot independent generalization test |
+| **Dataset #1** (`csharp_empirical_v1`) | `1.0.0` | 483 | 3 (`Humanizer`, `MediatR`, `commandline`) | 226 / 257 (46.8% defect-prone) | Exploratory baseline & 2-fold prototype |
+| **Dataset #2** (`csharp_empirical_v2`) | `2.0.0` | **578** | **5** (`Humanizer`, `Serilog`, `MediatR`, `Polly`, `FluentValidation`) | **279 / 299 (48.3% defect-prone)** | Authoritative 5-fold cross-validation corpus |
+| **Independent Holdout** (`newtonsoft_holdout`) | — | **159** | 1 (`JamesNK/Newtonsoft.Json`) | **79 / 80 (49.7% defect-prone)** | One-shot independent generalization test |
 
 ### 1.1 Dataset Snapshot #2: Repository Breakdown
 
-| Repository ID | Full Name | Buggy (Label 1) | Clean (Label 0) | Total Observations | % of Dataset |
+| Repository ID | Full Name | Defect-Prone (Label 1) | Candidate-Clean (Label 0) | Total Observations | % of Dataset |
 | :---: | :--- | :---: | :---: | :---: | :---: |
 | **Repo #4** | `Humanizr/Humanizer` | 139 | 152 | 291 | 50.35% |
 | **Repo #15** | `serilog/serilog` | 66 | 68 | 134 | 23.18% |
@@ -115,12 +115,14 @@ Because missed defects carry higher remediation costs than false positive inspec
 ### Optimal Decision Cutoff
 - **Optimal Threshold:** $\tau^* = 0.40$ maximizes the out-of-fold F1-score at **0.7405**.
 - **Operational Impact:** Compared to nominal $\tau=0.50$, shifting to $\tau^*=0.40$ reduces False Negatives from 74 to 35, catching 39 additional defective methods and elevating Recall from 73.48% to **87.46%** with negligible precision impact (63.86% to 64.21%).
+- **Methodological Context:** Decision threshold $\tau^* = 0.40$ was identified on pooled out-of-fold cross-validation predictions without nested cross-validation, which introduces mild threshold-selection bias, and was subsequently evaluated without alteration against the independent holdout repository (`Newtonsoft.Json`).
 
 ---
 
 ## 6. Frozen Model Artifact Specification
 
-- **Serialized Path:** `reports/experiments/final/model/exp_final_5fold_v2_best_rf_compact_regularized.joblib`
+- **Serialized Path:** `4_AppBuild/Assets/Models/exp_final_5fold_v2_best_rf_compact_regularized.joblib`
+- **Historical Benchmark Copy:** `3_TestResults/FinalCrossValidation/exp_final_5fold_v2_best_rf_compact_regularized.joblib`
 - **File Size:** 145,504 bytes
 - **SHA-256 Digest:** `625992350a78d28277c3521a3ff97f5e28cda4d4f6996c1dc90374512c19cb1e`
 - **Algorithm:** `RandomForestClassifier`
@@ -131,7 +133,7 @@ Because missed defects carry higher remediation costs than false positive inspec
 
 ## 7. Independent Holdout Evaluation (`JamesNK/Newtonsoft.Json`)
 
-To ensure an unbiased evaluation of real-world generalization, `JamesNK/Newtonsoft.Json` (159 production methods: 79 buggy, 80 clean) was evaluated in a single un-tuned run after the model architecture and thresholds were frozen:
+To ensure an unbiased evaluation of real-world generalization, `JamesNK/Newtonsoft.Json` (159 production methods: 79 defect-prone, 80 candidate-clean; total evaluation corpus: 737 observations) was evaluated in a single un-tuned run after the model architecture and thresholds were frozen:
 
 | Metric | Nominal Threshold ($\tau = 0.50$) | CV-Tuned Threshold ($\tau^* = 0.40$) |
 | :--- | :---: | :---: |

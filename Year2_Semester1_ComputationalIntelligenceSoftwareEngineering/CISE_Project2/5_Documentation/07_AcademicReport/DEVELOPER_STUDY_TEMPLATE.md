@@ -629,30 +629,30 @@ The 24 methods represent a stratified sample covering all four quadrants of the 
 
 | Method Code | Observation ID | True Label (SZZ) | Model Predicted | Quadrant | ML Risk Score | Method Name & Class | Primary Qualitative Discrepancy Note |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **M01** | ID 118 | 0 (Clean) | 0 (Clean) | **TN** | 0.278 | `CastExtensions.CanCast` | Trivial type check; low LOC; both human and model agree clean. |
-| **M02** | ID 44 | 1 (Buggy) | 1 (Buggy) | **TP** | 0.691 | `InstanceChooser.Choose` | Complex dispatching with LINQ, exceptions, and lambdas; high human defect rating. |
-| **M03** | ID 28 | 1 (Buggy) | 1 (Buggy) | **TP** | 0.621 | `Value.Equals` | Null check and multi-branch equality; caught by SZZ and model. |
-| **M04** | ID 112 | 0 (Clean) | 0 (Clean) | **TN** | 0.179 | `Program.MakeError` | Trivial 4-line tuple factory; minimal cognitive load. |
-| **M05** | ID 132 | 0 (Clean) | 1 (Buggy) | **FP** | 0.592 | `GetoptTokenizer.TokenizeShortName` | High nesting (depth 3) & loop count triggers model; SZZ marked clean (no reported fix). |
-| **M06** | ID 27 | 1 (Buggy) | 0 (Clean) | **FN** | 0.496 | `Tokenizer.PreprocessDashDash` | Subtle semantic edge case in argument slicing; near-threshold miss (0.496). |
-| **M07** | ID 13 | 1 (Buggy) | 0 (Clean) | **FN** | 0.429 | `ReflectionHelper.GetExecutingOrEntryAssembly` | Null-coalescing fallback in dynamic runtime; low static complexity hides bug. |
-| **M08** | ID 145 | 0 (Clean) | 0 (Clean) | **TN** | 0.397 | `NameExtensions.FromOptionSpecification` | Simple mapping adapter; uncontroversial clean method. |
-| **M09** | ID 42 | 1 (Buggy) | 0 (Clean) | **FN** | 0.491 | `Tokenizer.ExplodeOptionList` | Nested functional monadic chaining; low cyclomatic complexity disguises bug. |
-| **M10** | ID 36 | 1 (Buggy) | 1 (Buggy) | **TP** | 0.753 | `Sequence.Partition` | Predicate-driven token stream slicing; high model risk aligns with real defect. |
-| **M11** | ID 121 | 0 (Clean) | 0 (Clean) | **TN** | 0.279 | `CastExtensions.CanImplicitCast` | Simple interface assignability test; both human and model agree clean. |
-| **M12** | ID 156 | 0 (Clean) | 1 (Buggy) | **FP** | 0.610 | `ReflectionExtensions.GetSpecifications` | Reflection and lambda filter; flagged by model due to reflection usage patterns. |
-| **M13** | ID 149 | 0 (Clean) | 1 (Buggy) | **FP** | 0.836 | `OptionMapper.MapValues` | 42 LOC, higher-order function arguments; model flags risk, candidate clean in git history. |
-| **M14** | ID 29 | 1 (Buggy) | 0 (Clean) | **FN** | 0.323 | `TokenExtensions.IsValueForced` | 4-line boolean check; SZZ identified bug-fix commit, but static metrics are tiny. |
-| **M15** | ID 162 | 0 (Clean) | 1 (Buggy) | **FP** | 0.625 | `ReflectionExtensions.SetProperties` | Dynamic property setting in try/catch loop; high model risk, no recorded fix in git. |
-| **M16** | ID 125 | 0 (Clean) | 0 (Clean) | **TN** | 0.259 | `CastExtensions.ImplicitCast` | Standard library wrapper; clean utility. |
-| **M17** | ID 116 | 0 (Clean) | 0 (Clean) | **TN** | 0.179 | `Program.MakeError` | 4-line tuple constructor; uncontroversial clean method. |
-| **M18** | ID 153 | 0 (Clean) | 1 (Buggy) | **FP** | 0.524 | `PreprocessorGuards.Lookup` | Yield return generator with lambda predicates; model flagged as defect-prone. |
-| **M19** | ID 47 | 1 (Buggy) | 0 (Clean) | **FN** | 0.241 | `Token.ValueForced` | Factory constructor; SZZ implicated method in token parsing defect; static metrics cannot detect semantic flaw. |
-| **M20** | ID 114 | 0 (Clean) | 1 (Buggy) | **FP** | 0.520 | `Program.ReadLines` | File I/O without exception handling; model flags risk; candidate clean. |
-| **M21** | ID 45 | 1 (Buggy) | 1 (Buggy) | **TP** | 0.763 | `InstanceChooser.MatchVerb` | 33 LOC, multi-step LINQ filtering; high defect risk corroborated. |
-| **M22** | ID 17 | 1 (Buggy) | 1 (Buggy) | **TP** | 0.573 | `InstanceBuilder.BuildImmutable` | Constructor discovery and parameter matching; reflection defect caught. |
-| **M23** | ID 41 | 1 (Buggy) | 1 (Buggy) | **TP** | 0.824 | `OptionMapper.MapValues` | Overloaded mapper with complex converter delegate; true defect confirmed. |
-| **M24** | ID 54 | 1 (Buggy) | 0 (Clean) | **FN** | 0.362 | `TokenPartitioner.Partition` | 26 LOC switch partitioner; subtle boundary bug missed by static threshold. |
+| **M01** | ID 118 | 0 (Candidate-Clean) | 0 (Candidate-Clean) | **TN** | 0.278 | `CastExtensions.CanCast` | Trivial type check; low LOC; both human and model agree clean. |
+| **M02** | ID 44 | 1 (Defect-Prone) | 1 (Defect-Prone) | **TP** | 0.691 | `InstanceChooser.Choose` | Complex dispatching with LINQ, exceptions, and lambdas; high human defect rating. |
+| **M03** | ID 28 | 1 (Defect-Prone) | 1 (Defect-Prone) | **TP** | 0.621 | `Value.Equals` | Null check and multi-branch equality; caught by SZZ and model. |
+| **M04** | ID 112 | 0 (Candidate-Clean) | 0 (Candidate-Clean) | **TN** | 0.179 | `Program.MakeError` | Trivial 4-line tuple factory; minimal cognitive load. |
+| **M05** | ID 132 | 0 (Candidate-Clean) | 1 (Defect-Prone) | **FP** | 0.592 | `GetoptTokenizer.TokenizeShortName` | High nesting (depth 3) & loop count triggers model; SZZ marked clean (no reported fix). |
+| **M06** | ID 27 | 1 (Defect-Prone) | 0 (Candidate-Clean) | **FN** | 0.496 | `Tokenizer.PreprocessDashDash` | Subtle semantic edge case in argument slicing; near-threshold miss (0.496). |
+| **M07** | ID 13 | 1 (Defect-Prone) | 0 (Candidate-Clean) | **FN** | 0.429 | `ReflectionHelper.GetExecutingOrEntryAssembly` | Null-coalescing fallback in dynamic runtime; low static complexity hides bug. |
+| **M08** | ID 145 | 0 (Candidate-Clean) | 0 (Candidate-Clean) | **TN** | 0.397 | `NameExtensions.FromOptionSpecification` | Simple mapping adapter; uncontroversial clean method. |
+| **M09** | ID 42 | 1 (Defect-Prone) | 0 (Candidate-Clean) | **FN** | 0.491 | `Tokenizer.ExplodeOptionList` | Nested functional monadic chaining; low cyclomatic complexity disguises bug. |
+| **M10** | ID 36 | 1 (Defect-Prone) | 1 (Defect-Prone) | **TP** | 0.753 | `Sequence.Partition` | Predicate-driven token stream slicing; high model risk aligns with real defect. |
+| **M11** | ID 121 | 0 (Candidate-Clean) | 0 (Candidate-Clean) | **TN** | 0.279 | `CastExtensions.CanImplicitCast` | Simple interface assignability test; both human and model agree clean. |
+| **M12** | ID 156 | 0 (Candidate-Clean) | 1 (Defect-Prone) | **FP** | 0.610 | `ReflectionExtensions.GetSpecifications` | Reflection and lambda filter; flagged by model due to reflection usage patterns. |
+| **M13** | ID 149 | 0 (Candidate-Clean) | 1 (Defect-Prone) | **FP** | 0.836 | `OptionMapper.MapValues` | 42 LOC, higher-order function arguments; model flags risk, candidate clean in git history. |
+| **M14** | ID 29 | 1 (Defect-Prone) | 0 (Candidate-Clean) | **FN** | 0.323 | `TokenExtensions.IsValueForced` | 4-line boolean check; SZZ identified bug-fix commit, but static metrics are tiny. |
+| **M15** | ID 162 | 0 (Candidate-Clean) | 1 (Defect-Prone) | **FP** | 0.625 | `ReflectionExtensions.SetProperties` | Dynamic property setting in try/catch loop; high model risk, no recorded fix in git. |
+| **M16** | ID 125 | 0 (Candidate-Clean) | 0 (Candidate-Clean) | **TN** | 0.259 | `CastExtensions.ImplicitCast` | Standard library wrapper; clean utility. |
+| **M17** | ID 116 | 0 (Candidate-Clean) | 0 (Candidate-Clean) | **TN** | 0.179 | `Program.MakeError` | 4-line tuple constructor; uncontroversial clean method. |
+| **M18** | ID 153 | 0 (Candidate-Clean) | 1 (Defect-Prone) | **FP** | 0.524 | `PreprocessorGuards.Lookup` | Yield return generator with lambda predicates; model flagged as defect-prone. |
+| **M19** | ID 47 | 1 (Defect-Prone) | 0 (Candidate-Clean) | **FN** | 0.241 | `Token.ValueForced` | Factory constructor; SZZ implicated method in token parsing defect; static metrics cannot detect semantic flaw. |
+| **M20** | ID 114 | 0 (Candidate-Clean) | 1 (Defect-Prone) | **FP** | 0.520 | `Program.ReadLines` | File I/O without exception handling; model flags risk; candidate clean. |
+| **M21** | ID 45 | 1 (Defect-Prone) | 1 (Defect-Prone) | **TP** | 0.763 | `InstanceChooser.MatchVerb` | 33 LOC, multi-step LINQ filtering; high defect risk corroborated. |
+| **M22** | ID 17 | 1 (Defect-Prone) | 1 (Defect-Prone) | **TP** | 0.573 | `InstanceBuilder.BuildImmutable` | Constructor discovery and parameter matching; reflection defect caught. |
+| **M23** | ID 41 | 1 (Defect-Prone) | 1 (Defect-Prone) | **TP** | 0.824 | `OptionMapper.MapValues` | Overloaded mapper with complex converter delegate; true defect confirmed. |
+| **M24** | ID 54 | 1 (Defect-Prone) | 0 (Candidate-Clean) | **FN** | 0.362 | `TokenPartitioner.Partition` | 26 LOC switch partitioner; subtle boundary bug missed by static threshold. |
 
 ---
 

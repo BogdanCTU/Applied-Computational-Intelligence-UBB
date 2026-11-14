@@ -18,7 +18,7 @@ from ml.preprocessing import split_by_repository
 
 
 def render_model_evaluation(db: RepositoryDB, settings: AppSettings) -> None:
-    st.header("📈 Model Evaluation & Feature Importance Analysis")
+    st.header("Model Evaluation and Feature Importance Analysis")
     st.markdown("""
     Evaluate trained Supervised Random Forest models against held-out repositories.
     Inspect generalization performance, confusion matrix distributions, discrimination curves (ROC / PR),
@@ -86,8 +86,8 @@ def render_model_evaluation(db: RepositoryDB, settings: AppSettings) -> None:
     st.markdown("### 1. Generalization Performance on Held-Out Repositories")
     c1, c2, c3, c4, c5, c6 = st.columns(6)
     c1.metric("Accuracy", f"{metrics.get('accuracy', 0.0):.3f}")
-    c2.metric("Precision (Buggy)", f"{metrics.get('precision', 0.0):.3f}")
-    c3.metric("Recall (Buggy)", f"{metrics.get('recall', 0.0):.3f}")
+    c2.metric("Precision (Defect-Prone)", f"{metrics.get('precision', 0.0):.3f}")
+    c3.metric("Recall (Defect-Prone)", f"{metrics.get('recall', 0.0):.3f}")
     c4.metric("F1-Score", f"{metrics.get('f1', 0.0):.3f}")
 
     roc_val = metrics.get("roc_auc")
@@ -102,10 +102,10 @@ def render_model_evaluation(db: RepositoryDB, settings: AppSettings) -> None:
     # 2. Detailed Tabs
     # -------------------------------------------------------------
     eval_tab1, eval_tab2, eval_tab3, eval_tab4 = st.tabs([
-        "🎯 Confusion Matrix & Classification Report",
-        "📈 Discrimination Curves (ROC & PR)",
-        "📊 Feature Importance (MDI vs Permutation)",
-        "📋 Hyperparameters & Provenance",
+        "Confusion Matrix & Classification Report",
+        "Discrimination Curves (ROC & PR)",
+        "Feature Importance (MDI vs Permutation)",
+        "Hyperparameters & Provenance",
     ])
 
     # TAB 1: Confusion Matrix & Report
@@ -126,7 +126,7 @@ def render_model_evaluation(db: RepositoryDB, settings: AppSettings) -> None:
             report = metrics.get("classification_report", {})
             if report:
                 report_rows = []
-                for label_key, label_display in [("0", "Clean Methods (0)"), ("1", "Buggy Methods (1)")]:
+                for label_key, label_display in [("0", "Candidate-Clean Methods (0)"), ("1", "Defect-Prone Methods (1)")]:
                     if label_key in report:
                         sub = report[label_key]
                         report_rows.append({
@@ -167,7 +167,7 @@ def render_model_evaluation(db: RepositoryDB, settings: AppSettings) -> None:
         st.subheader("Discrimination Curves")
         st.markdown("""
         - **ROC Curve**: True Positive Rate (Recall) vs False Positive Rate ($1 - \\text{Specificity}$).
-        - **Precision-Recall Curve**: Evaluates performance under class imbalance (Buggy methods are typically minority).
+        - **Precision-Recall Curve**: Evaluates performance under class imbalance (defect-prone methods are typically the minority class).
         """)
 
         # Attempt to reconstruct holdout test split for curve rendering if dataset snapshot exists
@@ -260,7 +260,7 @@ def render_model_evaluation(db: RepositoryDB, settings: AppSettings) -> None:
                 st.info("No Permutation importances recorded.")
 
         # Full Table of Features
-        with st.expander("🔍 View Full Feature Ranking Table"):
+        with st.expander("View Full Feature Ranking Table"):
             if mdi_list:
                 df_all = pd.DataFrame(mdi_list).rename(columns={"importance": "MDI Importance"})
                 if perm_list:
