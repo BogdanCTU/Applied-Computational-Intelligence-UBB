@@ -108,7 +108,8 @@ CISE_Project2/
 │   ├── 05_Validation/                         # Empirical validation, Bayes analysis, limitations
 │   ├── 06_UserGuide/                          # Operational user guide and troubleshooting
 │   ├── 07_AcademicReport/                     # Formal academic research report and study protocol
-│   └── 08_Archive/                            # Historical audit reports and baselines
+│   ├── 08_Archive/                            # Historical audit reports and baselines
+│   └── 09_Defense/                            # Final defense presentation, speaker notes, live demo script, Q&A, and 1-page summary PDF
 │
 └── 6_Presentation/                            # Academic defense presentation slides (7 decks)
     ├── 01_ProjectOverview.md                  # Project motivation and context
@@ -324,4 +325,5 @@ Comprehensive technical, experimental, and academic documentation is available i
 | **Study Protocol** | [5_Documentation/07_AcademicReport/DEVELOPER_STUDY_TEMPLATE.md](5_Documentation/07_AcademicReport/DEVELOPER_STUDY_TEMPLATE.md) | 24-method double-blind review research instrument and protocol template |
 | **Quality Review** | [5_Documentation/08_Archive/FINAL_QUALITY_REVIEW_REPORT.md](5_Documentation/08_Archive/FINAL_QUALITY_REVIEW_REPORT.md) | Comprehensive quality audit, defect resolution, and parity verification report |
 | **Academic Sign-Off** | [5_Documentation/08_Archive/FINAL_ACADEMIC_SIGNOFF.md](5_Documentation/08_Archive/FINAL_ACADEMIC_SIGNOFF.md) | Final academic compliance matrix, limitation boundaries, and readiness verdict |
+| **Defense Package** | [5_Documentation/09_Defense/](5_Documentation/09_Defense/) | Complete university examination defense package: 15-slide widescreen presentation deck, 14.5-min speaker script, 7-stage live demo protocol, 22-item defense Q&A handbook, 1-page executive summary PDF, and QA validation report |
 | **Defense Slides** | [6_Presentation/](6_Presentation/) | 7 presentation decks prepared for academic defense and project examination |
