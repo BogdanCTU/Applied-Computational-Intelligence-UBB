@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RoslynAnalyzer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e9f439b9dfcdff20d0a132dbbf186333b84d2d9b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b630bf683323a525737d5047cf5bbe0259e91d48")]
 [assembly: System.Reflection.AssemblyProductAttribute("RoslynAnalyzer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RoslynAnalyzer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

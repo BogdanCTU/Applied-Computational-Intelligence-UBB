@@ -15,7 +15,7 @@
 
 | Dataset Snapshot | Semantic Version | Observations | Repositories Included | Defect Labels (Defect-Prone / Candidate-Clean) | Purpose |
 | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Dataset #1** (`csharp_empirical_v1`) | `1.0.0` | 483 | 3 (`Humanizer`, `MediatR`, `commandline`) | 226 / 257 (46.8% defect-prone) | Exploratory baseline & 2-fold prototype |
+| **Dataset #1** (`csharp_empirical_v1`) | `1.0.0` | 483 | 3 (`Humanizer`, `MediatR`, `commandline`) | 226 / 257 (46.8% defect-prone) | Exploratory corpus & 2-fold prototype |
 | **Dataset #2** (`csharp_empirical_v2`) | `2.0.0` | **578** | **5** (`Humanizer`, `Serilog`, `MediatR`, `Polly`, `FluentValidation`) | **279 / 299 (48.3% defect-prone)** | Authoritative 5-fold cross-validation corpus |
 | **Independent Holdout** (`newtonsoft_holdout`) | — | **159** | 1 (`JamesNK/Newtonsoft.Json`) | **79 / 80 (49.7% defect-prone)** | One-shot independent generalization test |
 
@@ -54,7 +54,7 @@ Total evaluated across all 5 folds: $291 + 134 + 91 + 34 + 28 = 578$. Every repo
 
 ## 3. Comprehensive Model Benchmark Results
 
-Eleven configurations across four classifier families were evaluated under identical 5-fold GroupKFold splits at the nominal default decision threshold ($\tau = 0.50$):
+Nine configurations across three classifier families (Random Forest, Decision Tree, Logistic Regression) were evaluated under identical 5-fold GroupKFold splits at the nominal default decision threshold ($\tau = 0.50$):
 
 | Rank | Configuration ID | Algorithm Family | F1 (Mean ± Std) | Recall (Mean ± Std) | Precision (Mean ± Std) | Accuracy (Mean ± Std) | ROC-AUC | PR-AUC | Brier Score |
 | :---: | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -65,10 +65,8 @@ Eleven configurations across four classifier families were evaluated under ident
 | 5 | `dt_shallow_depth4` | Decision Tree | $0.5734 \pm 0.2172$ | $0.6166 \pm 0.2646$ | $0.5573 \pm 0.1884$ | $0.5721 \pm 0.1345$ | 0.5849 | 0.5630 | $0.2807 \pm 0.0699$ |
 | 6 | `rf_deep_capacity` | Random Forest | $0.5577 \pm 0.0739$ | $0.5794 \pm 0.1737$ | $0.5811 \pm 0.1147$ | $0.5815 \pm 0.0647$ | 0.6552 | 0.5982 | $0.2429 \pm 0.0435$ |
 | 7 | `lr_balanced_c1` | Logistic Regression | $0.4989 \pm 0.1252$ | $0.4538 \pm 0.1469$ | $0.5994 \pm 0.1557$ | $0.5709 \pm 0.0894$ | 0.6225 | 0.5694 | $0.2620 \pm 0.0368$ |
-| 8 | `dummy_stratified` | Baseline (Prior) | $0.4919 \pm 0.0821$ | $0.4644 \pm 0.1328$ | $0.5259 \pm 0.0526$ | $0.4984 \pm 0.0592$ | 0.4975 | 0.4815 | $0.4726 \pm 0.0700$ |
-| 9 | `lr_standard_c1` | Logistic Regression | $0.4890 \pm 0.1409$ | $0.4360 \pm 0.1651$ | $0.6095 \pm 0.1593$ | $0.5744 \pm 0.0877$ | 0.6231 | 0.5699 | $0.2643 \pm 0.0366$ |
-| 10 | `dt_depth8` | Decision Tree | $0.4695 \pm 0.2194$ | $0.4907 \pm 0.2529$ | $0.4844 \pm 0.1983$ | $0.5050 \pm 0.1425$ | 0.5097 | 0.5033 | $0.3993 \pm 0.1017$ |
-| 11 | `dummy_most_frequent` | Baseline (Majority) | $0.0000 \pm 0.0000$ | $0.0000 \pm 0.0000$ | $0.0000 \pm 0.0000$ | $0.5173 \pm 0.0210$ | 0.5000 | 0.4827 | $0.4885 \pm 0.0218$ |
+| 8 | `lr_standard_c1` | Logistic Regression | $0.4890 \pm 0.1409$ | $0.4360 \pm 0.1651$ | $0.6095 \pm 0.1593$ | $0.5744 \pm 0.0877$ | 0.6231 | 0.5699 | $0.2643 \pm 0.0366$ |
+| 9 | `dt_depth8` | Decision Tree | $0.4695 \pm 0.2194$ | $0.4907 \pm 0.2529$ | $0.4844 \pm 0.1983$ | $0.5050 \pm 0.1425$ | 0.5097 | 0.5033 | $0.3993 \pm 0.1017$ |
 
 ### 3.1 Fold-Level Breakdown for Winning Architecture (`rf_compact_regularized`)
 

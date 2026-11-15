@@ -1,3 +1,4 @@
+
 # CISE Project 2 — Final Defense Package Quality Assurance & Validation Report
 
 **Master's Degree in Applied Computational Intelligence**  
@@ -22,7 +23,7 @@ The defense package represents the final academic deliverable for CISE Project 2
    - The executive summary PDF (`METHODOLOGY_AND_RESULTS_SUMMARY.pdf`) strictly enforces the single-page constraint, verified via programmatic canvas assertions.
 3. **Pacing & Oral Delivery Alignment (14.5 Minutes):** The speaker notes provide a structured, slide-by-slide script totaling 14 minutes and 30 seconds, falling within the 12–15 minute university examination window.
 4. **Numerical Parity (100% Reconciliation):** Every metric, observation count, fold distribution, and threshold value matches the authoritative experiment JSON artifacts (`experiment_results.json` and `newtonsoft_holdout_results.json`).
-5. **Cryptographic Bitwise Parity (15/15 Artifacts Match):** All 15 protected databases, frozen models, datasets, and experiment logs retain 100% bitwise parity against their SHA-256 baselines.
+5. **Cryptographic Bitwise Parity (15/15 Artifacts Match):** All 15 protected databases, frozen models, datasets, and experiment logs retain 100% bitwise parity against their authoritative SHA-256 reference digests.
 6. **Code & Test Suite Health:** All 123 automated regression tests pass (100%), the Microsoft Roslyn analyzer compiles with 0 warnings and 0 errors, and all markdown links resolve correctly.
 
 ---
@@ -249,7 +250,7 @@ The table below reconciles all empirical facts and figures cited across the six 
 
 ## 9. Protected Artifact SHA-256 Checksum Verification
 
-All 15 protected artifacts were verified via direct cryptographic hash computation against their authoritative SHA-256 baselines.
+All 15 protected artifacts were verified via direct cryptographic hash computation against their authoritative SHA-256 reference digests.
 
 ```text
 ====================================================================================================

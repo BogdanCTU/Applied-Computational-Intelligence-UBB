@@ -35,7 +35,7 @@ Predicting defects at the method level presents specific technical challenges:
 - **SZZ-Based Defect Localization:** Map modified lines in bug-fixing commits back to candidate bug-introducing revisions using `git blame -w -M -C`.
 - **Production-Source Filtering:** Restrict training observations to production code by excluding test projects, test files, benchmarks, and mock fixtures.
 - **26 Roslyn Static Metrics:** Compute physical size, logical statements, McCabe cyclomatic complexity, maximum nesting depth, boolean/logical operators, control flow branches, and member accesses using Microsoft.CodeAnalysis.CSharp.
-- **Multi-Model Benchmark:** Compare Random Forest (5 parameter configurations), Decision Trees (shallow and deep), Logistic Regression (standard and balanced), and DummyClassifier baselines.
+- **Multi-Model Benchmark:** Compare Random Forest (5 parameter configurations), Decision Trees (shallow and deep), and Logistic Regression (standard and balanced).
 - **Out-of-Fold Optimization:** Tune operational classification thresholds ($\tau^* = 0.40$) on pooled validation predictions to maximize defect recall while monitoring precision trade-offs.
 - **Privacy and Local Execution:** All parsing, training, inference, and persistence run entirely on the local workstation. No telemetry, third-party cloud services, or external language model APIs are used.
 
@@ -108,7 +108,7 @@ CISE_Project2/
 │   ├── 05_Validation/                         # Empirical validation, Bayes analysis, limitations
 │   ├── 06_UserGuide/                          # Operational user guide and troubleshooting
 │   ├── 07_AcademicReport/                     # Formal academic research report and study protocol
-│   ├── 08_Archive/                            # Historical audit reports and baselines
+│   ├── 08_Archive/                            # Historical audit reports and snapshots
 │   └── 09_Defense/                            # Final defense presentation, speaker notes, live demo script, Q&A, and 1-page summary PDF
 │
 └── 6_Presentation/                            # Academic defense presentation slides (7 decks)
@@ -141,7 +141,7 @@ flowchart TD
     subgraph S3["3. Leakage-Free Validation"]
         H --> I["Dataset #2 (578 Methods, 5 Repositories)"]
         I --> J["5-Fold GroupKFold Partitioning"]
-        J --> K["ModelTrainer (RF, DT, LR, Baselines)"]
+        J --> K["ModelTrainer (RF, DT, LR)"]
         K --> L["Probability Calibration & Threshold Tuning"]
     end
 
@@ -183,7 +183,8 @@ pip install -r requirements.txt
 dotnet build 2_SourceCode\RoslynAnalyzer\RoslynAnalyzer.csproj -c Release
 
 # 5. Launch the Streamlit application
-streamlit run app.py
+python -m streamlit run app.py
+# (or: streamlit run app.py)
 ```
 
 *One-Click Execution on Windows:* Execute `4_AppBuild\Windows\run_app.bat` to automatically initialize the environment, verify the Roslyn build, and launch Streamlit.
@@ -206,7 +207,8 @@ pip install -r requirements.txt
 dotnet build 2_SourceCode/RoslynAnalyzer/RoslynAnalyzer.csproj -c Release
 
 # 5. Launch the Streamlit application
-streamlit run app.py
+python -m streamlit run app.py
+# (or: streamlit run app.py)
 ```
 
 The application interface opens locally at `http://localhost:8501`.
@@ -245,7 +247,7 @@ The project manages two primary datasets and one independent holdout repository:
 
 | Dataset Identifier | Observations | Positive Class (Defect-Prone) | Negative Class (Candidate-Clean) | Repositories Included | Primary Purpose |
 | :--- | :---: | :---: | :---: | :--- | :--- |
-| **Dataset #1 (`csharp_empirical_v1`)** | 483 | 226 (46.79%) | 257 (53.21%) | `Humanizer` (291), `CommandLineParser` (101), `MediatR` (91) | Exploratory feature selection and baseline modeling |
+| **Dataset #1 (`csharp_empirical_v1`)** | 483 | 226 (46.79%) | 257 (53.21%) | `Humanizer` (291), `CommandLineParser` (101), `MediatR` (91) | Exploratory feature selection and initial model evaluation |
 | **Dataset #2 (`csharp_empirical_v2`)** | 578 | 279 (48.27%) | 299 (51.73%) | `Humanizer` (291), `Serilog` (134), `MediatR` (91), `Polly` (34), `FluentValidation` (28) | Authoritative benchmark corpus for 5-fold GroupKFold cross-validation |
 | **Independent Holdout** | 159 | 79 (49.69%) | 80 (50.31%) | `JamesNK/Newtonsoft.Json` (159) | Independent external validation of the frozen model |
 
@@ -271,10 +273,8 @@ Models were trained and evaluated on Dataset #2 (578 methods across 5 repositori
 | 5 | `dt_shallow_depth4` | Decision Tree | 0.5734 ± 0.2172 | 0.6166 ± 0.2646 | 0.5573 ± 0.1884 | 0.5721 ± 0.1345 | 0.2807 ± 0.0699 |
 | 6 | `rf_deep_capacity` | Random Forest | 0.5577 ± 0.0739 | 0.5794 ± 0.1737 | 0.5811 ± 0.1147 | 0.5815 ± 0.0647 | 0.2429 ± 0.0435 |
 | 7 | `lr_balanced_c1` | Logistic Regression | 0.4989 ± 0.1252 | 0.4538 ± 0.1469 | 0.5994 ± 0.1557 | 0.5709 ± 0.0894 | 0.2620 ± 0.0368 |
-| 8 | `dummy_stratified` | Baseline (Prior) | 0.4919 ± 0.0821 | 0.4644 ± 0.1328 | 0.5259 ± 0.0526 | 0.4984 ± 0.0592 | 0.4726 ± 0.0700 |
-| 9 | `lr_standard_c1` | Logistic Regression | 0.4890 ± 0.1409 | 0.4360 ± 0.1651 | 0.6095 ± 0.1593 | 0.5744 ± 0.0877 | 0.2643 ± 0.0366 |
-| 10 | `dt_depth8` | Decision Tree | 0.4695 ± 0.2194 | 0.4907 ± 0.2529 | 0.4844 ± 0.1983 | 0.5050 ± 0.1425 | 0.3993 ± 0.1017 |
-| 11 | `dummy_most_frequent` | Baseline (Majority) | 0.0000 ± 0.0000 | 0.0000 ± 0.0000 | 0.0000 ± 0.0000 | 0.5173 ± 0.0210 | 0.4885 ± 0.0218 |
+| 8 | `lr_standard_c1` | Logistic Regression | 0.4890 ± 0.1409 | 0.4360 ± 0.1651 | 0.6095 ± 0.1593 | 0.5744 ± 0.0877 | 0.2643 ± 0.0366 |
+| 9 | `dt_depth8` | Decision Tree | 0.4695 ± 0.2194 | 0.4907 ± 0.2529 | 0.4844 ± 0.1983 | 0.5050 ± 0.1425 | 0.3993 ± 0.1017 |
 
 ### Reconciled Cross-Validation Accuracy Metrics
 

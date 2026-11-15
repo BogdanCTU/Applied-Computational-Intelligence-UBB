@@ -93,9 +93,9 @@ dotnet build 2_SourceCode/RoslynAnalyzer/RoslynAnalyzer.csproj -c Release
 ### Running the Application
 ```powershell
 # From repository root
-streamlit run app.py
+python -m streamlit run app.py
 # Or directly
-streamlit run 2_SourceCode/Python/app.py
+streamlit run app.py
 ```
 
 ### Running Tests

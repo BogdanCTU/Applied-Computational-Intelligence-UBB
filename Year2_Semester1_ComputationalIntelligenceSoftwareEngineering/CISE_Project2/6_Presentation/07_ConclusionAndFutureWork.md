@@ -5,7 +5,7 @@
 ## 1. Summary of Findings
 
 1. **Static AST Metrics Are Informative (RQ1):** Structural and complexity metrics (especially `method_length`, `parameter_count`, and `loc`) provide strong statistical predictive power for method-level defects ($ROC\text{-}AUC = 0.7208$).
-2. **Ensemble Methods Excel (RQ2):** `RandomForestClassifier` outperforms individual trees, linear baselines, and gradient boosting architectures on cross-project generalization.
+2. **Ensemble Methods Excel (RQ2):** `RandomForestClassifier` outperforms individual trees and linear classifiers on cross-project generalization.
 3. **Threshold Tuning Is Essential:** Adjusting the classification threshold from $\tau = 0.50$ to $\tau^* = 0.40$ increases defect recall from $73.48\%$ to **$87.46\%$** with minimal false alarm inflation.
 4. **Strong Out-of-Sample Transfer (RQ4):** Independent holdout testing on `Newtonsoft.Json` achieved **$89.87\%$ recall** ($71/79$ defects detected), confirming practical utility on unseen external software.
 

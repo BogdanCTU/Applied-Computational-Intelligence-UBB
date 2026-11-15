@@ -221,7 +221,7 @@ repositories (1) ───< commits (N) ───< commit_files (N)
 ```
 
 ### Versioned Snapshots
-- **Snapshot #1 (`csharp_empirical_v1`, v1.0.0):** 483 observations across 3 repositories (`Humanizer`, `MediatR`, `commandline`). Preserved as historical baseline (226 defect-prone, 257 candidate-clean).
+- **Snapshot #1 (`csharp_empirical_v1`, v1.0.0):** 483 observations across 3 repositories (`Humanizer`, `MediatR`, `commandline`). Preserved as initial corpus (226 defect-prone, 257 candidate-clean).
 - **Snapshot #2 (`csharp_empirical_v2`, v2.0.0):** 578 observations across 5 repositories (`Humanizer`, `Serilog`, `MediatR`, `Polly`, `FluentValidation`). Authoritative training corpus (279 defect-prone, 299 candidate-clean).
 - **Independent Holdout (`newtonsoft_holdout`):** 159 observations from `Newtonsoft.Json`. Evaluated as an independent test set (79 defect-prone, 80 candidate-clean; total evaluated corpus: 737 observations).
 

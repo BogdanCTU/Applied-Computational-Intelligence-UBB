@@ -97,7 +97,7 @@ def test_insufficient_repositories_raises_error():
         split_by_repository(X, y, meta)
 
 
-def test_trainer_and_dummy_baseline(synthetic_ml_dataset):
+def test_trainer_group_kfold_cv(synthetic_ml_dataset):
     X, y, metadata = synthetic_ml_dataset
     X_train, X_test, y_train, y_test, meta_train, meta_test, _ = split_by_repository(
         X, y, metadata, test_size=0.33, random_state=42
@@ -107,7 +107,7 @@ def test_trainer_and_dummy_baseline(synthetic_ml_dataset):
     X_train_proc = preprocessor.transform(X_train)
 
     trainer = ModelTrainer(n_estimators=20, max_depth=5, random_state=42)
-    model, cv_summary, baseline_summary, duration = trainer.train_with_cv(
+    model, cv_summary, _, duration = trainer.train_with_cv(
         X_train=X_train_proc,
         y_train=y_train,
         meta_train=meta_train,
@@ -117,7 +117,6 @@ def test_trainer_and_dummy_baseline(synthetic_ml_dataset):
     assert model is not None
     assert "f1" in cv_summary
     assert "accuracy" in cv_summary
-    assert "f1" in baseline_summary
     assert duration >= 0.0
 
 

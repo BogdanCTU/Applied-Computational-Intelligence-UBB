@@ -120,7 +120,7 @@ audit_data = {
     },
     "readme_audit": {
         "roslyn_metrics_count_claim": {"claim": "24 metrics (page guide) vs 26 metrics (capabilities)", "status": "Inconsistent / Incorrect (guide)", "authoritative_value": 26},
-        "model_families_claim": {"claim": "Random Forest only", "status": "Outdated", "authoritative_value": "DummyClassifier, Logistic Regression, Decision Tree, Random Forest"},
+        "model_families_claim": {"claim": "Random Forest only", "status": "Outdated", "authoritative_value": "Logistic Regression, Decision Tree, Random Forest"},
         "repository_aware_validation_claim": {"claim": "GroupShuffleSplit & GroupKFold", "status": "Verified", "authoritative_value": "GroupShuffleSplit for holdout, 2-fold GroupKFold for training CV"},
         "dataset_size_claim": {"claim": "483 observations across 3 repos", "status": "Verified", "authoritative_value": "Humanizer (291), MediatR (91), CommandLineParser (101)"},
         "holdout_results_claim": {"claim": "Recall 81.82%, F1 0.6261", "status": "Outdated (prototype run exp_20261113_162850)", "authoritative_value": "At tau=0.50: Recall 77.27%, F1 0.5812, Brier 0.2627; At tau=0.30: Recall 95.45%, F1 0.6316"}

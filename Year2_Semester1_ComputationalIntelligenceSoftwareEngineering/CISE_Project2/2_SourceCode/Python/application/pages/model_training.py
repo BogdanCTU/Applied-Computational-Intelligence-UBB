@@ -1,4 +1,4 @@
-"""Model Training Page with Repository-Aware GroupKFold Cross-Validation and Baseline Comparison."""
+"""Model Training Page with Repository-Aware GroupKFold Cross-Validation."""
 from __future__ import annotations
 
 import json
@@ -95,7 +95,7 @@ def render_model_training(db: RepositoryDB, settings: AppSettings) -> None:
                 X_train_proc = preprocessor.fit_transform(X_train)
                 X_test_proc = preprocessor.transform(X_test)
 
-                # 4. Train with GroupKFold CV and Dummy Baseline
+                # 4. Train with GroupKFold Cross-Validation
                 trainer = ModelTrainer(
                     n_estimators=n_estimators,
                     max_depth=max_depth_val,
@@ -104,7 +104,7 @@ def render_model_training(db: RepositoryDB, settings: AppSettings) -> None:
                     class_weight=class_weight,
                     random_state=random_state,
                 )
-                model, cv_results, baseline_results, duration = trainer.train_with_cv(
+                model, cv_results, _, duration = trainer.train_with_cv(
                     X_train=X_train_proc,
                     y_train=y_train,
                     meta_train=meta_train,
@@ -139,12 +139,12 @@ def render_model_training(db: RepositoryDB, settings: AppSettings) -> None:
                     st.write(f"- **Mean ROC-AUC:** `{cv_results['roc_auc']['mean']:.3f} +/- {cv_results['roc_auc']['std']:.3f}`")
                     st.caption("Fitted only on train folds; test repositories remained untouched.")
                 with res_col2:
-                    st.markdown("**Baseline Comparison (DummyClassifier):**")
-                    st.write(f"- **Baseline F1-Score:** `{baseline_results['f1']['mean']:.3f}`")
-                    st.write(f"- **Baseline Accuracy:** `{baseline_results['accuracy']['mean']:.3f}`")
                     st.markdown("**Holdout Test Set Performance:**")
                     st.write(f"- **Test F1-Score:** `{eval_results['f1']:.3f}`")
                     st.write(f"- **Test Accuracy:** `{eval_results['accuracy']:.3f}`")
+                    if "roc_auc" in eval_results and eval_results["roc_auc"] is not None:
+                        st.write(f"- **Test ROC-AUC:** `{eval_results['roc_auc']:.3f}`")
+                    st.caption("Evaluated on held-out repositories not seen during cross-validation.")
 
                 st.info("Navigate to the **Model Evaluation** page for detailed confusion matrices, ROC/PR curves, and feature importance analysis.")
 

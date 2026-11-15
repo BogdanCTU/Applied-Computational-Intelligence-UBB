@@ -11,12 +11,15 @@ echo Launching C# Defect Predictor (Streamlit Workbench)...
 echo Repository Root: %CD%
 echo ==============================================================================
 
-REM Check if Python virtual environment exists
-if exist ".venv\Scripts\activate.bat" (
+REM Locate Python executable (prefer local virtual environment)
+set "PYTHON_CMD="
+if exist ".venv\Scripts\python.exe" (
     echo Activating Python virtual environment...
     call .venv\Scripts\activate.bat
+    set "PYTHON_CMD=.venv\Scripts\python.exe"
 ) else (
-    echo [WARNING] No local .venv found. Attempting to use system python...
+    echo [WARNING] No local .venv found. Using system python...
+    set "PYTHON_CMD=python"
 )
 
 REM Build Roslyn Analyzer if DLL is missing
@@ -31,7 +34,11 @@ if not exist "2_SourceCode\RoslynAnalyzer\bin\Release\net9.0\RoslynAnalyzer.dll"
 )
 
 echo Starting Streamlit server...
-streamlit run app.py
+"%PYTHON_CMD%" -m streamlit run app.py
+
+if errorlevel 1 (
+    echo [ERROR] Application exited with error code %errorlevel%.
+)
 
 pause
 

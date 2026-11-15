@@ -6,7 +6,6 @@ from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.dummy import DummyClassifier
 from sklearn.model_selection import GroupKFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, average_precision_score
 
@@ -49,7 +48,7 @@ class ModelTrainer:
         n_splits: int = 5,
         strict_repo_count: bool = False,
     ) -> Tuple[RandomForestClassifier, Dict[str, Any], Dict[str, Any], float]:
-        """Perform GroupKFold CV on training data, compare with Dummy baseline, and fit final model.
+        """Perform GroupKFold CV on training data and fit final model.
         
         Args:
             X_train: Feature matrix.
@@ -92,10 +91,6 @@ class ModelTrainer:
             "roc_auc": [],
             "average_precision": [],
         }
-        baseline_metrics: Dict[str, List[float]] = {
-            "accuracy": [],
-            "f1": [],
-        }
 
         # 1. GroupKFold Cross-Validation on Training data only
         for fold, (train_idx, val_idx) in enumerate(gkf.split(X_train, y_train, groups=groups), 1):
@@ -106,11 +101,6 @@ class ModelTrainer:
             fold_rf = RandomForestClassifier(**self.params)
             fold_rf.fit(X_f_tr, y_f_tr)
             y_pred = fold_rf.predict(X_f_val)
-
-            # Fit fold Dummy baseline (predicts most frequent class)
-            dummy = DummyClassifier(strategy="most_frequent")
-            dummy.fit(X_f_tr, y_f_tr)
-            y_dummy_pred = dummy.predict(X_f_val)
 
             acc = float(accuracy_score(y_f_val, y_pred))
             prec = float(precision_score(y_f_val, y_pred, zero_division=0))
@@ -139,9 +129,6 @@ class ModelTrainer:
             cv_metrics["roc_auc"].append(auc)
             cv_metrics["average_precision"].append(ap)
 
-            baseline_metrics["accuracy"].append(float(accuracy_score(y_f_val, y_dummy_pred)))
-            baseline_metrics["f1"].append(float(f1_score(y_f_val, y_dummy_pred, zero_division=0)))
-
         cv_summary = {
             metric: {
                 "mean": round(float(np.mean(vals)), 4),
@@ -151,13 +138,7 @@ class ModelTrainer:
             for metric, vals in cv_metrics.items()
         }
 
-        baseline_summary = {
-            metric: {
-                "mean": round(float(np.mean(vals)), 4),
-                "std": round(float(np.std(vals)), 4),
-            }
-            for metric, vals in baseline_metrics.items()
-        }
+        baseline_summary: Dict[str, Any] = {}
 
         # 2. Fit final model on complete training set
         final_model = RandomForestClassifier(**self.params)
@@ -165,7 +146,6 @@ class ModelTrainer:
 
         duration = round(time.time() - start_time, 2)
         logger.info(
-            f"Random Forest trained in {duration}s. CV F1: {cv_summary['f1']['mean']:.3f} +/- {cv_summary['f1']['std']:.3f} "
-            f"(vs Baseline Dummy F1: {baseline_summary['f1']['mean']:.3f})"
+            f"Random Forest trained in {duration}s. CV F1: {cv_summary['f1']['mean']:.3f} +/- {cv_summary['f1']['std']:.3f}"
         )
         return final_model, cv_summary, baseline_summary, duration

@@ -1,5 +1,5 @@
 """Automated Machine Learning Experimentation Pipeline for Defect Prediction.
-Supports multi-model baseline evaluation (Dummy, Logistic Regression, Decision Tree, Random Forest),
+Supports multi-model evaluation (Logistic Regression, Decision Tree, Random Forest),
 strict GroupKFold validation, probability calibration (Brier score), decision threshold tuning,
 reproducible artifact persistence (CSV, JSON, Markdown), and independent holdout testing.
 """
@@ -15,7 +15,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 import numpy as np
 import pandas as pd
-from sklearn.dummy import DummyClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -59,14 +58,7 @@ def build_estimator(
     algo = algorithm.lower().replace("-", "_")
     p = {k: v for k, v in params.items() if k not in ("config_id", "algorithm", "needs_scaling")}
 
-    if algo in ("dummy", "dummy_classifier"):
-        strat = p.get("strategy", "most_frequent")
-        kwargs: Dict[str, Any] = {"strategy": strat}
-        if strat != "most_frequent":
-            kwargs["random_state"] = p.get("random_state", random_state)
-        return DummyClassifier(**kwargs), False
-
-    elif algo in ("logistic_regression", "lr", "logistic"):
+    if algo in ("logistic_regression", "lr", "logistic"):
         kwargs = {
             "C": p.get("C", 1.0),
             "max_iter": p.get("max_iter", 1000),
@@ -104,24 +96,13 @@ def build_estimator(
 
     else:
         raise ValueError(
-            f"Unsupported algorithm '{algorithm}'. Supported: dummy, logistic_regression, decision_tree, random_forest."
+            f"Unsupported algorithm '{algorithm}'. Supported: logistic_regression, decision_tree, random_forest."
         )
 
 
-# Default curated configuration matrix covering multiple baseline families and Random Forest
+# Default curated configuration matrix covering Logistic Regression, Decision Tree, and Random Forest
 DEFAULT_EXPERIMENT_GRID: List[Dict[str, Any]] = [
-    # 1. Baseline Classifiers
-    {
-        "config_id": "dummy_most_frequent",
-        "algorithm": "dummy",
-        "strategy": "most_frequent",
-    },
-    {
-        "config_id": "dummy_stratified",
-        "algorithm": "dummy",
-        "strategy": "stratified",
-    },
-    # 2. Linear Baseline: Logistic Regression
+    # 1. Linear Model: Logistic Regression
     {
         "config_id": "lr_standard_c1",
         "algorithm": "logistic_regression",
@@ -136,7 +117,7 @@ DEFAULT_EXPERIMENT_GRID: List[Dict[str, Any]] = [
         "max_iter": 1000,
         "class_weight": "balanced",
     },
-    # 3. Interpretable Tree Baseline: Decision Tree
+    # 2. Decision Tree Classifier
     {
         "config_id": "dt_shallow_depth4",
         "algorithm": "decision_tree",
@@ -211,7 +192,7 @@ DEFAULT_EXPERIMENT_GRID: List[Dict[str, Any]] = [
 class ExperimentConfig:
     """Configuration specification for an automated ML experiment run."""
     experiment_id: str = field(default_factory=lambda: f"exp_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}")
-    description: str = "Automated Multi-Model Baseline & Random Forest Experimentation with GroupKFold"
+    description: str = "Automated Multi-Model & Random Forest Experimentation with GroupKFold"
     random_state: int = 42
     n_splits: int = 5
     strict_groups: bool = True
@@ -636,9 +617,8 @@ class ExperimentRunner:
             "## 1. Experiment Objective & Protocol",
             "",
             "This experiment evaluates multiple classification model families on method-level software defect prediction "
-            "using static code metrics. Evaluated model families include **Dummy baselines** (most frequent and stratified), "
-            "**Logistic Regression** (linear baseline with in-fold standard scaling), **Decision Tree** (interpretable tree baseline), "
-            "and **Random Forest** (non-linear ensemble).",
+            "using static code metrics. Evaluated model families include **Logistic Regression** (linear classification with in-fold standard scaling), "
+            "**Decision Tree** (interpretable tree model), and **Random Forest** (regularized non-linear ensemble).",
             "",
             "### Leakage Prevention Guarantees",
             "1. **Repository-Aware Partitioning:** Zero overlap between training and validation repositories within any fold.",
@@ -676,23 +656,16 @@ class ExperimentRunner:
                 f"**{f1_m:.4f}** | $\\pm {f1_s:.4f}$ | {auc_m:.4f} | {ap_m:.4f} | {brier_m:.4f} |"
             )
 
-        dummy_f1 = best_config_result.cv_results.baseline_metrics.get("dummy_most_frequent_f1", {}).get("mean", 0.0)
-        lift = best_config_result.selection_score - dummy_f1
-
         lines.extend([
             "",
             "---",
             "",
-            "## 3. Best Model Selection & Baseline Lift",
+            "## 3. Best Model Selection",
             "",
             f"- **Selected Model:** `{best_config_result.config_id}` (Rank #1)",
             f"- **Algorithm:** `{best_config_result.parameters.get('algorithm')}`",
             f"- **Cross-Validation {self.config.selection_metric.upper()}:** **{best_config_result.selection_score:.4f}**",
             f"- **Saved Model Artifact:** `{saved_model_path.name}`",
-            "",
-            "### Baseline Comparison (DummyClassifier)",
-            f"- **Dummy (Most Frequent) Cross-Validation F1:** `{dummy_f1:.4f}`",
-            f"- **Lift over Majority Guessing:** The selected model achieves **+{lift:.4f}** F1 points over `DummyClassifier(strategy='most_frequent')`.",
             "",
             "### Comparative Model Family Breakdown",
         ])

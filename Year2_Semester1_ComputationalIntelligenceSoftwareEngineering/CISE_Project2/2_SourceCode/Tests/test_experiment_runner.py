@@ -219,7 +219,7 @@ def test_experiment_runner_grid_evaluation_and_ranking(multi_repo_synthetic_data
     content = report_file.read_text(encoding="utf-8")
     assert "test_exp_001" in content
     assert "5-fold GroupKFold" in content
-    assert "Baseline Comparison" in content
+    assert "Best Model Selection" in content
 
 
 def test_deterministic_experiment_execution(multi_repo_synthetic_dataset, tmp_path):

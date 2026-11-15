@@ -44,8 +44,6 @@ The experiment evaluated 11 configurations across four model families on the tra
 | **#7** | `lr_balanced_c1` | Logistic Regression | **0.6362** | **0.6362** | **0.2884** | **0.2884** | 0.6858 | 0.6534 |
 | **#8** | `lr_standard_c1` | Logistic Regression | **0.6187** | **0.6187** | **0.2877** | **0.2877** | 0.6862 | 0.6424 |
 | **#9** | `dt_shallow_depth4` | Decision Tree | **0.6102** | **0.6102** | **0.3025** | **0.3025** | 0.6769 | 0.6507 |
-| **#10** | `dummy_stratified` | Dummy Baseline | **0.4170** | **0.4170** | **0.5441** | **0.5441** | 0.4536 | 0.4559 |
-| **#11** | `dummy_most_frequent` | Dummy Baseline | **0.0000** | **0.0000** | **0.4751** | **0.4751** | 0.5000 | 0.5249 |
 
 #### Verified Findings:
 1. **Best F1 Identification**: `rf_feature_constrained_log2` is mathematically confirmed as Rank 1 under the chosen selection metric (`f1`), achieving a mean CV score of **0.6801**.

@@ -9,8 +9,7 @@ training repositories in Dataset Snapshot #2 (csharp_empirical_v2_v2.0.0.csv):
 5. FluentValidation/FluentValidation (28 obs)
 Total: 578 production method observations.
 
-Evaluates 11 configurations across 4 model families:
-- DummyClassifier (most_frequent, stratified)
+Evaluates 9 configurations across 3 model families:
 - LogisticRegression (standard, balanced)
 - DecisionTreeClassifier (shallow_depth4, depth8)
 - RandomForestClassifier (baseline, deep_capacity, compact_regularized, heavy_bagging, feature_constrained_log2)

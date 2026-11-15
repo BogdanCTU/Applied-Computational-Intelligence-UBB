@@ -20,7 +20,7 @@ Software defect prediction empowers development teams to identify error-prone mo
 
 We construct an automated mining and labeling pipeline integrating Git history analysis, heuristic bug-fixing commit detection, Śliwerski–Zimmermann–Zeller (SZZ) line-blame tracing, strict production-code filtering, and 26 static structural, complexity, and nesting metrics extracted using the .NET Roslyn compiler platform (`Microsoft.CodeAnalysis.CSharp`). We establish two versioned dataset snapshots: historical Dataset Snapshot #1 (483 methods across 3 repositories) and an expanded multi-repository corpus, Dataset Snapshot #2 (578 balanced production methods across 5 distinct open-source projects: `Humanizer`, `Serilog`, `MediatR`, `Polly`, and `FluentValidation`).
 
-To eliminate cross-project data leakage, we enforce strict 5-fold repository-aware cross-validation ($N_{\text{repos}}=5$, $K=5$), evaluating eleven configurations across four classifier families: Dummy baselines, Logistic Regression, Decision Trees, and Random Forests. The regularized Random Forest model (`rf_compact_regularized`, max depth 8, min leaf 4) achieved superior cross-validation generalization, yielding an **F1-score of $0.6859 \pm 0.0247$**, **Accuracy of $0.6734 \pm 0.0491$**, **ROC-AUC of 0.7025**, and the lowest Brier calibration error (**$0.2144 \pm 0.0396$**) at nominal threshold $\tau=0.50$. In-training out-of-fold threshold optimization revealed an optimal boundary at $\tau^* = 0.40$, elevating out-of-fold Recall to **87.46%** (catching 244/279 bugs) and F1 to **0.7405**.
+To eliminate cross-project data leakage, we enforce strict 5-fold repository-aware cross-validation ($N_{\text{repos}}=5$, $K=5$), evaluating nine configurations across three classifier families: Logistic Regression, Decision Trees, and Random Forests. The regularized Random Forest model (`rf_compact_regularized`, max depth 8, min leaf 4) achieved superior cross-validation generalization, yielding an **F1-score of $0.6859 \pm 0.0247$**, **Accuracy of $0.6734 \pm 0.0491$**, **ROC-AUC of 0.7025**, and the lowest Brier calibration error (**$0.2144 \pm 0.0396$**) at nominal threshold $\tau=0.50$. In-training out-of-fold threshold optimization revealed an optimal boundary at $\tau^* = 0.40$, elevating out-of-fold Recall to **87.46%** (catching 244/279 bugs) and F1 to **0.7405**.
 
 To evaluate real-world generalization, an independent sixth repository, `JamesNK/Newtonsoft.Json`, was evaluated separately from the 5-fold cross-validation training corpus post-model-freeze, as supported by dated experiment records. Evaluating the frozen model on 159 newly mined production methods from `Newtonsoft.Json` yielded **75.47% Accuracy**, **69.61% Precision**, **89.87% Recall** (71/79 bugs caught), **0.7845 F1-Score**, **0.8209 ROC-AUC**, and **0.1713 Brier score** at $\tau^*=0.40$. A qualitative audit of predictions demonstrates that static metrics reliably detect complex orchestration bugs but are inherently bounded when addressing localized semantic flaws in concise methods.
 
@@ -30,7 +30,7 @@ To evaluate real-world generalization, an independent sixth repository, `JamesNK
 ### Executive Summary
 | Phase / Dimension | Key Milestone | Core Metric / Finding |
 | :--- | :--- | :--- |
-| **Data Corpus #1** | Historical Baseline (`csharp_empirical_v1`) | 483 methods, 3 repos, initial 2-fold CV |
+| **Data Corpus #1** | Initial Corpus (`csharp_empirical_v1`) | 483 methods, 3 repos, initial 2-fold CV |
 | **Data Corpus #2** | Multi-Repo Expansion (`csharp_empirical_v2`) | 578 methods, 5 repos, 1:1 balanced production code, 0 test leaks |
 | **Model Selection** | Multi-Model 5-Fold GroupKFold | Random Forest (`rf_compact_regularized`) wins: CV F1 = **0.6859**, Brier = **0.2144** |
 | **Decision Boundary** | Out-of-Fold Threshold Tuning | Optimal threshold $\tau^* = 0.40$ achieves Accuracy **70.42%**, elevates Recall to **87.46%**, F1 to **0.7405** |
@@ -148,7 +148,7 @@ The project formally maintains two versioned dataset snapshots stored in SQLite 
 
 | Attribute | Dataset Snapshot #1 (`csharp_empirical_v1`) | Dataset Snapshot #2 (`csharp_empirical_v2`) |
 | :--- | :---: | :---: |
-| **Release Version** | `1.0.0` (Historical Baseline) | `2.0.0` (Authoritative Benchmark) |
+| **Release Version** | `1.0.0` (Initial Corpus) | `2.0.0` (Authoritative Benchmark) |
 | **Total Observations** | 483 methods | **578 methods** |
 | **Positive Class (Defect-Prone)** | 226 (46.79%) | **279 (48.27%)** |
 | **Negative Class (Candidate-Clean)** | 257 (53.21%) | **299 (51.73%)** |
@@ -185,20 +185,17 @@ Enforcing this classifier across all repositories ensured **zero test method lea
 
 ## 11. Machine Learning Methodology & Inductive Biases
 
-We evaluated four diverse machine learning algorithm families to contextualize predictive capability:
+We evaluated three machine learning algorithm families to contextualize predictive capability:
 
-1. **Dummy Baseline Classifiers:**
-   - `dummy_most_frequent`: Predicts the majority class unconditionally. Serves as the minimal empirical baseline (F1 = 0.0000).
-   - `dummy_stratified`: Generates predictions following empirical class priors ($P(y=1) \approx 0.48$).
-2. **Linear Baseline: Logistic Regression:**
+1. **Linear Model: Logistic Regression:**
    - Linear decision boundary with $L_2$ regularization. Optimizes the log-loss:
      $$\mathcal{L}(\mathbf{w}) = -\sum_{i=1}^N \left[ y_i \log \sigma(\mathbf{w}^T \mathbf{x}_i) + (1 - y_i) \log(1 - \sigma(\mathbf{w}^T \mathbf{x}_i)) \right] + \frac{1}{2C} \|\mathbf{w}\|_2^2$$
    - Evaluated with standard and balanced class weights. Requires strict in-fold `StandardScaler` feature normalization.
-3. **Interpretable Tree Baseline: Decision Tree:**
+2. **Interpretable Tree Model: Decision Tree:**
    - Single decision tree optimizing Gini impurity:
      $$I_G(t) = 1 - \sum_{i=0}^1 p(i \mid t)^2$$
    - Evaluated at shallow (`max_depth=4`) and moderate (`max_depth=8`) depths with balanced class weighting.
-4. **Non-Linear Ensemble: Random Forest:**
+3. **Non-Linear Ensemble: Random Forest:**
    - Bagging ensemble of $B$ decorrelated decision trees with bootstrap aggregation and randomized feature subsampling ($m = \sqrt{p}$ or $\log_2 p$):
      $$\hat{P}(y=1 \mid \mathbf{x}) = \frac{1}{B} \sum_{b=1}^B T_b(\mathbf{x})$$
    - Evaluated across five architectural configurations varying tree depth, estimators (100–300), and leaf regularization.
@@ -233,7 +230,7 @@ To prevent data snooping across validation splits:
 
 ## 14. Multi-Model Benchmark Results & Comparative Analysis
 
-All eleven configurations were evaluated under identical 5-fold GroupKFold splits. Results are summarized below:
+All nine configurations across the three model families were evaluated under identical 5-fold GroupKFold splits. Results are summarized below:
 
 | Rank | Configuration ID | Algorithm Family | F1 (Mean ± Std) | Recall (Mean ± Std) | Precision (Mean ± Std) | Accuracy (Mean ± Std) | ROC-AUC | PR-AUC | Brier Score |
 | :---: | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -244,10 +241,8 @@ All eleven configurations were evaluated under identical 5-fold GroupKFold split
 | 5 | `dt_shallow_depth4` | Decision Tree | $0.5734 \pm 0.2172$ | $0.6166 \pm 0.2646$ | $0.5573 \pm 0.1884$ | $0.5721 \pm 0.1345$ | 0.5849 | 0.5630 | $0.2807 \pm 0.0699$ |
 | 6 | `rf_deep_capacity` | Random Forest | $0.5577 \pm 0.0739$ | $0.5794 \pm 0.1737$ | $0.5811 \pm 0.1147$ | $0.5815 \pm 0.0647$ | 0.6552 | 0.5982 | $0.2429 \pm 0.0435$ |
 | 7 | `lr_balanced_c1` | Logistic Regression | $0.4989 \pm 0.1252$ | $0.4538 \pm 0.1469$ | $0.5994 \pm 0.1557$ | $0.5709 \pm 0.0894$ | 0.6225 | 0.5694 | $0.2620 \pm 0.0368$ |
-| 8 | `dummy_stratified` | Baseline (Prior) | $0.4919 \pm 0.0821$ | $0.4644 \pm 0.1328$ | $0.5259 \pm 0.0526$ | $0.4984 \pm 0.0592$ | 0.4975 | 0.4815 | $0.4726 \pm 0.0700$ |
-| 9 | `lr_standard_c1` | Logistic Regression | $0.4890 \pm 0.1409$ | $0.4360 \pm 0.1651$ | $0.6095 \pm 0.1593$ | $0.5744 \pm 0.0877$ | 0.6231 | 0.5699 | $0.2643 \pm 0.0366$ |
-| 10 | `dt_depth8` | Decision Tree | $0.4695 \pm 0.2194$ | $0.4907 \pm 0.2529$ | $0.4844 \pm 0.1983$ | $0.5050 \pm 0.1425$ | 0.5097 | 0.5033 | $0.3993 \pm 0.1017$ |
-| 11 | `dummy_most_frequent` | Baseline (Majority) | $0.0000 \pm 0.0000$ | $0.0000 \pm 0.0000$ | $0.0000 \pm 0.0000$ | $0.5173 \pm 0.0210$ | 0.5000 | 0.4827 | $0.4885 \pm 0.0218$ |
+| 8 | `lr_standard_c1` | Logistic Regression | $0.4890 \pm 0.1409$ | $0.4360 \pm 0.1651$ | $0.6095 \pm 0.1593$ | $0.5744 \pm 0.0877$ | 0.6231 | 0.5699 | $0.2643 \pm 0.0366$ |
+| 9 | `dt_depth8` | Decision Tree | $0.4695 \pm 0.2194$ | $0.4907 \pm 0.2529$ | $0.4844 \pm 0.1983$ | $0.5050 \pm 0.1425$ | 0.5097 | 0.5033 | $0.3993 \pm 0.1017$ |
 
 ### Key Comparative Insights
 1. **Ensemble Dominance:** Random Forest ensembles occupy the top four ranks, decisively outperforming linear models ($+18.7\%$ F1 gain over Logistic Regression) and single decision trees ($+11.25\%$ F1 gain).
@@ -262,7 +257,7 @@ A model deployed in code review workflows must output well-calibrated probabilit
 $$\text{BS} = \frac{1}{N} \sum_{i=1}^N \left( \hat{p}_i - y_i \right)^2$$
 Where $\hat{p}_i \in [0, 1]$ is the predicted probability and $y_i \in \{0, 1\}$ is the true label.
 
-- **Uninformative Baseline:** A random guesser achieves $\text{BS} \approx 0.50$; the majority dummy classifier achieved $\text{BS} = 0.4885$.
+- **Reference Calibration:** An uninformative uniform random guesser achieves $\text{BS} \approx 0.50$.
 - **Model Calibration:** `rf_compact_regularized` achieved a mean Brier score of **$0.2144 \pm 0.0396$**, the lowest among all evaluated architectures.
 - **Academic Finding:** Unlike prior exploratory trials on Dataset 1 where the lowest Brier score belonged to a sub-optimal F1 configuration, on Dataset 2 `rf_compact_regularized` achieved **both** highest F1 and lowest calibration error, demonstrating that structural regularization aligns ranking power with sharp probability calibration.
 

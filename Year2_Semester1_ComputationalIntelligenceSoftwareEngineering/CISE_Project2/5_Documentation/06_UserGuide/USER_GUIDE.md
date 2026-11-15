@@ -20,9 +20,10 @@ On Windows, you can launch the application with one click using:
 ```
 Or manually from PowerShell / Terminal:
 ```powershell
-.\.venv\Scripts\activate
-streamlit run app.py
+.\.venv\Scripts\Activate.ps1
+python -m streamlit run app.py
 ```
+*(Alternatively, `streamlit run app.py` can be used directly once the virtual environment is activated).*
 The application will open in your default browser at `http://localhost:8501`.
 
 ---

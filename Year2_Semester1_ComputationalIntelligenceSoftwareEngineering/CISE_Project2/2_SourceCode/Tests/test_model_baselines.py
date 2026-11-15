@@ -1,10 +1,9 @@
-"""Automated unit and integration tests for multi-model baselines, calibration, and threshold optimization."""
+"""Automated unit and integration tests for multi-model evaluation, calibration, and threshold optimization."""
 from __future__ import annotations
 
 import numpy as np
 import pandas as pd
 import pytest
-from sklearn.dummy import DummyClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -58,15 +57,6 @@ def synthetic_5repo_dataset():
 
 def test_build_estimator_all_supported_algorithms():
     """Verify build_estimator instantiates correct model families and scaling flags."""
-    # Dummy
-    est_d, scale_d = build_estimator("dummy", {"strategy": "most_frequent"})
-    assert isinstance(est_d, DummyClassifier)
-    assert not scale_d
-
-    est_ds, _ = build_estimator("dummy_classifier", {"strategy": "stratified", "random_state": 42})
-    assert isinstance(est_ds, DummyClassifier)
-    assert est_ds.strategy == "stratified"
-
     # Logistic Regression
     est_lr, scale_lr = build_estimator("logistic_regression", {"C": 0.5, "class_weight": "balanced"})
     assert isinstance(est_lr, LogisticRegression)
@@ -90,15 +80,16 @@ def test_build_estimator_all_supported_algorithms():
     with pytest.raises(ValueError, match="Unsupported algorithm"):
         build_estimator("neural_net", {})
 
+    with pytest.raises(ValueError, match="Unsupported algorithm"):
+        build_estimator("dummy", {})
 
-def test_multi_model_baseline_cross_validation(synthetic_5repo_dataset, tmp_path):
+
+def test_multi_model_cross_validation(synthetic_5repo_dataset, tmp_path):
     """Verify that multiple model families evaluate on identical folds without leakage."""
     X, y, metadata = synthetic_5repo_dataset
 
-    # Multi-model grid: Dummy, Logistic Regression, Decision Tree, Random Forest
+    # Multi-model grid: Logistic Regression, Decision Tree, Random Forest
     param_grid = [
-        {"config_id": "dummy_mf", "algorithm": "dummy", "strategy": "most_frequent"},
-        {"config_id": "dummy_strat", "algorithm": "dummy", "strategy": "stratified"},
         {"config_id": "lr_scaled", "algorithm": "logistic_regression", "C": 1.0},
         {"config_id": "dt_base", "algorithm": "decision_tree", "max_depth": 4},
         {"config_id": "rf_base", "algorithm": "random_forest", "n_estimators": 20, "max_depth": 5},
@@ -123,12 +114,12 @@ def test_multi_model_baseline_cross_validation(synthetic_5repo_dataset, tmp_path
     assert results["best_config_id"] in [p["config_id"] for p in param_grid]
     assert results["best_cv_score"] >= 0.0
 
-    # Check CSV output contains all 5 model configurations with algorithm column
+    # Check CSV output contains all 3 model configurations with algorithm column
     df_res = pd.read_csv(results["csv_path"])
-    assert len(df_res) == 5
+    assert len(df_res) == 3
     assert "algorithm" in df_res.columns
     algorithms_found = set(df_res["algorithm"].unique())
-    assert {"dummy", "logistic_regression", "decision_tree", "random_forest"}.issubset(algorithms_found)
+    assert {"logistic_regression", "decision_tree", "random_forest"}.issubset(algorithms_found)
 
 
 def test_brier_score_loss_calibration(synthetic_5repo_dataset):

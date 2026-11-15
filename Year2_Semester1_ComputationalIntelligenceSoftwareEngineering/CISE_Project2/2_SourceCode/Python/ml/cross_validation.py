@@ -9,7 +9,6 @@ from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import GroupKFold
-from sklearn.dummy import DummyClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import (
     accuracy_score,
@@ -127,10 +126,6 @@ class FoldMetrics:
     confusion_matrix: List[List[int]]
     train_duration_s: float
     val_duration_s: float
-    dummy_accuracy: float
-    dummy_f1: float
-    dummy_stratified_accuracy: float
-    dummy_stratified_f1: float
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -155,10 +150,6 @@ class FoldMetrics:
             "confusion_matrix": self.confusion_matrix,
             "train_duration_s": round(self.train_duration_s, 4),
             "val_duration_s": round(self.val_duration_s, 4),
-            "dummy_accuracy": round(self.dummy_accuracy, 4),
-            "dummy_f1": round(self.dummy_f1, 4),
-            "dummy_stratified_accuracy": round(self.dummy_stratified_accuracy, 4),
-            "dummy_stratified_f1": round(self.dummy_stratified_f1, 4),
         }
 
 
@@ -169,8 +160,8 @@ class CrossValidationResults:
     n_repos: int
     fold_metrics: List[FoldMetrics]
     aggregate_metrics: Dict[str, Dict[str, float]]
-    baseline_metrics: Dict[str, Dict[str, float]]
     total_duration_s: float
+    baseline_metrics: Dict[str, Dict[str, float]] = field(default_factory=dict)
     oof_predictions: Optional[Dict[str, List[float]]] = None
 
     def to_dict(self) -> Dict[str, Any]:
@@ -409,20 +400,6 @@ class RepositoryGroupKFoldValidator:
             else:
                 oof_y_prob.extend(y_pred.tolist())
 
-            # --- Baseline Comparison 1: DummyClassifier - Most Frequent ---
-            dummy_mf = DummyClassifier(strategy="most_frequent")
-            dummy_mf.fit(X_f_tr, y_f_tr)
-            y_dummy_mf_pred = dummy_mf.predict(X_f_val)
-            dummy_mf_acc = float(accuracy_score(y_f_val, y_dummy_mf_pred))
-            dummy_mf_f1 = float(f1_score(y_f_val, y_dummy_mf_pred, zero_division=0))
-
-            # --- Baseline Comparison 2: DummyClassifier - Stratified Prior ---
-            dummy_st = DummyClassifier(strategy="stratified", random_state=42)
-            dummy_st.fit(X_f_tr, y_f_tr)
-            y_dummy_st_pred = dummy_st.predict(X_f_val)
-            dummy_st_acc = float(accuracy_score(y_f_val, y_dummy_st_pred))
-            dummy_st_f1 = float(f1_score(y_f_val, y_dummy_st_pred, zero_division=0))
-
             fold_metric = FoldMetrics(
                 fold_index=fold_idx,
                 train_repo_count=len(train_repos),
@@ -445,10 +422,6 @@ class RepositoryGroupKFoldValidator:
                 confusion_matrix=cm,
                 train_duration_s=train_duration,
                 val_duration_s=val_duration,
-                dummy_accuracy=dummy_mf_acc,
-                dummy_f1=dummy_mf_f1,
-                dummy_stratified_accuracy=dummy_st_acc,
-                dummy_stratified_f1=dummy_st_f1,
             )
             fold_metrics_list.append(fold_metric)
 
@@ -470,24 +443,7 @@ class RepositoryGroupKFoldValidator:
                 "max": round(float(np.max(vals)), 4),
             }
 
-        baseline_aggregate = {
-            "dummy_most_frequent_accuracy": {
-                "mean": round(float(np.mean([fm.dummy_accuracy for fm in fold_metrics_list])), 4),
-                "std": round(float(np.std([fm.dummy_accuracy for fm in fold_metrics_list])), 4),
-            },
-            "dummy_most_frequent_f1": {
-                "mean": round(float(np.mean([fm.dummy_f1 for fm in fold_metrics_list])), 4),
-                "std": round(float(np.std([fm.dummy_f1 for fm in fold_metrics_list])), 4),
-            },
-            "dummy_stratified_accuracy": {
-                "mean": round(float(np.mean([fm.dummy_stratified_accuracy for fm in fold_metrics_list])), 4),
-                "std": round(float(np.std([fm.dummy_stratified_accuracy for fm in fold_metrics_list])), 4),
-            },
-            "dummy_stratified_f1": {
-                "mean": round(float(np.mean([fm.dummy_stratified_f1 for fm in fold_metrics_list])), 4),
-                "std": round(float(np.std([fm.dummy_stratified_f1 for fm in fold_metrics_list])), 4),
-            },
-        }
+        baseline_aggregate: Dict[str, Dict[str, float]] = {}
 
         return CrossValidationResults(
             n_splits=len(splits),

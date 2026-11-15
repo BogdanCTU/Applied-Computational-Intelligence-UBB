@@ -56,7 +56,7 @@ The Roslyn analyzer calculates 26 static features spanning 5 metric families:
 
 ## 4. Benchmark Datasets Summary
 
-- **Dataset #1 (Baseline):** 483 methods (226 defect-prone, 257 candidate-clean) across 3 repositories (`Humanizer`, `CommandLineParser`, `MediatR`).
+- **Dataset #1 (Initial Corpus):** 483 methods (226 defect-prone, 257 candidate-clean) across 3 repositories (`Humanizer`, `CommandLineParser`, `MediatR`).
 - **Dataset #2 (Expanded Benchmark):** 578 methods (279 defect-prone, 299 candidate-clean) across 5 training repositories (`Humanizer`, `Serilog`, `MediatR`, `Polly`, `FluentValidation`).
 - **Independent Holdout:** 159 methods (79 defect-prone, 80 candidate-clean) from `Newtonsoft.Json`.
 - **Combined Corpus:** 737 method observations evaluated across training and independent holdout stages.

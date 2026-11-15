@@ -1,11 +1,10 @@
-"""Dataset Reconciliation and Baseline Evaluation Script."""
+"""Dataset Reconciliation and Model Evaluation Script."""
 import json
 import sqlite3
 import sys
 from pathlib import Path
 import pandas as pd
 import numpy as np
-from sklearn.dummy import DummyClassifier
 from sklearn.metrics import (
     accuracy_score, precision_score, recall_score, f1_score,
     roc_auc_score, average_precision_score, confusion_matrix, classification_report
@@ -111,7 +110,7 @@ for idx, (d_obs, fp) in enumerate(duplicates[:5]):
     print(f"  {idx+1}. ID #{d_obs['id']} [{d_obs['repository_name']} - Label {d_obs['label']}] Method: {d_obs['method_name']} in {d_obs['file_path']}")
 
 print("\n" + "=" * 80)
-print("2. BASELINE EVALUATION ON UNTOUCHED HOLDOUT TEST SET")
+print("2. MODEL EVALUATION ON UNTOUCHED HOLDOUT TEST SET")
 print("=" * 80)
 
 db_wrapper = Database(settings.storage.database_path)
@@ -144,48 +143,6 @@ rf_auc = roc_auc_score(y_test, rf_prob)
 rf_ap = average_precision_score(y_test, rf_prob)
 rf_cm = confusion_matrix(y_test, rf_pred).tolist()
 
-# 1. DummyClassifier: most_frequent strategy
-dummy_mf = DummyClassifier(strategy="most_frequent")
-dummy_mf.fit(X_train_proc, y_train)
-d_mf_pred = dummy_mf.predict(X_test_proc)
-d_mf_prob = dummy_mf.predict_proba(X_test_proc)[:, 1]
-
-d_mf_acc = accuracy_score(y_test, d_mf_pred)
-d_mf_prec = precision_score(y_test, d_mf_pred, zero_division=0)
-d_mf_rec = recall_score(y_test, d_mf_pred, zero_division=0)
-d_mf_f1 = f1_score(y_test, d_mf_pred, zero_division=0)
-d_mf_auc = roc_auc_score(y_test, d_mf_prob)
-d_mf_ap = average_precision_score(y_test, d_mf_prob)
-d_mf_cm = confusion_matrix(y_test, d_mf_pred).tolist()
-
-# 2. DummyClassifier: stratified strategy (random guessing matching class prior)
-dummy_strat = DummyClassifier(strategy="stratified", random_state=42)
-dummy_strat.fit(X_train_proc, y_train)
-d_strat_pred = dummy_strat.predict(X_test_proc)
-d_strat_prob = dummy_strat.predict_proba(X_test_proc)[:, 1]
-
-d_strat_acc = accuracy_score(y_test, d_strat_pred)
-d_strat_prec = precision_score(y_test, d_strat_pred, zero_division=0)
-d_strat_rec = recall_score(y_test, d_strat_pred, zero_division=0)
-d_strat_f1 = f1_score(y_test, d_strat_pred, zero_division=0)
-d_strat_auc = roc_auc_score(y_test, d_strat_prob)
-d_strat_ap = average_precision_score(y_test, d_strat_prob)
-d_strat_cm = confusion_matrix(y_test, d_strat_pred).tolist()
-
-# 3. DummyClassifier: uniform strategy (50/50 coin flip)
-dummy_unif = DummyClassifier(strategy="uniform", random_state=42)
-dummy_unif.fit(X_train_proc, y_train)
-d_unif_pred = dummy_unif.predict(X_test_proc)
-d_unif_prob = dummy_unif.predict_proba(X_test_proc)[:, 1]
-
-d_unif_acc = accuracy_score(y_test, d_unif_pred)
-d_unif_prec = precision_score(y_test, d_unif_pred, zero_division=0)
-d_unif_rec = recall_score(y_test, d_unif_pred, zero_division=0)
-d_unif_f1 = f1_score(y_test, d_unif_pred, zero_division=0)
-d_unif_auc = roc_auc_score(y_test, d_unif_prob)
-d_unif_ap = average_precision_score(y_test, d_unif_prob)
-d_unif_cm = confusion_matrix(y_test, d_unif_pred).tolist()
-
 comp_df = pd.DataFrame([
     {
         "Model": "Random Forest (Empirical)",
@@ -197,39 +154,9 @@ comp_df = pd.DataFrame([
         "PR-AUC (AP)": round(rf_ap, 4),
         "Confusion Matrix [TN, FP, FN, TP]": f"[{rf_cm[0][0]}, {rf_cm[0][1]}, {rf_cm[1][0]}, {rf_cm[1][1]}]",
     },
-    {
-        "Model": "Baseline: Dummy (Most Frequent)",
-        "Accuracy": round(d_mf_acc, 4),
-        "Precision": round(d_mf_prec, 4),
-        "Recall": round(d_mf_rec, 4),
-        "F1-Score": round(d_mf_f1, 4),
-        "ROC-AUC": round(d_mf_auc, 4),
-        "PR-AUC (AP)": round(d_mf_ap, 4),
-        "Confusion Matrix [TN, FP, FN, TP]": f"[{d_mf_cm[0][0]}, {d_mf_cm[0][1]}, {d_mf_cm[1][0]}, {d_mf_cm[1][1]}]",
-    },
-    {
-        "Model": "Baseline: Dummy (Prior Stratified)",
-        "Accuracy": round(d_strat_acc, 4),
-        "Precision": round(d_strat_prec, 4),
-        "Recall": round(d_strat_rec, 4),
-        "F1-Score": round(d_strat_f1, 4),
-        "ROC-AUC": round(d_strat_auc, 4),
-        "PR-AUC (AP)": round(d_strat_ap, 4),
-        "Confusion Matrix [TN, FP, FN, TP]": f"[{d_strat_cm[0][0]}, {d_strat_cm[0][1]}, {d_strat_cm[1][0]}, {d_strat_cm[1][1]}]",
-    },
-    {
-        "Model": "Baseline: Dummy (Uniform 50/50)",
-        "Accuracy": round(d_unif_acc, 4),
-        "Precision": round(d_unif_prec, 4),
-        "Recall": round(d_unif_rec, 4),
-        "F1-Score": round(d_unif_f1, 4),
-        "ROC-AUC": round(d_unif_auc, 4),
-        "PR-AUC (AP)": round(d_unif_ap, 4),
-        "Confusion Matrix [TN, FP, FN, TP]": f"[{d_unif_cm[0][0]}, {d_unif_cm[0][1]}, {d_unif_cm[1][0]}, {d_unif_cm[1][1]}]",
-    },
 ])
 
-print("\n--- Side-by-Side Holdout Test Set Performance Table ---")
+print("\n--- Holdout Test Set Performance Table ---")
 print(comp_df.to_string(index=False))
 
 # Verify CSV file on disk matches dataset snapshot

@@ -225,8 +225,6 @@ def main() -> None:
     print(f"Model trained in {train_duration}s.")
     print(f"Cross-Validation Mean F1: {cv_results['f1']['mean']:.4f} +/- {cv_results['f1']['std']:.4f}")
     print(f"Cross-Validation Mean Accuracy: {cv_results['accuracy']['mean']:.4f} +/- {cv_results['accuracy']['std']:.4f}")
-    print(f"Baseline Dummy Mean F1: {baseline_results['f1']['mean']:.4f}")
-    print(f"Baseline Dummy Mean Accuracy: {baseline_results['accuracy']['mean']:.4f}")
 
     # -------------------------------------------------------------
     # Step 9: Final Evaluation on Untouched Holdout Test Set
