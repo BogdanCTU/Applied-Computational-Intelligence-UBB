@@ -54,6 +54,8 @@ def resolve_project_paths() -> ProjectPaths:
 
     workspace_root = project_root.parent
     original_repo_dir = workspace_root / "original_repo"
+    if not original_repo_dir.is_dir() and (project_root / "original_repo").is_dir():
+        original_repo_dir = project_root / "original_repo"
     output_dir = project_root / "output"
     replication_runs_dir = output_dir / "replication_runs"
     exports_dir = output_dir / "exports"

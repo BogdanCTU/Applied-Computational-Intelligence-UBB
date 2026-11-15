@@ -50,6 +50,9 @@ class ReciprocalMerger:
 
         return s2t.intersection(t2s)
 
+    # Convenience alias for merge_alignments
+    merge = merge_alignments
+
     def analyze_merger(
         self,
         source_to_target_pairs: Iterable[Tuple[str, str]],

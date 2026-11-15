@@ -41,8 +41,8 @@ from src.evaluation.metrics import (
 )
 from src.gui.paths import resolve_project_paths
 from src.gui.services.pipeline_inspection_service import PipelineInspectionService
-from src.matching.reciprocal_merger import ReciprocalMerger
-from src.retrieval.rrf import reciprocal_rank_fusion
+from src.matching.merger import ReciprocalMerger
+from src.retrieval.rank_fusion import reciprocal_rank_fusion
 
 
 def _extract_readonly_db_candidates(
@@ -125,8 +125,12 @@ def _compute_threshold_sweep_on_db(
                         if float(sc["similarity"]) >= tau and str(sc["entity_id"]) != "Entity-Dummy"
                     ][:top_k]
                     rankings.append(filtered_ids if filtered_ids else ["Entity-Dummy"])
-                fused = reciprocal_rank_fusion(*rankings, k=rrf_k)
-                real_uris = [id_to_uri[eid] for eid, _ in fused if eid != "Entity-Dummy" and eid in id_to_uri]
+                fused = reciprocal_rank_fusion(*rankings, k=int(rrf_k))
+                real_uris: List[str] = []
+                for _score, group in fused:
+                    for eid in group:
+                        if eid != "Entity-Dummy" and eid in id_to_uri and id_to_uri[eid] not in real_uris:
+                            real_uris.append(id_to_uri[eid])
                 for c_uri in real_uris:
                     pair = (q_uri, c_uri) if direction == "s2t" else (c_uri, q_uri)
                     union_pairs.add(pair)
@@ -137,7 +141,7 @@ def _compute_threshold_sweep_on_db(
                     else:
                         t2s_top1.add(top_pair)
 
-        merged_top1 = merger.merge(s2t_top1, t2s_top1)
+        merged_top1 = merger.merge_alignments(s2t_top1, t2s_top1)
         m_merged = compute_alignment_metrics(merged_top1, reference_pairs)
         m_union = compute_alignment_metrics(union_pairs, reference_pairs)
         rows.append(

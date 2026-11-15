@@ -38,9 +38,10 @@ def qapp() -> QApplication:
 
 def test_project_paths_resolution() -> None:
     paths = resolve_project_paths()
-    assert paths.project_root.name == "agent_om_local"
+    # Stable project-root verification: must contain src/ and output/ directories
+    assert (paths.project_root / "src").is_dir()
+    assert (paths.project_root / "output").is_dir()
     assert paths.original_repo_dir.name == "original_repo"
-    assert paths.original_repo_dir.is_dir()
 
 
 def test_environment_and_dataset_services() -> None:

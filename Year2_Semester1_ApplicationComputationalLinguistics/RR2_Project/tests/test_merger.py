@@ -71,3 +71,10 @@ class TestReciprocalMerger:
         s2t = [("A", "1"), ("B", "2")]
         t2s = [("X", "8"), ("Y", "9")]
         assert merger.merge_alignments(s2t, t2s) == set()
+
+    def test_merge_alias_backward_compatibility(self, merger):
+        """Verify that merger.merge(...) functions identically to merge_alignments."""
+        s2t = {("Author", "Author"), ("Person", "Person")}
+        t2s = {("Author", "Author"), ("Person", "Person")}
+        assert merger.merge(s2t, t2s) == merger.merge_alignments(s2t, t2s)
+        assert merger.merge(s2t, t2s) == {("Author", "Author"), ("Person", "Person")}
