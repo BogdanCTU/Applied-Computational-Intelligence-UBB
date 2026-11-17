@@ -1,4 +1,4 @@
-# Database Architecture & Data Provenance
+# Database Architecture and Data Provenance
 
 **Database Path:** `1_Database/SQLite/bug_detection.db`  
 **Datasets Path:** `1_Database/Datasets/`  
@@ -6,46 +6,43 @@
 
 ---
 
-## 1. Database Storage Overview
+## 1. Storage Configuration
 
-The repository utilizes SQLite as its embedded relational datastore. SQLite provides zero-configuration deployment, transactional integrity (ACID), and robust performance when configured with:
-- **Write-Ahead Logging (WAL)** mode for concurrent read access.
-- **Foreign Key Enforcement** (`PRAGMA foreign_keys = ON;`) to prevent orphan records.
-- **Indexed Lookups** on repository IDs, commit hashes, labels, and observation IDs.
-
-The database tracks the complete provenance of every software observation—from the raw git commit SHA down to the individual C# method AST span and its 26 extracted static metrics.
+The system uses SQLite3 as its local relational datastore with the following connection settings:
+- Write-Ahead Logging (`PRAGMA journal_mode = WAL;`) for concurrent read access.
+- Foreign key enforcement (`PRAGMA foreign_keys = ON;`).
+- Secondary indexes on repository IDs, commit SHAs, labels, and observation IDs.
 
 ---
 
-## 2. Table Summary
+## 2. Relational Schema Summary
 
-| Table Name | Description | Key Indexes |
+| Table Name | Description | Key Constraints / Indexes |
 | :--- | :--- | :--- |
-| `repositories` | GitHub repository metadata (URLs, stars, clone status, default branch). | `full_name (UNIQUE)` |
-| `commits` | Mined git commits, author metadata, and heuristic bug-fix classification. | `(repository_id, commit_sha)`, `idx_commits_bugfix` |
-| `commit_files` | File changes per commit (status, additions, deletions, C# flag). | `(commit_id, file_path)` |
-| `szz_results` | SZZ algorithm line-blame attributions from fixing commit to BIC. | `idx_szz_fixing`, `idx_szz_inducing` |
+| `repositories` | GitHub repository metadata, clone status, and local path. | `full_name (UNIQUE)` |
+| `commits` | Mined Git commits, author metadata, and bug-fix classification. | `(repository_id, commit_sha)`, `idx_commits_bugfix` |
+| `commit_files` | File modifications per commit (status, additions, deletions, C# flag). | `(commit_id, file_path)` |
+| `szz_results` | SZZ line-blame traces linking fixing commits to inducing commits. | `idx_szz_fixing`, `idx_szz_inducing` |
 | `methods` | Method catalog across analyzed source files. | `(repository_id, file_path, class_name, method_signature)` |
-| `observations` | Ground-truth observations with binary defect labels ($y \in \{0, 1\}$). | `idx_observations_repo`, `idx_observations_label` |
-| `features` | 26 Roslyn-extracted AST metrics for each observation ($X$). | `observation_id (UNIQUE)` |
-| `datasets` | Versioned dataset generation runs (counts, feature lists, export paths). | `name (UNIQUE)` |
-| `dataset_observations` | Many-to-many junction table between datasets and observations. | `(dataset_id, observation_id)` |
-| `models` | Trained machine learning model registry with serialized metrics. | `name (UNIQUE)` |
-| `predictions` | Live inference audit trail (timestamp, risk score, method signature). | `idx_predictions_model`, `idx_predictions_created` |
+| `observations` | Method observations with binary or uncertain labels ($y \in \{1, 0, -1\}$). | `idx_observations_repo`, `idx_observations_label` |
+| `features` | 26 Roslyn AST static code metrics per observation. | `observation_id (UNIQUE)` |
+| `datasets` | Versioned dataset snapshot metadata and class counts. | `name (UNIQUE)` |
+| `dataset_observations` | Junction table linking dataset snapshots to observations. | `(dataset_id, observation_id)` |
+| `models` | Registered machine learning models, parameters, and evaluation metrics. | `name (UNIQUE)` |
+| `predictions` | Local inference log (timestamp, risk score, method signature). | `idx_predictions_model`, `idx_predictions_created` |
 
-Detailed schema SQL and column descriptions are maintained in:
+Detailed SQL definitions and column schemas are located in:
 - [1_Database/Schema/database_schema.md](../../1_Database/Schema/database_schema.md)
 - [1_Database/Schema/dataset_schema.md](../../1_Database/Schema/dataset_schema.md)
 
 ---
 
-## 3. Data Provenance & The SZZ Heuristic
+## 3. Labeling Provenance
 
-Defect prediction models in software engineering depend heavily on ground-truth labeling fidelity. This project employs the **SZZ Algorithm** (Śliwerski, Zimmermann, and Zeller) augmented with C# production filtering:
-
-1. **Bug-Fix Identification:** Mined commit messages are matched against standard regular expression patterns (`\b(fix(es|ed)?|bug(s)?|issue(s)?|resolve[sd]?)\b`).
-2. **Line Blaming:** For each deleted line in a bug-fixing commit, `git blame -w -M -C` identifies the candidate Bug-Inducing Commit (BIC) that originally introduced the line, ignoring whitespace-only adjustments and intra-file movements.
-3. **Pre-Fix Revision Extraction:** The enclosing method is extracted from the immediate parent commit of the bug-fix revision, capturing the exact defect-prone state of the method before corrective modification.
-4. **Candidate-Clean Sampling:** Candidate-clean methods are sampled from stable HEAD commits that have zero bug-fix traces in the analyzed commit window.
-5. **Open-World Assumption (OWA):** Non-defect observations are explicitly treated as *candidate clean* rather than mathematically verified bug-free, acknowledging that latent defects may exist.
-
+| Step | Procedure | Output |
+| :--- | :--- | :--- |
+| 1. Bug-Fix Detection | Score commit messages using issue references and defect keyword regexes; penalize non-code edits. | Candidate bug-fixing commits ($\text{confidence} \ge 0.50$). |
+| 2. SZZ Line Blame | Run `git blame -w -M -C` on deleted/modified production C# lines in the pre-fix parent commit. | Candidate Bug-Inducing Commits (BICs). |
+| 3. Defect-Prone Extraction | Resolve blamed line numbers to the enclosing C# method AST node in the pre-fix revision. | Positive observations (`label = 1`). |
+| 4. Candidate-Clean Sampling | Sample production C# methods from `HEAD` with no recorded SZZ defect traces in the mined commit window. | Candidate-clean observations (`label = 0`). |
+| 5. Open-World Assumption | Treat `label = 0` as candidate-clean rather than confirmed defect-free, and `label = 1` as heuristic SZZ attribution. | Balanced dataset snapshots (`v1.0.0`, `v2.0.0`). |

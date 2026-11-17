@@ -1,7 +1,6 @@
 """Model Training Page with Repository-Aware GroupKFold Cross-Validation."""
 from __future__ import annotations
 
-import json
 import pandas as pd
 import streamlit as st
 
@@ -15,28 +14,23 @@ from ml.model_manager import ModelManager
 
 
 def render_model_training(db: RepositoryDB, settings: AppSettings) -> None:
-    st.header("Machine Learning Model Training: Random Forest Classifier")
-    st.markdown("""
-    Train a Supervised Random Forest Classifier to predict method defect proneness.
-    To prevent data leakage, training uses **Repository-Aware Partitioning**: code from the same repository
-    never appears in both training and test sets.
-    """)
+    st.title("Model Training")
+    st.caption("Train a Random Forest classifier using repository-level GroupKFold cross-validation.")
 
     datasets = db.list_datasets()
     if not datasets:
-        st.warning("No datasets available. Please generate a dataset snapshot in 'Dataset Management' first.")
+        st.warning("No datasets available. Create a dataset snapshot in Dataset Management first.")
         return
 
     builder = DatasetBuilder(db)
     model_mgr = ModelManager(settings.storage.models_dir, db=db)
 
     # 1. Dataset Selection
-    st.subheader("1. Select Training Dataset Snapshot")
-    ds_options = {f"#{d['id']}: {d['name']} (v{d['version']} — {d['total_count']} items)": d["id"] for d in datasets}
-    selected_ds_name = st.selectbox("Dataset Snapshot", list(ds_options.keys()))
+    st.subheader("Dataset Selection")
+    ds_options = {f"#{d['id']}: {d['name']} (v{d['version']} - {d['total_count']} items)": d["id"] for d in datasets}
+    selected_ds_name = st.selectbox("Dataset snapshot", list(ds_options.keys()))
     selected_ds_id = ds_options[selected_ds_name]
 
-    # Show dataset info
     stats = builder.compute_dataset_statistics(selected_ds_id, [])
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Total Methods", stats.get("total_observations", 0))
@@ -44,58 +38,45 @@ def render_model_training(db: RepositoryDB, settings: AppSettings) -> None:
     c3.metric("Candidate-Clean (0)", stats.get("clean_count", 0))
     c4.metric("Repositories", len(stats.get("repository_distribution", {})))
 
-    st.markdown("---")
-
     # 2. Hyperparameters
-    st.subheader("2. Configure Random Forest Hyperparameters")
+    st.subheader("Random Forest Hyperparameters")
     col1, col2, col3 = st.columns(3)
     with col1:
-        n_estimators = st.slider("Number of Trees (n_estimators)", 10, 300, 100, 10)
-        max_depth = st.slider("Max Tree Depth (0 = None)", 0, 30, 15, 1)
+        n_estimators = st.slider("Estimators (n_estimators)", 10, 300, 100, 10)
+        max_depth = st.slider("Max depth (0 = None)", 0, 30, 15, 1)
         max_depth_val = None if max_depth == 0 else max_depth
     with col2:
-        min_samples_split = st.slider("Min Samples Split", 2, 20, 5, 1)
-        min_samples_leaf = st.slider("Min Samples Leaf", 1, 10, 2, 1)
+        min_samples_split = st.slider("Min samples split", 2, 20, 5, 1)
+        min_samples_leaf = st.slider("Min samples leaf", 1, 10, 2, 1)
     with col3:
-        class_weight_opt = st.selectbox("Class Weighting", ["balanced", "None"])
+        class_weight_opt = st.selectbox("Class weighting", ["balanced", "None"])
         class_weight = "balanced" if class_weight_opt == "balanced" else None
-        random_state = st.number_input("Deterministic Random Seed", value=42, step=1)
-
-    st.markdown("---")
+        random_state = st.number_input("Random seed", value=42, step=1)
 
     # 3. Validation Strategy
-    st.subheader("3. Repository-Aware Holdout & Cross-Validation")
-    col_v1, col_v2 = st.columns(2)
+    st.subheader("Validation Partitioning")
+    col_v1, col_v2, col_v3 = st.columns(3)
     with col_v1:
-        test_size = st.slider("Holdout Test Repository Ratio", 0.15, 0.40, 0.25, 0.05, help="Proportion of entire repositories held out for final testing.")
+        test_size = st.slider("Holdout repository ratio", 0.15, 0.40, 0.25, 0.05)
     with col_v2:
-        n_splits = st.slider("GroupKFold CV Folds (on Training data)", 2, 10, 5, 1)
-
-    model_save_name = st.text_input("Model Version Identifier", value=f"rf_csharp_v{selected_ds_id}")
+        n_splits = st.slider("GroupKFold folds", 2, 10, 5, 1)
+    with col_v3:
+        model_save_name = st.text_input("Model identifier", value=f"rf_csharp_v{selected_ds_id}")
 
     # 4. Train Action
-    if st.button("Train Model with GroupKFold", use_container_width=True):
-        with st.spinner("Loading dataset and performing repository-aware splitting..."):
+    if st.button("Train Model", width="stretch"):
+        with st.spinner("Splitting by repository and training model..."):
             try:
-                # 1. Load data
                 X, y, metadata = builder.get_features_and_labels(selected_ds_id)
 
-                # 2. Repository-aware split
                 X_train, X_test, y_train, y_test, meta_train, meta_test, split_sum = split_by_repository(
                     X, y, metadata, test_size=test_size, random_state=random_state
                 )
 
-                st.info(
-                    f"**Repository Partition:** Training on {split_sum['train_repo_count']} repositories ({split_sum['train_samples']} methods). "
-                    f"Holding out {split_sum['test_repo_count']} repositories ({split_sum['test_samples']} methods) for final evaluation."
-                )
-
-                # 3. Fit Preprocessor strictly on training data
                 preprocessor = DataPreprocessor(impute_missing=True, remove_constant=True)
                 X_train_proc = preprocessor.fit_transform(X_train)
                 X_test_proc = preprocessor.transform(X_test)
 
-                # 4. Train with GroupKFold Cross-Validation
                 trainer = ModelTrainer(
                     n_estimators=n_estimators,
                     max_depth=max_depth_val,
@@ -111,10 +92,8 @@ def render_model_training(db: RepositoryDB, settings: AppSettings) -> None:
                     n_splits=n_splits,
                 )
 
-                # 5. Evaluate on untouched Holdout Test Set
                 eval_results = ModelEvaluator.evaluate(model, X_test_proc, y_test)
 
-                # 6. Save model bundle
                 saved_path = model_mgr.save_model(
                     model_name=model_save_name,
                     model=model,
@@ -127,28 +106,31 @@ def render_model_training(db: RepositoryDB, settings: AppSettings) -> None:
                     overwrite=True,
                 )
 
-                st.success(f"Model trained and saved successfully in {duration}s to `{saved_path}`!")
+                st.subheader("Training and Validation Results")
+                st.caption(
+                    f"Saved to `{saved_path}` ({duration}s). "
+                    f"Training: {split_sum['train_repo_count']} repositories ({split_sum['train_samples']} methods); "
+                    f"Holdout: {split_sum['test_repo_count']} repositories ({split_sum['test_samples']} methods)."
+                )
 
-                # Display Results comparison
-                st.markdown("### Training & Validation Summary")
-                res_col1, res_col2 = st.columns(2)
-                with res_col1:
-                    st.markdown("**Cross-Validation Performance (Training Repositories):**")
-                    st.write(f"- **Mean F1-Score:** `{cv_results['f1']['mean']:.3f} +/- {cv_results['f1']['std']:.3f}`")
-                    st.write(f"- **Mean Accuracy:** `{cv_results['accuracy']['mean']:.3f} +/- {cv_results['accuracy']['std']:.3f}`")
-                    st.write(f"- **Mean ROC-AUC:** `{cv_results['roc_auc']['mean']:.3f} +/- {cv_results['roc_auc']['std']:.3f}`")
-                    st.caption("Fitted only on train folds; test repositories remained untouched.")
-                with res_col2:
-                    st.markdown("**Holdout Test Set Performance:**")
-                    st.write(f"- **Test F1-Score:** `{eval_results['f1']:.3f}`")
-                    st.write(f"- **Test Accuracy:** `{eval_results['accuracy']:.3f}`")
-                    if "roc_auc" in eval_results and eval_results["roc_auc"] is not None:
-                        st.write(f"- **Test ROC-AUC:** `{eval_results['roc_auc']:.3f}`")
-                    st.caption("Evaluated on held-out repositories not seen during cross-validation.")
-
-                st.info("Navigate to the **Model Evaluation** page for detailed confusion matrices, ROC/PR curves, and feature importance analysis.")
+                test_roc = eval_results.get("roc_auc")
+                results_df = pd.DataFrame([
+                    {
+                        "Partition": "GroupKFold Cross-Validation (Train)",
+                        "Accuracy": f"{cv_results['accuracy']['mean']:.3f} ± {cv_results['accuracy']['std']:.3f}",
+                        "F1-Score": f"{cv_results['f1']['mean']:.3f} ± {cv_results['f1']['std']:.3f}",
+                        "ROC-AUC": f"{cv_results['roc_auc']['mean']:.3f} ± {cv_results['roc_auc']['std']:.3f}",
+                    },
+                    {
+                        "Partition": "Held-Out Repositories (Test)",
+                        "Accuracy": f"{eval_results['accuracy']:.3f}",
+                        "F1-Score": f"{eval_results['f1']:.3f}",
+                        "ROC-AUC": f"{test_roc:.3f}" if test_roc is not None else "N/A",
+                    },
+                ])
+                st.table(results_df)
 
             except PreprocessingError as pe:
-                st.error(f"Preprocessing / Splitting Error: {pe}")
+                st.error(f"Preprocessing or splitting error: {pe}")
             except Exception as e:
                 st.error(f"Training failed: {e}")

@@ -1,11 +1,8 @@
-"""Dataset Management Page: Feature Extraction, Overview, Statistical Analysis, and Versioned CSV Export."""
+"""Dataset Management Page: Feature Extraction, Overview, Statistical Analysis, and CSV Export."""
 from __future__ import annotations
 
-import json
-from pathlib import Path
 import pandas as pd
 import plotly.express as px
-import plotly.figure_factory as ff
 import streamlit as st
 
 from core.settings import AppSettings
@@ -16,11 +13,8 @@ from services.dataset.exporter import DatasetExporter
 
 
 def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
-    st.header("Dataset Management, Feature Engineering, and Versioning")
-    st.markdown("""
-    Extract 26 Roslyn static code metrics from method observations, audit distributions,
-    inspect feature correlations, and build reproducible, versioned ML datasets for training.
-    """)
+    st.title("Dataset Management")
+    st.caption("Extract 26 Roslyn static code metrics, inspect metric distributions, and export versioned datasets.")
 
     extractor = FeatureExtractor(db)
     builder = DatasetBuilder(db)
@@ -29,16 +23,14 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
     tab1, tab2, tab3, tab4 = st.tabs([
         "Feature Extraction",
         "Dataset Overview",
-        "Feature Analysis & Distributions",
-        "Dataset Snapshots & CSV Export",
+        "Metric Distributions",
+        "Snapshots and Export",
     ])
 
-    # -------------------------------------------------------------
     # TAB 1: Feature Extraction
-    # -------------------------------------------------------------
     with tab1:
-        st.subheader("1. Extract Roslyn Static Code Metrics")
-        st.caption("Parses method syntax trees using Microsoft.CodeAnalysis to calculate structural, complexity, and OOP metrics.")
+        st.subheader("Roslyn Static Code Metric Extraction")
+        st.caption(f"Analyzer: Microsoft.CodeAnalysis.CSharp v4.12.0 (.NET 9.0) | Version: {FeatureExtractor.ANALYZER_VERSION}")
 
         all_obs = db.list_observations()
         total_obs = len(all_obs)
@@ -49,49 +41,44 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
 
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Total Observations", total_obs)
-        c2.metric("Features Extracted", extracted_count)
-        c3.metric("Awaiting Extraction", len(needing_extraction))
-        c4.metric("Failed Extractions", failed_count)
+        c2.metric("Extracted", extracted_count)
+        c3.metric("Pending", len(needing_extraction))
+        c4.metric("Failed", failed_count)
 
-        st.markdown(f"**Analyzer Engine:** `Microsoft.CodeAnalysis.CSharp` v4.12.0 (.NET 9.0) | **Analyzer Version:** `{FeatureExtractor.ANALYZER_VERSION}`")
-
-        col_b1, col_b2 = st.columns([1, 1])
+        col_b1, col_b2 = st.columns(2)
         with col_b1:
-            if st.button("Run Batch Feature Extraction", use_container_width=True, disabled=len(needing_extraction) == 0):
+            if st.button("Run Batch Feature Extraction", width="stretch", disabled=len(needing_extraction) == 0):
                 p_bar = st.progress(0.1, text="Extracting Roslyn metrics...")
+
                 def on_feat_prog(msg: str, pct: float) -> None:
                     p_bar.progress(pct, text=msg)
 
-                res = extractor.batch_extract(progress_callback=on_feat_prog)
-                st.success(f"Feature extraction completed: {res['success']} succeeded, {res['failed']} failed.")
+                extractor.batch_extract(progress_callback=on_feat_prog)
                 st.rerun()
 
         with col_b2:
-            if st.button("Force Re-Extract All Observations", use_container_width=True, disabled=total_obs == 0):
-                p_bar = st.progress(0.1, text="Re-extracting all Roslyn metrics...")
+            if st.button("Re-Extract All Observations", width="stretch", disabled=total_obs == 0):
+                p_bar = st.progress(0.1, text="Re-extracting Roslyn metrics...")
+
                 def on_feat_prog2(msg: str, pct: float) -> None:
                     p_bar.progress(pct, text=msg)
 
-                res = extractor.batch_extract(force=True, progress_callback=on_feat_prog2)
-                st.success(f"Re-extracted metrics: {res['success']} succeeded, {res['failed']} failed.")
+                extractor.batch_extract(force=True, progress_callback=on_feat_prog2)
                 st.rerun()
 
-    # -------------------------------------------------------------
     # TAB 2: Dataset Overview
-    # -------------------------------------------------------------
     with tab2:
-        st.subheader("2. Dataset Snapshots & Observations Summary")
+        st.subheader("Versioned Dataset Snapshots")
         datasets = db.list_datasets()
-
         if datasets:
-            st.markdown("### Versioned Dataset Snapshots")
-            df_ds = pd.DataFrame(datasets)[["id", "name", "version", "total_count", "buggy_count", "non_buggy_count", "uncertain_count", "created_at"]]
-            st.dataframe(df_ds, use_container_width=True)
+            df_ds = pd.DataFrame(datasets)[
+                ["id", "name", "version", "total_count", "buggy_count", "non_buggy_count", "uncertain_count", "created_at"]
+            ]
+            st.dataframe(df_ds, hide_index=True, width="stretch")
         else:
-            st.info("No dataset snapshots created yet. Use Tab 4 to create a snapshot.")
+            st.caption("No dataset snapshots recorded.")
 
-        st.markdown("---")
-        st.markdown("### Observations Pool Breakdown")
+        st.subheader("Observation Pool Breakdown")
         obs_records = db.list_observations()
         if obs_records:
             df_obs = pd.DataFrame(obs_records)
@@ -102,39 +89,20 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
                     {"Class": "Candidate-Clean (0)", "Count": int((df_obs["label"] == 0).sum())},
                     {"Class": "Uncertain (-1)", "Count": int((df_obs["label"] == -1).sum())},
                 ])
-                label_df["Ratio"] = (label_df["Count"] / len(df_obs) * 100).round(1).astype(str) + "%"
-                fig_bar = px.bar(
-                    label_df,
-                    x="Count",
-                    y="Class",
-                    orientation="h",
-                    title="Defect Label Distribution",
-                    text="Ratio",
-                    color="Class",
-                    color_discrete_map={
-                        "Defect-Prone (1)": "#4a7bb0",
-                        "Candidate-Clean (0)": "#5b9e78",
-                        "Uncertain (-1)": "#8e9aa8",
-                    },
-                )
-                fig_bar.update_layout(showlegend=False, height=220, margin=dict(l=20, r=20, t=40, b=20))
-                st.plotly_chart(fig_bar, use_container_width=True)
-                st.dataframe(label_df, hide_index=True, use_container_width=True)
+                label_df["Share"] = (label_df["Count"] / len(df_obs) * 100).round(1).astype(str) + "%"
+                st.table(label_df)
             with col_o2:
-                st.markdown("**Evidence Categories:**")
-                ev_counts = df_obs["evidence_category"].value_counts()
-                st.dataframe(ev_counts, use_container_width=True)
+                ev_df = df_obs["evidence_category"].value_counts().reset_index()
+                ev_df.columns = ["Evidence Category", "Count"]
+                st.table(ev_df)
         else:
-            st.info("No observations recorded yet.")
+            st.caption("No observations recorded.")
 
-    # -------------------------------------------------------------
-    # TAB 3: Feature Analysis & Distributions
-    # -------------------------------------------------------------
+    # TAB 3: Metric Distributions
     with tab3:
-        st.subheader("3. Static Code Metric Statistical Analysis")
-        st.caption("Inspect distributions, correlations, and differences between defect-prone and candidate-clean methods.")
+        st.subheader("Static Code Metric Analysis")
+        st.caption("Statistical associations between code metrics and defect labels reflect historical patterns, not direct causality.")
 
-        # Pull all observations with features
         query_sql = """
         SELECT o.label, f.*
         FROM observations o
@@ -145,20 +113,21 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
             feat_rows = conn.execute(query_sql).fetchall()
 
         if not feat_rows:
-            st.warning("No successful feature records found. Please run Feature Extraction in Tab 1 first.")
+            st.warning("No extracted feature records found. Run feature extraction in Tab 1 first.")
         else:
             df_feat = pd.DataFrame([dict(r) for r in feat_rows])
             df_feat["Label_Text"] = df_feat["label"].map({1: "Defect-Prone (1)", 0: "Candidate-Clean (0)"})
-
-            st.info("Statistical correlations between code metrics and defect labels describe historical patterns and do not establish direct causality.")
 
             col_s1, col_s2 = st.columns([1, 2])
             available_metrics = [m for m in DEFAULT_NUMERICAL_FEATURES if m in df_feat.columns]
 
             with col_s1:
-                selected_metric = st.selectbox("Select Metric to Inspect", available_metrics, index=available_metrics.index("cyclomatic_complexity") if "cyclomatic_complexity" in available_metrics else 0)
-                st.markdown(f"**Descriptive Statistics for `{selected_metric}`:**")
-                st.dataframe(df_feat[selected_metric].describe(), use_container_width=True)
+                default_idx = available_metrics.index("cyclomatic_complexity") if "cyclomatic_complexity" in available_metrics else 0
+                selected_metric = st.selectbox("Metric", available_metrics, index=default_idx)
+                desc_df = df_feat[selected_metric].describe().reset_index()
+                desc_df.columns = ["Statistic", "Value"]
+                desc_df["Value"] = desc_df["Value"].round(3)
+                st.table(desc_df)
 
             with col_s2:
                 fig_box = px.box(
@@ -166,95 +135,93 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
                     x="Label_Text",
                     y=selected_metric,
                     color="Label_Text",
-                    title=f"Distribution of '{selected_metric}' by Label",
+                    title=f"Distribution of {selected_metric} by Class",
                     color_discrete_map={"Defect-Prone (1)": "#4a7bb0", "Candidate-Clean (0)": "#5b9e78"},
                 )
                 fig_box.update_layout(showlegend=False, margin=dict(l=20, r=20, t=40, b=20))
-                st.plotly_chart(fig_box, use_container_width=True)
+                st.plotly_chart(fig_box, width="stretch")
 
-            st.markdown("---")
-            st.subheader("Metric Correlation Heatmap")
-            corr_features = ["loc", "cyclomatic_complexity", "max_nesting_depth", "parameter_count", "statement_count", "loop_count", "method_call_count", "assignment_count"]
-            available_corr = [c for c in corr_features if c in df_feat.columns]
-            if len(available_corr) >= 2:
-                corr_matrix = df_feat[available_corr].corr().round(2)
-                fig_corr = px.imshow(
-                    corr_matrix,
-                    text_auto=True,
-                    aspect="auto",
-                    title="Feature Correlation Matrix (Pearson r)",
-                    color_continuous_scale="Blues",
-                )
-                st.plotly_chart(fig_corr, use_container_width=True)
+            with st.expander("Metric Correlation Matrix (Pearson r)"):
+                corr_features = [
+                    "loc",
+                    "cyclomatic_complexity",
+                    "max_nesting_depth",
+                    "parameter_count",
+                    "statement_count",
+                    "loop_count",
+                    "method_call_count",
+                    "assignment_count",
+                ]
+                available_corr = [c for c in corr_features if c in df_feat.columns]
+                if len(available_corr) >= 2:
+                    corr_matrix = df_feat[available_corr].corr().round(2)
+                    fig_corr = px.imshow(
+                        corr_matrix,
+                        text_auto=True,
+                        aspect="auto",
+                        color_continuous_scale="Blues",
+                    )
+                    st.plotly_chart(fig_corr, width="stretch")
 
-    # -------------------------------------------------------------
-    # TAB 4: Dataset Snapshots & CSV Export
-    # -------------------------------------------------------------
+    # TAB 4: Snapshots & CSV Export
     with tab4:
-        st.subheader("4. Generate Reproducible Dataset Snapshot & Export")
+        st.subheader("Create Versioned Dataset Snapshot")
 
         col_sn1, col_sn2 = st.columns(2)
         with col_sn1:
-            snap_name = st.text_input("Dataset Snapshot Name", value="csharp_methods_dataset")
-            snap_version = st.text_input("Version Tag", value="1.0.0")
+            snap_name = st.text_input("Snapshot name", value="csharp_methods_dataset")
+            snap_version = st.text_input("Version tag", value="1.0.0")
         with col_sn2:
-            snap_desc = st.text_area("Description", value="Balanced C# method static metrics dataset generated via SZZ.")
+            snap_desc = st.text_area("Description", value="Balanced C# method static metrics dataset.")
 
-        exclude_uncert = st.checkbox("Exclude Uncertain Observations (Label = -1)", value=True, help="Removes ambiguous observations to keep supervised training pure.")
+        exclude_uncert = st.checkbox("Exclude uncertain observations (Label = -1)", value=True)
 
-        with st.expander("Feature Selection (26 Metrics)", expanded=False):
+        with st.expander("Feature Selection (26 Metrics)"):
             selected_metrics = st.multiselect(
-                "Features to include in ML matrix",
+                "Included features",
                 options=DEFAULT_NUMERICAL_FEATURES,
                 default=DEFAULT_NUMERICAL_FEATURES,
             )
 
-        if st.button("Build Versioned Dataset Snapshot", use_container_width=True):
+        if st.button("Build Dataset Snapshot", width="stretch"):
             try:
-                ds_id, stats = builder.generate_dataset_snapshot(
+                builder.generate_dataset_snapshot(
                     name=snap_name,
                     version=snap_version,
                     description=snap_desc,
                     exclude_uncertain=exclude_uncert,
                     feature_names=selected_metrics,
                 )
-                st.success(
-                    f"Created Dataset Snapshot #{ds_id} ('{snap_name}' v{snap_version})! "
-                    f"Total: {stats['total_observations']} (Defect-Prone: {stats['buggy_count']}, Candidate-Clean: {stats['clean_count']}, Excluded: {stats['uncertain_excluded']})"
-                )
                 st.rerun()
             except Exception as e:
-                st.error(f"Snapshot build failed: {e}")
+                st.error(f"Snapshot creation failed: {e}")
 
-        st.markdown("---")
-        st.subheader("Export Snapshot to CSV & Metadata JSON")
-
+        st.subheader("Export Snapshot")
         datasets_list = db.list_datasets()
         if not datasets_list:
-            st.info("No datasets available to export. Create a snapshot above.")
+            st.caption("No datasets available to export.")
         else:
             ds_choices = {f"#{d['id']}: {d['name']} (v{d['version']} - {d['total_count']} items)": d["id"] for d in datasets_list}
-            chosen_label = st.selectbox("Select Snapshot to Export", list(ds_choices.keys()))
+            chosen_label = st.selectbox("Snapshot to export", list(ds_choices.keys()))
             chosen_id = ds_choices[chosen_label]
 
             col_exp1, col_exp2 = st.columns(2)
             with col_exp1:
-                if st.button("Export to Local Disk (exports/)", use_container_width=True):
+                if st.button("Export to Disk", width="stretch"):
                     try:
                         exp_res = exporter.export_to_csv(chosen_id, overwrite=True)
-                        st.success(f"Exported {exp_res['rows_exported']} rows to `{exp_res['csv_path']}` and metadata to `{exp_res['metadata_path']}`!")
+                        st.caption(f"Exported {exp_res['rows_exported']} rows to `{exp_res['csv_path']}`.")
                     except Exception as e:
                         st.error(f"Export failed: {e}")
 
             with col_exp2:
-                # Provide direct browser download button
                 records = db.get_dataset_dataframe_records(chosen_id)
                 if records:
                     csv_bytes = pd.DataFrame(records).to_csv(index=False).encode("utf-8")
                     st.download_button(
-                        label="Download CSV Directly",
+                        label="Download CSV",
                         data=csv_bytes,
                         file_name=f"dataset_{chosen_id}.csv",
                         mime="text/csv",
-                        use_container_width=True,
+                        width="stretch",
                     )

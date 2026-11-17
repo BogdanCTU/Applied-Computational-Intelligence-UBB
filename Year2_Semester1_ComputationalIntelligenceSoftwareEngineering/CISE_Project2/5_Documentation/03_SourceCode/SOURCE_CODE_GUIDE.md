@@ -1,7 +1,7 @@
-# Source Code Architecture & Developer Guide
+# Source Code Architecture and Developer Guide
 
 **Source Root:** `2_SourceCode/`  
-**Languages:** Python 3.10+ / C# (.NET 9.0 SDK)  
+**Runtimes:** Python >= 3.11 / .NET 9.0 SDK  
 **System:** CISE Project 2 — Machine Learning-Based Software Defect Prediction for C# Source Code  
 
 ---
@@ -11,95 +11,69 @@
 ```text
 2_SourceCode/
 ├── Python/
-│   ├── application/pages/     # Streamlit web interface pages (8 tabs)
-│   ├── core/                  # Settings, PROJECT_ROOT finder, path defaults
-│   ├── database/              # SQLite connection, schema, and repository DB
-│   ├── ml/                    # ML pipeline, cross-validation, models, predictor
-│   ├── repositories/          # GitHub API client, git repository manager, commit collector
+│   ├── application/pages/     # Streamlit UI pages (8 modules)
+│   ├── core/                  # Configuration, PROJECT_ROOT resolution, unpickle aliases
+│   ├── database/              # SQLite connection, schema, and repository queries
+│   ├── ml/                    # Preprocessing, training, cross-validation, evaluation, inference
+│   ├── repositories/          # GitHub API client, Git manager, commit collector
 │   ├── services/
 │   │   ├── analyzer/          # Subprocess bridge to .NET Roslyn analyzer
 │   │   ├── dataset/           # Dataset builder, feature extractor, CSV exporter
-│   │   ├── labeling/          # Ground-truth label manager
-│   │   └── mining/            # Bug-fix detector, SZZ blame analyzer
-│   ├── utils/                 # Logging, production C# file classifier
-│   ├── src/                   # Compatibility facade re-exporting modules
-│   └── app.py                 # Primary Streamlit application entry point
-│
+│   │   ├── labeling/          # Observation label manager
+│   │   └── mining/            # Bug-fix detector and SZZ blame analyzer
+│   ├── utils/                 # Logging and production C# file classifier
+│   └── app.py                 # Streamlit main launcher and navigation
 ├── RoslynAnalyzer/
-│   ├── Program.cs             # C# AST visitor calculating 26 static metrics
-│   └── RoslynAnalyzer.csproj  # .NET 9 project file (Microsoft.CodeAnalysis.CSharp)
-│
-├── Tests/                     # 16 automated test modules (123 tests)
-│
-└── Scripts/                   # Operational and maintenance scripts
+│   ├── Program.cs             # C# AST syntax walker computing 26 static metrics
+│   └── RoslynAnalyzer.csproj  # .NET 9.0 project (Microsoft.CodeAnalysis.CSharp 4.12.0)
+├── Tests/                     # 16 pytest modules (123 tests)
+└── Scripts/                   # Experiment execution and database audit scripts
 ```
 
 ---
 
-## 2. Python Architecture & Module Responsibilities
+## 2. Python Modules
 
-### `core/settings.py`
-Centralizes application configuration via Pydantic models. It includes a dynamic `find_project_root()` function that walks parent directories until finding repository boundary markers (`1_Database`, `2_SourceCode`, `pytest.ini`, `.git`). It defines paths for databases, datasets, models, analyzer executables, and reports with automatic backward-compatibility fallbacks.
-
-### `database/connection.py` & `repository.py`
-- `Database`: Manages SQLite connection lifecycle, executes schema initialization, enables WAL mode, and enforces foreign keys.
-- `RepositoryDB`: Provides domain-specific CRUD operations for repositories, commits, SZZ traces, observations, features, and model registry entries.
-
-### `services/analyzer/roslyn_client.py`
-Provides the Python-to-.NET bridge. It invokes `RoslynAnalyzer.dll` via `subprocess.run`, transmits C# code via `stdin` or `--file` arguments, handles UTF-8 encoding and newline normalization, and parses structured JSON output containing method signatures, byte offsets, and the 26 static code metrics.
-
-### `utils/source_classifier.py`
-Implements the production C# file filter (`is_production_csharp_file`). It eliminates test fixtures, test directories (`Tests/`, `Specs/`, `UnitTests/`), generated files (`*.Designer.cs`, `*.g.cs`), and build outputs (`bin/`, `obj/`), ensuring only real production code enters both the defect-prone and candidate-clean datasets.
-
-### `ml/` (Machine Learning Engine)
-- `preprocessing.py`: Feature scaling, missing-value imputation, zero-variance filtering, and repository group splitting.
-- `trainer.py`: Trains candidate classifiers (Random Forest, Extra Trees, Gradient Boosting, LightGBM, XGBoost, etc.).
-- `cross_validation.py`: Executes 5-fold `GroupKFold` cross-validation grouped by repository name.
-- `evaluator.py`: Computes accuracy, precision, recall, F1, ROC-AUC, Matthew's Correlation Coefficient (MCC), and Brier score.
-- `predictor.py`: Implements real-time inference using the bundled champion model, outputting probability scores, categorical risk bands, and top influential features.
+| Module | Path | Responsibility |
+| :--- | :--- | :--- |
+| Settings | `core/settings.py` | Pydantic configuration, `find_project_root()`, storage path resolution, and legacy unpickle aliases. |
+| Database | `database/connection.py`, `database/repository.py` | SQLite WAL connection management, schema creation, and CRUD operations. |
+| Roslyn Client | `services/analyzer/roslyn_client.py` | Invokes `RoslynAnalyzer.dll` via `dotnet`, normalizes line endings, and parses JSON metric output. |
+| Source Classifier | `utils/source_classifier.py` | Filters out test projects, test fixtures, build directories (`bin/`, `obj/`), and generated files (`*.g.cs`, `*.Designer.cs`). |
+| Mining & SZZ | `services/mining/bug_fix_detector.py`, `szz_analyzer.py` | Scores commit messages for bug fixes and traces modified lines via `git blame -w -M -C`. |
+| Labeling & Datasets | `services/labeling/label_manager.py`, `services/dataset/` | Maps SZZ traces to methods, samples candidate-clean methods, extracts features, and exports CSV snapshots. |
+| ML Pipeline | `ml/preprocessing.py`, `trainer.py`, `cross_validation.py`, `evaluator.py`, `predictor.py` | Median imputation, zero-variance pruning, `GroupKFold` validation, threshold sweeps, and method-level inference. |
 
 ---
 
 ## 3. Roslyn C# Analyzer (`2_SourceCode/RoslynAnalyzer/`)
 
-The Roslyn analyzer is implemented as a .NET 9 console application using `Microsoft.CodeAnalysis.CSharp`. It overrides `CSharpSyntaxWalker` to traverse C# Abstract Syntax Trees:
-- **Executable statements:** `statement_count`, `loc`, `logical_loc`.
-- **Complexity:** McCabe cyclomatic complexity ($M = \pi + 1$, incremented by `if`, `while`, `for`, `case`, `catch`, `&&`, `||`, `??`).
-- **Nesting:** `max_nesting_depth` tracking lexical block hierarchy.
-- **Language constructs:** Lambdas, LINQ expressions, object instantiations, property accessors, exception handling (`try-catch`, `throw`).
+`Program.cs` implements a `CSharpSyntaxWalker` on `Microsoft.CodeAnalysis.CSharp` to extract 26 method-level metrics:
+- **Size:** `loc`, `logical_loc`, `method_length`, `parameter_count`, `local_variable_count`, `statement_count`, `return_count`.
+- **Complexity:** `cyclomatic_complexity`, `max_nesting_depth`, `boolean_operator_count`, `logical_operator_count`, `conditional_expression_count`.
+- **Control Flow:** `if_count`, `switch_count`, `loop_count`, `try_catch_count`, `throw_count`, `break_continue_count`.
+- **OOP and Structure:** `method_call_count`, `field_access_count`, `property_access_count`, `assignment_count`, `object_creation_count`, `is_static`, `is_async`, `is_generic`.
 
-Build command:
-```powershell
-dotnet build 2_SourceCode/RoslynAnalyzer/RoslynAnalyzer.csproj -c Release
-```
+Statements inside nested local functions and lambda expressions are excluded from the enclosing method's statement and return counts.
 
 ---
 
-## 4. Developer Instructions
+## 4. Build, Execution, and Testing
 
-### Installation
-```powershell
-# Create virtual environment
-python -m venv .venv
-.\.venv\Scripts\activate
+```bash
+# 1. Create and activate virtual environment (Linux / macOS)
+python3 -m venv .venv
+source .venv/bin/activate
 
-# Install Python dependencies
+# 2. Install Python dependencies
 pip install -r requirements.txt
 
-# Build Roslyn Analyzer
+# 3. Build .NET 9.0 Roslyn Analyzer
 dotnet build 2_SourceCode/RoslynAnalyzer/RoslynAnalyzer.csproj -c Release
-```
 
-### Running the Application
-```powershell
-# From repository root
-python -m streamlit run app.py
-# Or directly
-streamlit run app.py
-```
-
-### Running Tests
-```powershell
+# 4. Run automated test suite (123 tests)
 pytest
-```
 
+# 5. Launch Streamlit application
+python -m streamlit run app.py
+```

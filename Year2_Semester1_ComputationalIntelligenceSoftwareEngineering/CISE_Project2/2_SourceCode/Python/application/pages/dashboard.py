@@ -1,11 +1,8 @@
-"""Dashboard Page: System Overview, Health Metrics, Lifecycle Pipeline, and Latest Model Performance."""
+"""Dashboard Page: System Overview, Summary Metrics, Pipeline, and Methodological Constraints."""
 from __future__ import annotations
 
 import json
-from typing import Any, Dict
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
 import streamlit as st
 
 from core.settings import AppSettings
@@ -13,143 +10,145 @@ from database.repository import RepositoryDB
 
 
 def render_dashboard(db: RepositoryDB, settings: AppSettings) -> None:
-    st.header("System Overview and Experiment Dashboard")
-    st.markdown("""
-    The **C# Defect Predictor** implements an academic machine learning pipeline
-    for identifying defect-prone C# methods using Git mining, SZZ-based defect localization,
-    Roslyn AST static code metric extraction, and Random Forest classification.
-    """)
+    st.title("Dashboard")
+    st.caption("System summary, observation breakdown, pipeline overview, and methodological constraints.")
 
     stats = db.get_summary_statistics()
-
-    # -------------------------------------------------------------
-    # 1. Primary Metrics Row
-    # -------------------------------------------------------------
-    st.markdown("### 1. Repository Collection and Mining Statistics")
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        st.metric("Managed Repositories", stats["repositories_total"], f"{stats['repositories_cloned']} Cloned Locally")
-    with c2:
-        st.metric("Analyzed Commits", stats["commits_total"], f"{stats['commits_bug_fix']} Bug-Fixing Commits")
-    with c3:
-        st.metric("SZZ Inducing Commits (BICs)", stats["szz_bics_total"], "Candidate Root Causes")
-    with c4:
-        st.metric("Trained Models", stats["models_count"], f"{stats['datasets_count']} Dataset Snapshots")
-
-    st.markdown("---")
-
-    # -------------------------------------------------------------
-    # 2. Observations & Feature Extraction Breakdown
-    # -------------------------------------------------------------
-    st.markdown("### 2. Method Observations and Static Code Metrics")
     total_obs = stats["observations_total"]
     feat_count = stats["features_extracted"]
-    feat_pct = (feat_count / total_obs * 100.0) if total_obs > 0 else 0.0
 
-    c_o1, c_o2, c_o3, c_o4 = st.columns(4)
-    with c_o1:
-        st.metric("Total Observations", total_obs)
-    with c_o2:
-        st.metric("Defect-Prone (Label 1)", stats["observations_buggy"])
-    with c_o3:
-        st.metric("Candidate-Clean (Label 0)", stats["observations_non_buggy"])
-    with c_o4:
-        st.metric("Feature Extraction", f"{feat_count} / {total_obs}", f"{feat_pct:.1f}% Complete")
+    # 1. Key Metrics
+    st.subheader("System Summary")
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Repositories", stats["repositories_total"])
+    c2.metric("Analyzed Commits", stats["commits_total"])
+    c3.metric("SZZ Bug-Inducing Commits", stats["szz_bics_total"])
+    c4.metric("Method Observations", total_obs)
 
-    # Visual distribution chart
-    col_chart1, col_chart2 = st.columns(2)
-    with col_chart1:
+    # 2. Observation Distribution & Latest Model
+    col_left, col_right = st.columns(2)
+
+    with col_left:
+        st.subheader("Observation Distribution")
         if total_obs > 0:
-            labels_df = pd.DataFrame([
-                {
-                    "Class": "Defect-Prone (1)",
-                    "Count": stats["observations_buggy"],
-                    "Ratio": f"{stats['observations_buggy'] / total_obs * 100:.1f}%",
-                },
-                {
-                    "Class": "Candidate-Clean (0)",
-                    "Count": stats["observations_non_buggy"],
-                    "Ratio": f"{stats['observations_non_buggy'] / total_obs * 100:.1f}%",
-                },
-                {
-                    "Class": "Uncertain (-1)",
-                    "Count": stats["observations_uncertain"],
-                    "Ratio": f"{stats['observations_uncertain'] / total_obs * 100:.1f}%",
-                },
-            ])
-            fig_labels = px.bar(
-                labels_df,
-                x="Count",
-                y="Class",
-                orientation="h",
-                title="Observation Class Distribution",
-                text="Ratio",
-                color="Class",
-                color_discrete_map={
-                    "Defect-Prone (1)": "#4a7bb0",
-                    "Candidate-Clean (0)": "#5b9e78",
-                    "Uncertain (-1)": "#8e9aa8",
-                },
+            labels_df = pd.DataFrame(
+                [
+                    {
+                        "Class": "Defect-Prone (1)",
+                        "Count": stats["observations_buggy"],
+                        "Share": f"{stats['observations_buggy'] / total_obs * 100:.1f}%",
+                    },
+                    {
+                        "Class": "Candidate-Clean (0)",
+                        "Count": stats["observations_non_buggy"],
+                        "Share": f"{stats['observations_non_buggy'] / total_obs * 100:.1f}%",
+                    },
+                    {
+                        "Class": "Uncertain (-1)",
+                        "Count": stats["observations_uncertain"],
+                        "Share": f"{stats['observations_uncertain'] / total_obs * 100:.1f}%",
+                    },
+                    {
+                        "Class": "Features Extracted",
+                        "Count": feat_count,
+                        "Share": f"{feat_count / total_obs * 100:.1f}%",
+                    },
+                ]
             )
-            fig_labels.update_layout(
-                showlegend=False,
-                margin=dict(l=20, r=20, t=40, b=20),
-                height=260,
-            )
-            st.plotly_chart(fig_labels, use_container_width=True)
-            st.dataframe(labels_df, hide_index=True, use_container_width=True)
+            st.table(labels_df)
         else:
-            st.info("No method observations mined yet. Start by discovering repositories in Repository Collection.")
+            st.caption("No method observations recorded.")
 
-    with col_chart2:
+    with col_right:
+        st.subheader("Latest Registered Model")
         models = db.list_models()
         if models:
             latest_model = models[0]
-            st.markdown(f"#### Latest Model: `{latest_model['name']}`")
-            st.caption(f"Algorithm: `{latest_model['algorithm']}` | Created: `{latest_model['created_at']}`")
-
             raw_m = latest_model.get("metrics_json", "{}")
             metrics = json.loads(raw_m) if isinstance(raw_m, str) else raw_m
-
-            m_col1, m_col2, m_col3 = st.columns(3)
-            m_col1.metric("Holdout F1", f"{metrics.get('f1', 0.0):.3f}")
-            m_col2.metric("Holdout Acc", f"{metrics.get('accuracy', 0.0):.3f}")
             roc_val = metrics.get("roc_auc")
-            m_col3.metric("ROC-AUC", f"{roc_val:.3f}" if roc_val is not None else "N/A")
 
-            # Show Top 3 MDI features if present
-            mdi_feats = metrics.get("mdi_feature_importances", [])
-            if mdi_feats:
-                st.markdown("**Top Defect-Inducing Code Metrics (MDI):**")
-                for item in mdi_feats[:3]:
-                    st.write(f"- `{item['feature']}`: importance = `{item['importance']:.3f}`")
+            model_summary = pd.DataFrame(
+                [
+                    {"Property": "Model Name", "Value": str(latest_model.get("name", "N/A"))},
+                    {"Property": "Algorithm", "Value": str(latest_model.get("algorithm", "N/A"))},
+                    {"Property": "Holdout F1", "Value": f"{metrics.get('f1', 0.0):.3f}"},
+                    {"Property": "Holdout Accuracy", "Value": f"{metrics.get('accuracy', 0.0):.3f}"},
+                    {"Property": "Holdout ROC-AUC", "Value": f"{roc_val:.3f}" if roc_val is not None else "N/A"},
+                ]
+            )
+            st.table(model_summary)
         else:
-            st.info("No trained machine learning model recorded yet. Train one in Model Training.")
+            st.caption("No trained model recorded.")
 
-    st.markdown("---")
-
-    # -------------------------------------------------------------
-    # 3. Machine Learning Lifecycle Pipeline Map
-    # -------------------------------------------------------------
+    # 3. Machine Learning Lifecycle Pipeline
     st.subheader("Machine Learning Lifecycle Pipeline")
-    cols = st.columns(5)
-    with cols[0]:
-        st.info("### 1. Discovery\n- GitHub REST API\n- Full Git history clone\n- File diff extraction")
-    with cols[1]:
-        st.info("### 2. SZZ Mining\n- Bug-fixing heuristics\n- Git blame BIC tracing\n- Method locator")
-    with cols[2]:
-        st.info("### 3. Roslyn Metrics\n- 26 Code metrics\n- AST and OOP analysis\n- Snapshot generation")
-    with cols[3]:
-        st.info("### 4. RF Modeling\n- GroupKFold by repo\n- Leakage prevention\n- Permutation importance")
-    with cols[4]:
-        st.info("### 5. Prediction\n- Real-time inference\n- Multi-method files\n- Influential metrics")
 
-    st.markdown("---")
+    cols = st.columns(5)
+
+    steps = [
+        ("1. Discovery", [
+            "GitHub REST API",
+            "Git history",
+            "File diffs",
+        ]),
+        ("2. SZZ Mining", [
+            "Fix commit detection",
+            "Git tracing",
+            "Method localization",
+        ]),
+        ("3. Roslyn Metrics", [
+            "26 code metrics",
+            "AST analysis",
+            "OOP metrics",
+        ]),
+        ("4. RF Modeling", [
+            "Repository GroupKFold",
+            "Model evaluation",
+            "Feature importance",
+        ]),
+        ("5. Prediction", [
+            "Method-level inference",
+            "Risk classification",
+            "Metric contributions",
+        ]),
+    ]
+
+    for col, (title, items) in zip(cols, steps):
+        with col:
+            st.markdown(f"**{title}**")
+            for item in items:
+                st.write(f"- {item}")
+
+    # 4. Academic Principles and Methodological Constraints
     st.subheader("Academic Principles and Methodological Constraints")
-    st.markdown("""
-    - **Defect Risk Indicator, Not Certified Defect Proof**: Predictions reflect continuous defect risk propensities based on structural complexity, not formal proofs of defect presence or absence.
-    - **Zero Cross-Repository Leakage**: All cross-validation and holdout testing partition strictly by repository (`GroupKFold`), preventing code from the same repository from leaking between train and test splits.
-    - **SZZ Traceability**: Every defect-prone observation links deterministically to the bug-introducing commit, fixing commit, and diff context.
-    - **Open-World Assumption**: Candidate-clean methods sampled from stable HEAD are free of recorded bug-fixing traces in the mined commit window, but may contain undiscovered latent defects.
-    - **Privacy-Preserving**: Operates strictly on the local machine with zero external network telemetry and optional local history logging.
-    """)
+
+    principles = [
+        (
+            "Prediction scope",
+            "Defect-proneness indicator, not proof of defect presence.",
+        ),
+        (
+            "Repository separation",
+            "GroupKFold separates repositories between training and validation.",
+        ),
+        (
+            "SZZ traceability",
+            "Positive labels retain links to fixing commits and traced bug-inducing changes.",
+        ),
+        (
+            "Candidate-clean labels",
+            "Absence of recorded bug-fixing traces does not establish defect-free code.",
+        ),
+        (
+            "Privacy",
+            "Source analysis and prediction run locally. Repository collection requires network access.",
+        ),
+    ]
+
+    st.table(
+        {
+            "Principle": [item[0] for item in principles],
+            "Description": [item[1] for item in principles],
+        }
+    )

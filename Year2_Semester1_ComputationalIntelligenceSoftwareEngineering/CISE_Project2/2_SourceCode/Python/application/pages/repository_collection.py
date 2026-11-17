@@ -1,4 +1,4 @@
-"""Repository Collection Page with GitHub Discovery, Manual Registration, Full-History Cloning, and Commit Extraction."""
+"""Repository Collection Page: GitHub Discovery, Manual Registration, Cloning, and Commit Extraction."""
 from __future__ import annotations
 
 import re
@@ -9,12 +9,12 @@ import streamlit as st
 from core.settings import AppSettings
 from repositories.github_client import GitHubClient, GitHubAPIError, RateLimitExceededError
 from repositories.repository_manager import RepositoryManager, RepositoryManagerError
-from repositories.commit_collector import CommitCollector, CommitCollectorError
+from repositories.commit_collector import CommitCollector
 from database.repository import RepositoryDB
 
 
 def parse_github_url(url: str) -> tuple[str, str]:
-    """Extract owner and repo name from github URL or owner/repo string."""
+    """Extract owner and repository name from a GitHub URL or owner/repo string."""
     cleaned = url.strip().rstrip("/")
     if cleaned.endswith(".git"):
         cleaned = cleaned[:-4]
@@ -22,45 +22,40 @@ def parse_github_url(url: str) -> tuple[str, str]:
     pattern = r"(?:https?://github\.com/)?([^/\s]+)/([^/\s]+)$"
     match = re.search(pattern, cleaned)
     if not match:
-        raise ValueError(f"Invalid repository specification: '{url}'. Expected format: 'owner/repo' or 'https://github.com/owner/repo'")
+        raise ValueError(f"Invalid repository specification: '{url}'. Expected 'owner/repo' or 'https://github.com/owner/repo'.")
     return match.group(1), match.group(2)
 
 
 def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> None:
-    st.header("GitHub C# Repository Collection Engine")
-    st.markdown("""
-    Discover public C# repositories via the GitHub REST API or register repositories manually.
-    Repositories are cloned locally with complete Git history to enable historical SZZ defect localization.
-    """)
+    st.title("Repository Collection")
+    st.caption("Discover, register, clone, and extract commit histories from C# GitHub repositories.")
 
     gh_client = GitHubClient(token=settings.github.token)
     repo_mgr = RepositoryManager(settings.storage.repositories_dir, db=db)
     commit_collector = CommitCollector(db)
 
-    tab1, tab2, tab3 = st.tabs(["GitHub Discovery", "Manual Repository Import", "Managed Local Repositories"])
+    tab1, tab2, tab3 = st.tabs(["GitHub Discovery", "Manual Import", "Managed Repositories"])
 
-    # -------------------------------------------------------------
     # TAB 1: GitHub Discovery
-    # -------------------------------------------------------------
     with tab1:
-        st.subheader("Search Public GitHub C# Repositories")
+        st.subheader("Search GitHub Repositories")
         col1, col2, col3, col4 = st.columns([3, 1, 1, 1])
         with col1:
-            keywords = st.text_input("Keywords / Topic (optional)", placeholder="e.g. parser, serialization, roslyn")
+            keywords = st.text_input("Keywords or topic (optional)", placeholder="parser, serialization, roslyn")
         with col2:
-            min_stars = st.number_input("Min Stars", min_value=0, value=100, step=50)
+            min_stars = st.number_input("Min stars", min_value=0, value=100, step=50)
         with col3:
-            min_size_kb = st.number_input("Min Size (KB)", min_value=0, value=100, step=100)
+            min_size_kb = st.number_input("Min size (KB)", min_value=0, value=100, step=100)
         with col4:
-            limit = st.slider("Results Limit", min_value=5, max_value=50, value=15, step=5)
+            limit = st.slider("Results limit", min_value=5, max_value=50, value=15, step=5)
 
         col_opts1, col_opts2 = st.columns(2)
         with col_opts1:
-            exclude_forks = st.checkbox("Exclude Forks", value=True)
+            exclude_forks = st.checkbox("Exclude forks", value=True)
         with col_opts2:
-            exclude_archived = st.checkbox("Exclude Archived Repositories", value=True)
+            exclude_archived = st.checkbox("Exclude archived repositories", value=True)
 
-        if st.button("Search GitHub Repositories", use_container_width=True):
+        if st.button("Search GitHub Repositories", width="stretch"):
             with st.spinner("Querying GitHub Search API..."):
                 try:
                     search_results = gh_client.search_repositories(
@@ -72,81 +67,71 @@ def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> Non
                         per_page=limit,
                     )
                     st.session_state["search_results"] = search_results["items"]
-                    st.success(f"Discovered {search_results['total_count']} repositories (showing top {len(search_results['items'])}).")
+                    st.caption(f"Discovered {search_results['total_count']} repositories (showing {len(search_results['items'])}).")
                 except RateLimitExceededError as e:
-                    st.error(f"GitHub API Rate Limit Reached: {e}. Provide a GitHub PAT in Settings to raise limits.")
+                    st.error(f"GitHub API rate limit reached: {e}. Configure a GitHub token in Settings.")
                 except GitHubAPIError as e:
-                    st.error(f"GitHub Search Error: {e}")
+                    st.error(f"GitHub search error: {e}")
 
-        # Display discovered results
         items = st.session_state.get("search_results", [])
         if items:
-            st.markdown("### Discovered Repositories")
+            st.subheader("Discovered Repositories")
             for repo_item in items:
-                with st.expander(f"Stars: {repo_item['stars']} | {repo_item['full_name']} - {repo_item['license']}"):
-                    st.write(f"**Description:** {repo_item['description'] or 'No description provided.'}")
-                    st.write(f"**Default Branch:** `{repo_item['default_branch']}` | **Size:** {repo_item['size_kb']} KB")
-                    st.write(f"**GitHub URL:** [{repo_item['url']}]({repo_item['url']})")
+                with st.expander(f"{repo_item['full_name']} | Stars: {repo_item['stars']} | License: {repo_item['license']}"):
+                    st.write(f"Description: {repo_item['description'] or 'None'}")
+                    st.write(f"Default branch: `{repo_item['default_branch']}` | Size: {repo_item['size_kb']} KB | URL: {repo_item['url']}")
 
-                    col_b1, col_b2 = st.columns([1, 3])
-                    with col_b1:
-                        if st.button("Register & Clone", key=f"btn_clone_{repo_item['full_name']}"):
-                            # 1. Upsert into database
-                            repo_id = db.upsert_repository({
-                                "full_name": repo_item["full_name"],
-                                "name": repo_item["name"],
-                                "owner": repo_item["owner"],
-                                "url": repo_item["url"],
-                                "description": repo_item["description"],
-                                "license": repo_item["license"],
-                                "default_branch": repo_item["default_branch"],
-                                "stars": repo_item["stars"],
-                                "forks": repo_item["forks"],
-                                "size_kb": repo_item["size_kb"],
-                            })
-                            # 2. Clone full history
-                            progress_bar = st.progress(0.1, text=f"Cloning {repo_item['full_name']}...")
-                            def on_progress(msg: str, pct: float) -> None:
-                                progress_bar.progress(pct, text=msg)
+                    if st.button("Register and Clone", key=f"btn_clone_{repo_item['full_name']}"):
+                        db.upsert_repository({
+                            "full_name": repo_item["full_name"],
+                            "name": repo_item["name"],
+                            "owner": repo_item["owner"],
+                            "url": repo_item["url"],
+                            "description": repo_item["description"],
+                            "license": repo_item["license"],
+                            "default_branch": repo_item["default_branch"],
+                            "stars": repo_item["stars"],
+                            "forks": repo_item["forks"],
+                            "size_kb": repo_item["size_kb"],
+                        })
+                        progress_bar = st.progress(0.1, text=f"Cloning {repo_item['full_name']}...")
 
-                            try:
-                                res = repo_mgr.clone_or_update(
-                                    url=repo_item["clone_url"],
-                                    owner=repo_item["owner"],
-                                    name=repo_item["name"],
-                                    default_branch=repo_item["default_branch"],
-                                    progress_callback=on_progress,
-                                )
-                                st.success(f"Successfully cloned {repo_item['full_name']} to `{res['local_path']}` (HEAD: {res['head_commit'][:8]})!")
-                                st.rerun()
-                            except RepositoryManagerError as err:
-                                st.error(f"Clone failed: {err}")
+                        def on_progress(msg: str, pct: float) -> None:
+                            progress_bar.progress(pct, text=msg)
 
-    # -------------------------------------------------------------
+                        try:
+                            repo_mgr.clone_or_update(
+                                url=repo_item["clone_url"],
+                                owner=repo_item["owner"],
+                                name=repo_item["name"],
+                                default_branch=repo_item["default_branch"],
+                                progress_callback=on_progress,
+                            )
+                            st.rerun()
+                        except RepositoryManagerError as err:
+                            st.error(f"Clone failed: {err}")
+
     # TAB 2: Manual Import
-    # -------------------------------------------------------------
     with tab2:
-        st.subheader("Manually Register and Clone a C# Repository")
-        st.markdown("Enter any public Git or GitHub URL (e.g., `https://github.com/dotnet/roslyn` or `owner/repo`).")
-        manual_url = st.text_input("Repository URL or Slug", placeholder="https://github.com/owner/repository")
-        clone_immediately = st.checkbox("Clone full history immediately upon registration", value=True)
+        st.subheader("Register Repository by URL")
+        manual_url = st.text_input("Repository URL or slug", placeholder="https://github.com/owner/repository")
+        clone_immediately = st.checkbox("Clone repository history immediately", value=True)
 
-        if st.button("Register and Import Repository", use_container_width=True):
+        if st.button("Register Repository", width="stretch"):
             if not manual_url:
-                st.warning("Please provide a repository URL.")
+                st.warning("Provide a repository URL or owner/repository slug.")
             else:
                 try:
                     owner, name = parse_github_url(manual_url)
                     full_name = f"{owner}/{name}"
 
-                    # Attempt fetching live metadata if available
                     meta: dict = {}
                     try:
                         meta = gh_client.get_repository(owner, name)
                     except Exception:
                         meta = {
                             "description": "Manually registered repository",
-                            "license": "Custom/Unknown",
+                            "license": "Unknown",
                             "default_branch": "main",
                             "stars": 0,
                             "forks": 0,
@@ -166,21 +151,21 @@ def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> Non
                         "forks": meta.get("forks", 0),
                         "size_kb": meta.get("size_kb", 0),
                     })
-                    st.success(f"Registered repository '{full_name}' in database (ID: {repo_id}).")
+                    st.caption(f"Registered '{full_name}' (ID: {repo_id}).")
 
                     if clone_immediately:
                         progress_bar = st.progress(0.1, text=f"Cloning {full_name}...")
+
                         def on_progress(msg: str, pct: float) -> None:
                             progress_bar.progress(pct, text=msg)
 
-                        res = repo_mgr.clone_or_update(
+                        repo_mgr.clone_or_update(
                             url=meta.get("clone_url", f"https://github.com/{full_name}.git"),
                             owner=owner,
                             name=name,
                             default_branch=meta.get("default_branch", "main"),
                             progress_callback=on_progress,
                         )
-                        st.success(f"Cloned successfully into `{res['local_path']}`!")
                         st.rerun()
 
                 except ValueError as ve:
@@ -188,86 +173,86 @@ def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> Non
                 except RepositoryManagerError as rme:
                     st.error(f"Clone operation failed: {rme}")
 
-    # -------------------------------------------------------------
     # TAB 3: Managed Repositories
-    # -------------------------------------------------------------
     with tab3:
-        st.subheader("Locally Managed Repositories")
+        st.subheader("Managed Local Repositories")
         repos = db.list_repositories()
         if not repos:
-            st.info("No repositories in database. Use Tab 1 or Tab 2 to register repositories.")
+            st.caption("No repositories registered in the database.")
             return
 
+        repo_table = []
+        for r in repos:
+            repo_table.append({
+                "ID": r["id"],
+                "Repository": r["full_name"],
+                "Status": r["status"],
+                "Cloned": bool(r["is_cloned"]),
+                "Branch": r["default_branch"],
+                "Stars": r["stars"],
+                "Commits in DB": db.get_commits_count(r["id"]),
+                "Last Synced": r.get("last_sync_at") or "Never",
+            })
+        st.dataframe(pd.DataFrame(repo_table), hide_index=True, width="stretch")
+
+        st.subheader("Repository Operations")
         for repo in repos:
             repo_id = repo["id"]
             commits_count = db.get_commits_count(repo_id)
-            status_color = "green" if repo["is_cloned"] else "orange"
 
-            with st.container(border=True):
-                col_h1, col_h2 = st.columns([3, 1])
-                with col_h1:
-                    st.markdown(f"### **{repo['full_name']}**")
-                    st.caption(f"Status: :{status_color}[**{repo['status'].upper()}**] | Stars: {repo['stars']} | Commits in DB: `{commits_count}`")
-                    st.write(f"**License:** {repo['license']} | **Default Branch:** `{repo['default_branch']}`")
-                    if repo['local_path']:
-                        st.code(repo['local_path'], language="text")
-                with col_h2:
-                    st.caption(f"Last Synced:\n{repo.get('last_sync_at') or 'Never'}")
+            with st.expander(f"{repo['full_name']} (ID: {repo_id} | Status: {repo['status']} | Commits: {commits_count})"):
+                if repo["local_path"]:
+                    st.code(repo["local_path"], language="text")
 
-                # Actions row
-                c_act1, c_act2, c_act3, c_act4 = st.columns(4)
+                c_act1, c_act2, c_act3 = st.columns(3)
 
                 with c_act1:
-                    clone_btn_label = "Pull / Update" if repo["is_cloned"] else "Clone Repo"
-                    if st.button(clone_btn_label, key=f"btn_sync_{repo_id}", use_container_width=True):
+                    clone_btn_label = "Pull / Update" if repo["is_cloned"] else "Clone Repository"
+                    if st.button(clone_btn_label, key=f"btn_sync_{repo_id}", width="stretch"):
                         p_bar = st.progress(0.1, text="Syncing repository...")
+
                         def on_prog(msg: str, pct: float) -> None:
                             p_bar.progress(pct, text=msg)
 
                         try:
-                            res = repo_mgr.clone_or_update(
+                            repo_mgr.clone_or_update(
                                 url=repo["url"] if repo["url"].endswith(".git") else f"{repo['url']}.git",
                                 owner=repo["owner"],
                                 name=repo["name"],
                                 default_branch=repo["default_branch"],
                                 progress_callback=on_prog,
                             )
-                            st.success(f"Finished: {res['status']} (HEAD: {res['head_commit'][:8]})")
                             st.rerun()
                         except Exception as e:
                             st.error(f"Sync failed: {e}")
 
                 with c_act2:
-                    if st.button("Extract Commits", key=f"btn_commits_{repo_id}", disabled=not repo["is_cloned"], use_container_width=True):
+                    if st.button("Extract Commits", key=f"btn_commits_{repo_id}", disabled=not repo["is_cloned"], width="stretch"):
                         if not repo["local_path"] or not Path(repo["local_path"]).exists():
-                            st.error("Repository local directory is missing or not cloned.")
+                            st.error("Repository local directory does not exist on disk.")
                         else:
                             p_bar = st.progress(0.1, text="Extracting commits...")
+
                             def on_commit_prog(msg: str, pct: float) -> None:
                                 p_bar.progress(pct, text=msg)
 
                             try:
-                                stats = commit_collector.extract_and_persist(
+                                commit_collector.extract_and_persist(
                                     repository_id=repo_id,
                                     local_path=repo["local_path"],
                                     progress_callback=on_commit_prog,
                                 )
-                                st.success(f"Extracted {stats['new_extracted']} new commits (Total in repo: {stats['total_in_repo']})!")
                                 st.rerun()
                             except Exception as e:
                                 st.error(f"Commit extraction error: {e}")
 
                 with c_act3:
-                    with st.popover("View Commits"):
-                        recent_commits = db.list_commits(repository_id=repo_id, limit=20)
-                        if recent_commits:
-                            df_c = pd.DataFrame(recent_commits)[["commit_sha", "committed_date", "author_name", "modifies_csharp", "message"]]
-                            st.dataframe(df_c, use_container_width=True)
-                        else:
-                            st.write("No commits extracted yet.")
-
-                with c_act4:
-                    if st.button("Unlink from DB", key=f"btn_del_{repo_id}", use_container_width=True, help="Removes repository record from database. Local files are NOT deleted."):
+                    if st.button("Unlink from DB", key=f"btn_del_{repo_id}", width="stretch"):
                         db.delete_repository(repo_id)
-                        st.warning(f"Unlinked {repo['full_name']} from database (local files preserved).")
                         st.rerun()
+
+                recent_commits = db.list_commits(repository_id=repo_id, limit=20)
+                if recent_commits:
+                    st.caption("Recent commits (up to 20):")
+                    df_c = pd.DataFrame(recent_commits)[["commit_sha", "committed_date", "author_name", "modifies_csharp", "message"]]
+                    st.dataframe(df_c, hide_index=True, width="stretch")
