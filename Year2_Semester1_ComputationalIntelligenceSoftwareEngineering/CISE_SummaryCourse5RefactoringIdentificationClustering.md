@@ -1,9 +1,9 @@
 # CISE Course 5-6
 
-## 1. Overview & Context: Refactoring Identification via Clustering
+## 5.1 Overview & Context: Refactoring Identification via Clustering
 
 This module builds upon **Program Comprehension** and **Search-Based Software Engineering (SBSE)** by focusing on two core themes:
-1. **Data Extraction:** Gathering static and dynamic information from source code repositories, source code, bytecode, and runtime environments.
+1. **Data Extraction:** Gathering static and dynamic information from source code repositories, source code, bytecode and runtime environments;
 2. **Self-Organizing Maps (SOM):** Applying unsupervised neural networks to cluster and restructure software systems.
 
 ### Refactoring Architecture Overview
@@ -81,7 +81,7 @@ classDiagram
 
 ---
 
-## 2. Extracting Data from Source Code Repositories
+## 5.2 Extracting Data from Source Code Repositories
 
 A **Source Code Repository** (version control, revision control, or source control) is a software application that manages changes to software artifacts (source code, documentation, images, etc.).
 
@@ -96,7 +96,7 @@ A **Source Code Repository** (version control, revision control, or source contr
 
 ---
 
-## 3. Extracting Data from Source Code, Bytecode, & Runtime
+## 5.3 Extracting Data from Source Code, Bytecode, & Runtime
 
 ### Compilation & Execution Pipeline
 Understanding how source code becomes an executing program determines where and how data can be extracted.
@@ -127,9 +127,9 @@ flowchart TD
     end
 ```
 
-* **Lexical Analysis (Scanner):** Reads raw source characters and groups them into **tokens** (keywords, identifiers, operators).
-* **Syntax Analysis (Parser):** Checks token sequences against a formal grammar to build a **Parse Tree** or **Abstract Syntax Tree (AST)** (a tree representation of the code's structure).
-* **Semantic Analysis:** Checks meaning and rules (e.g., type checking, variable declaration scope) using the **Symbol Table** (a data structure storing identifier metadata).
+* **Lexical Analysis (Scanner):** Reads raw source characters and groups them into **tokens** (keywords, identifiers, operators);
+* **Syntax Analysis (Parser):** Checks token sequences against a formal grammar to build a **Parse Tree** or **Abstract Syntax Tree (AST)** (a tree representation of the code's structure);
+* **Semantic Analysis:** Checks meaning and rules (e.g., type checking, variable declaration scope) using the **Symbol Table** (a data structure storing identifier metadata);
 * **Back-End:** Translates the AST/Intermediate Representation into **Bytecode** (for a Virtual Machine like the JVM), **Machine Instructions / Assembly** (via Instruction Selector, Register Allocator, and Assembly Emitter for physical hardware), or an **Interpreter Tree**.
 
 ---
@@ -339,15 +339,15 @@ flowchart LR
 
 ---
 
-## 4. Self-Organizing Maps (SOM)
+## 5.4 Self-Organizing Maps (SOM)
 
 ### Core Concepts & Definitions
-* **Self-Organizing Map (SOM) / Kohonen Map / Self-Organizing Feature Map (SOFM):** An artificial neural network trained using **unsupervised, competitive learning** to map a high-dimensional input space onto a low-dimensional (typically 2D) discretized grid of neurons called a **map**.
-* **Vector Space Model:** Each input object is represented as an $l$-dimensional feature vector: $x = (x_1, x_2, \dots, x_l)$.
-* **Topology Preservation:** Unlike standard neural networks, SOM uses a **neighborhood function** so that data points close to each other in the high-dimensional input space are mapped to nearby neurons on the 2D grid.
+* **Self-Organizing Map (SOM) / Kohonen Map / Self-Organizing Feature Map (SOFM):** An artificial neural network trained using **unsupervised, competitive learning** to map a high-dimensional input space onto a low-dimensional (typically 2D) discretized grid of neurons called a **map**;
+* **Vector Space Model:** Each input object is represented as an $l$-dimensional feature vector: $x = (x_1, x_2, \dots, x_l)$;
+* **Topology Preservation:** Unlike standard neural networks, SOM uses a **neighborhood function** so that data points close to each other in the high-dimensional input space are mapped to nearby neurons on the 2D grid;
 * **Primary Use Cases:**
-  1. **Dimensionality Reduction & Visualization** of high-dimensional data.
-  2. **Clustering** (grouping similar instances without labels).
+  1. **Dimensionality Reduction & Visualization** of high-dimensional data;
+  2. **Clustering** (grouping similar instances without labels);
   3. **Classification** (if training instances are labeled, new instances take the label of the closest training instance mapped to their winning neuron).
 
 ### SOM Network Architecture
@@ -374,8 +374,8 @@ flowchart BT
     I1 & I2 & I3 & Il ===>|Fully Connected Weight Vectors W| N11 & N22 & N33
 ```
 
-* **Input Layer:** Represents the $l$-dimensional input feature vector.
-* **Computational Layer (Map Space):** A 2D lattice of **neurons (nodes)**. Arranged as a **rectangular grid**, **hexagonal grid**, or **toroidal grid** (where opposite edges wrap around and connect).
+* **Input Layer:** Represents the $l$-dimensional input feature vector;
+* **Computational Layer (Map Space):** A 2D lattice of **neurons (nodes)**. Arranged as a **rectangular grid**, **hexagonal grid**, or **toroidal grid** (where opposite edges wrap around and connect);
 * **Weight Vector:** Every neuron in the computational layer is fully connected to all nodes in the input layer and holds a weight vector $W = (w_1, w_2, \dots, w_l)$ of the **exact same dimension** as the input vectors, plus a fixed $(x, y)$ coordinate on the 2D grid.
 
 ---
@@ -383,19 +383,19 @@ flowchart BT
 ### SOM Training: The Kohonen Algorithm
 
 SOM training is unsupervised (no target outputs) and alternates between two core operational phases over $N$ iterations:
-1. **Similarity Matching Phase (Competitive Step):** Compute the distance between the input vector and every neuron's weight vector. The neuron with the **minimum distance** wins and is declared the **Best Matching Unit (BMU)**.
+1. **Similarity Matching Phase (Competitive Step):** Compute the distance between the input vector and every neuron's weight vector. The neuron with the **minimum distance** wins and is declared the **Best Matching Unit (BMU)**;
 2. **Weight Adaptation Phase (Cooperative Step):** Update the weight vector of the BMU and the weight vectors of all neurons within a diminishing **topological neighborhood radius** around the BMU, pulling them closer to the input vector.
 
 #### Step-by-Step Training Algorithm & Formulas
-1. **Initialize** each neuron's weight vector (typically with small random values).
-2. **Sample:** Pick an input vector $x$ at random from the training dataset.
+1. **Initialize** each neuron's weight vector (typically with small random values);
+2. **Sample:** Pick an input vector $x$ at random from the training dataset;
 3. **Find the BMU:** Calculate the distance (e.g., Euclidean distance) between $x$ and all neurons; select the neuron with the smallest distance:
    $$\text{BMU} = \arg\min_{j} \Vert{} x - W_j \Vert{}$$
 4. **Decay Neighborhood Radius & Learning Rate:** Both the neighborhood radius $\sigma(t)$ and learning rate $\eta(t)$ start large (e.g., $\sigma_0$ equals the lattice radius) and decay exponentially over iteration $t \in [0, T]$ using the time constant $\lambda$:
    $$\lambda = \frac{T}{\ln(\sigma_0)}$$
    $$\sigma(t) = \sigma_0 \cdot \exp\left(-\frac{t}{\lambda}\right)$$
    $$\eta(t) = \eta_0 \cdot \exp\left(-\frac{t}{\lambda}\right)$$
-5. **Adapt Weights:** Adjust the weights of the BMU and all neighboring neurons within radius $\sigma(t)$. The closer a neighbor is to the BMU, the stronger its weights are adjusted toward $x$.
+5. **Adapt Weights:** Adjust the weights of the BMU and all neighboring neurons within radius $\sigma(t)$. The closer a neighbor is to the BMU, the stronger its weights are adjusted toward $x$;
 6. **Repeat** from Step 2 for $T$ (`nrIteration`) iterations. Over time, a tangled random grid unfolds into a smooth, topology-preserving mesh.
 
 ---
@@ -509,8 +509,8 @@ public class SOMTrainer {
 ### Visualizing & Interpreting SOM: The U-Matrix
 
 A trained SOM can be inspected via:
-1. **Topology & BMU Mapping:** Plotting the 2D grid and marking which neuron is the BMU for each input instance.
-2. **Weight Projection:** Plotting neuron weight vectors in 2D/3D space to observe mesh unfolding over training iterations.
+1. **Topology & BMU Mapping:** Plotting the 2D grid and marking which neuron is the BMU for each input instance;
+2. **Weight Projection:** Plotting neuron weight vectors in 2D/3D space to observe mesh unfolding over training iterations;
 3. **U-Matrix (Unified Distance Matrix):**
    * **Definition:** The U-Matrix value of a neuron is the **average distance between that neuron's weight vector and the weight vectors of its immediate topological neighbors** (e.g., the closest 4 or 8 neighbors in a rectangular grid, or 6 in a hexagonal grid).
    * **Landscape Interpretation:** Displayed as a heightmap or grayscale/color grid to define cluster boundaries:
@@ -522,7 +522,7 @@ A trained SOM can be inspected via:
 
 ---
 
-## 5. Software Restructuring Using SOM
+## 5.5 Software Restructuring Using SOM
 
 ### Vector Space Model for Software Entities
 
@@ -569,20 +569,20 @@ public class Class_B {
 ```
 
 #### Step 1: Compute $p(e)$ for Classes and Sample Entities
-* $p(\text{Class\_A}) = \{\text{Class\_A}, \text{attributeA1}, \text{attributeA2}, \text{methodA1}, \text{methodA2}, \text{methodA3}\}$ (Size = 6)
-* $p(\text{Class\_B}) = \{\text{Class\_B}, \text{attributeB1}, \text{attributeB2}, \text{methodB1}, \text{methodB2}, \text{methodB3}, \text{methodB4}\}$ (Size = 7)
-* **Notice `attributeA1`:** Defined in `Class_A`, accessed by `methodA2`, `methodB2`, `methodB3`, `methodB4`.
-  * $p(\text{attributeA1}) = \{\text{attributeA1}, \text{Class\_A}, \text{methodA2}, \text{methodB2}, \text{methodB3}, \text{methodB4}\}$ (Size = 6)
+* $p(\text{Class\_A}) = \{\text{Class\_A}, \text{attributeA1}, \text{attributeA2}, \text{methodA1}, \text{methodA2}, \text{methodA3}\}$ (Size = 6);
+* $p(\text{Class\_B}) = \{\text{Class\_B}, \text{attributeB1}, \text{attributeB2}, \text{methodB1}, \text{methodB2}, \text{methodB3}, \text{methodB4}\}$ (Size = 7);
+* **Notice `attributeA1`:** Defined in `Class_A`, accessed by `methodA2`, `methodB2`, `methodB3`, `methodB4`:
+  * $p(\text{attributeA1}) = \{\text{attributeA1}, \text{Class\_A}, \text{methodA2}, \text{methodB2}, \text{methodB3}, \text{methodB4}\}$ (Size = 6).
 
 #### Step 2: Compute Feature Vector for `attributeA1`
 * **Similarity with `Class_A` ($s_{\text{attrA1}, A}$):**
-  * $p(\text{attributeA1}) \cap p(\text{Class\_A}) = \{\text{attributeA1}, \text{Class\_A}, \text{methodA2}\}$ (Size = 3)
-  * $p(\text{attributeA1}) \cup p(\text{Class\_A})$ has $6 + 6 - 3 = 9$ elements.
-  * $s_{\text{attrA1}, A} = \frac{3}{9} = 0.333$
+  * $p(\text{attributeA1}) \cap p(\text{Class\_A}) = \{\text{attributeA1}, \text{Class\_A}, \text{methodA2}\}$ (Size = 3);
+  * $p(\text{attributeA1}) \cup p(\text{Class\_A})$ has $6 + 6 - 3 = 9$ elements;
+  * $s_{\text{attrA1}, A} = \frac{3}{9} = 0.333$;
 * **Similarity with `Class_B` ($s_{\text{attrA1}, B}$):**
-  * $p(\text{attributeA1}) \cap p(\text{Class\_B}) = \{\text{methodB2}, \text{methodB3}, \text{methodB4}\}$ (Size = 3)
-  * $p(\text{attributeA1}) \cup p(\text{Class\_B})$ has 6 + 7 - 3 = 10 elements.
-  * $s_{\text{attrA1}, B} = \frac{3}{10} = 0.300$
+  * $p(\text{attributeA1}) \cap p(\text{Class\_B}) = \{\text{methodB2}, \text{methodB3}, \text{methodB4}\}$ (Size = 3);
+  * $p(\text{attributeA1}) \cup p(\text{Class\_B})$ has 6 + 7 - 3 = 10 elements;
+  * $s_{\text{attrA1}, B} = \frac{3}{10} = 0.300$;
 * **Result:** Vector for `attributeA1` is $(0.333, 0.300)$. When all entities are trained on a hexagonal SOM and segmented via the U-Matrix, the map separates into two distinct clusters (Red for `Class_A` entities, Green for `Class_B` entities), visually exposing entities that sit near cluster boundaries or belong in the opposite class (candidates for **Move Method** or **Move Attribute** refactoring).
 
 ---
@@ -591,9 +591,12 @@ public class Class_B {
 
 Beyond class-level refactoring (as demonstrated on large systems like **JHotDraw**), SOM clustering supports macro-level architectural restructuring:
 
-1. **Package Restructuring:** Grouping strongly coupled classes into cohesive packages based on SOM U-Matrix valleys.
-2. **Monolith to Microservices Migration:** Identifying isolated valleys in the U-Matrix to decompose a monolithic codebase into independent microservice boundaries.
+1. **Package Restructuring:** Grouping strongly coupled classes into cohesive packages based on SOM U-Matrix valleys;
+2. **Monolith to Microservices Migration:** Identifying isolated valleys in the U-Matrix to decompose a monolithic codebase into independent microservice boundaries;
 3. **Language-Level Modularization:**
-   * **Java 9+ (JPMS - Java Platform Module System):** Restructuring legacy applications into explicit `module-info.java` modules.
+   * **Java 9+ (JPMS - Java Platform Module System):** Restructuring legacy applications into explicit `module-info.java` modules;
    * **C++20 Modules:** Grouping declarations and definitions across translation units into cohesive C++20 module units.
+  
+---
+
 
