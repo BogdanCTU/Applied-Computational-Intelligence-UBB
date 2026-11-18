@@ -86,12 +86,20 @@ class ModelManager:
 
     def load_model(self, model_identifier: str | Path) -> Dict[str, Any]:
         """Load and validate model artifact bundle from disk."""
-        path = Path(model_identifier)
+        raw_str = str(model_identifier)
+        path = Path(raw_str)
         if not path.is_absolute():
-            path = self.models_dir / (f"{path}.joblib" if not str(path).endswith(".joblib") else path)
+            path = self.models_dir / (f"{path}.joblib" if not raw_str.endswith(".joblib") else path)
 
         if not path.exists():
-            raise ModelManagerError(f"Model artifact not found at {path}")
+            fallback_name = Path(raw_str.replace("\\", "/")).name
+            if not fallback_name.endswith(".joblib"):
+                fallback_name = f"{fallback_name}.joblib"
+            fallback_path = self.models_dir / fallback_name
+            if fallback_path.exists():
+                path = fallback_path
+            else:
+                raise ModelManagerError(f"Model artifact not found at {path}")
 
         register_unpickle_aliases()
         try:
@@ -109,28 +117,55 @@ class ModelManager:
         return bundle
 
     def list_saved_models(self) -> List[Dict[str, Any]]:
-        """List all valid models available in database or directory."""
-        if self.db:
-            db_models = self.db.list_models()
-            if db_models:
-                return db_models
-
-        # Fallback: scan models directory
+        """List all valid models available in directory and database."""
         register_unpickle_aliases()
-        models = []
-        for p in self.models_dir.glob("*.joblib"):
+        models: List[Dict[str, Any]] = []
+        seen_names: set[str] = set()
+
+        # Scan models directory for serialized bundles
+        preferred_order = [
+            "et_nested_opt_v3_depth6_leaf6_log2",
+            "rf_nested_opt_v3_depth6_leaf8_log2",
+            "exp_final_5fold_v2_best_rf_compact_regularized",
+            "rf_csharp_empirical_model",
+        ]
+        joblib_files = sorted(
+            self.models_dir.glob("*.joblib"),
+            key=lambda p: (preferred_order.index(p.stem) if p.stem in preferred_order else 999, p.stem),
+        )
+
+        db_by_name: Dict[str, Dict[str, Any]] = {}
+        if self.db:
+            for m in self.db.list_models():
+                db_by_name[str(m.get("name", ""))] = m
+
+        for p in joblib_files:
             try:
                 bundle = joblib.load(p)
+                m_name = str(bundle.get("model_name", p.stem))
+                est = bundle.get("model")
+                algo_name = type(est).__name__ if est is not None else "RandomForestClassifier"
+                db_rec = db_by_name.get(m_name) or db_by_name.get(p.stem)
                 models.append({
-                    "id": p.stem,
-                    "name": bundle.get("model_name", p.stem),
-                    "algorithm": "RandomForestClassifier",
-                    "dataset_id": bundle.get("dataset_id"),
+                    "id": db_rec["id"] if db_rec else None,
+                    "name": m_name,
+                    "algorithm": algo_name,
+                    "dataset_id": bundle.get("dataset_id", db_rec.get("dataset_id") if db_rec else None),
                     "model_file_path": str(p),
                     "metrics": bundle.get("metrics", {}),
                     "parameters": bundle.get("parameters", {}),
+                    "created_at": db_rec.get("created_at", "bundled") if db_rec else "bundled",
                 })
+                seen_names.add(m_name)
+                seen_names.add(p.stem)
             except Exception:
                 pass
+
+        if self.db:
+            for m in self.db.list_models():
+                m_name = str(m.get("name", ""))
+                if m_name not in seen_names:
+                    models.append(m)
+
         return models
 
