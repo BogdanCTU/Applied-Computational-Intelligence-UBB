@@ -16,7 +16,7 @@
 | 4 | `SZZAnalyzer` | Trace deleted or modified production C# lines in fixing commits to candidate Bug-Inducing Commits (BICs) via `git blame -w -M -C`. |
 | 5 | `LabelManager` | Map blamed lines to enclosing C# method AST nodes in the pre-fix parent commit (`label = 1`) and sample candidate-clean methods from `HEAD` (`label = 0`). |
 | 6 | `FeatureExtractor`, `RoslynClient` | Extract 26 static code metrics per method via the .NET 9.0 Roslyn CLI analyzer. |
-| 7 | `DatasetBuilder`, `ExperimentRunner` | Export versioned CSV snapshots and evaluate models with repository-level `GroupKFold` ($K=5$). |
+| 7 | `DatasetBuilder`, `ExperimentRunner`, `run_model_optimization.py` | Export versioned CSV snapshots and evaluate models using 5-fold baseline `GroupKFold` and $5 \times 4$ nested `GroupKFold`. |
 
 ---
 
@@ -35,13 +35,13 @@
 
 | Repository ID | Full Name | Domain | Role |
 | :---: | :--- | :--- | :--- |
-| 4 | `Humanizr/Humanizer` | String manipulation and localization | Training / CV Fold 1 |
-| 15 | `serilog/serilog` | Structured diagnostic logging | Training / CV Fold 2 |
-| 3 | `LuckyPennySoftware/MediatR` | In-process mediator messaging | Training / CV Fold 3 |
-| 16 | `App-vNext/Polly` | Resilience and transient-fault handling | Training / CV Fold 4 |
-| 14 | `FluentValidation/FluentValidation` | Fluent validation rules engine | Training / CV Fold 5 |
-| 17 | `JamesNK/Newtonsoft.Json` | JSON serialization framework | Independent Holdout |
-| 1 | `commandlineparser/commandline` | Command-line argument parsing | Dataset #1 Exploratory |
+| 4 | `Humanizr/Humanizer` | String manipulation and localization | Training / Outer Fold 1 (291 methods) |
+| 15 | `serilog/serilog` | Structured diagnostic logging | Training / Outer Fold 2 (134 methods) |
+| 3 | `LuckyPennySoftware/MediatR` | In-process mediator messaging | Training / Outer Fold 3 (91 methods) |
+| 16 | `App-vNext/Polly` | Resilience and transient-fault handling | Training / Outer Fold 4 (34 methods) |
+| 14 | `FluentValidation/FluentValidation` | Fluent validation rules engine | Training / Outer Fold 5 (28 methods) |
+| 17 | `JamesNK/Newtonsoft.Json` | JSON serialization framework | Historical Baseline Holdout (159 methods; excluded from optimization) |
+| 1 | `commandlineparser/commandline` | Command-line argument parsing | Dataset #1 Exploratory (101 methods) |
 
 ---
 
@@ -76,8 +76,8 @@
 | `0` | Candidate-Clean | Production method sampled from `HEAD` with no recorded SZZ bug-fixing traces in the mined commit window. | Open-World Assumption: absence of recorded fixes does not establish confirmed defect-free code. |
 | `-1` | Uncertain | Modifications outside method bodies or ambiguous traces. | Excluded from supervised training and evaluation snapshots. |
 
-- **Class Balancing (1:1):** Candidate-clean methods are sampled per repository to match the count of SZZ-labeled defect-prone methods (Dataset #2: 279 defect-prone, 299 candidate-clean; Holdout: 79 defect-prone, 80 candidate-clean).
-- **Temporal Asymmetry:** Defect-prone methods are extracted from historical pre-fix commits, whereas candidate-clean methods are sampled from `HEAD`.
+- **Class Balancing (~1:1):** Candidate-clean methods are sampled per repository to match the count of SZZ-labeled defect-prone methods (Dataset #2: 279 defect-prone, 299 candidate-clean; Historical Holdout: 79 defect-prone, 80 candidate-clean).
+- **Temporal Difference:** Defect-prone methods are extracted from historical pre-fix commits, whereas candidate-clean methods are sampled from `HEAD`.
 
 ---
 
@@ -134,8 +134,11 @@ Statements, variables, and returns inside nested local functions or lambda expre
 
 ---
 
-## 8. Validation Partitioning and Preprocessing Isolation
+## 8. Validation Protocols and Leakage Prevention
 
-1. **Repository-Level Partitioning:** Cross-validation uses `GroupKFold` ($K=5$) grouped by `repository_id`, separating repositories between training and validation folds so methods from the same repository do not appear in both partitions simultaneously.
-2. **In-Fold Preprocessing:** Median imputation, zero-variance feature pruning, and `StandardScaler` (for linear models) are fitted strictly on each fold's training partition.
-3. **Independent Holdout:** `JamesNK/Newtonsoft.Json` (159 methods) was evaluated separately after model hyperparameters and decision thresholds were frozen.
+| Protocol | Outer Split | Inner Split | Preprocessing & Feature Selection | Threshold Selection | Holdout Usage |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Baseline Cross-Validation** (`run_final_experiment.py`) | 5-fold `GroupKFold` by `repository_id` | None | Median imputation, zero-variance pruning, and `StandardScaler` (for LR) fitted per training fold | Selected on pooled outer out-of-fold predictions ($\tau^* = 0.40$) | Evaluated once on `Newtonsoft.Json` ($N=159$) |
+| **Nested Model Optimization** (`run_model_optimization.py`) | 5-fold `GroupKFold` by `repository_id` | 4-fold `GroupKFold` on the 4 outer-training repositories | Imputation, zero-variance pruning, feature selection (`all_26`, `corr_pruned_085`, `inner_perm_top12`, `theoretical_core10`), and scaling (`StandardScaler` / `RobustScaler`) fitted strictly inside training partitions | Selected on pooled inner out-of-fold predictions ($\tau_{\text{inner}}^*$) per outer fold | Excluded (`Newtonsoft.Json` not used during optimization) |
+
+Five-fold `GroupKFold` was used for outer validation. Four-fold `GroupKFold` was used for inner model and threshold selection. Each validation fold contained a repository excluded from the corresponding training partition.

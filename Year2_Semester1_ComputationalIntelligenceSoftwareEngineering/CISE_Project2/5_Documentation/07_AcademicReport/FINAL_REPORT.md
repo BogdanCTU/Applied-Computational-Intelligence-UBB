@@ -5,24 +5,24 @@
 **Master's Programme:** Applied Computational Intelligence  
 **Course:** Computational Intelligence in Software Engineering (CISE) — Project 2  
 **Date:** November 2026  
-**Version:** `2.0.0`  
+**Version:** `2.1.0`  
 
 ---
 
 ## 1. Title, Abstract, Keywords, and Summary
 
 ### Title
-Empirical Method-Level Software Defect Prediction for C# Applications Using Roslyn Static Code Metrics, 5-Fold Repository-Aware Cross-Validation, and Independent Holdout Evaluation
+Empirical Method-Level Software Defect Prediction for C# Applications Using Roslyn Static Code Metrics and Nested Repository-Level Cross-Validation
 
 ### Abstract
 Method-level software defect prediction estimates the defect-proneness of individual methods to help prioritize code review and testing. This study presents an empirical pipeline for C# source code integrating Git history mining, regex-based bug-fixing commit detection, Śliwerski–Zimmermann–Zeller (SZZ) line-blame attribution, production-code path filtering, and 26 static structural, complexity, and object-oriented metrics extracted via the .NET 9.0 Roslyn compiler platform (`Microsoft.CodeAnalysis.CSharp`). Two versioned dataset snapshots are maintained: Dataset Snapshot #1 (`csharp_empirical_v1`, 483 methods across 3 repositories) and Dataset Snapshot #2 (`csharp_empirical_v2`, 578 production methods across 5 repositories: `Humanizer`, `Serilog`, `MediatR`, `Polly`, and `FluentValidation`).
 
-To prevent intra-repository overlap between training and validation partitions, models are evaluated using 5-fold repository-grouped cross-validation (`GroupKFold`, $N_{\text{repos}}=5, K=5$) across nine configurations from three classifier families: Logistic Regression, Decision Trees, and Random Forests. The regularized Random Forest configuration (`rf_compact_regularized`, `max_depth=8`, `min_samples_leaf=4`) achieved a mean cross-validation F1-score of $0.6859 \pm 0.0247$, accuracy of $0.6734 \pm 0.0491$, ROC-AUC of $0.7025$, and Brier score of $0.2144 \pm 0.0396$ at the nominal threshold $\tau=0.50$. Out-of-fold threshold tuning selected $\tau^* = 0.40$, yielding pooled out-of-fold recall of $87.46\%$ ($244/279$) and F1 of $0.7405$.
+In the initial baseline experiment, nine configurations across Logistic Regression, Decision Trees, and Random Forests were evaluated using 5-fold repository-grouped cross-validation (`GroupKFold`, $K=5$), selecting `rf_compact_regularized` (`max_depth=8`, `min_samples_leaf=4`, `max_features='sqrt'`). Evaluating that frozen baseline model on an external sixth repository (`JamesNK/Newtonsoft.Json`, 159 methods) yielded $75.47\%$ accuracy, $69.61\%$ precision, $89.87\%$ recall ($71/79$), $0.7845$ F1-score, $0.8209$ ROC-AUC, and $0.1713$ Brier score at the unnested CV threshold $\tau^*=0.40$.
 
-An independent sixth repository (`JamesNK/Newtonsoft.Json`, 159 production methods) was evaluated post-freeze. On this holdout set, `rf_compact_regularized` achieved $75.47\%$ accuracy, $69.61\%$ precision, $89.87\%$ recall ($71/79$), $0.7845$ F1-score, $0.8209$ ROC-AUC, and $0.1713$ Brier score at $\tau^*=0.40$. Error analysis indicates that static AST metrics capture complex control-flow defects but do not detect semantic bugs in short, low-complexity methods.
+To eliminate selection optimism from choosing models and thresholds on outer out-of-fold predictions, we subsequently executed a controlled nested repository-level optimization experiment ($5$-fold outer `GroupKFold` $\times$ $4$-fold inner `GroupKFold`) across 20 candidate pipelines on Dataset #2 (`Newtonsoft.Json` was excluded). Under nested validation, the baseline `rf_compact_regularized` achieved outer ROC-AUC of $0.7037 \pm 0.1292$, outer PR-AUC of $0.6405 \pm 0.1135$, outer Brier score of $0.2146 \pm 0.0398$, nested threshold F1 of $0.7408 \pm 0.0760$, and pooled OOF F1 of $0.7294$. Strengthening tree regularization and feature subsampling (`max_depth=6`, `min_samples_leaf=6..8`, `max_features='log2'`) improved cross-repository generalization: `rf_nested_opt_v3_depth6_leaf8_log2` achieved outer ROC-AUC $0.7216 \pm 0.1156$, outer Brier $0.2055 \pm 0.0374$, nested threshold F1 $0.7539 \pm 0.0706$, and pooled OOF F1 $0.7406$, while `et_nested_opt_v3_depth6_leaf6_log2` (`ExtraTreesClassifier`) achieved outer ROC-AUC $0.7349 \pm 0.0703$, outer Brier $0.2062 \pm 0.0213$, nested threshold F1 $0.7667 \pm 0.0723$, and pooled OOF F1 $0.7653$ (Recall $91.76\%$, Precision $65.64\%$, Accuracy $72.84\%$).
 
 ### Keywords
-Software Defect Prediction, C# Source Code, Microsoft Roslyn, SZZ Algorithm, GroupKFold Cross-Validation, Random Forest, Probability Calibration, Holdout Validation.
+Software Defect Prediction, C# Source Code, Microsoft Roslyn, SZZ Algorithm, Nested GroupKFold Cross-Validation, Random Forest, Extra Trees, Brier Score.
 
 ### Summary Table
 
@@ -30,9 +30,10 @@ Software Defect Prediction, C# Source Code, Microsoft Roslyn, SZZ Algorithm, Gro
 | :--- | :--- | :--- |
 | Dataset #1 | `csharp_empirical_v1` (v1.0.0) | 483 methods, 3 repositories (226 defect-prone, 257 candidate-clean) |
 | Dataset #2 | `csharp_empirical_v2` (v2.0.0) | 578 methods, 5 repositories (279 defect-prone, 299 candidate-clean, 0 test files) |
-| Cross-Validation | 5-Fold `GroupKFold` ($\tau = 0.50$) | `rf_compact_regularized`: F1 = $0.6859 \pm 0.0247$, Accuracy = $67.34\%$, Brier = $0.2144$ |
-| Threshold Tuning | Pooled out-of-fold ($\tau^* = 0.40$) | Accuracy = $70.42\%$, Precision = $64.21\%$, Recall = $87.46\%$, F1 = $0.7405$ |
-| Independent Holdout | `JamesNK/Newtonsoft.Json` ($N = 159$, $\tau^* = 0.40$) | Accuracy = $75.47\%$, Precision = $69.61\%$, Recall = $89.87\%$, F1 = $0.7845$, ROC-AUC = $0.8209$ |
+| Baseline RF (Nested CV) | `rf_compact_regularized` | Outer ROC-AUC = $0.7037 \pm 0.1292$, Brier = $0.2146 \pm 0.0398$, Nested F1 = $0.7408 \pm 0.0760$, Pooled OOF F1 = $0.7294$ |
+| Optimized RF (Nested CV) | `rf_nested_opt_v3_depth6_leaf8_log2` | Outer ROC-AUC = $0.7216 \pm 0.1156$, Brier = $0.2055 \pm 0.0374$, Nested F1 = $0.7539 \pm 0.0706$, Pooled OOF F1 = $0.7406$ |
+| Optimized Extra Trees (Nested CV) | `et_nested_opt_v3_depth6_leaf6_log2` | Outer ROC-AUC = $0.7349 \pm 0.0703$, Brier = $0.2062 \pm 0.0213$, Nested F1 = $0.7667 \pm 0.0723$, Pooled OOF F1 = $0.7653$ |
+| Historical Baseline Holdout | `JamesNK/Newtonsoft.Json` ($N = 159$, $\tau^* = 0.40$) | Baseline RF only: Accuracy = $75.47\%$, Precision = $69.61\%$, Recall = $89.87\%$, F1 = $0.7845$, ROC-AUC = $0.8209$ |
 | Developer Protocol | [DEVELOPER_STUDY_TEMPLATE.md](DEVELOPER_STUDY_TEMPLATE.md) | 24-method double-blind review instrument (unadministered protocol template) |
 
 ---
@@ -92,7 +93,7 @@ $$\text{Confidence}(c) = \sum w_{\text{match}} - \sum w_{\text{penalty}}$$
 ## 6. Method-Level Labeling and Sampling
 
 1. **Defect-Prone (`label = 1`):** Blamed line numbers in $P_0$ are mapped via Roslyn AST to the innermost enclosing `MethodDeclarationSyntax`. Labels represent heuristic SZZ attributions rather than verified ground truth.
-2. **Candidate-Clean (`label = 0`):** Production methods at `HEAD` with no recorded SZZ defect traces in the mined commit window are sampled at a 1:1 ratio per repository. Under the Open-World Assumption, `label = 0` denotes candidate-clean status rather than confirmed defect-free code.
+2. **Candidate-Clean (`label = 0`):** Production methods at `HEAD` with no recorded SZZ defect traces in the mined commit window are sampled at a ~1:1 ratio per repository. Under the Open-World Assumption, `label = 0` denotes candidate-clean status rather than confirmed defect-free code.
 3. **Uncertain (`label = -1`):** Edits outside method bodies are labeled `-1` and excluded from supervised datasets.
 
 ---
@@ -113,7 +114,7 @@ The .NET 9.0 analyzer (`2_SourceCode/RoslynAnalyzer/RoslynAnalyzer.csproj`) extr
 
 ## 8. Dataset Snapshots
 
-| Property | Dataset #1 (`csharp_empirical_v1`) | Dataset #2 (`csharp_empirical_v2`) | Independent Holdout |
+| Property | Dataset #1 (`csharp_empirical_v1`) | Dataset #2 (`csharp_empirical_v2`) | Historical Holdout |
 | :--- | :---: | :---: | :---: |
 | Version | `1.0.0` | `2.0.0` | — |
 | Total Methods | 483 | 578 | 159 |
@@ -150,86 +151,125 @@ See [FINAL_DATASET_INTEGRITY_AUDIT.md](../08_Archive/FINAL_DATASET_INTEGRITY_AUD
 
 ## 11. Evaluated Classifier Families
 
-1. **Logistic Regression (`lr_standard_c1`, `lr_balanced_c1`):** Linear classifier with $L_2$ regularization ($C=1.0$) and in-fold `StandardScaler`.
-2. **Decision Tree (`dt_shallow_depth4`, `dt_depth8`):** Single CART tree using Gini impurity at `max_depth=4` and `max_depth=8`.
-3. **Random Forest (`rf_compact_regularized`, `rf_feature_constrained_log2`, `rf_heavy_bagging_300`, `rf_baseline_balanced`, `rf_deep_capacity`):** Bagging ensembles of 100–300 trees varying maximum depth (`8`, `10`, `12`, `15`), minimum leaf size (`2`, `4`), and feature subsampling (`sqrt`, `log2`).
+Across the baseline and nested optimization studies, six classifier configurations/families were evaluated:
+1. **Random Forest (`RandomForestClassifier`):** Bagging ensembles of decision trees varying tree depth (`6, 8, 10, 15`), minimum leaf size (`1, 2, 4, 6, 8`), feature subsampling (`sqrt`, `log2`), and class weighting (`balanced`, `balanced_subsample`, `None`).
+2. **Extra Trees (`ExtraTreesClassifier`):** Randomized cut-point ensembles (`n_estimators=200`, `max_depth=6..8`, `min_samples_leaf=4..6`, `max_features='sqrt'` or `'log2'`).
+3. **HistGradientBoosting (`HistGradientBoostingClassifier`):** Histogram-based gradient boosted trees with leaf and $L_2$ regularization (`l2_regularization=1.0..5.0`, `min_samples_leaf=20..25`).
+4. **Gradient Boosting (`GradientBoostingClassifier`):** Stochastic gradient boosting (`subsample=0.8`, `max_depth=2..3`, `learning_rate=0.03..0.05`).
+5. **Logistic Regression (`LogisticRegression`):** $L_2$-regularized linear models (`C=0.1, 1.0`) paired with in-fold `StandardScaler` or `RobustScaler`.
+6. **Sigmoid-Calibrated Random Forest (`CalibratedClassifierCV`):** Baseline Random Forest wrapped in internal 3-fold Platt scaling (`method='sigmoid'`).
 
 ---
 
-## 12. Repository-Grouped Cross-Validation (`GroupKFold`)
+## 12. Validation Design: Baseline 5-Fold vs. Nested $5 \times 4$ `GroupKFold`
 
-Cross-validation (`2_SourceCode/Python/ml/cross_validation.py`) partitions Dataset #2 into $K=5$ folds grouped by `repository_id`. Each fold holds out one repository for validation (`Humanizer`: 291, `Serilog`: 134, `MediatR`: 91, `Polly`: 34, `FluentValidation`: 28) and trains on the remaining four repositories, ensuring $\text{Train\_Repos} \cap \text{Val\_Repos} = \emptyset$.
-
----
-
-## 13. In-Fold Preprocessing
-
-Within each fold, `DataPreprocessor` fits median imputation and zero-variance pruning (plus `StandardScaler` for Logistic Regression) exclusively on the training partition before transforming the validation partition.
+Five-fold `GroupKFold` was used for outer validation. Four-fold `GroupKFold` was used for inner model and threshold selection. Each validation fold contained a repository excluded from the corresponding training partition:
+- **Outer Loop ($K_{\text{outer}} = 5$):** Holds out one repository per fold (`Humanizer`: 291, `Serilog`: 134, `MediatR`: 91, `Polly`: 34, `FluentValidation`: 28).
+- **Inner Loop ($K_{\text{inner}} = 4$):** Within each 4-repository outer training partition, holds out one repository per inner fold to evaluate candidate configurations and select the operating threshold $\tau_{\text{inner}}^*$ on pooled inner out-of-fold predictions.
+- **Outer Evaluation:** The pipeline is refitted on the 4 outer-training repositories and evaluated once on the outer validation repository.
 
 ---
 
-## 14. Multi-Model Cross-Validation Results ($\tau = 0.50$)
+## 13. In-Fold Preprocessing and Feature Selection
 
-| Rank | Configuration ID | Algorithm | F1 (Mean ± Std) | Recall (Mean ± Std) | Precision (Mean ± Std) | Accuracy (Mean ± Std) | ROC-AUC | PR-AUC | Brier Score |
-| :---: | :--- | :--- | :---: | :---: | :---: | :---: | ---: | ---: | :---: |
-| 1 | `rf_compact_regularized` | Random Forest | 0.6859 ± 0.0247 | 0.7403 ± 0.1557 | 0.6824 ± 0.1202 | 0.6734 ± 0.0491 | 0.7025 | 0.6401 | 0.2144 ± 0.0396 |
-| 2 | `rf_feature_constrained_log2` | Random Forest | 0.6385 ± 0.0641 | 0.6831 ± 0.1706 | 0.6384 ± 0.1197 | 0.6369 ± 0.0673 | 0.6974 | 0.6309 | 0.2209 ± 0.0375 |
-| 3 | `rf_heavy_bagging_300` | Random Forest | 0.6262 ± 0.0633 | 0.6788 ± 0.1738 | 0.6117 ± 0.0984 | 0.6212 ± 0.0617 | 0.6874 | 0.6277 | 0.2265 ± 0.0376 |
-| 4 | `rf_baseline_balanced` | Random Forest | 0.6108 ± 0.1176 | 0.6678 ± 0.1982 | 0.6046 ± 0.1157 | 0.6074 ± 0.0827 | 0.6792 | 0.6200 | 0.2249 ± 0.0410 |
-| 5 | `dt_shallow_depth4` | Decision Tree | 0.5734 ± 0.2172 | 0.6166 ± 0.2646 | 0.5573 ± 0.1884 | 0.5721 ± 0.1345 | 0.5849 | 0.5630 | 0.2807 ± 0.0699 |
-| 6 | `rf_deep_capacity` | Random Forest | 0.5577 ± 0.0739 | 0.5794 ± 0.1737 | 0.5811 ± 0.1147 | 0.5815 ± 0.0647 | 0.6552 | 0.5982 | 0.2429 ± 0.0435 |
-| 7 | `lr_balanced_c1` | Logistic Regression | 0.4989 ± 0.1252 | 0.4538 ± 0.1469 | 0.5994 ± 0.1557 | 0.5709 ± 0.0894 | 0.6225 | 0.5694 | 0.2620 ± 0.0368 |
-| 8 | `lr_standard_c1` | Logistic Regression | 0.4890 ± 0.1409 | 0.4360 ± 0.1651 | 0.6095 ± 0.1593 | 0.5744 ± 0.0877 | 0.6231 | 0.5699 | 0.2643 ± 0.0366 |
-| 9 | `dt_depth8` | Decision Tree | 0.4695 ± 0.2194 | 0.4907 ± 0.2529 | 0.4844 ± 0.1983 | 0.5050 ± 0.1425 | 0.5097 | 0.5033 | 0.3993 ± 0.1017 |
+Within every inner and outer fold, median imputation (`SimpleImputer`), zero-variance pruning (`VarianceThreshold`), feature selection (`all_26`, Spearman $|\rho| > 0.85$ correlation pruning `corr_pruned_085`, inner permutation importance `inner_perm_top12`, and `theoretical_core10`), and feature scaling (`StandardScaler` / `RobustScaler`) are fitted strictly on the training slice.
 
-Depth-regularized Random Forest (`rf_compact_regularized`, `max_depth=8`, `min_samples_leaf=4`) achieved higher cross-repository F1 and lower fold variance ($\pm 0.0247$) than deeper trees (`rf_deep_capacity`, `max_depth=15`, F1 = $0.5577$).
+Feature correlation analysis ([feature_correlation.csv](../../3_TestResults/ModelOptimization/feature_correlation.csv)) identified six feature pairs with Spearman $|\rho| \ge 0.85$ (`logical_loc` vs. `statement_count` $\rho = 0.9700$, `loc` vs. `method_length` $\rho = 0.9559$, `max_nesting_depth` vs. `if_count` $\rho = 0.9040$). Constraining per-split feature subsampling (`max_features='log2'`) and minimum leaf size (`min_samples_leaf=6..8`) prevented collinear size metrics from dominating tree splits across repositories.
 
 ---
 
-## 15. Probability Calibration
+## 14. Baseline vs. Nested Optimization Results
 
-Calibration was measured using the Brier score ($\text{BS} = \frac{1}{N}\sum_{i=1}^N (\hat{p}_i - y_i)^2$). `rf_compact_regularized` achieved the lowest mean Brier score across folds ($0.2144 \pm 0.0396$) and $0.1713$ on the independent holdout set.
+### 14.1 Model Configurations
+
+| Parameter | Baseline RF (`rf_compact_regularized`) | Optimized RF (`rf_nested_opt_v3_depth6_leaf8_log2`) | Optimized Extra Trees (`et_nested_opt_v3_depth6_leaf6_log2`) |
+| :--- | ---: | ---: | ---: |
+| Estimator | `RandomForestClassifier` | `RandomForestClassifier` | `ExtraTreesClassifier` |
+| Estimators | 100 | 200 | 200 |
+| Maximum depth | 8 | 6 | 6 |
+| Minimum split | 5 | 10 | 8 |
+| Minimum leaf | 4 | 8 | 6 |
+| Maximum features | `sqrt` | `log2` | `log2` |
+| Class weight | `balanced` | `balanced` | `balanced` |
+| Random state | 42 | 42 | 42 |
+
+### 14.2 Nested Cross-Validation Performance (`3_TestResults/ModelOptimization/nested_cv_results.csv`)
+
+| Configuration ID | Family | Outer ROC-AUC (Mean ± Std) | Outer PR-AUC (Mean ± Std) | Outer Brier (Mean ± Std) | Outer F1 $\tau=0.50$ (Mean ± Std) | Nested $\tau_{\text{inner}}^*$ F1 (Mean ± Std) | Pooled OOF ROC-AUC | Pooled OOF F1 ($\tau_{\text{inner}}^*$) | Pooled OOF Recall ($\tau_{\text{inner}}^*$) | Pooled OOF Precision ($\tau_{\text{inner}}^*$) | Pooled OOF Accuracy ($\tau_{\text{inner}}^*$) |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | ---: | ---: | ---: | ---: | ---: |
+| `et_depth6_leaf6_log2_bal` | Extra Trees | 0.7349 ± 0.0703 | 0.6443 ± 0.0496 | 0.2062 ± 0.0213 | 0.6867 ± 0.1394 | 0.7667 ± 0.0723 | 0.7470 | 0.7653 | 91.76% | 65.64% | 72.84% |
+| `et_depth8_leaf4_sqrt_bal` | Extra Trees | 0.7349 ± 0.0801 | 0.6557 ± 0.0557 | 0.2056 ± 0.0260 | 0.6622 ± 0.1326 | 0.7324 ± 0.0492 | 0.7322 | 0.7492 | 88.89% | 64.75% | 71.28% |
+| `rf_compact_corr_pruned` | Random Forest (FS) | 0.7315 ± 0.1142 | 0.6595 ± 0.1103 | 0.2096 ± 0.0280 | 0.6977 ± 0.0241 | 0.7302 ± 0.0533 | 0.7219 | 0.7262 | 90.32% | 60.72% | 67.13% |
+| `rf_depth6_leaf8_log2_bal` | Random Forest | 0.7216 ± 0.1156 | 0.6465 ± 0.1026 | 0.2055 ± 0.0374 | 0.7517 ± 0.0709 | 0.7539 ± 0.0706 | 0.7119 | 0.7406 | 88.53% | 63.66% | 70.07% |
+| `lr_c01_robust_bal` | Logistic Regression | 0.7146 ± 0.0973 | 0.6495 ± 0.0828 | 0.2345 ± 0.0334 | 0.5722 ± 0.1064 | 0.7316 ± 0.0677 | 0.7350 | 0.7304 | 91.76% | 60.66% | 67.30% |
+| `rf_compact_calibrated_sigmoid` | Calibrated RF | 0.7060 ± 0.1219 | 0.6215 ± 0.1056 | 0.2180 ± 0.0334 | 0.6832 ± 0.0630 | 0.7363 ± 0.0679 | 0.6916 | 0.7347 | 90.32% | 61.92% | 68.51% |
+| `rf_compact_regularized_baseline` | Baseline RF | 0.7037 ± 0.1292 | 0.6405 ± 0.1135 | 0.2146 ± 0.0398 | 0.6879 ± 0.0243 | 0.7408 ± 0.0760 | 0.7034 | 0.7294 | 88.89% | 61.85% | 68.17% |
+| `hgb_lr003_depth3_leaf25_l2_5` | HistGradientBoosting | 0.6937 ± 0.1532 | 0.6363 ± 0.1143 | 0.2177 ± 0.0477 | 0.6862 ± 0.0676 | 0.7383 ± 0.0800 | 0.6883 | 0.7158 | 87.10% | 60.75% | 66.61% |
+| `gb_lr003_depth2_leaf12_sub08` | Gradient Boosting | 0.6899 ± 0.1503 | 0.6398 ± 0.1149 | 0.2159 ± 0.0377 | 0.7102 ± 0.0605 | 0.7439 ± 0.0844 | 0.6925 | 0.7398 | 90.68% | 62.47% | 69.20% |
+
+### 14.3 Per-Repository Outer-Fold Breakdown
+
+| Held-Out Repository ($N$) | Metric | Baseline RF (`rf_compact_regularized`) | Optimized RF (`rf_depth6_leaf8_log2_bal`) | Optimized Extra Trees (`et_depth6_leaf6_log2_bal`) |
+| :--- | :--- | ---: | ---: | ---: |
+| `Humanizr/Humanizer` ($N=291$) | ROC-AUC / Brier | 0.7981 / 0.1839 | 0.7869 / 0.1819 | 0.7983 / 0.1803 |
+| | F1 ($\tau = 0.50$ / Nested $\tau_{\text{inner}}^*$) | 0.6866 / 0.7703 | 0.7402 / 0.7744 | 0.7724 / 0.8113 |
+| `serilog/serilog` ($N=134$) | ROC-AUC / Brier | 0.5865 / 0.2702 | 0.6377 / 0.2503 | 0.7146 / 0.2231 |
+| | F1 ($\tau = 0.50$ / Nested $\tau_{\text{inner}}^*$) | 0.6995 / 0.6842 | 0.7191 / 0.6878 | 0.7891 / 0.7251 |
+| `LuckyPennySoftware/MediatR` ($N=91$) | ROC-AUC / Brier | 0.6781 / 0.2210 | 0.6783 / 0.2238 | 0.6306 / 0.2381 |
+| | F1 ($\tau = 0.50$ / Nested $\tau_{\text{inner}}^*$) | 0.6593 / 0.6555 | 0.6593 / 0.7027 | 0.5870 / 0.6542 |
+| `App-vNext/Polly` ($N=34$) | ROC-AUC / Brier | 0.8997 / 0.1580 | 0.9135 / 0.1449 | 0.8270 / 0.1908 |
+| | F1 ($\tau = 0.50$ / Nested $\tau_{\text{inner}}^*$) | 0.6667 / 0.8718 | 0.8750 / 0.8824 | 0.4615 / 0.8649 |
+| `FluentValidation` ($N=28$) | ROC-AUC / Brier | 0.5561 / 0.2399 | 0.5918 / 0.2264 | 0.7041 / 0.1985 |
+| | F1 ($\tau = 0.50$ / Nested $\tau_{\text{inner}}^*$) | 0.7273 / 0.7222 | 0.7647 / 0.7222 | 0.8235 / 0.7778 |
 
 ---
 
-## 16. Out-of-Fold Decision Threshold Optimization
+## 15. Probabilistic Prediction Error (Brier Score) vs. Probability Calibration
 
-| Threshold ($\tau$) | Accuracy | Precision | Recall | F1-Score | TN | FP | FN | TP |
-| :---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 0.20 | 0.5848 | 0.5401 | 0.9857 | 0.6978 | 63 | 236 | 4 | 275 |
-| 0.30 | 0.6696 | 0.6046 | 0.9498 | 0.7388 | 122 | 177 | 14 | 265 |
-| **0.40 ($\tau^*$)** | **0.7042** | **0.6421** | **0.8746** | **0.7405** | **163** | **136** | **35** | **244** |
-| 0.45 | 0.6834 | 0.6385 | 0.7993 | 0.7099 | 172 | 127 | 56 | 223 |
-| **0.50 (Nominal)** | **0.6713** | **0.6386** | **0.7348** | **0.6833** | **183** | **116** | **74** | **205** |
-| 0.55 | 0.6765 | 0.6631 | 0.6703 | 0.6667 | 204 | 95 | 92 | 187 |
-| 0.60 | 0.6626 | 0.6828 | 0.5556 | 0.6126 | 227 | 72 | 124 | 155 |
-| 0.70 | 0.6211 | 0.7344 | 0.3369 | 0.4619 | 265 | 34 | 185 | 94 |
-| 0.80 | 0.5467 | 0.8261 | 0.1362 | 0.2338 | 291 | 8 | 241 | 38 |
-
-Lowering the decision threshold from $\tau=0.50$ to $\tau^*=0.40$ reduces false negatives on pooled out-of-fold predictions from 74 to 35 and increases recall from $73.48\%$ to $87.46\%$.
+Brier score ($\text{BS} = \frac{1}{N}\sum_{i=1}^N (\hat{p}_i - y_i)^2$) measures probabilistic prediction error; reporting a Brier score does not establish that a model is calibrated. When post-hoc probability calibration was applied via `CalibratedClassifierCV(method='sigmoid', cv=3)` inside each training fold (`rf_compact_calibrated_sigmoid`), outer Brier error was $0.2180 \pm 0.0334$ compared to $0.2146 \pm 0.0398$ for the uncalibrated baseline RF. Structural regularization (`rf_depth6_leaf8_log2_bal`: $0.2055 \pm 0.0374$; `et_depth6_leaf6_log2_bal`: $0.2062 \pm 0.0213$) achieved lower probabilistic prediction error across repositories without post-hoc sigmoid fitting.
 
 ---
 
-## 17. Independent Holdout Evaluation (`JamesNK/Newtonsoft.Json`)
+## 16. Decision Threshold Selection and Deployed Application Behavior
 
-Evaluating the frozen `rf_compact_regularized` bundle on 159 production methods from `Newtonsoft.Json` (79 defect-prone, 80 candidate-clean):
+1. **Nested Inner-Fold Threshold Selection:** In the nested optimization experiment, decision thresholds were selected on inner 4-fold out-of-fold predictions (`[0.40, 0.40, 0.40, 0.35, 0.40]` for `et_nested_opt_v3_depth6_leaf6_log2`, yielding outer mean F1 = $0.7667 \pm 0.0723$ and pooled OOF F1 = $0.7653$; `[0.40, 0.35, 0.30, 0.35, 0.40]` for `rf_nested_opt_v3_depth6_leaf8_log2`, yielding outer mean F1 = $0.7539 \pm 0.0706$ and pooled OOF F1 = $0.7406$).
+2. **Comparison with Unnested Threshold Tuning:** For the baseline `rf_compact_regularized` model, unnested threshold selection on outer OOF predictions ($\tau^* = 0.40$) reported pooled F1 = $0.7405$, whereas nested inner-fold threshold selection (`[0.40, 0.40, 0.25, 0.30, 0.35]`) yielded pooled F1 = $0.7294$.
+3. **Deployed Application Configuration:** Both `et_nested_opt_v3_depth6_leaf6_log2.joblib` and `rf_nested_opt_v3_depth6_leaf8_log2.joblib` were retrained on all $N = 578$ observations of Dataset #2 and saved in `4_AppBuild/Assets/Models/` alongside the preserved baseline models. In `BugPredictor` (`2_SourceCode/Python/ml/predictor.py`), binary classification (`predicted_label`) calls `self.model.predict(df_proc)` at the nominal $\tau = 0.50$ threshold, while `risk_category` maps `predict_proba()` to Low ($\le 0.30$), Medium ($0.31\text{--}0.60$), and High ($> 0.60$) risk bands.
 
-| Metric | Nominal ($\tau = 0.50$) | CV-Tuned ($\tau^* = 0.40$) |
+---
+
+## 17. Historical Baseline Holdout Evaluation (`JamesNK/Newtonsoft.Json`)
+
+In the historical baseline study, the frozen `rf_compact_regularized` model was evaluated on 159 production methods from `Newtonsoft.Json` (79 defect-prone, 80 candidate-clean):
+
+| Metric | Baseline RF Nominal ($\tau = 0.50$) | Baseline RF Unnested CV-Tuned ($\tau^* = 0.40$) |
 | :--- | :---: | :---: |
 | Accuracy | 74.21% (118/159) | 75.47% (120/159) |
 | Precision | 69.79% (67/96) | 69.61% (71/102) |
 | Recall | 84.81% (67/79) | 89.87% (71/79) |
 | F1-Score | 0.7657 | 0.7845 |
-| ROC-AUC | 0.8209 | 0.8209 |
-| PR-AUC | 0.7917 | 0.7917 |
+| ROC-AUC / PR-AUC | 0.8209 / 0.7917 | 0.8209 / 0.7917 |
 | Brier Score | 0.1713 | 0.1713 |
 | Confusion Matrix [TN, FP, FN, TP] | `[51, 29, 12, 67]` | `[49, 31, 8, 71]` |
 
+`Newtonsoft.Json` was not used during the nested optimization experiment. These holdout results belong exclusively to the historical baseline model; the newly optimized models (`et_nested_opt_v3_depth6_leaf6_log2` and `rf_nested_opt_v3_depth6_leaf8_log2`) have not yet been evaluated on a new independent repository.
+
 ---
 
-## 18. Qualitative Prediction Case Analysis (`Newtonsoft.Json`)
+## 18. Error Analysis (`Dataset #2` and Historical Holdout)
 
-| Case Type | Method | Predicted Probability | Key Metrics | Observation |
+### 18.1 Dataset #2 Nested OOF Error Analysis (`et_nested_opt_v3_depth6_leaf6_log2`, $N = 578$)
+
+| Quadrant | Count | Median `loc` (Mean) | Median `logical_loc` (Mean) | Median `cc` (Mean) | Median `nesting` (Mean) | Observation |
+| :--- | ---: | :---: | :---: | :---: | :---: | :--- |
+| True Positive (TP) | 256 | 18.5 (30.33) | 7.0 (12.67) | 2.0 (4.74) | 1.0 (1.17) | Multi-branch production methods (`91.76%` of positive class captured) |
+| True Negative (TN) | 165 | 3.0 (4.06) | 1.0 (1.12) | 1.0 (1.02) | 0.0 (0.02) | Concise single-statement accessors and helpers |
+| False Positive (FP) | 134 | 15.0 (18.26) | 5.0 (8.07) | 2.0 (3.43) | 1.0 (0.87) | Candidate-clean methods with elevated structural complexity (`27` have `cc >= 6` or `loc >= 35`) |
+| False Negative (FN) | 23 | 5.0 (6.74) | 1.0 (1.13) | 1.0 (1.17) | 0.0 (0.04) | Short methods (`18/23` have `loc <= 12` and `cc <= 2`) with semantic/literal defects |
+
+### 18.2 Representative Historical Holdout Cases (`Newtonsoft.Json`, Baseline RF)
+
+| Case Type | Method | Baseline Probability | Key Metrics | Observation |
 | :--- | :--- | ---: | :--- | :--- |
 | True Positive | `CalculatePropertyDetails` | 0.9155 | `loc=78`, `cc=22`, `params=11`, `nesting=2` | High branching and parameter count; SZZ linked to null-reference fix (`142f5cb0`). |
 | True Positive | `ReadMetadataPropertiesToken` | 0.8870 | `loc=75`, `cc=17`, `statements=59`, `nesting=6` | Deep nesting (6 levels) and high statement density. |
@@ -246,22 +286,22 @@ Evaluating the frozen `rf_compact_regularized` bundle on 159 production methods 
 
 ---
 
-## 20. Threats to Validity
+## 20. Threats to Validity and Limitations
 
-| Threat Category | Threat | Mitigation / Scope |
+| Threat Category | Limitation | Scope / Impact |
 | :--- | :--- | :--- |
-| Construct Validity | Heuristic SZZ blame attribution and Open-World Assumption on candidate-clean `HEAD` samples; temporal asymmetry between pre-fix and `HEAD` snapshots. | Whitespace/move flags (`git blame -w -M -C`), comment filtering, and explicit distinction between candidate-clean and defect-free code. |
-| Internal Validity | Threshold $\tau^* = 0.40$ tuned on pooled out-of-fold predictions without nested CV. | Threshold frozen prior to one-shot evaluation on `Newtonsoft.Json` ($F_1 = 0.7845$, Recall $= 89.87\%$). |
-| External Validity | Evaluation bounded to 6 open-source C# libraries and 26 static AST metrics. | Repository-grouped splits test cross-repository transfer across 6 distinct domains. |
-| Conclusion Validity | Balanced 1:1 evaluation (~48%–50% positive) vs. lower production base rates ($2\%\text{--}10\%$). | Bayesian base-rate calculation reported (~10.9% precision at 5% prevalence); outputs framed as risk prioritization indicators. |
+| Construct Validity | Heuristic SZZ blame attribution; candidate-clean (`label = 0`) methods are not confirmed defect-free; temporal difference between historical pre-fix (`label = 1`) and contemporary `HEAD` (`label = 0`) methods; static AST metrics cannot detect semantic defects in short methods. | 18 of 23 false negatives on Dataset #2 occur in methods with `loc <= 12` and `cc <= 2`. |
+| Internal Validity | Repository size imbalance across the 5 training repositories (`Humanizer`: 291 vs. `Polly`: 34 and `FluentValidation`: 28); deployment `BugPredictor.predict_from_metrics()` uses `model.predict()` ($\tau = 0.50$) for binary labels while risk bands use `0.30` / `0.60`. | Nested $5 \times 4$ `GroupKFold` isolates repositories between training, selection, and evaluation partitions. |
+| External Validity | Only 5 repositories were used for training and nested validation; `Newtonsoft.Json` was used in the historical baseline study, so a new unseen repository is required to evaluate the optimized models externally. | Nested cross-validation results are estimates on Dataset #2, not proof of universal generalization across all C# projects. |
+| Conclusion Validity | Balanced ~1:1 evaluation (~48%–50% positive) vs. lower production base rates ($2\%\text{--}10\%$). | At 5% defect prevalence, sensitivity $89.87\%$ and FPR $38.75\%$ yield a Bayesian precision of $\approx 10.88\%$; predictions serve as review prioritization indicators. |
 
 ---
 
 ## 21. Operational Integration Guidelines
 
-1. **Risk Triage Tiers:** Low risk ($\hat{p} < 0.40$), Medium risk ($0.40 \le \hat{p} < 0.70$), and High risk ($\hat{p} \ge 0.70$) for prioritizing code review and unit testing.
+1. **Risk Triage Tiers:** Use probability risk bands (`Low <= 0.30`, `Medium 0.31–0.60`, `High > 0.60`) to prioritize code review and unit test allocation.
 2. **Metric Attribution:** Surface the specific Roslyn metrics exceeding complexity thresholds alongside risk scores.
-3. **Complementary Analysis:** Pair static AST risk scoring with semantic compiler diagnostics and unit testing to cover short, low-complexity methods.
+3. **Complementary Analysis:** Pair static AST risk scoring with compiler semantic analysis and unit tests to cover short, low-complexity methods.
 
 ---
 
@@ -271,6 +311,8 @@ Evaluating the frozen `rf_compact_regularized` bundle on 159 production methods 
 | :--- | :--- |
 | Datasets | `1_Database/Datasets/Original/csharp_empirical_v1_v1.0.0.csv`, `1_Database/Datasets/Processed/csharp_empirical_v2_v2.0.0.csv` |
 | SQLite Database | `1_Database/SQLite/bug_detection.db` |
-| Frozen Model | `4_AppBuild/Assets/Models/exp_final_5fold_v2_best_rf_compact_regularized.joblib` |
-| Experiment Scripts | `2_SourceCode/Scripts/run_dataset_expansion.py`, `2_SourceCode/Scripts/run_final_experiment.py`, `2_SourceCode/Scripts/run_independent_holdout_validation.py` |
+| Preserved Baseline Models | `4_AppBuild/Assets/Models/exp_final_5fold_v2_best_rf_compact_regularized.joblib`, `4_AppBuild/Assets/Models/rf_csharp_empirical_model.joblib` |
+| Optimized Versioned Models | `4_AppBuild/Assets/Models/et_nested_opt_v3_depth6_leaf6_log2.joblib`, `4_AppBuild/Assets/Models/rf_nested_opt_v3_depth6_leaf8_log2.joblib` |
+| Experiment & Optimization Scripts | `2_SourceCode/Scripts/run_final_experiment.py`, `2_SourceCode/Scripts/run_independent_holdout_validation.py`, `2_SourceCode/Scripts/run_model_optimization.py` |
+| Optimization Artifacts | `3_TestResults/ModelOptimization/` (`optimization_report.md`, `nested_cv_summary.json`, `nested_cv_results.csv`, `model_comparison.csv`, `per_repository_results.csv`, `threshold_analysis.csv`, `feature_importance.csv`, `feature_correlation.csv`, `error_analysis.csv`) |
 | Automated Tests | `2_SourceCode/Tests/` (`pytest`, 123 tests) |

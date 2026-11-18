@@ -1,48 +1,41 @@
-# 01 — Project Overview & Motivation
+# 01 — Project Overview
 
 **Project:** Machine Learning-Based Software Defect Prediction for C# Source Code  
 **Course:** Computational Intelligence in Software Engineering (CISE Project 2)  
 **Institution:** Babeș-Bolyai University, Faculty of Mathematics and Computer Science  
-**Master:** Applied Computational Intelligence  
+**Program:** M.Sc. Applied Computational Intelligence  
 
 ---
 
-## 1. Project at a Glance
+## 1. System Summary
 
-Software defect prediction applies machine learning to identify error-prone source code components before they reach production. 
+The system predicts method-level defect risk in C# source code by combining Git/SZZ defect mining, Roslyn syntax tree analysis, and repository-grouped ensemble classifiers.
 
 ```mermaid
 flowchart LR
     Source["C# Source Code"] --> Roslyn["Roslyn AST Analysis<br/>(26 Static Metrics)"]
-    Roslyn --> Model["Trained Random Forest<br/>(GroupKFold Validated)"]
-    Model --> Score["Defect Risk Score<br/>(Low / Medium / High)"]
+    Roslyn --> Model["Ensemble Classifier<br/>(5x4 Nested GroupKFold)"]
+    Model --> Score["Defect Probability<br/>& Risk Tier"]
 ```
 
-- **Target Language:** C# (.NET)
-- **Granularity:** Method-level (functions, properties, constructors)
-- **Approach:** Static syntactic & complexity metrics paired with historical Git/SZZ defect traces
-- **Output:** Risk probability score ($[0.0, 1.0]$) and top influential metrics explaining the prediction
+- **Target Language:** C# (.NET 9.0)
+- **Granularity:** Method-level (methods, constructors, accessors)
+- **Feature Representation:** 26 static AST and complexity metrics extracted via `Microsoft.CodeAnalysis.CSharp`
+- **Validation Protocol:** 5-fold outer $\times$ 4-fold inner nested repository-level `GroupKFold` cross-validation
+- **Output:** Defect probability score ($[0.0, 1.0]$), risk tier (`Low <= 0.30`, `Medium 0.31-0.60`, `High > 0.60`), and top feature importances
 
 ---
 
-## 2. Why Defect Prediction Matters
+## 2. Motivation
 
-Software defects cost the global software industry billions annually in debugging, security patches, and unplanned downtime. 
-
-Traditional quality assurance techniques (manual code review and comprehensive unit testing) cannot scale uniformly across millions of lines of code.
-
-### The Value Proposition
-- **Targeted Code Reviews:** Direct senior developer review effort toward the top 20% most defect-prone methods.
-- **Early Warning System:** Catch architectural complexity and defect risk at commit/PR time before code is merged into main branches.
-- **Empirical Grounding:** Base quality assessments on objective syntactic and structural measurements rather than subjective intuition.
+Manual code review and unit testing cannot be applied with equal depth across all methods in large software repositories. Method-level defect prediction provides a quantitative triage signal to prioritize code review effort toward structurally complex or high-risk methods.
 
 ---
 
-## 3. Core Contributions
+## 3. Core Implementation Components
 
-1. **Empirical Dataset Construction:** Mined 7 real-world open-source C# projects (`Polly`, `FluentValidation`, `Newtonsoft.Json`, `CommandLine`, `Humanizr`, `Serilog`, `21Questions`).
-2. **Roslyn Static Metric Engine:** Extracted 26 method-level AST metrics (McCabe complexity, nesting, lines of code, exception constructs, OOP flags).
-3. **SZZ Ground-Truth Labeling:** Traced historical bug fixes back to Bug-Inducing Commits (BICs) using `git blame -w -M -C`.
-4. **Group-Aware Evaluation:** Enforced 5-fold `GroupKFold` cross-validation partitioned by repository to eliminate data leakage.
-5. **Interactive Workbench:** Developed a complete 8-page Streamlit web application providing live code analysis, model evaluation, and risk visualization.
-
+1. **Empirical Dataset Construction:** Mined 7 open-source C# repositories (`Humanizr/Humanizer`, `serilog/serilog`, `LuckyPennySoftware/MediatR`, `App-vNext/Polly`, `FluentValidation/FluentValidation`, `commandlineparser/commandline`, and `JamesNK/Newtonsoft.Json`), yielding Dataset #1 ($N = 483$), Dataset #2 ($N = 578$), and an independent historical holdout set ($N = 159$).
+2. **SZZ Defect Labeling:** Identified bug-fixing commits via regex classification and traced deleted/modified lines to pre-fix Bug-Inducing Commits (BICs) using `git blame -w -M -C`.
+3. **Roslyn Static Metric Engine:** Extracted 26 method-level syntax and complexity metrics from production C# files while excluding test and auto-generated code.
+4. **Nested Repository-Level Optimization:** Evaluated 20 model and preprocessing configurations under a $5 \times 4$ nested `GroupKFold` protocol on Dataset #2 (`et_nested_opt_v3_depth6_leaf6_log2`: Outer ROC-AUC `0.7349 ± 0.0703`, Pooled OOF F1 `0.7653`; `rf_nested_opt_v3_depth6_leaf8_log2`: Outer ROC-AUC `0.7216 ± 0.1156`, Outer Brier `0.2055 ± 0.0374`).
+5. **Interactive Inspection Application:** Implemented an 8-page Streamlit interface for repository mining, SZZ inspection, dataset export, model training/evaluation, and live C# method scoring.

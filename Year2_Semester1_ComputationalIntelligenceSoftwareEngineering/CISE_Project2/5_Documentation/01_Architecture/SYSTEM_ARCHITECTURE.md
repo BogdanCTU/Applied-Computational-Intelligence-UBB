@@ -9,7 +9,7 @@
 
 ## 1. High-Level Architecture
 
-The system implements a method-level defect prediction pipeline for C# source code combining Git repository mining, SZZ line-blame attribution, Roslyn Abstract Syntax Tree (AST) metric extraction, repository-grouped cross-validation, and a Streamlit user interface.
+The system implements a method-level defect prediction pipeline for C# source code combining Git repository mining, SZZ line-blame attribution, Roslyn Abstract Syntax Tree (AST) metric extraction, repository-grouped cross-validation (5-fold baseline and $5 \times 4$ nested optimization), and a Streamlit user interface.
 
 ```mermaid
 flowchart TD
@@ -34,14 +34,13 @@ flowchart TD
     end
 
     subgraph ML["4. Machine Learning & Validation"]
-        CSVEval --> GKF["5-Fold GroupKFold by Repository"]
-        GKF --> Benchmark["9-Configuration Benchmark (RF, DT, LR)"]
-        Benchmark --> BestModel["Selected Model (rf_compact_regularized)"]
-        BestModel --> Holdout["Independent Holdout (Newtonsoft.Json)"]
+        CSVEval --> GKF["Outer 5-Fold & Inner 4-Fold GroupKFold"]
+        GKF --> Benchmark["Baseline & 20-Config Nested Optimization"]
+        Benchmark --> Models["Versioned Model Bundles (.joblib)"]
     end
 
     subgraph App["5. User Interface & Inference"]
-        BestModel --> UI["Streamlit Workbench (app.py)"]
+        Models --> UI["Streamlit Workbench (app.py)"]
         UI --> Realtime["Method & File Defect Risk Scoring"]
     end
 ```
@@ -56,14 +55,15 @@ flowchart TD
 | Application Layer | `2_SourceCode/Python/application/` | Streamlit interface with 8 pages for repository management, SZZ analysis, dataset export, model training, evaluation, and defect prediction. |
 | Core Configuration | `2_SourceCode/Python/core/` | `PROJECT_ROOT` detection, storage path defaults, environment variables, and unpickle module aliases. |
 | Database Services | `2_SourceCode/Python/database/` | SQLite connection management, foreign-key enforcement, schema initialization, and CRUD queries. |
-| ML Engine | `2_SourceCode/Python/ml/` | In-fold preprocessing, `GroupKFold` cross-validation, multi-model benchmarking, threshold optimization, and inference. |
+| ML Engine | `2_SourceCode/Python/ml/` | In-fold preprocessing, `GroupKFold` cross-validation, multi-model benchmarking, threshold sweeps, and inference. |
 | Repository Mining | `2_SourceCode/Python/repositories/` | GitHub REST API client, local Git clone/pull management, and commit traversal. |
 | Pipeline Services | `2_SourceCode/Python/services/` | Regex bug-fix detection, SZZ line-blame analysis, label management, dataset construction, and Roslyn subprocess bridge. |
 | Utility Services | `2_SourceCode/Python/utils/` | Logging configuration and production/test C# file path classification. |
 | C# Roslyn Analyzer | `2_SourceCode/RoslynAnalyzer/` | .NET 9.0 CLI application using `Microsoft.CodeAnalysis.CSharp` to parse ASTs and compute 26 static metrics. |
+| Operational Scripts | `2_SourceCode/Scripts/` | Dataset expansion, baseline 5-fold experiment, historical holdout evaluation, and nested model optimization (`run_model_optimization.py`). |
 | Verification Suite | `2_SourceCode/Tests/` | 16 test modules (123 automated tests) covering unit and integration behavior. |
-| Test Results | `3_TestResults/` | Cross-validation JSON/CSV outputs, holdout evaluation results, audit reports, and test execution reports. |
-| Build Assets | `4_AppBuild/` | Frozen `.joblib` model bundles, release notes, and Windows launcher script. |
+| Test Results | `3_TestResults/` | Cross-validation, historical holdout, audit reports, and nested optimization artifacts (`3_TestResults/ModelOptimization/`). |
+| Build Assets | `4_AppBuild/` | Preserved baseline and versioned optimized `.joblib` model bundles, release notes, and Windows launcher script. |
 
 ---
 
@@ -74,5 +74,5 @@ flowchart TD
 3. **SZZ Attribution:** Deleted or modified production C# lines in bug-fixing commits are traced to candidate bug-inducing commits via `git blame -w -M -C`.
 4. **AST Metric Extraction:** Roslyn locates the enclosing method and computes 26 static code metrics on the pre-fix revision for defect-prone observations (Label 1) and on `HEAD` for candidate-clean observations (Label 0).
 5. **Observation Persistence:** Method observations and feature vectors are stored in SQLite and exported to versioned CSV snapshots (`1_Database/Datasets/`).
-6. **Repository-Grouped Evaluation:** Classifiers are evaluated with 5-fold `GroupKFold` grouped by `repository_id`, isolating repositories between training and validation folds.
-7. **Local Inference:** The serialized Random Forest model and fitted preprocessor execute locally in the Streamlit application to score C# methods and files.
+6. **Repository-Grouped Evaluation:** Classifiers are evaluated with 5-fold outer `GroupKFold` and 4-fold inner `GroupKFold` grouped by `repository_id`, isolating repositories between training and validation partitions.
+7. **Local Inference:** Serialized model bundles (`et_nested_opt_v3_depth6_leaf6_log2`, `rf_nested_opt_v3_depth6_leaf8_log2`, and preserved baseline models) execute locally in `BugPredictor` to score C# methods and files.

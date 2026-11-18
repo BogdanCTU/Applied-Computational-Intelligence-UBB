@@ -27,7 +27,7 @@
 │   ├── Program.cs             # C# AST syntax walker computing 26 static metrics
 │   └── RoslynAnalyzer.csproj  # .NET 9.0 project (Microsoft.CodeAnalysis.CSharp 4.12.0)
 ├── Tests/                     # 16 pytest modules (123 tests)
-└── Scripts/                   # Experiment execution and database audit scripts
+└── Scripts/                   # Experiment execution, nested optimization, and database audit scripts
 ```
 
 ---
@@ -36,13 +36,15 @@
 
 | Module | Path | Responsibility |
 | :--- | :--- | :--- |
-| Settings | `core/settings.py` | Pydantic configuration, `find_project_root()`, storage path resolution, and legacy unpickle aliases. |
+| Settings | `core/settings.py` | Pydantic configuration, `find_project_root()`, storage path resolution, risk band thresholds (`0.30` / `0.60`), and unpickle aliases. |
 | Database | `database/connection.py`, `database/repository.py` | SQLite WAL connection management, schema creation, and CRUD operations. |
 | Roslyn Client | `services/analyzer/roslyn_client.py` | Invokes `RoslynAnalyzer.dll` via `dotnet`, normalizes line endings, and parses JSON metric output. |
 | Source Classifier | `utils/source_classifier.py` | Filters out test projects, test fixtures, build directories (`bin/`, `obj/`), and generated files (`*.g.cs`, `*.Designer.cs`). |
 | Mining & SZZ | `services/mining/bug_fix_detector.py`, `szz_analyzer.py` | Scores commit messages for bug fixes and traces modified lines via `git blame -w -M -C`. |
 | Labeling & Datasets | `services/labeling/label_manager.py`, `services/dataset/` | Maps SZZ traces to methods, samples candidate-clean methods, extracts features, and exports CSV snapshots. |
-| ML Pipeline | `ml/preprocessing.py`, `trainer.py`, `cross_validation.py`, `evaluator.py`, `predictor.py` | Median imputation, zero-variance pruning, `GroupKFold` validation, threshold sweeps, and method-level inference. |
+| ML Pipeline | `ml/preprocessing.py`, `trainer.py`, `cross_validation.py`, `evaluator.py` | Median imputation, zero-variance pruning, `GroupKFold` validation, and evaluation metrics. |
+| Model Manager & Predictor | `ml/model_manager.py`, `ml/predictor.py` | Loads `.joblib` bundles (`ExtraTreesClassifier` and `RandomForestClassifier`) and runs method/file inference (`model.predict()` at $\tau = 0.50$ for `predicted_label`; `predict_proba()` for risk scores). |
+| Optimization Script | `Scripts/run_model_optimization.py` | Executes the $5 \times 4$ nested `GroupKFold` optimization experiment and writes artifacts to `3_TestResults/ModelOptimization/`. |
 
 ---
 

@@ -1,42 +1,34 @@
-# Release Notes — Version 1.0.0
+# Release Notes — Version 1.0.0 (Updated with Nested Model Optimization)
 
 **Project:** Machine Learning-Based Software Defect Prediction for C# Source Code  
-**Release Date:** 2026-11-14  
-**Author:** CISE Project 2 Research Team  
 **Institution:** Babeș-Bolyai University, Faculty of Mathematics and Computer Science  
 
 ---
 
 ## 1. Overview
 
-Version 1.0.0 marks the completed, validated, and structured release of the C# Software Defect Prediction research platform. The system delivers an empirical machine-learning solution for identifying bug-prone C# source code methods using syntactic and structural features extracted from Roslyn Abstract Syntax Trees.
+This release provides an empirical machine-learning pipeline and local Streamlit workbench for method-level defect prediction in C# source code using 26 static Abstract Syntax Tree (AST) metrics extracted via Microsoft Roslyn (`.NET 9.0`).
 
 ---
 
-## 2. Key Capabilities & Deliverables
+## 2. Deliverables and Experimental Results
 
-### A. Core Machine Learning & Methodology
-- **Mined Repositories:** Mined 7 major open-source C# projects (`Polly`, `FluentValidation`, `Newtonsoft.Json`, `CommandLine`, `Humanizr`, `Serilog`, `21Questions`).
-- **Ground-Truth Labeling:** SZZ algorithm with line-blame tracking (`git blame -w -M -C`) for Label 1 (defect-inducing) and stable HEAD sampling under the Open-World Assumption for Label 0 (candidate-clean).
-- **Static Metrics:** 26 Roslyn-extracted AST metrics covering code size, control flow complexity (McCabe), lexical nesting, OOP flags, and exception handling.
-- **Group-Aware Validation:** 5-fold `GroupKFold` cross-validation partitioned strictly by repository, preventing data leakage.
-- **Benchmark Suite:** Comprehensive evaluation across 11 machine-learning classifiers.
-- **Champion Model:** Tuned `RandomForestClassifier` achieving:
-  - 5-Fold CV Unweighted Mean Accuracy: **$67.34\% \pm 4.91\%$**
-  - Pooled Out-of-Fold Nominal Accuracy ($\tau = 0.50$): **$67.13\%$** ($388/578$)
-  - Pooled Out-of-Fold Tuned Accuracy ($\tau^* = 0.40$): **$70.42\%$** ($407/578$, Recall $87.46\%$, F1 $0.7405$)
-  - Independent Holdout Evaluation (`Newtonsoft.Json`, 159 observations): Recall **$89.87\%$** ($71/79$), Specificity **$61.25\%$** ($49/80$), F1 **$0.7676$**, ROC-AUC **$0.7958$**.
+### A. Datasets and Labeling
+- **Repositories Mined:** 7 open-source C# repositories (`Humanizer`, `Serilog`, `MediatR`, `Polly`, `FluentValidation`, `CommandLineParser`, `Newtonsoft.Json`).
+- **Labeling:** SZZ line-blame attribution (`git blame -w -M -C`) for defect-prone methods (`label = 1`, pre-fix revision) and `HEAD` sampling under the Open-World Assumption for candidate-clean methods (`label = 0`).
+- **Dataset #1 (`csharp_empirical_v1` v1.0.0):** 483 methods across 3 repositories (226 defect-prone, 257 candidate-clean).
+- **Dataset #2 (`csharp_empirical_v2` v2.0.0):** 578 production methods across 5 repositories (279 defect-prone, 299 candidate-clean, 0 test files).
 
-### B. Interactive Web Workbench
-- Streamlit web interface with 8 functional tabs for repository mining, SZZ analysis, dataset export, model training, evaluation metrics, and real-time C# method defect prediction.
-- Real-time risk bands (Low $<0.30$, Medium $0.30-0.60$, High $>0.60$) with influential feature explanations.
+### B. Baseline and Nested Model Optimization (`Dataset #2`, $N = 578$)
 
-### C. Repository Structure
-- Sequential 6-domain architecture:
-  1. `1_Database`: SQLite database, original & processed datasets, schema definitions.
-  2. `2_SourceCode`: Python application modules, Roslyn analyzer, tests, operational scripts.
-  3. `3_TestResults`: Automated test logs, 5-fold CV outputs, holdout evaluations, model evaluation summaries.
-  4. `4_AppBuild`: Windows launch batch script, frozen model assets, release notes.
-  5. `5_Documentation`: Architectural specs, database design, source code guides, ML methodology, validation, user guide, authoritative academic report (`FINAL_REPORT.md`), and historical archives.
-  6. `6_Presentation`: 7 presentation-oriented markdown slides for university defense.
+| Model Artifact | Estimator | Validation Protocol | Outer ROC-AUC | Outer Brier | Nested $\tau_{\text{inner}}^*$ F1 | Pooled OOF F1 ($\tau_{\text{inner}}^*$) | Pooled OOF Recall | Pooled OOF Precision | Pooled OOF Accuracy |
+| :--- | :--- | :--- | :---: | :---: | :---: | ---: | ---: | ---: | ---: |
+| `exp_final_5fold_v2_best_rf_compact_regularized.joblib` | `RandomForestClassifier` (Baseline) | $5 \times 4$ Nested `GroupKFold` | 0.7037 ± 0.1292 | 0.2146 ± 0.0398 | 0.7408 ± 0.0760 | 0.7294 | 88.89% | 61.85% | 68.17% |
+| `rf_nested_opt_v3_depth6_leaf8_log2.joblib` | `RandomForestClassifier` (Optimized) | $5 \times 4$ Nested `GroupKFold` | 0.7216 ± 0.1156 | 0.2055 ± 0.0374 | 0.7539 ± 0.0706 | 0.7406 | 88.53% | 63.66% | 70.07% |
+| `et_nested_opt_v3_depth6_leaf6_log2.joblib` | `ExtraTreesClassifier` (Optimized) | $5 \times 4$ Nested `GroupKFold` | 0.7349 ± 0.0703 | 0.2062 ± 0.0213 | 0.7667 ± 0.0723 | 0.7653 | 91.76% | 65.64% | 72.84% |
 
+- **Historical Baseline Holdout (`JamesNK/Newtonsoft.Json`, $N = 159$):** Evaluated once for the baseline `rf_compact_regularized` model prior to optimization (at $\tau = 0.50$: Accuracy 74.21%, Precision 69.79%, Recall 84.81%, F1 0.7657, ROC-AUC 0.8209, Brier 0.1713; at unnested CV threshold $\tau^* = 0.40$: Accuracy 75.47%, Precision 69.61%, Recall 89.87%, F1 0.7845). `Newtonsoft.Json` was excluded from the nested optimization study; the optimized models have not yet been evaluated on a new unseen repository.
+
+### C. Streamlit Workbench and Inference Configuration
+- Eight pages: Dashboard, Repository Collection, Bug Analysis & SZZ, Dataset Management, Model Training, Model Evaluation, Defect Prediction, and Settings.
+- Live inference in `BugPredictor` uses `model.predict()` ($\tau = 0.50$) for binary `predicted_label` and maps `predict_proba()` to Low ($\le 0.30$), Medium ($0.31\text{--}0.60$), and High ($> 0.60$) risk categories.

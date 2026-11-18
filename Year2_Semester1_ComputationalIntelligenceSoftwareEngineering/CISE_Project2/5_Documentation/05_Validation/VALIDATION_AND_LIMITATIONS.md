@@ -38,28 +38,42 @@ The test suite (`2_SourceCode/Tests/`) comprises 16 modules (123 tests) executed
 | :--- | :--- | :--- |
 | .NET Build | `2_SourceCode/RoslynAnalyzer/RoslynAnalyzer.csproj` (`Release`) | 0 warnings, 0 errors |
 | Line-Ending Normalization | `RoslynClient.extract_methods` (`\r\n` $\to$ `\n`) | Consistent spans across Windows, macOS, and Linux |
-| Model Deserialization | `4_AppBuild/Assets/Models/exp_final_5fold_v2_best_rf_compact_regularized.joblib` | SHA-256 verified (`62599235...`); loads via `BugPredictor` |
+| Preserved Baseline Models | `exp_final_5fold_v2_best_rf_compact_regularized.joblib`, `rf_csharp_empirical_model.joblib` | SHA-256 checksums unchanged; loadable via `BugPredictor` |
+| Optimized Versioned Models | `et_nested_opt_v3_depth6_leaf6_log2.joblib`, `rf_nested_opt_v3_depth6_leaf8_log2.joblib` | Verified in `ModelManager`, `BugPredictor`, and Streamlit UI |
 
 ---
 
-## 2. Empirical Validation
+## 2. Empirical Validation and Error Analysis
 
-### 2.1 Holdout Generalization (`JamesNK/Newtonsoft.Json`, $N = 159$)
+### 2.1 Nested Cross-Validation on Dataset #2 ($N = 578$, 5 Repositories)
+
+| Model | Outer ROC-AUC | Outer PR-AUC | Outer Brier | Nested $\tau_{\text{inner}}^*$ F1 | Pooled OOF F1 ($\tau_{\text{inner}}^*$) | Pooled OOF Recall ($\tau_{\text{inner}}^*$) | Pooled OOF Precision ($\tau_{\text{inner}}^*$) | Pooled Confusion Matrix [TN, FP, FN, TP] |
+| :--- | :---: | :---: | :---: | :---: | ---: | ---: | ---: | :---: |
+| Baseline RF (`rf_compact_regularized`) | 0.7037 ± 0.1292 | 0.6405 ± 0.1135 | 0.2146 ± 0.0398 | 0.7408 ± 0.0760 | 0.7294 | 88.89% | 61.85% | `[146, 153, 31, 248]` |
+| Optimized RF (`rf_nested_opt_v3_depth6_leaf8_log2`) | 0.7216 ± 0.1156 | 0.6465 ± 0.1026 | 0.2055 ± 0.0374 | 0.7539 ± 0.0706 | 0.7406 | 88.53% | 63.66% | `[158, 141, 32, 247]` |
+| Optimized Extra Trees (`et_nested_opt_v3_depth6_leaf6_log2`) | 0.7349 ± 0.0703 | 0.6443 ± 0.0496 | 0.2062 ± 0.0213 | 0.7667 ± 0.0723 | 0.7653 | 91.76% | 65.64% | `[165, 134, 23, 256]` |
+
+### 2.2 Error Analysis on Dataset #2 (`3_TestResults/ModelOptimization/error_analysis.csv`)
+
+For `et_nested_opt_v3_depth6_leaf6_log2` under nested threshold evaluation ($N = 578$):
+
+| Quadrant | Count | Median `loc` (Mean) | Median `logical_loc` (Mean) | Median `cc` (Mean) | Median `nesting` (Mean) | Structural Interpretation |
+| :--- | ---: | :---: | :---: | :---: | :---: | :--- |
+| True Positive (TP) | 256 | 18.5 (30.33) | 7.0 (12.67) | 2.0 (4.74) | 1.0 (1.17) | Multi-statement methods with elevated branching and call density |
+| True Negative (TN) | 165 | 3.0 (4.06) | 1.0 (1.12) | 1.0 (1.02) | 0.0 (0.02) | Short 1-statement methods and property helpers |
+| False Positive (FP) | 134 | 15.0 (18.26) | 5.0 (8.07) | 2.0 (3.43) | 1.0 (0.87) | Candidate-clean methods with elevated structural complexity (27 have `cc >= 6` or `loc >= 35`) |
+| False Negative (FN) | 23 | 5.0 (6.74) | 1.0 (1.13) | 1.0 (1.17) | 0.0 (0.04) | Short methods (18/23 have `loc <= 12` and `cc <= 2`) where defects are semantic rather than structural |
+
+### 2.3 Historical Baseline Holdout (`JamesNK/Newtonsoft.Json`, $N = 159$)
+
+The historical holdout evaluation was executed once for the original baseline RF (`rf_compact_regularized`) prior to the optimization experiment:
 
 | Evaluation | Threshold | Accuracy | Precision | Recall | F1 | ROC-AUC | PR-AUC | Brier | Confusion Matrix [TN, FP, FN, TP] |
 | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :---: |
-| Nominal | 0.50 | 74.21% | 69.79% | 84.81% | 0.7657 | 0.8209 | 0.7917 | 0.1713 | `[51, 29, 12, 67]` |
-| CV-Tuned | 0.40 | 75.47% | 69.61% | 89.87% | 0.7845 | 0.8209 | 0.7917 | 0.1713 | `[49, 31, 8, 71]` |
+| Baseline RF Nominal | 0.50 | 74.21% | 69.79% | 84.81% | 0.7657 | 0.8209 | 0.7917 | 0.1713 | `[51, 29, 12, 67]` |
+| Baseline RF Unnested CV-Tuned | 0.40 | 75.47% | 69.61% | 89.87% | 0.7845 | 0.8209 | 0.7917 | 0.1713 | `[49, 31, 8, 71]` |
 
-### 2.2 Qualitative Prediction Cases (`Newtonsoft.Json`, $\tau = 0.50$)
-
-| Quadrant | Method | Predicted Risk | Key Metrics | Analysis |
-| :--- | :--- | ---: | :--- | :--- |
-| True Positive | `CalculatePropertyDetails` | 0.9155 | `loc=78`, `cc=22`, `params=11`, `nesting=2` | High branching and parameter count; SZZ traced null-reference fix (`142f5cb0`). |
-| True Positive | `ReadMetadataPropertiesToken` | 0.8870 | `loc=75`, `cc=17`, `statements=59`, `nesting=6` | Deep nesting (6 levels) and high statement density. |
-| False Positive | `BsonReader.ReadString` | 0.8514 | `loc=54`, `cc=9`, `statements=35`, `nesting=4` | Complex binary stream parser with no recorded bug fix in the mined window. |
-| False Negative | `JContainer.Values` | 0.1944 | `loc=11`, `cc=1`, `statements=1`, `nesting=0` | Single-statement generic wrapper; defect involved LINQ type covariance not captured by AST complexity. |
-| False Negative | `JContainer.IsMultiContent` | 0.2279 | `loc=4`, `cc=1`, `statements=1`, `nesting=0` | Four-line method; static structural metrics cannot detect semantic type-contract defects in trivial methods. |
+`Newtonsoft.Json` was not used during the nested optimization experiment. These holdout metrics apply only to the historical baseline model, not to the newly optimized models.
 
 ---
 
@@ -67,10 +81,12 @@ The test suite (`2_SourceCode/Tests/`) comprises 16 modules (123 tests) executed
 
 | Limitation | Description and Impact |
 | :--- | :--- |
-| **Base-Rate Fallacy in Production** | Training and holdout datasets use ~1:1 class balancing (~48%–50% positive). In production codebases with 2%–10% defect prevalence, operational precision decreases substantially. At 5% prevalence, sensitivity $89.87\%$ and false positive rate $38.75\%$ ($1 - 49/80$) yield a Bayesian precision of $\frac{0.8987 \times 0.05}{0.8987 \times 0.05 + 0.3875 \times 0.95} \approx 10.88\%$. |
-| **Heuristic SZZ Labels** | Positive labels rely on commit message patterns and `git blame` line tracing, which can misattribute changes from refactorings or tangled commits. |
-| **Candidate-Clean Labels (OWA)** | Negative observations (`label = 0`) have no recorded bug fixes in the mined commit window but are not proven defect-free. |
-| **Out-of-Fold Threshold Selection** | Threshold $\tau^* = 0.40$ was tuned on pooled out-of-fold CV predictions without nested CV, introducing mild selection optimism on CV metrics; generalization was subsequently checked on `Newtonsoft.Json`. |
-| **Temporal Asymmetry** | Defect-prone methods are extracted from historical pre-fix revisions, whereas candidate-clean methods are sampled from `HEAD`. |
+| **Small Repository Count and Size Imbalance** | Only 5 repositories were used for training and nested cross-validation (`N = 578`). `Humanizer` accounts for 50.35% of observations (291/578), whereas `Polly` (34) and `FluentValidation` (28) represent 10.73% combined. |
+| **No New External Holdout for Optimized Models** | Because `Newtonsoft.Json` was previously examined for the baseline model, it was excluded from optimization. Evaluating external generalization of `et_nested_opt_v3_depth6_leaf6_log2` and `rf_nested_opt_v3_depth6_leaf8_log2` requires mining a new unseen repository. |
+| **Static Metric Boundary on Semantic Defects** | Static AST metrics measure syntactic structure and cannot detect single-line semantic, literal, or type-contract bugs (`18/23` false negatives in Dataset #2 have `loc <= 12` and `cc <= 2`). |
+| **Candidate-Clean Labels (Open-World Assumption)** | Negative observations (`label = 0`) have no recorded bug fixes in the mined commit window but are not confirmed defect-free. Complex candidate-clean methods flagged as false positives may harbor latent defects or maintenance risk. |
+| **Heuristic SZZ Labels and Temporal Difference** | Positive labels (`label = 1`) rely on commit message patterns and `git blame` tracing on historical pre-fix commits, whereas candidate-clean observations (`label = 0`) are sampled from contemporary `HEAD` revisions. |
+| **Base-Rate Fallacy in Production** | Training and holdout sets use ~1:1 class balancing (~48%–50% positive). In production repositories with 2%–10% defect prevalence, operational precision decreases substantially (e.g., at 5% prevalence, sensitivity $89.87\%$ and false positive rate $38.75\%$ yield a Bayesian precision of $\approx 10.88\%$). |
+| **Deployment Threshold Alignment** | Nested cross-validation selects fold-specific inner thresholds ($\tau_{\text{inner}}^* \in \{0.35, 0.40\}$ for Extra Trees), whereas `BugPredictor.predict_from_metrics()` computes binary `predicted_label` via `model.predict()` ($\tau = 0.50$) and maps probabilities to Low ($\le 0.30$), Medium ($0.31\text{--}0.60$), and High ($> 0.60$) risk bands. |
 | **Absence of Human Study Data** | [DEVELOPER_STUDY_TEMPLATE.md](../07_AcademicReport/DEVELOPER_STUDY_TEMPLATE.md) is an unadministered research protocol template; no human participant ratings were collected. |
-| **Generalization Scope** | Findings are bounded to the 6 evaluated open-source C# libraries and 26 static AST metrics. |
+| **Generalization Scope** | Nested cross-validation metrics are empirical estimates on the 5 C# repositories in Dataset #2 and do not establish universal generalization across all C# codebases. |
