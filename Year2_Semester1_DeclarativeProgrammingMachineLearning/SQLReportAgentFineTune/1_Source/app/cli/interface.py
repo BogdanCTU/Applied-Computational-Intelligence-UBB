@@ -51,15 +51,19 @@ def cmd_data(args: argparse.Namespace) -> int:
     print("=" * 60)
 
     preprocessor = DatasetPreprocessor()
-    examples, db_map = preprocessor.build_all_examples()
-    splits = preprocessor.split_and_export(examples)
+    splits, db_map = preprocessor.build_expanded_dataset(
+        train_target=getattr(args, "train_target", 3500),
+        val_target=getattr(args, "val_target", 350),
+    )
+    manifest = preprocessor.export_and_manifest(splits, db_map)
 
-    print(f"\n[OK] Successfully processed {len(examples)} examples.")
-    for split_name, path in splits.items():
-        print(f"  * {split_name}: {path}")
-    print(f"\n  * Generated SQLite Test Databases: {len(db_map)}")
-    for db_id, path in db_map.items():
-        print(f"    - {db_id}: {path}")
+    print(f"\n[OK] Successfully processed dataset splits:")
+    for split_name, info in manifest["splits"].items():
+        print(f"  * {split_name}: {info['records']} records -> {info['file_path']} (SHA-256: {info['sha256'][:10]}...)")
+    print(f"\n  * Available Databases: {manifest['total_databases']}")
+    print(f"  * Track 1 (Known Schema) Test Records: {manifest['track_separation']['track1_known_schema']['test_records']}")
+    print(f"  * Track 2 (Unseen Schema) Test Records: {manifest['track_separation']['track2_unseen_schema']['test_records']}")
+    print(f"  * Manifest saved to: 2_Database/processed/dataset_manifest.json")
 
     return 0
 
@@ -86,10 +90,13 @@ def cmd_train(args: argparse.Namespace) -> int:
 
     run_name = args.run_name or ("pilot_run" if args.pilot else "full_lora_run")
     iters = 10 if args.pilot else (args.iters or config.lora.iters)
+    rank = getattr(args, "rank", None) or config.lora.rank
+    alpha = getattr(args, "alpha", None) or (rank * 2.0)
 
     print("=" * 60)
     print(f"  Training Run: {run_name} ({iters} iterations)")
     print(f"  Base Model:   {resolved_model}")
+    print(f"  LoRA Config:  Rank={rank}, Alpha={alpha}")
     print("=" * 60)
 
     hyperparams = TrainingHyperparameters(
@@ -98,8 +105,11 @@ def cmd_train(args: argparse.Namespace) -> int:
         batch_size=args.batch_size or config.lora.batch_size,
         learning_rate=args.lr or config.lora.learning_rate,
         steps_per_report=2 if args.pilot else 10,
-        steps_per_eval=5 if args.pilot else 50,
-        save_every=5 if args.pilot else 100,
+        steps_per_eval=5 if args.pilot else getattr(args, "eval_steps", 20),
+        save_every=5 if args.pilot else getattr(args, "save_every", 20),
+        lora_rank=rank,
+        lora_alpha=alpha,
+        val_batches=getattr(args, "val_batches", 10),
     )
 
     trainer = LoRATrainer(base_model=resolved_model, hyperparameters=hyperparams)
@@ -122,26 +132,33 @@ def cmd_eval(args: argparse.Namespace) -> int:
     downloader = ModelDownloader()
     resolved_model = str(downloader.get_local_path(model_id)) if downloader.is_downloaded(model_id) else model_id
     adapter_path = args.adapter
+    track = getattr(args, "track", "unseen")  # 'unseen' (Track 2) or 'known' (Track 1)
 
     print("=" * 60)
-    print(f"  Evaluating: {run_name}")
+    print(f"  Evaluating: {run_name} (Track: {track})")
     print(f"  Base Model: {resolved_model}")
     if adapter_path:
         print(f"  Adapter:    {adapter_path}")
     print("=" * 60)
 
     preprocessor = DatasetPreprocessor()
-    examples, db_map = preprocessor.build_all_examples()
+    splits, db_map = preprocessor.build_expanded_dataset()
+
+    # Select proper held-out test split
+    if track == "known":
+        test_examples = splits["test_known"]
+    else:
+        test_examples = splits["test_unseen"]
 
     engine = InferenceEngine(model_path_or_id=resolved_model, adapter_path=adapter_path)
     evaluator = ExecutionEvaluator(engine=engine, db_map=db_map)
 
-    # Use test samples or subset if requested
-    samples = examples[: args.limit] if args.limit else examples
+    # Apply limit if specified
+    samples = test_examples[: args.limit] if args.limit else test_examples
     metrics, _ = evaluator.evaluate(samples, run_name=run_name)
 
     print("\n" + "=" * 60)
-    print(f"  Evaluation Results: {run_name}")
+    print(f"  Evaluation Results: {run_name} [{track}]")
     print("=" * 60)
     print(f"Execution Accuracy (EX): {metrics.execution_accuracy}%")
     print(f"Exact Match Rate (EM):   {metrics.exact_match_rate}%")
@@ -163,6 +180,33 @@ def cmd_compare(args: argparse.Namespace) -> int:
     diff = comparator.compare(base, tuned)
     report = comparator.generate_markdown_report(diff, base, tuned)
     print("\n" + report)
+    return 0
+
+
+def cmd_export(args: argparse.Namespace) -> int:
+    """Fuses LoRA adapter weights into the base model."""
+    config = load_config()
+    model_id = args.model or config.model.model_id
+    downloader = ModelDownloader()
+    resolved_model = str(downloader.get_local_path(model_id)) if downloader.is_downloaded(model_id) else model_id
+    adapter = args.adapter
+    if not adapter:
+        print("[ERROR] Please specify an adapter run name or path using --adapter.")
+        return 1
+
+    print("=" * 60)
+    print(f"  Fusing LoRA Adapter: {adapter}")
+    print(f"  Base Model:          {resolved_model}")
+    print("=" * 60)
+
+    manager = LoRAManager()
+    export_path = manager.fuse_model(
+        base_model_path_or_id=resolved_model,
+        adapter_run_name=adapter,
+        export_dir=getattr(args, "output_dir", None),
+        export_gguf=getattr(args, "gguf", False),
+    )
+    print(f"\n[OK] Model fused and exported successfully to:\n  {export_path}")
     return 0
 
 
@@ -227,6 +271,9 @@ def run_cli() -> int:
     p_tr.add_argument("--iters", type=int, default=None, help="Number of training iterations")
     p_tr.add_argument("--lr", type=float, default=None, help="Learning rate")
     p_tr.add_argument("--batch-size", type=int, default=None, help="Minibatch size")
+    p_tr.add_argument("--rank", type=int, default=8, help="LoRA rank (e.g. 8, 16, 32)")
+    p_tr.add_argument("--alpha", type=float, default=None, help="LoRA alpha scaling factor")
+    p_tr.add_argument("--val-batches", type=int, default=10, help="Number of validation batches to evaluate")
 
     # eval
     p_ev = subparsers.add_parser("eval", help="Evaluate model execution accuracy")
@@ -234,11 +281,19 @@ def run_cli() -> int:
     p_ev.add_argument("--model", type=str, default=None, help="Base model identifier")
     p_ev.add_argument("--adapter", type=str, default=None, help="Path to LoRA adapter")
     p_ev.add_argument("--limit", type=int, default=None, help="Limit number of test samples")
+    p_ev.add_argument("--track", type=str, choices=["unseen", "known"], default="unseen", help="Evaluation track: unseen (Track 2) or known (Track 1)")
 
     # compare
     p_cp = subparsers.add_parser("compare", help="Compare baseline vs fine-tuned results")
     p_cp.add_argument("--baseline", type=str, default="baseline", help="Baseline run name")
     p_cp.add_argument("--finetuned", type=str, default="fine_tuned", help="Fine-tuned run name")
+
+    # export / fuse
+    p_exp = subparsers.add_parser("export", help="Fuse adapter weights into standalone model")
+    p_exp.add_argument("--adapter", type=str, required=True, help="Adapter run name or path")
+    p_exp.add_argument("--model", type=str, default=None, help="Base model identifier")
+    p_exp.add_argument("--output-dir", type=str, default=None, help="Output destination folder")
+    p_exp.add_argument("--gguf", action="store_true", help="Also export weights in GGUF format")
 
     # interactive
     p_in = subparsers.add_parser("interactive", help="Interactive Text-to-SQL terminal")
@@ -257,6 +312,7 @@ def run_cli() -> int:
         "train": cmd_train,
         "eval": cmd_eval,
         "compare": cmd_compare,
+        "export": cmd_export,
         "interactive": cmd_interactive,
     }
     return commands[args.command](args)

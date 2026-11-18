@@ -84,6 +84,8 @@ class LoRATrainer:
             str(self.hyperparameters.steps_per_eval),
             "--save-every",
             str(self.hyperparameters.save_every),
+            "--val-batches",
+            str(self.hyperparameters.val_batches),
             "--max-seq-length",
             str(self.hyperparameters.max_seq_length),
         ]
@@ -114,7 +116,8 @@ class LoRATrainer:
                         lf.write(line)
                         lf.flush()
                         # Log report steps to console
-                        if "Iter" in line or "Val" in line or "Loss" in line:
+                        line_lower = line.lower()
+                        if "iter" in line_lower or "val" in line_lower or "loss" in line_lower or "save" in line_lower:
                             logger.info(f"[MLX Train] {line.strip()}")
                 proc.wait()
                 if proc.returncode == 0:

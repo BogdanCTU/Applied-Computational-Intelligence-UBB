@@ -1,0 +1,67 @@
+[
+  {
+    "db_id": "retail_analytics",
+    "question": "What is the total quantity of products ordered across all orders?",
+    "golden_sql": "SELECT SUM(quantity) FROM order_items",
+    "predicted_sql": "SELECT SUM(quantity) FROM order_items",
+    "is_valid_sql": true,
+    "is_exact_match": true,
+    "is_execution_match": true,
+    "gold_row_count": 1,
+    "pred_row_count": 1,
+    "latency_ms": 2157.32,
+    "error": null
+  },
+  {
+    "db_id": "retail_analytics",
+    "question": "List all customers located in Seattle.",
+    "golden_sql": "SELECT customer_name FROM customers WHERE city = 'Seattle'",
+    "predicted_sql": "SELECT customers.customer_name FROM customers WHERE customers.city = 'Seattle'",
+    "is_valid_sql": true,
+    "is_exact_match": false,
+    "is_execution_match": true,
+    "gold_row_count": 1,
+    "pred_row_count": 1,
+    "latency_ms": 1327.66,
+    "error": null
+  },
+  {
+    "db_id": "retail_analytics",
+    "question": "Find the total revenue captured for each payment method.",
+    "golden_sql": "SELECT payment_method, SUM(amount) FROM payments WHERE payment_status = 'captured' GROUP BY payment_method",
+    "predicted_sql": "SELECT payment_method, SUM(amount) FROM payments GROUP BY payment_method",
+    "is_valid_sql": true,
+    "is_exact_match": false,
+    "is_execution_match": false,
+    "gold_row_count": 2,
+    "pred_row_count": 3,
+    "latency_ms": 1360.72,
+    "error": null
+  },
+  {
+    "db_id": "retail_analytics",
+    "question": "List each customer name along with their order ids.",
+    "golden_sql": "SELECT customers.customer_name, orders.order_id FROM customers JOIN orders ON customers.customer_id = orders.customer_id",
+    "predicted_sql": "SELECT customers.customer_name, orders.order_id FROM customers JOIN orders ON customers.customer_id = orders.customer_id",
+    "is_valid_sql": true,
+    "is_exact_match": true,
+    "is_execution_match": true,
+    "gold_row_count": 5,
+    "pred_row_count": 5,
+    "latency_ms": 1526.09,
+    "error": null
+  },
+  {
+    "db_id": "retail_analytics",
+    "question": "Show each customer's name and the names of the products they ordered.",
+    "golden_sql": "SELECT customers.customer_name, products.product_name FROM customers JOIN orders ON customers.customer_id = orders.customer_id JOIN order_items ON orders.order_id = order_items.order_id JOIN products ON order_items.product_id = products.product_id",
+    "predicted_sql": "SELECT customers.customer_name, products.product_name FROM customers JOIN orders ON customers.customer_id = orders.customer_id JOIN order_items ON orders.order_id = order_items.order_id JOIN products ON order_items.product_id = products.product_id",
+    "is_valid_sql": true,
+    "is_exact_match": true,
+    "is_execution_match": true,
+    "gold_row_count": 5,
+    "pred_row_count": 5,
+    "latency_ms": 2088.53,
+    "error": null
+  }
+]

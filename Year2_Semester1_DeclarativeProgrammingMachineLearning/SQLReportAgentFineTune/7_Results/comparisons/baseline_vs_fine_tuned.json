@@ -1,0 +1,28 @@
+{
+  "baseline": {
+    "total_samples": 5,
+    "valid_sql_count": 3,
+    "valid_sql_rate": 60.0,
+    "exact_match_count": 2,
+    "exact_match_rate": 40.0,
+    "execution_match_count": 3,
+    "execution_accuracy": 60.0,
+    "average_latency_ms": 1658.76
+  },
+  "fine_tuned": {
+    "total_samples": 5,
+    "valid_sql_count": 5,
+    "valid_sql_rate": 100.0,
+    "exact_match_count": 3,
+    "exact_match_rate": 60.0,
+    "execution_match_count": 4,
+    "execution_accuracy": 80.0,
+    "average_latency_ms": 1692.06
+  },
+  "delta": {
+    "execution_accuracy": 20.0,
+    "exact_match_rate": 20.0,
+    "valid_sql_rate": 40.0,
+    "average_latency_ms": 33.3
+  }
+}

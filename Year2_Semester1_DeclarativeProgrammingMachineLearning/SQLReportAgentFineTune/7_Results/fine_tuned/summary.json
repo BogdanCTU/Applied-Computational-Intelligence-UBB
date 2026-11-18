@@ -1,0 +1,10 @@
+{
+  "total_samples": 5,
+  "valid_sql_count": 5,
+  "valid_sql_rate": 100.0,
+  "exact_match_count": 3,
+  "exact_match_rate": 60.0,
+  "execution_match_count": 4,
+  "execution_accuracy": 80.0,
+  "average_latency_ms": 1692.06
+}

@@ -24,13 +24,16 @@ class LoRAManager:
 
     def get_adapter_path(self, run_name: str) -> Path:
         """Returns the target folder for a specific training run."""
+        p = Path(run_name)
+        if p.exists() and p.is_dir():
+            return p.resolve()
         path = self.adapters_dir / run_name
         path.mkdir(parents=True, exist_ok=True)
         return path
 
     def is_adapter_valid(self, run_name: str) -> bool:
         """Checks if adapter weights file exists in the run directory."""
-        folder = self.adapters_dir / run_name
+        folder = self.get_adapter_path(run_name)
         if not folder.exists():
             return False
         # MLX-LM saves adapter weights as adapters.safetensors or 0000xxx_adapters.safetensors

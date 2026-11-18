@@ -1,56 +1,65 @@
-"""BIRD Benchmark (BIg-Bench for Large-scale Database Grounded Text-to-SQL) handler."""
+"""BIRD Benchmark (BIg-Bench for Large-scale Database Grounded Text-to-SQL) loader."""
 
+import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 from app.core.config import get_project_root
+from app.core.logging import get_logger
 from app.database.schema_manager import SchemaManager
+
+logger = get_logger(__name__)
 
 
 @dataclass
-class BIRDItem:
+class BIRDRecord:
     db_id: str
     question: str
     query: str
-    evidence: str = ""
+    evidence: str
+    difficulty: str
 
 
 class BIRDDataset:
-    """Manages acquisition and formatting of the BIRD Text-to-SQL Benchmark subset."""
+    """Manages acquisition and formatting of the BIRD Benchmark subset."""
 
     def __init__(self, raw_dir: Optional[Union[str, Path]] = None):
         if raw_dir is None:
             self.raw_dir = get_project_root() / "2_Database" / "raw" / "bird"
         else:
             self.raw_dir = Path(raw_dir).resolve()
-        self.raw_dir.mkdir(parents=True, exist_ok=True)
 
-    def get_bundled_bird_examples(self) -> List[BIRDItem]:
-        """Returns certified financial / enterprise BIRD benchmark examples."""
-        return [
-            BIRDItem(
-                db_id="financial",
-                question="What is the total loan amount granted to clients who have a diamond credit status?",
-                query="SELECT SUM(loan.amount) FROM loan JOIN account ON loan.account_id = account.account_id JOIN client ON account.district_id = client.district_id WHERE client.credit_status = 'diamond'",
-                evidence="loan.amount indicates the principal amount; credit_status='diamond' identifies elite tier.",
-            ),
-            BIRDItem(
-                db_id="financial",
-                question="Which district has the highest number of active bank accounts?",
-                query="SELECT district.name, COUNT(account.account_id) AS account_count FROM district JOIN account ON district.district_id = account.district_id GROUP BY district.district_id ORDER BY account_count DESC LIMIT 1",
-                evidence="district.district_id links to account.district_id.",
-            ),
-            BIRDItem(
-                db_id="financial",
-                question="List all transactions in account 1001 with amount exceeding 500 dollars, sorted by date descending.",
-                query="SELECT trans_id, date, amount, operation FROM trans WHERE account_id = 1001 AND amount > 500 ORDER BY date DESC",
-                evidence="operation column specifies credit or debit.",
-            ),
-        ]
+    def is_available(self) -> bool:
+        """Checks if BIRD raw files exist."""
+        return (self.raw_dir / "mini_dev_sqlite.jsonl").exists()
 
-    def setup_bundled_database(self) -> Path:
+    def load_mini_dev_records(self, limit: Optional[int] = None) -> List[BIRDRecord]:
+        """Loads records from mini_dev_sqlite.jsonl."""
+        fpath = self.raw_dir / "mini_dev_sqlite.jsonl"
+        if not fpath.exists():
+            return []
+        records = []
+        with open(fpath, "r", encoding="utf-8") as f:
+            for line in f:
+                if not line.strip():
+                    continue
+                item = json.loads(line)
+                records.append(
+                    BIRDRecord(
+                        db_id=item.get("db_id", "unknown"),
+                        question=item.get("question", ""),
+                        query=item.get("SQL", ""),
+                        evidence=item.get("evidence", ""),
+                        difficulty=item.get("difficulty", "medium"),
+                    )
+                )
+        return records[:limit] if limit else records
+
+    def setup_financial_database(self) -> Path:
         """Sets up the financial SQLite database for BIRD evaluation."""
         db_path = self.raw_dir / "financial.db"
+        if db_path.exists():
+            return db_path
         ddl = """
         CREATE TABLE district (
             district_id INTEGER PRIMARY KEY,

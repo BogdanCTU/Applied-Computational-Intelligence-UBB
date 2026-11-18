@@ -10,7 +10,9 @@ from app.core.logging import get_logger
 from app.database.sqlite_executor import QueryResult, SQLiteExecutor
 from app.datasets.preprocessor import SQLTrainingExample
 from app.evaluation.metrics import (
+    ErrorCategory,
     EvaluationMetrics,
+    classify_sql_error,
     compare_execution_results,
     compute_exact_match,
 )
@@ -22,6 +24,7 @@ logger = get_logger(__name__)
 
 @dataclass
 class EvaluationSampleResult:
+    example_id: str
     db_id: str
     question: str
     golden_sql: str
@@ -29,6 +32,7 @@ class EvaluationSampleResult:
     is_valid_sql: bool
     is_exact_match: bool
     is_execution_match: bool
+    error_category: str
     gold_row_count: int
     pred_row_count: int
     latency_ms: float
@@ -65,6 +69,7 @@ class ExecutionEvaluator:
         logger.info(f"Starting evaluation run '{run_name}' on {len(examples)} examples...")
         metrics = EvaluationMetrics(total_samples=len(examples))
         sample_results: List[EvaluationSampleResult] = []
+        error_counts: Dict[str, int] = {}
 
         for idx, ex in enumerate(examples, 1):
             db_path = self.db_map.get(ex.db_id)
@@ -118,8 +123,17 @@ class ExecutionEvaluator:
 
             if is_ex:
                 metrics.execution_match_count += 1
+                metrics.binary_ex_outcomes.append(1)
+            else:
+                metrics.binary_ex_outcomes.append(0)
 
+            # 6. Categorize Failure
+            err_cat = classify_sql_error(pred_error, is_ex)
+            error_counts[err_cat] = error_counts.get(err_cat, 0) + 1
+
+            ex_id = getattr(ex, "example_id", f"sample_{idx}")
             sample_result = EvaluationSampleResult(
+                example_id=ex_id,
                 db_id=ex.db_id,
                 question=ex.question,
                 golden_sql=ex.query,
@@ -127,6 +141,7 @@ class ExecutionEvaluator:
                 is_valid_sql=is_valid,
                 is_exact_match=is_em,
                 is_execution_match=is_ex,
+                error_category=err_cat,
                 gold_row_count=gold_res.row_count,
                 pred_row_count=pred_row_count,
                 latency_ms=latency_ms,
@@ -135,8 +150,10 @@ class ExecutionEvaluator:
             sample_results.append(sample_result)
 
             logger.info(
-                f"[{idx}/{len(examples)}] DB: {ex.db_id} | EX: {is_ex} | EM: {is_em} | Latency: {latency_ms}ms"
+                f"[{idx}/{len(examples)}] DB: {ex.db_id} | EX: {is_ex} | EM: {is_em} | Err: {err_cat} | Latency: {latency_ms}ms"
             )
+
+        metrics.error_distribution = error_counts
 
         # Save Report
         self._save_report(run_name, metrics, sample_results)
@@ -148,7 +165,7 @@ class ExecutionEvaluator:
         metrics: EvaluationMetrics,
         results: List[EvaluationSampleResult],
     ) -> None:
-        """Saves evaluation summary JSON and detailed sample CSV."""
+        """Saves evaluation summary JSON and detailed sample records."""
         dest_dir = self.output_dir / run_name
         dest_dir.mkdir(parents=True, exist_ok=True)
 

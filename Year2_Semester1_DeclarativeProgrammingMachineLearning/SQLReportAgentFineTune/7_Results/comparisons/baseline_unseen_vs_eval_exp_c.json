@@ -1,0 +1,57 @@
+{
+  "baseline": {
+    "total_samples": 25,
+    "valid_sql_count": 25,
+    "valid_sql_rate": 100.0,
+    "exact_match_count": 5,
+    "exact_match_rate": 20.0,
+    "execution_match_count": 17,
+    "execution_accuracy": 68.0,
+    "execution_accuracy_ci_95": [
+      48.0,
+      84.0
+    ],
+    "average_latency_ms": 1680.7,
+    "error_distribution": {
+      "none": 17,
+      "schema_linking_error": 1,
+      "execution_mismatch": 7
+    }
+  },
+  "fine_tuned": {
+    "total_samples": 25,
+    "valid_sql_count": 25,
+    "valid_sql_rate": 100.0,
+    "exact_match_count": 6,
+    "exact_match_rate": 24.0,
+    "execution_match_count": 11,
+    "execution_accuracy": 44.0,
+    "execution_accuracy_ci_95": [
+      24.0,
+      64.0
+    ],
+    "average_latency_ms": 6202.05,
+    "error_distribution": {
+      "execution_mismatch": 10,
+      "none": 11,
+      "schema_linking_error": 3,
+      "syntax_error": 1
+    }
+  },
+  "delta": {
+    "execution_accuracy": -24.0,
+    "execution_accuracy_abs_pct_points": -24.0,
+    "execution_accuracy_relative_pct": -35.29,
+    "exact_match_rate": 4.0,
+    "exact_match_rate_abs_pct_points": 4.0,
+    "valid_sql_rate": 0.0,
+    "valid_sql_rate_abs_pct_points": 0.0,
+    "average_latency_ms": 4521.35
+  },
+  "paired_contingency": {
+    "both_correct": 9,
+    "base_correct_tuned_wrong": 8,
+    "base_wrong_tuned_correct (improved)": 2,
+    "both_wrong": 6
+  }
+}

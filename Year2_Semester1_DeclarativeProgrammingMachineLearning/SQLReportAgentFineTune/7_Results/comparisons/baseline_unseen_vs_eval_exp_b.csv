@@ -1,0 +1,5 @@
+Metric,Baseline,FineTuned,Delta_Abs,Delta_Rel
+Execution_Accuracy_EX,68.0%,56.0%,-12.0%,-17.65%
+Exact_Match_EM,20.0%,24.0%,4.0%,N/A
+Valid_SQL_Rate_VSR,100.0%,100.0%,0.0%,N/A
+Average_Latency_ms,1680.7,4222.05,2541.35,N/A

@@ -1,10 +1,11 @@
-"""Dataset preprocessing and JSONL formatting for MLX-LM ChatML training."""
+"""Dataset preprocessing, dual-track splitting, and manifest generation."""
 
+import hashlib
 import json
 import random
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 from app.core.config import get_project_root
 from app.core.logging import get_logger
 from app.database.schema_manager import SchemaManager
@@ -24,13 +25,18 @@ DEFAULT_SYSTEM_PROMPT = (
 
 @dataclass
 class SQLTrainingExample:
+    example_id: str
     db_id: str
     question: str
     query: str
     schema_text: str
+    source: str       # 'spider', 'bird', 'synthetic'
+    track: str        # 'track1_known' or 'track2_unseen'
+    split: str        # 'train', 'valid', 'test'
+    difficulty: str = "medium"
     system_prompt: str = DEFAULT_SYSTEM_PROMPT
 
-    def to_chatml(self) -> Dict[str, List[Dict[str, str]]]:
+    def to_chatml(self) -> Dict[str, Any]:
         """Converts example into Qwen/ChatML messages format for MLX-LM."""
         user_prompt = (
             f"Database Schema:\n{self.schema_text}\n\n"
@@ -40,16 +46,28 @@ class SQLTrainingExample:
         assistant_reply = f"```sql\n{self.query.strip()}\n```"
 
         return {
+            "example_id": self.example_id,
+            "db_id": self.db_id,
+            "track": self.track,
             "messages": [
                 {"role": "system", "content": self.system_prompt},
                 {"role": "user", "content": user_prompt},
                 {"role": "assistant", "content": assistant_reply},
-            ]
+            ],
         }
 
 
+def compute_sha256(file_path: Path) -> str:
+    """Computes SHA-256 checksum of a file."""
+    sha = hashlib.sha256()
+    with open(file_path, "rb") as f:
+        while chunk := f.read(8192):
+            sha.update(chunk)
+    return sha.hexdigest()
+
+
 class DatasetPreprocessor:
-    """Consolidates benchmark and synthetic datasets, applies schema context, and builds splits."""
+    """Orchestrates multi-source dataset ingestion, validation, splitting, and manifest generation."""
 
     def __init__(self, processed_dir: Optional[Union[str, Path]] = None):
         if processed_dir is None:
@@ -57,99 +75,254 @@ class DatasetPreprocessor:
         else:
             self.processed_dir = Path(processed_dir).resolve()
         self.processed_dir.mkdir(parents=True, exist_ok=True)
+        self._schema_cache: Dict[str, str] = {}
 
-    def build_all_examples(self) -> Tuple[List[SQLTrainingExample], Dict[str, Path]]:
-        """Collects all synthetic, Spider, and BIRD samples and couples with SQLite schemas."""
+    def _get_schema_text(self, db_id: str, db_path: Path) -> str:
+        """Retrieves or caches prompt-formatted schema for a database."""
+        if db_id not in self._schema_cache:
+            schema = SchemaManager.extract_schema_from_sqlite(db_path, db_id=db_id)
+            self._schema_cache[db_id] = SchemaFormatter.format_for_prompt(schema)
+        return self._schema_cache[db_id]
+
+    def build_expanded_dataset(
+        self,
+        train_target: int = 3500,
+        val_target: int = 350,
+        seed: int = 42,
+    ) -> Tuple[Dict[str, List[SQLTrainingExample]], Dict[str, Path]]:
+        """Ingests Synthetic, Spider, and BIRD benchmarks and partitions into strict tracks."""
+        rng = random.Random(seed)
         db_map: Dict[str, Path] = {}
-        examples: List[SQLTrainingExample] = []
 
-        # 1. Synthetic samples
+        # 1. Generate Synthetic Databases (8 domains)
         synth_gen = SyntheticDatasetGenerator()
-        synth_samples, synth_dbs = synth_gen.generate_all()
+        synth_samples, synth_dbs = synth_gen.generate_and_validate()
         db_map.update(synth_dbs)
 
-        for s in synth_samples:
-            schema = SchemaManager.extract_schema_from_sqlite(synth_dbs[s.db_id])
-            schema_txt = SchemaFormatter.format_for_prompt(schema)
-            examples.append(
-                SQLTrainingExample(
-                    db_id=s.db_id,
-                    question=s.question,
-                    query=s.query,
-                    schema_text=schema_txt,
-                )
-            )
-
-        # 2. Spider bundled samples
+        # 2. Ingest Spider Databases & Records
         spider_ds = SpiderDataset()
-        spider_dbs = spider_ds.setup_bundled_databases()
-        db_map.update(spider_dbs)
+        spider_db_map = spider_ds.get_available_database_map()
+        db_map.update(spider_db_map)
 
-        for sp in spider_ds.get_bundled_spider_examples():
-            schema = SchemaManager.extract_schema_from_sqlite(spider_dbs[sp.db_id])
-            schema_txt = SchemaFormatter.format_for_prompt(schema)
-            examples.append(
-                SQLTrainingExample(
-                    db_id=sp.db_id,
-                    question=sp.question,
-                    query=sp.query,
-                    schema_text=schema_txt,
+        train_records = spider_ds.load_train_records()
+        dev_records = spider_ds.load_dev_records()
+
+        logger.info(f"Loaded {len(train_records)} raw Spider train and {len(dev_records)} Spider dev records.")
+
+        # Identify unseen databases for Track 2 (dev databases)
+        dev_db_ids: Set[str] = {r.db_id for r in dev_records}
+        train_db_ids: Set[str] = {r.db_id for r in train_records} - dev_db_ids
+
+        # Ensure complete disjointness
+        assert len(dev_db_ids.intersection(train_db_ids)) == 0, "Spider train/dev DB overlap detected!"
+
+        # Track 2 unseen synthetic domains
+        unseen_synthetic_dbs = {"education", "entertainment"}
+
+        # -------------------------------------------------------------
+        # Track 1: Known-Schema Generalization
+        # -------------------------------------------------------------
+        # Gather all candidates for Track 1
+        track1_examples: List[SQLTrainingExample] = []
+
+        # Synthetic Track 1 samples
+        for idx, s in enumerate(synth_samples):
+            if s.track == "track1_known":
+                schema_txt = self._get_schema_text(s.db_id, synth_dbs[s.db_id])
+                track1_examples.append(
+                    SQLTrainingExample(
+                        example_id=f"synth_known_{idx+1}",
+                        db_id=s.db_id,
+                        question=s.question,
+                        query=s.query,
+                        schema_text=schema_txt,
+                        source="synthetic",
+                        track="track1_known",
+                        split="train",  # reassigned below
+                        difficulty=s.difficulty,
+                    )
                 )
-            )
 
-        # 3. BIRD bundled samples
-        bird_ds = BIRDDataset()
-        bird_db = bird_ds.setup_bundled_database()
-        db_map["financial"] = bird_db
-
-        for bi in bird_ds.get_bundled_bird_examples():
-            schema = SchemaManager.extract_schema_from_sqlite(bird_db)
-            schema_txt = SchemaFormatter.format_for_prompt(schema)
-            examples.append(
-                SQLTrainingExample(
-                    db_id=bi.db_id,
-                    question=bi.question,
-                    query=bi.query,
-                    schema_text=schema_txt,
+        # Spider Train samples (belong to train_db_ids)
+        for idx, r in enumerate(train_records):
+            if r.db_id in db_map:
+                schema_txt = self._get_schema_text(r.db_id, db_map[r.db_id])
+                track1_examples.append(
+                    SQLTrainingExample(
+                        example_id=f"spider_train_{idx+1}",
+                        db_id=r.db_id,
+                        question=r.question,
+                        query=r.query,
+                        schema_text=schema_txt,
+                        source="spider",
+                        track="track1_known",
+                        split="train",
+                        difficulty="medium",
+                    )
                 )
-            )
 
-        logger.info(f"Loaded {len(examples)} verified Text-to-SQL training examples across {len(db_map)} databases.")
-        return examples, db_map
+        # Shuffle Track 1
+        rng.shuffle(track1_examples)
 
-    def split_and_export(
+        # Limit to train_target + val_target + test_target
+        total_needed = train_target + val_target + 100
+        selected_track1 = track1_examples[:total_needed]
+
+        n_train = min(train_target, len(selected_track1) - val_target - 50)
+        n_val = val_target
+
+        train_split = selected_track1[:n_train]
+        for ex in train_split:
+            ex.split = "train"
+
+        valid_split = selected_track1[n_train : n_train + n_val]
+        for ex in valid_split:
+            ex.split = "valid"
+
+        test_known_split = selected_track1[n_train + n_val :]
+        for ex in test_known_split:
+            ex.split = "test_known"
+
+        # -------------------------------------------------------------
+        # Track 2: Unseen-Schema Generalization (Held-out Databases Only)
+        # -------------------------------------------------------------
+        test_unseen_split: List[SQLTrainingExample] = []
+
+        # Synthetic Track 2 samples (education and entertainment)
+        for idx, s in enumerate(synth_samples):
+            if s.track == "track2_unseen":
+                schema_txt = self._get_schema_text(s.db_id, synth_dbs[s.db_id])
+                test_unseen_split.append(
+                    SQLTrainingExample(
+                        example_id=f"synth_unseen_{idx+1}",
+                        db_id=s.db_id,
+                        question=s.question,
+                        query=s.query,
+                        schema_text=schema_txt,
+                        source="synthetic",
+                        track="track2_unseen",
+                        split="test_unseen",
+                        difficulty=s.difficulty,
+                    )
+                )
+
+        # Spider Dev samples (completely unseen databases)
+        for idx, r in enumerate(dev_records):
+            if r.db_id in db_map:
+                schema_txt = self._get_schema_text(r.db_id, db_map[r.db_id])
+                test_unseen_split.append(
+                    SQLTrainingExample(
+                        example_id=f"spider_dev_{idx+1}",
+                        db_id=r.db_id,
+                        question=r.question,
+                        query=r.query,
+                        schema_text=schema_txt,
+                        source="spider",
+                        track="track2_unseen",
+                        split="test_unseen",
+                        difficulty="hard",
+                    )
+                )
+
+        rng.shuffle(test_unseen_split)
+
+        dataset_splits = {
+            "train": train_split,
+            "valid": valid_split,
+            "test_known": test_known_split,
+            "test_unseen": test_unseen_split,
+        }
+
+        logger.info(
+            f"Dataset assembled: Train={len(train_split)}, Valid={len(valid_split)}, "
+            f"TestKnown={len(test_known_split)}, TestUnseen={len(test_unseen_split)}"
+        )
+        return dataset_splits, db_map
+
+    def build_all_examples(self) -> Tuple[List[SQLTrainingExample], Dict[str, Path]]:
+        """Backward-compatibility helper returning flattened examples list."""
+        splits, db_map = self.build_expanded_dataset()
+        all_ex: List[SQLTrainingExample] = []
+        for s in splits.values():
+            all_ex.extend(s)
+        return all_ex, db_map
+
+    def export_and_manifest(
         self,
-        examples: List[SQLTrainingExample],
-        train_ratio: float = 0.85,
-        val_ratio: float = 0.10,
-        seed: int = 42,
-    ) -> Dict[str, Path]:
-        """Partitions examples and writes train.jsonl, valid.jsonl, and test.jsonl."""
-        rng = random.Random(seed)
-        shuffled = list(examples)
-        rng.shuffle(shuffled)
-
-        n = len(shuffled)
-        n_train = max(1, int(n * train_ratio))
-        n_val = max(1, int(n * val_ratio))
-
-        train_set = shuffled[:n_train]
-        valid_set = shuffled[n_train : n_train + n_val]
-        test_set = shuffled[n_train + n_val :]
-        if not test_set:
-            test_set = valid_set[:1]
-
+        splits: Dict[str, List[SQLTrainingExample]],
+        db_map: Dict[str, Path],
+    ) -> Dict[str, Any]:
+        """Writes JSONL split files and generates formal dataset_manifest.json with SHA-256."""
         files = {
             "train": self.processed_dir / "train.jsonl",
             "valid": self.processed_dir / "valid.jsonl",
-            "test": self.processed_dir / "test.jsonl",
+            "test_known": self.processed_dir / "test_known_schema.jsonl",
+            "test_unseen": self.processed_dir / "test_unseen_schema.jsonl",
         }
 
-        for split_name, dataset in [("train", train_set), ("valid", valid_set), ("test", test_set)]:
-            path = files[split_name]
-            with open(path, "w", encoding="utf-8") as f:
-                for ex in dataset:
-                    f.write(json.dumps(ex.to_chatml(), ensure_ascii=False) + "\n")
-            logger.info(f"Exported {split_name} split with {len(dataset)} records -> {path}")
+        # Also write unified test.jsonl pointing to test_unseen for default MLX evaluation
+        files["test"] = self.processed_dir / "test.jsonl"
 
-        return files
+        manifest_data: Dict[str, Any] = {
+            "manifest_version": "2.0.0",
+            "created_at": "2026-11-18",
+            "sources": [
+                {
+                    "name": "Yale Spider Benchmark",
+                    "url": "https://yale-lily.github.io/spider",
+                    "license": "CC BY-SA 4.0",
+                    "records_used": len([ex for split in splits.values() for ex in split if ex.source == "spider"]),
+                },
+                {
+                    "name": "Multi-Domain Synthetic Generator",
+                    "url": "internal://2_Database/synthetic",
+                    "license": "Proprietary / Open Research",
+                    "records_used": len([ex for split in splits.values() for ex in split if ex.source == "synthetic"]),
+                },
+            ],
+            "total_databases": len(db_map),
+            "splits": {},
+            "track_separation": {
+                "track1_known_schema": {
+                    "description": "Training and testing share database schemas with disjoint query pairs.",
+                    "test_records": len(splits["test_known"]),
+                },
+                "track2_unseen_schema": {
+                    "description": "Strict database-level isolation. Test databases are completely absent from training and validation.",
+                    "test_records": len(splits["test_unseen"]),
+                    "unseen_databases_count": len({ex.db_id for ex in splits["test_unseen"]}),
+                },
+            },
+        }
+
+        # Write each split to disk
+        for split_key, path in files.items():
+            if split_key == "test":
+                split_records = splits["test_unseen"]
+            else:
+                split_records = splits[split_key]
+
+            with open(path, "w", encoding="utf-8") as f:
+                for ex in split_records:
+                    f.write(json.dumps(ex.to_chatml(), ensure_ascii=False) + "\n")
+
+            try:
+                rel_path = str(path.relative_to(get_project_root()))
+            except ValueError:
+                rel_path = str(path)
+
+            sha = compute_sha256(path)
+            manifest_data["splits"][split_key] = {
+                "file_path": rel_path,
+                "records": len(split_records),
+                "sha256": sha,
+            }
+            logger.info(f"Exported {split_key} split ({len(split_records)} records) -> {path.name} (SHA-256: {sha[:12]}...)")
+
+        # Save manifest
+        manifest_path = self.processed_dir / "dataset_manifest.json"
+        with open(manifest_path, "w", encoding="utf-8") as f:
+            json.dump(manifest_data, f, indent=2)
+
+        logger.info(f"Dataset manifest written: {manifest_path}")
+        return manifest_data
