@@ -1,8 +1,8 @@
 # Processed ML Dataset Schema Specification
 
 **Dataset Snapshots:**
-- Original Baseline (v1.0.0): `1_Database/Datasets/Original/csharp_empirical_v1_v1.0.0.csv` (483 observations, 5 repositories)
-- Processed Final (v2.0.0): `1_Database/Datasets/Processed/csharp_empirical_v2_v2.0.0.csv` (578 observations, 7 repositories)
+- Dataset #1 (`v1.0.0`): `1_Database/Datasets/Original/csharp_empirical_v1_v1.0.0.csv` (483 observations, 3 repositories)
+- Dataset #2 (`v2.0.0`): `1_Database/Datasets/Processed/csharp_empirical_v2_v2.0.0.csv` (578 observations, 5 repositories)
 **System:** CISE Project 2 — Machine Learning-Based Software Defect Prediction for C# Source Code  
 
 ---
@@ -69,13 +69,13 @@ The exported CSV datasets contain 35 columns: 8 metadata/provenance columns, 1 b
 
 ## 3. Dataset Versions
 
-### Dataset #1 (v1.0.0 — Original Baseline)
-- **Observations:** 483 total (242 buggy [50.1%], 241 non-buggy [49.9%])
-- **Repositories (5):** `App-vNext/Polly`, `commandlineparser/commandline`, `Humanizr/Humanizr`, `LuckyPennySoftware/21Questions`, `serilog/serilog`
-- **Balanced Class Ratio:** $1.00 : 1.00$
+### Dataset #1 (`v1.0.0` — Initial Baseline Corpus)
+- **Observations:** 483 total (226 defect-prone [46.79%], 257 candidate-clean [53.21%])
+- **Repositories (3):** `Humanizr/Humanizer` (291), `commandlineparser/commandline` (101), `LuckyPennySoftware/MediatR` (91)
 
-### Dataset #2 (v2.0.0 — Processed Final Benchmark)
-- **Observations:** 578 total (279 buggy [48.3%], 299 non-buggy [51.7%])
-- **Repositories (7):** Expanded with `FluentValidation/FluentValidation` (60 observations: 19 buggy, 41 clean) and `JamesNK/Newtonsoft.Json` (holdout partition: 35 observations: 18 buggy, 17 clean)
-- **5-Fold Cross-Validation Pool:** 578 observations strictly partitioned by repository using `GroupKFold(n_splits=5)` ensuring zero cross-project leakage.
+### Dataset #2 (`v2.0.0` — Expanded Cross-Validation Corpus)
+- **Observations:** 578 total (279 defect-prone [48.27%], 299 candidate-clean [51.73%])
+- **Repositories (5):** `Humanizr/Humanizer` (291), `serilog/serilog` (134), `LuckyPennySoftware/MediatR` (91), `App-vNext/Polly` (34), `FluentValidation/FluentValidation` (28)
+- **Validation Partitioning:** 578 observations partitioned by `repository_name` under 5-fold outer $\times$ 4-fold inner nested `GroupKFold` cross-validation.
+- **Historical Independent Holdout (`1_Database/SQLite/bug_detection.db`):** `JamesNK/Newtonsoft.Json` (159 observations: 79 defect-prone, 80 candidate-clean), used exclusively for historical baseline evaluation (`rf_compact_regularized`) and excluded from nested model optimization.
 

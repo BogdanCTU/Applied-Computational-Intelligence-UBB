@@ -30,6 +30,18 @@ class ConfigurationService:
             "Experimental / Ablation Profile — Customizable similarity threshold, top_k, rrf_k, "
             "predicate scope (head vs pvl_v1), and tool routing mode (deterministic vs llm_json)."
         ),
+        "local_4b_baseline": (
+            "Local <=4B Baseline — Verified <=4.0B parameter model (qwen2.5:3b) + nomic-embed-text "
+            "(768-dim), parity 28-space prompt, strict <=4,000,000,000 parameter enforcement."
+        ),
+        "local_4b_optimized": (
+            "Local <=4B Optimized — Verified <=4.0B parameter model (qwen2.5:3b) + nomic-embed-text "
+            "(768-dim), clean non-indented validation prompt, strict <=4.0B parameter enforcement."
+        ),
+        "local_4b_reasoning": (
+            "Local <=4B Reasoning — Verified <=4.0B reasoning model (deepseek-r1:1.5b) + nomic-embed-text "
+            "(768-dim), strict <=4.0B parameter enforcement."
+        ),
     }
 
     def __init__(self, paths: ProjectPaths | None = None):
@@ -76,6 +88,18 @@ class ConfigurationService:
             issues.append("similarity_threshold must be between 0.0 and 1.0.")
         if cfg.top_k < 1:
             issues.append("top_k must be >= 1.")
+
+        if cfg.enforce_4b_limit:
+            try:
+                from ...llm.model_registry import OUT_OF_LIMIT_REFERENCE_MODELS
+
+                mkey = str(cfg.default_llm).strip()
+                if mkey in OUT_OF_LIMIT_REFERENCE_MODELS:
+                    issues.append(
+                        f"Strict <=4.0B limit violation for '{mkey}': {OUT_OF_LIMIT_REFERENCE_MODELS[mkey]}"
+                    )
+            except Exception:
+                pass
 
         return {"valid": len(issues) == 0, "issues": issues, "metadata": cfg.to_metadata_dict()}
 

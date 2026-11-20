@@ -126,19 +126,30 @@ class PipelineInspectionService:
                     normalized.add((a, b))
             return normalized
 
+        def _load_first_existing(filenames: List[str]) -> Set[Tuple[str, str]]:
+            for fn in filenames:
+                p = align_dir / fn
+                if p.is_file():
+                    return _load_normalized_pairs(p)
+            return set()
+
         predictions = {
-            "s2t_no_val": _load_normalized_pairs(
-                align_dir / "predict_source_to_target_without_validation.csv"
+            "s2t_no_val": _load_first_existing(
+                ["predict_source_to_target_without_validation.csv", "predict_source_no_validation.csv"]
             ),
-            "t2s_no_val": _load_normalized_pairs(
-                align_dir / "predict_target_to_source_without_validation.csv"
+            "t2s_no_val": _load_first_existing(
+                ["predict_target_to_source_without_validation.csv", "predict_target_no_validation.csv"]
             ),
-            "merged_no_val": _load_normalized_pairs(
-                align_dir / "predict_merge_without_validation.csv"
+            "merged_no_val": _load_first_existing(
+                ["predict_merge_without_validation.csv", "predict_no_validation.csv"]
             ),
-            "s2t_val": _load_normalized_pairs(align_dir / "predict_source_to_target.csv"),
-            "t2s_val": _load_normalized_pairs(align_dir / "predict_target_to_source.csv"),
-            "final_merged": _load_normalized_pairs(align_dir / "predict.csv"),
+            "s2t_val": _load_first_existing(
+                ["predict_source_to_target.csv", "predict_source.csv"]
+            ),
+            "t2s_val": _load_first_existing(
+                ["predict_target_to_source.csv", "predict_target.csv"]
+            ),
+            "final_merged": _load_first_existing(["predict.csv"]),
         }
 
         return {

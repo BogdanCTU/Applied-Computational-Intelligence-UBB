@@ -1,0 +1,21 @@
+# MLX-LM LoRA Training Configuration for Apple Silicon M4
+fine_tune_type: "lora"
+optimizer: "adamw"
+mask_prompt: true
+num_layers: 16
+batch_size: 2
+iters: 600
+val_batches: 25
+learning_rate: 0.0001
+steps_per_report: 10
+steps_per_eval: 50
+grad_accumulation_steps: 2
+save_every: 100
+max_seq_length: 2048
+grad_checkpoint: true
+seed: 42
+lora_parameters:
+  rank: 8
+  alpha: 16.0
+  dropout: 0.05
+  scale: 2.0

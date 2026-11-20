@@ -88,9 +88,17 @@ class EnvironmentView(QWidget):
         # Installed Ollama models
         grp_models = QGroupBox("Installed Local Ollama Models (127.0.0.1:11434 — Zero Cloud APIs)")
         lay_models = QVBoxLayout(grp_models)
-        self.tbl_models = QTableWidget(0, 5)
+        self.tbl_models = QTableWidget(0, 7)
         self.tbl_models.setHorizontalHeaderLabels(
-            ["Model Name", "Family", "Parameters", "Quantization", "Size (GiB)"]
+            [
+                "Model Name",
+                "Family",
+                "Tag Size",
+                "Total Parameters",
+                "<=4.0B Compliant",
+                "Quantization",
+                "Size (GiB)",
+            ]
         )
         self.tbl_models.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tbl_models.setEditTriggers(QTableWidget.NoEditTriggers)
@@ -162,13 +170,26 @@ class EnvironmentView(QWidget):
         models = ol.get("model_details", [])
         self.tbl_models.setRowCount(len(models))
         for r, m in enumerate(models):
+            t_params = m.get("total_parameter_count")
+            t_params_str = f"{int(t_params):,}" if isinstance(t_params, int) else "-"
+            comp = m.get("is_strict_4b_compliant")
+            comp_str = "YES (<=4.0B)" if comp is True else ("NO (>4.0B)" if comp is False else "-")
             vals = [
                 str(m.get("name", "")),
                 str(m.get("family", "")),
                 str(m.get("parameter_size", "")),
+                t_params_str,
+                comp_str,
                 str(m.get("quantization", "")),
                 str(m.get("size_gb", "")),
             ]
             for col, v in enumerate(vals):
-                self.tbl_models.setItem(r, col, QTableWidgetItem(v))
+                it = QTableWidgetItem(v)
+                if col == 4:
+                    it.setTextAlignment(Qt.AlignCenter)
+                    if comp is True:
+                        it.setBackground(QColor("#DCFCE7"))
+                    elif comp is False:
+                        it.setBackground(QColor("#FEF3C7"))
+                self.tbl_models.setItem(r, col, it)
 

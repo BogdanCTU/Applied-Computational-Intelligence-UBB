@@ -188,7 +188,7 @@ def generate_all(
     bundle_gpt4o = inspector.load_run_bundle("ref_upstream_gpt4o_cmt_confof")
     bundle_upstream = inspector.load_run_bundle(upstream_exp_id)
     bundle_upstream["embedding_dim"] = 4096
-    # Enrich upstream bundle with exact DB cosine scores & RRF candidates from agent_om_upstream
+    # Enrich upstream bundle with exact DB cosine scores & RRF candidates from agent_om_upstream or run_summary.json
     try:
         up_cands = _extract_readonly_db_candidates(
             db_name="agent_om_upstream",
@@ -197,6 +197,8 @@ def generate_all(
             top_k=3,
             rrf_k=0.0,
         )
+        if not any(up_cands["s2t"]):
+            raise RuntimeError("agent_om_upstream empty on current host")
         bundle_upstream["candidates"] = up_cands
         (paths.replication_runs_dir / upstream_exp_id / "candidates_s2t.json").write_text(
             json.dumps(up_cands["s2t"], indent=2), encoding="utf-8"
@@ -224,7 +226,26 @@ def generate_all(
             json.dumps(att_up, indent=2), encoding="utf-8"
         )
     except Exception as exc:
-        print(f"Note: could not enrich upstream DB candidates ({exc})")
+        print(f"Note: enriching upstream stage attrition from saved run_summary ({exc})")
+        df_up = bundle_upstream["features_df"]
+        id_to_uri_up = {str(r["entity_id"]): str(r["entity_uri"]) for _, r in df_up.iterrows()}
+        att_up = compute_stage_attrition(
+            reference_pairs=ref_pairs,
+            source_entity_uris=[str(r["entity_uri"]) for _, r in df_up[df_up["source_or_target"] == "Source"].iterrows()],
+            target_entity_uris=[str(r["entity_uri"]) for _, r in df_up[df_up["source_or_target"] == "Target"].iterrows()],
+            s2t_candidates=bundle_upstream["candidates"].get("s2t", []),
+            t2s_candidates=bundle_upstream["candidates"].get("t2s", []),
+            s2t_unvalidated_pairs=bundle_upstream["predictions"]["s2t_no_val"],
+            t2s_unvalidated_pairs=bundle_upstream["predictions"]["t2s_no_val"],
+            s2t_validated_pairs=bundle_upstream["predictions"]["s2t_val"],
+            t2s_validated_pairs=bundle_upstream["predictions"]["t2s_val"],
+            final_merged_pairs=bundle_upstream["predictions"]["final_merged"],
+            validation_records=[],
+            id_to_uri=id_to_uri_up,
+        )
+        (paths.replication_runs_dir / upstream_exp_id / "stage_attrition.json").write_text(
+            json.dumps(att_up, indent=2), encoding="utf-8"
+        )
 
     bundle_parity = inspector.load_run_bundle(parity_exp_ids[0])
     bundle_adapted = inspector.load_run_bundle(adapted_exp_ids[0])
@@ -577,13 +598,49 @@ def generate_all(
             json.dumps(router_comparison, indent=2), encoding="utf-8"
         )
 
-    # Threshold sensitivity sweeps on pure local hybrid memories
+    # Threshold sensitivity sweeps on pure local hybrid memories (with fallback to historical step7a if DB empty)
     thresh_rows: List[Dict[str, Any]] = []
     for db_n, prof_n in (("agent_om_parity", "upstream_lite_parity"), ("agent_om_adapted", "local_adapted")):
         try:
-            thresh_rows.extend(_compute_threshold_sweep_on_db(db_n, prof_n, ref_pairs))
+            db_check = DatabaseManager(
+                connection_string=AppConfig.from_profile(prof_n, db_name=db_n).connection_string
+            )
+            if db_check.get_table_row_counts().get("ontology_matching", 0) > 0:
+                thresh_rows.extend(_compute_threshold_sweep_on_db(db_n, prof_n, ref_pairs))
         except Exception as exc:
             print(f"Threshold sweep skipped for {db_n}: {exc}")
+
+    if not any(r["profile"] == "local_adapted" for r in thresh_rows):
+        step7a_csv = paths.output_dir / "step7a_threshold_sensitivity.csv"
+        if step7a_csv.is_file():
+            s7_df = pd.read_csv(step7a_csv)
+            for tau_val, grp in s7_df.groupby("threshold"):
+                m_row = grp[(grp["category"] == "RRF_k0") & (grp["sub_category"] == "Top1_Reciprocal_Merger")]
+                u_row = grp[(grp["category"] == "Candidate_Union") & (grp["sub_category"] == "Bidirectional_Union")]
+                s2t_row = grp[(grp["category"] == "RRF_k0") & (grp["sub_category"] == "Top1_S2T")]
+                t2s_row = grp[(grp["category"] == "RRF_k0") & (grp["sub_category"] == "Top1_T2S")]
+                if not m_row.empty:
+                    mr = m_row.iloc[0]
+                    ur = u_row.iloc[0] if not u_row.empty else mr
+                    thresh_rows.append(
+                        {
+                            "profile": "local_adapted",
+                            "db_name": "agent_om_local",
+                            "threshold": round(float(tau_val), 4),
+                            "candidate_union_count": int(ur["candidate_count"]),
+                            "candidate_union_tp": int(ur["tp"]),
+                            "candidate_union_recall_pct": float(ur["recall"]),
+                            "s2t_top1_count": int(s2t_row.iloc[0]["candidate_count"]) if not s2t_row.empty else 0,
+                            "t2s_top1_count": int(t2s_row.iloc[0]["candidate_count"]) if not t2s_row.empty else 0,
+                            "predicted_count": int(mr["candidate_count"]),
+                            "tp": int(mr["tp"]),
+                            "fp": int(mr["fp"]),
+                            "fn": int(mr["fn"]),
+                            "precision_pct": float(mr["precision"]),
+                            "recall_pct": float(mr["recall"]),
+                            "f1_pct": float(mr["f1"]),
+                        }
+                    )
 
     if thresh_rows:
         pd.DataFrame(thresh_rows).to_csv(

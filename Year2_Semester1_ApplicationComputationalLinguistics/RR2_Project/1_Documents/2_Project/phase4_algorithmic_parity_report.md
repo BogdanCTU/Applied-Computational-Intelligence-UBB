@@ -55,8 +55,9 @@ Phase 4 resolved every source-level discrepancy identified in the Phase 0 Audit 
   3. `local_adapted` (`qwen3.5:9b` `reasoning=False` + `nomic-embed-text` `768`-dim, `db_name="agent_om_adapted"`)
   4. `experimental` (customizable thresholds, `rrf_k`, `predicate_scope`, and `tool_routing_mode`, `db_name="agent_om_experimental"`).
 
-### 4.11 Full Regression & Mini-Ontology Verification (`tests/test_algorithmic_parity.py`)
+### 4.11 Full Regression & Mini-Ontology Verification (`tests/test_algorithmic_parity.py`, `tests/test_llm_providers.py`)
 - Added `tests/test_algorithmic_parity.py` covering every defect fix (`4.1`–`4.10`) plus an end-to-end mini-ontology retrieval + pgvector + validation + reciprocal merger comparison between `"deterministic"` and `"llm_json"` modes.
-- Executed full test suite: **118 passed, 0 failed (`14.33s`)**.
+- Added `tests/test_llm_providers.py` verifying Phase 3 provider separation (`LocalChatProvider`, `LocalEmbeddingProvider`, `ModelRegistry`, `ModelValidator`, `OllamaClient`) and the three new strict $\le 4.0\text{B}$ profiles (`local_4b_baseline`, `local_4b_optimized`, `local_4b_reasoning`) without altering `upstream_lite_parity`.
+- Executed full test suite under Python 3.13.16 on macOS Apple M4 (`2026-11-20`): **132 passed, 0 failed (`6.84s`)**.
 - Verified protected `agent_om_local` database row counts remain unchanged: `ontology_matching=162`, `syntactic_matching=162`, `lexical_matching=206`, `semantic_matching=258`.
 

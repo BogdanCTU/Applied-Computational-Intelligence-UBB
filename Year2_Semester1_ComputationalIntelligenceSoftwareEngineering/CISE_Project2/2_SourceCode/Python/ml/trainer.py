@@ -26,7 +26,7 @@ class ModelTrainer:
         min_samples_leaf: int = 2,
         max_features: Any = "sqrt",
         class_weight: Any = "balanced",
-        random_state: int = 42,
+        random_state: int = 50,
         n_jobs: int = -1,
     ) -> None:
         self.params: Dict[str, Any] = {

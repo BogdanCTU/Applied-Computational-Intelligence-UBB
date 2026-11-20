@@ -1,29 +1,27 @@
 """Streamlit Main Application Entrypoint.
-Provides the navigation layout and session state management across all pages.
+Provides navigation layout and session state management across all pages.
 """
 from __future__ import annotations
 
 import sys
 from pathlib import Path
 
-# Ensure 2_SourceCode/Python is on sys.path
 _current_dir = Path(__file__).resolve().parent
 if str(_current_dir) not in sys.path:
     sys.path.insert(0, str(_current_dir))
 
+import pandas as pd
 import streamlit as st
 from core.settings import get_settings
 from database.connection import Database
 from database.repository import RepositoryDB
 
-# Configure main page settings
 st.set_page_config(
     page_title="C# Defect Predictor",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# Initialize settings and database in session state
 if "settings" not in st.session_state:
     st.session_state.settings = get_settings()
 
@@ -34,11 +32,9 @@ if "db" not in st.session_state:
 
 
 def main() -> None:
-    # Sidebar navigation
     with st.sidebar:
-        st.title("C# Defect Predictor")
-        st.caption("Machine Learning Software Defect Prediction")
-        st.markdown("---")
+        st.subheader("C# Defect Predictor")
+        st.caption("Method-level software defect prediction")
 
         page_options = [
             "Dashboard",
@@ -61,25 +57,25 @@ def main() -> None:
         )
         st.session_state.current_page = selected_page
 
-        st.markdown("---")
-        # Global quick stats
         try:
             stats = st.session_state.repo_db.get_summary_statistics()
-            st.markdown("### Workspace Statistics")
-            st.write(f"**Repositories:** {stats['repositories_total']} ({stats['repositories_cloned']} cloned)")
-            st.write(f"**Commits:** {stats['commits_total']} ({stats['commits_bug_fix']} bug-fixing)")
-            st.write(f"**Observations:** {stats['observations_total']}")
-            st.write(f"  * Defect-prone (1): `{stats['observations_buggy']}`")
-            st.write(f"  * Candidate-clean (0): `{stats['observations_non_buggy']}`")
-            st.write(f"  * Uncertain (-1): `{stats['observations_uncertain']}`")
-            st.write(f"**Datasets:** {stats['datasets_count']} | **Models:** {stats['models_count']}")
+            st.subheader("Workspace Summary")
+            summary_df = pd.DataFrame(
+                [
+                    {"Item": "Repositories", "Count": f"{stats['repositories_total']} ({stats['repositories_cloned']} cloned)"},
+                    {"Item": "Commits", "Count": f"{stats['commits_total']} ({stats['commits_bug_fix']} fixes)"},
+                    {"Item": "Observations", "Count": str(stats["observations_total"])},
+                    {"Item": "Defect-prone (1)", "Count": str(stats["observations_buggy"])},
+                    {"Item": "Candidate-clean (0)", "Count": str(stats["observations_non_buggy"])},
+                    {"Item": "Datasets / Models", "Count": f"{stats['datasets_count']} / {stats['models_count']}"},
+                ]
+            )
+            st.dataframe(summary_df, hide_index=True, width="stretch")
         except Exception:
             pass
 
-        st.markdown("---")
-        st.caption("CISE Project 2 | Babeș-Bolyai University")
+        st.caption("CISE Project 2 | Babes-Bolyai University")
 
-    # Render selected page
     if selected_page == "Dashboard":
         from application.pages.dashboard import render_dashboard
         render_dashboard(st.session_state.repo_db, st.session_state.settings)

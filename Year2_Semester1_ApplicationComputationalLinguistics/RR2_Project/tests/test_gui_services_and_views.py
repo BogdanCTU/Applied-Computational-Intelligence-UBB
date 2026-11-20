@@ -67,7 +67,16 @@ def test_environment_and_dataset_services() -> None:
 def test_configuration_service_profiles_and_guardrails(tmp_path: Path) -> None:
     cfg_svc = ConfigurationService()
     profiles = cfg_svc.list_profiles()
-    assert len(profiles) == 4
+    profile_names = {p["name"] for p in profiles}
+    assert {
+        "upstream_product_reference",
+        "upstream_lite_parity",
+        "local_adapted",
+        "experimental",
+        "local_4b_baseline",
+        "local_4b_optimized",
+        "local_4b_reasoning",
+    }.issubset(profile_names)
 
     # Reference profile must be blocked from execution
     ref_cfg = cfg_svc.build_config("upstream_product_reference")

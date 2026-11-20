@@ -2,38 +2,33 @@
 
 ---
 
-## 1. The Challenge of Defect Prediction
+## 1. Problem Formulation
 
-### Limitations of Coarse Granularity
-Most traditional software engineering research operates at file or module granularity:
-- High-level prediction flags entire 2,000-line files as defect-prone.
-- Developers are overwhelmed and cannot pinpoint where the defect actually resides.
-- **Our Focus:** Fine-grained **method-level prediction** that pinpoints the specific function containing the defect.
+### Method-Level Granularity
+File-level defect prediction flags entire source files (often hundreds or thousands of lines), requiring manual inspection to locate the defect-prone routine. This project formulates defect prediction at the **method level**, mapping each C# method declaration to a 26-element static metric vector $\mathbf{x} \in \mathbb{R}^{26}$ and a binary defect label $y \in \{0, 1\}$.
 
-### Threats to Data Integrity
-Defect prediction models frequently suffer from two critical pitfalls:
-1. **Test-Code Pollution:** Test helper methods and unit test fixtures exhibit very different syntactic structures from production code. Mixing them into training sets introduces severe bias.
-2. **Cross-Project Data Leakage:** Standard random $K$-fold cross-validation puts methods from the same repository in both train and test splits, causing over-optimistic evaluation results.
+### Methodological Controls Against Data Leakage
+Empirical defect prediction faces two primary validity threats:
+1. **Test-Code Contamination:** Unit test methods and auto-generated files have different structural distributions than production methods. The pipeline enforces path-level exclusion via `is_production_csharp_file()`.
+2. **Repository-Level Data Leakage:** Standard random $K$-fold cross-validation places methods from the same project in both training and test partitions. All model evaluations enforce repository-grouped partitioning (`GroupKFold`).
 
 ---
 
-## 2. Research Questions (RQs)
+## 2. Research Questions
 
 | Research Question | Objective |
 | :--- | :--- |
-| **RQ1: Feasibility** | Can static AST metrics extracted at method granularity reliably predict defect-proneness in C# source code? |
-| **RQ2: Classifier Performance** | Which machine learning algorithm delivers the highest defect prediction capability under cross-project evaluation? |
-| **RQ3: Feature Importance** | Which syntactic and complexity metrics provide the strongest signal for software defect induction in C#? |
-| **RQ4: Generalization** | Does a model trained across diverse repositories generalize effectively to an unseen external codebase (Holdout)? |
+| **RQ1: Feasibility** | Can 26 static Roslyn AST metrics predict method-level defect-proneness across unseen C# repositories? |
+| **RQ2: Model Optimization** | Do shallow-regularized Extra Trees and Random Forest ensembles improve cross-repository generalization under nested `GroupKFold` validation? |
+| **RQ3: Feature Collinearity & Importance** | Which static metrics carry independent predictive signal under out-of-fold permutation importance when accounting for collinearity? |
+| **RQ4: External Holdout Transfer** | How does the baseline model perform on an unseen external repository (`JamesNK/Newtonsoft.Json`), and what constraints govern holdout reuse? |
 
 ---
 
-## 3. Measurable Project Objectives
+## 3. Project Objectives
 
-- [x] **Repository Mining:** Automatically mine Git histories and commit messages from active C# repositories.
-- [x] **SZZ Implementation:** Identify Bug-Inducing Commits (BICs) and map them to pre-fix method bodies.
-- [x] **Production Filtering:** Eliminate test code, build artifacts, and auto-generated files from all datasets.
-- [x] **Static Feature Extraction:** Implement a high-performance .NET 9 Roslyn analyzer calculating 26 static metrics per method.
-- [x] **Rigorous Evaluation:** Benchmark 11 machine-learning models using 5-fold GroupKFold cross-validation and an independent holdout set.
-- [x] **Tooling & UI:** Deliver an intuitive web dashboard for real-time developer code assessment.
-
+- **Repository & SZZ Mining:** Mine Git commit histories, classify bug-fixing commits, and trace deleted lines to pre-fix method snapshots via `git blame -w -M -C`.
+- **Production Code Filtering:** Exclude test projects, test fixtures, build directories (`obj/`, `bin/`), and generated C# files (`*.g.cs`, `*.Designer.cs`).
+- **Static Metric Extraction:** Compute 26 method-level metrics using a .NET 9.0 Roslyn syntax analyzer.
+- **Leakage-Free Model Optimization:** Evaluate 9 baseline configurations (5-fold `GroupKFold`) and 20 optimization configurations ($5 \times 4$ nested `GroupKFold`) on Dataset #2 ($N = 578$) with all imputation, scaling, feature selection, and threshold tuning confined inside training folds.
+- **Interactive Engineering Interface:** Provide an 8-page Streamlit application for executing and inspecting each pipeline stage.

@@ -1,0 +1,101 @@
+config_id,family,feature_set,outer_fold,repository_id,repository_name,val_samples,val_defect_prone,val_candidate_clean,roc_auc,pr_auc,brier,f1_nominal_050,recall_nominal_050,precision_nominal_050,accuracy_nominal_050,inner_selected_tau_f1,f1_nested_tau,recall_nested_tau,precision_nested_tau,accuracy_nested_tau,tn_nested_tau,fp_nested_tau,fn_nested_tau,tp_nested_tau
+rf_compact_regularized_baseline,RandomForest (Baseline),all_26,1,4,Humanizr/Humanizer,291,139,152,0.7981,0.6602,0.1839,0.6866,0.6619,0.7132,0.7113,0.4,0.7703,0.8201,0.7261,0.7663,109,43,25,114
+rf_compact_regularized_baseline,RandomForest (Baseline),all_26,2,15,serilog/serilog,134,66,68,0.5865,0.5619,0.2702,0.6995,0.9697,0.547,0.5896,0.4,0.6842,0.9848,0.5242,0.5522,9,59,1,65
+rf_compact_regularized_baseline,RandomForest (Baseline),all_26,3,3,LuckyPennySoftware/MediatR,91,43,48,0.6781,0.6114,0.221,0.6593,0.6977,0.625,0.6593,0.25,0.6555,0.907,0.5132,0.5495,11,37,4,39
+rf_compact_regularized_baseline,RandomForest (Baseline),all_26,4,16,App-vNext/Polly,34,17,17,0.8997,0.8475,0.158,0.6667,0.5294,0.9,0.7353,0.3,0.8718,1.0,0.7727,0.8529,12,5,0,17
+rf_compact_regularized_baseline,RandomForest (Baseline),all_26,5,14,FluentValidation/FluentValidation,28,14,14,0.5561,0.5215,0.2399,0.7273,0.8571,0.6316,0.6786,0.35,0.7222,0.9286,0.5909,0.6429,5,9,1,13
+rf_shallow_depth6_leaf6_bal,Random Forest,all_26,1,4,Humanizr/Humanizer,291,139,152,0.7892,0.6509,0.1828,0.7357,0.741,0.7305,0.7457,0.4,0.7811,0.8345,0.7342,0.7766,110,42,23,116
+rf_shallow_depth6_leaf6_bal,Random Forest,all_26,2,15,serilog/serilog,134,66,68,0.6105,0.5845,0.2564,0.7072,0.9697,0.5565,0.6045,0.4,0.6915,0.9848,0.5328,0.5672,11,57,1,65
+rf_shallow_depth6_leaf6_bal,Random Forest,all_26,3,3,LuckyPennySoftware/MediatR,91,43,48,0.6684,0.594,0.219,0.6593,0.6977,0.625,0.6593,0.3,0.6909,0.8837,0.5672,0.6264,19,29,5,38
+rf_shallow_depth6_leaf6_bal,Random Forest,all_26,4,16,App-vNext/Polly,34,17,17,0.9066,0.8265,0.1596,0.7586,0.6471,0.9167,0.7941,0.35,0.8108,0.8824,0.75,0.7941,12,5,2,15
+rf_shallow_depth6_leaf6_bal,Random Forest,all_26,5,14,FluentValidation/FluentValidation,28,14,14,0.5306,0.49,0.2412,0.7273,0.8571,0.6316,0.6786,0.4,0.7222,0.9286,0.5909,0.6429,5,9,1,13
+rf_depth6_leaf8_log2_bal,Random Forest,all_26,1,4,Humanizr/Humanizer,291,139,152,0.7869,0.6524,0.1819,0.7402,0.7482,0.7324,0.7491,0.4,0.7744,0.8273,0.7278,0.7698,109,43,24,115
+rf_depth6_leaf8_log2_bal,Random Forest,all_26,2,15,serilog/serilog,134,66,68,0.6377,0.5979,0.2503,0.7191,0.9697,0.5714,0.6269,0.35,0.6878,0.9848,0.5285,0.5597,10,58,1,65
+rf_depth6_leaf8_log2_bal,Random Forest,all_26,3,3,LuckyPennySoftware/MediatR,91,43,48,0.6783,0.6262,0.2238,0.6593,0.6977,0.625,0.6593,0.3,0.7027,0.907,0.5735,0.6374,19,29,4,39
+rf_depth6_leaf8_log2_bal,Random Forest,all_26,4,16,App-vNext/Polly,34,17,17,0.9135,0.8326,0.1449,0.875,0.8235,0.9333,0.8824,0.35,0.8824,0.8824,0.8824,0.8824,15,2,2,15
+rf_depth6_leaf8_log2_bal,Random Forest,all_26,5,14,FluentValidation/FluentValidation,28,14,14,0.5918,0.5234,0.2264,0.7647,0.9286,0.65,0.7143,0.4,0.7222,0.9286,0.5909,0.6429,5,9,1,13
+rf_depth8_leaf6_balsub,Random Forest,all_26,1,4,Humanizr/Humanizer,291,139,152,0.781,0.6337,0.186,0.7292,0.7266,0.7319,0.7423,0.45,0.7483,0.7698,0.7279,0.7526,112,40,32,107
+rf_depth8_leaf6_balsub,Random Forest,all_26,2,15,serilog/serilog,134,66,68,0.6406,0.5999,0.2533,0.7072,0.9697,0.5565,0.6045,0.35,0.6842,0.9848,0.5242,0.5522,9,59,1,65
+rf_depth8_leaf6_balsub,Random Forest,all_26,3,3,LuckyPennySoftware/MediatR,91,43,48,0.6538,0.5968,0.2258,0.6593,0.6977,0.625,0.6593,0.3,0.6903,0.907,0.5571,0.6154,17,31,4,39
+rf_depth8_leaf6_balsub,Random Forest,all_26,4,16,App-vNext/Polly,34,17,17,0.8997,0.8216,0.1609,0.7143,0.5882,0.9091,0.7647,0.35,0.7778,0.8235,0.7368,0.7647,12,5,3,14
+rf_depth8_leaf6_balsub,Random Forest,all_26,5,14,FluentValidation/FluentValidation,28,14,14,0.5765,0.5178,0.2319,0.7273,0.8571,0.6316,0.6786,0.4,0.7429,0.9286,0.619,0.6786,6,8,1,13
+rf_compact_unweighted,Random Forest,all_26,1,4,Humanizr/Humanizer,291,139,152,0.7818,0.6366,0.1904,0.6768,0.6403,0.7177,0.7079,0.4,0.7651,0.8201,0.717,0.7595,107,45,25,114
+rf_compact_unweighted,Random Forest,all_26,2,15,serilog/serilog,134,66,68,0.5931,0.5712,0.261,0.7111,0.9697,0.5614,0.6119,0.45,0.7033,0.9697,0.5517,0.597,16,52,2,64
+rf_compact_unweighted,Random Forest,all_26,3,3,LuckyPennySoftware/MediatR,91,43,48,0.663,0.6029,0.2344,0.5783,0.5581,0.6,0.6154,0.25,0.661,0.907,0.52,0.5604,12,36,4,39
+rf_compact_unweighted,Random Forest,all_26,4,16,App-vNext/Polly,34,17,17,0.8581,0.7779,0.1798,0.56,0.4118,0.875,0.6765,0.25,0.8718,1.0,0.7727,0.8529,12,5,0,17
+rf_compact_unweighted,Random Forest,all_26,5,14,FluentValidation/FluentValidation,28,14,14,0.5663,0.5132,0.2377,0.7273,0.8571,0.6316,0.6786,0.4,0.7647,0.9286,0.65,0.7143,7,7,1,13
+rf_compact_corr_pruned,Random Forest (FS),corr_pruned_085,1,4,Humanizr/Humanizer,291,139,152,0.7814,0.646,0.1898,0.6716,0.6475,0.6977,0.6976,0.35,0.7683,0.8705,0.6875,0.7491,97,55,18,121
+rf_compact_corr_pruned,Random Forest (FS),corr_pruned_085,2,15,serilog/serilog,134,66,68,0.7014,0.6347,0.2437,0.7119,0.9545,0.5676,0.6194,0.4,0.6842,0.9848,0.5242,0.5522,9,59,1,65
+rf_compact_corr_pruned,Random Forest (FS),corr_pruned_085,3,3,LuckyPennySoftware/MediatR,91,43,48,0.712,0.6564,0.2142,0.7111,0.7442,0.6809,0.7143,0.25,0.6555,0.907,0.5132,0.5495,11,37,4,39
+rf_compact_corr_pruned,Random Forest (FS),corr_pruned_085,4,16,App-vNext/Polly,34,17,17,0.9066,0.8521,0.1673,0.6667,0.5294,0.9,0.7353,0.35,0.8,0.8235,0.7778,0.7941,13,4,3,14
+rf_compact_corr_pruned,Random Forest (FS),corr_pruned_085,5,14,FluentValidation/FluentValidation,28,14,14,0.5561,0.5081,0.2332,0.7273,0.8571,0.6316,0.6786,0.35,0.7429,0.9286,0.619,0.6786,6,8,1,13
+rf_compact_perm_top12,Random Forest (FS),inner_perm_top12,1,4,Humanizr/Humanizer,291,139,152,0.7855,0.645,0.1852,0.7122,0.7122,0.7122,0.7251,0.4,0.7811,0.8345,0.7342,0.7766,110,42,23,116
+rf_compact_perm_top12,Random Forest (FS),inner_perm_top12,2,15,serilog/serilog,134,66,68,0.5377,0.5311,0.2879,0.6809,0.9697,0.5246,0.5522,0.4,0.6806,0.9848,0.52,0.5448,8,60,1,65
+rf_compact_perm_top12,Random Forest (FS),inner_perm_top12,3,3,LuckyPennySoftware/MediatR,91,43,48,0.672,0.5794,0.2256,0.6667,0.6977,0.6383,0.6703,0.3,0.6607,0.8605,0.5362,0.5824,16,32,6,37
+rf_compact_perm_top12,Random Forest (FS),inner_perm_top12,4,16,App-vNext/Polly,34,17,17,0.8824,0.8432,0.1623,0.7742,0.7059,0.8571,0.7941,0.25,0.85,1.0,0.7391,0.8235,11,6,0,17
+rf_compact_perm_top12,Random Forest (FS),inner_perm_top12,5,14,FluentValidation/FluentValidation,28,14,14,0.5051,0.4836,0.2646,0.7273,0.8571,0.6316,0.6786,0.4,0.6857,0.8571,0.5714,0.6071,5,9,2,12
+rf_compact_theoretical_core10,Random Forest (FS),theoretical_core10,1,4,Humanizr/Humanizer,291,139,152,0.7888,0.6567,0.1936,0.6859,0.6835,0.6884,0.701,0.25,0.7591,0.8273,0.7012,0.7491,103,49,24,115
+rf_compact_theoretical_core10,Random Forest (FS),theoretical_core10,2,15,serilog/serilog,134,66,68,0.5818,0.5536,0.2771,0.3966,0.3485,0.46,0.4776,0.3,0.7191,0.9697,0.5714,0.6269,20,48,2,64
+rf_compact_theoretical_core10,Random Forest (FS),theoretical_core10,3,3,LuckyPennySoftware/MediatR,91,43,48,0.6296,0.5826,0.2427,0.6804,0.7674,0.6111,0.6593,0.35,0.6604,0.814,0.5556,0.6044,20,28,8,35
+rf_compact_theoretical_core10,Random Forest (FS),theoretical_core10,4,16,App-vNext/Polly,34,17,17,0.8789,0.8393,0.1804,0.6429,0.5294,0.8182,0.7059,0.25,0.7895,0.8824,0.7143,0.7647,11,6,2,15
+rf_compact_theoretical_core10,Random Forest (FS),theoretical_core10,5,14,FluentValidation/FluentValidation,28,14,14,0.7372,0.6993,0.2151,0.8125,0.9286,0.7222,0.7857,0.3,0.6842,0.9286,0.5417,0.5714,3,11,1,13
+et_depth8_leaf4_sqrt_bal,Extra Trees,all_26,1,4,Humanizr/Humanizer,291,139,152,0.7964,0.6624,0.1757,0.7667,0.8273,0.7143,0.7595,0.4,0.7962,0.8993,0.7143,0.7801,102,50,14,125
+et_depth8_leaf4_sqrt_bal,Extra Trees,all_26,2,15,serilog/serilog,134,66,68,0.6852,0.6217,0.2322,0.7333,0.8333,0.6548,0.7015,0.3,0.7182,0.9848,0.5652,0.6194,18,50,1,65
+et_depth8_leaf4_sqrt_bal,Extra Trees,all_26,3,3,LuckyPennySoftware/MediatR,91,43,48,0.6056,0.5682,0.241,0.5495,0.5814,0.5208,0.5495,0.45,0.66,0.7674,0.5789,0.6264,24,24,10,33
+et_depth8_leaf4_sqrt_bal,Extra Trees,all_26,4,16,App-vNext/Polly,34,17,17,0.827,0.7189,0.1906,0.4615,0.3529,0.6667,0.5882,0.45,0.7097,0.6471,0.7857,0.7353,14,3,6,11
+et_depth8_leaf4_sqrt_bal,Extra Trees,all_26,5,14,FluentValidation/FluentValidation,28,14,14,0.7602,0.7071,0.1885,0.8,1.0,0.6667,0.75,0.4,0.7778,1.0,0.6364,0.7143,6,8,0,14
+et_depth6_leaf6_log2_bal,Extra Trees,all_26,1,4,Humanizr/Humanizer,291,139,152,0.7983,0.671,0.1803,0.7724,0.8058,0.7417,0.7732,0.4,0.8113,0.9281,0.7207,0.7938,102,50,10,129
+et_depth6_leaf6_log2_bal,Extra Trees,all_26,2,15,serilog/serilog,134,66,68,0.7146,0.6421,0.2231,0.7891,0.8788,0.716,0.7687,0.4,0.7251,0.9394,0.5905,0.6493,25,43,4,62
+et_depth6_leaf6_log2_bal,Extra Trees,all_26,3,3,LuckyPennySoftware/MediatR,91,43,48,0.6306,0.5617,0.2381,0.587,0.6279,0.551,0.5824,0.4,0.6542,0.814,0.5469,0.5934,19,29,8,35
+et_depth6_leaf6_log2_bal,Extra Trees,all_26,4,16,App-vNext/Polly,34,17,17,0.827,0.7125,0.1908,0.4615,0.3529,0.6667,0.5882,0.35,0.8649,0.9412,0.8,0.8529,13,4,1,16
+et_depth6_leaf6_log2_bal,Extra Trees,all_26,5,14,FluentValidation/FluentValidation,28,14,14,0.7041,0.6342,0.1985,0.8235,1.0,0.7,0.7857,0.4,0.7778,1.0,0.6364,0.7143,6,8,0,14
+et_depth8_leaf4_unweighted,Extra Trees,all_26,1,4,Humanizr/Humanizer,291,139,152,0.7928,0.6562,0.1777,0.7534,0.7914,0.719,0.7526,0.4,0.7923,0.8921,0.7126,0.7766,102,50,15,124
+et_depth8_leaf4_unweighted,Extra Trees,all_26,2,15,serilog/serilog,134,66,68,0.6832,0.6159,0.232,0.5954,0.5909,0.6,0.6045,0.3,0.7182,0.9848,0.5652,0.6194,18,50,1,65
+et_depth8_leaf4_unweighted,Extra Trees,all_26,3,3,LuckyPennySoftware/MediatR,91,43,48,0.6216,0.5876,0.2393,0.5495,0.5814,0.5208,0.5495,0.45,0.5745,0.6279,0.5294,0.5604,24,24,16,27
+et_depth8_leaf4_unweighted,Extra Trees,all_26,4,16,App-vNext/Polly,34,17,17,0.827,0.7117,0.193,0.4615,0.3529,0.6667,0.5882,0.4,0.8235,0.8235,0.8235,0.8235,14,3,3,14
+et_depth8_leaf4_unweighted,Extra Trees,all_26,5,14,FluentValidation/FluentValidation,28,14,14,0.7347,0.6725,0.1897,0.8,1.0,0.6667,0.75,0.4,0.8,1.0,0.6667,0.75,7,7,0,14
+hgb_lr005_depth5_leaf20_l2_1,HistGradientBoosting,all_26,1,4,Humanizr/Humanizer,291,139,152,0.7757,0.6318,0.2104,0.6381,0.5899,0.6949,0.6804,0.6,0.4977,0.3957,0.6707,0.6186,125,27,84,55
+hgb_lr005_depth5_leaf20_l2_1,HistGradientBoosting,all_26,2,15,serilog/serilog,134,66,68,0.574,0.592,0.3146,0.6772,0.9697,0.5203,0.5448,0.35,0.6771,0.9848,0.5159,0.5373,7,61,1,65
+hgb_lr005_depth5_leaf20_l2_1,HistGradientBoosting,all_26,3,3,LuckyPennySoftware/MediatR,91,43,48,0.6969,0.6789,0.2274,0.575,0.5349,0.6216,0.6264,0.25,0.7037,0.8837,0.5846,0.6484,21,27,5,38
+hgb_lr005_depth5_leaf20_l2_1,HistGradientBoosting,all_26,4,16,App-vNext/Polly,34,17,17,0.7993,0.7214,0.2064,0.5,0.3529,0.8571,0.6471,0.25,0.8108,0.8824,0.75,0.7941,12,5,2,15
+hgb_lr005_depth5_leaf20_l2_1,HistGradientBoosting,all_26,5,14,FluentValidation/FluentValidation,28,14,14,0.5612,0.5063,0.2738,0.6207,0.6429,0.6,0.6071,0.3,0.6857,0.8571,0.5714,0.6071,5,9,2,12
+hgb_lr003_depth3_leaf25_l2_5,HistGradientBoosting,all_26,1,4,Humanizr/Humanizer,291,139,152,0.7877,0.6624,0.1894,0.6667,0.6331,0.704,0.6976,0.45,0.7368,0.7554,0.7192,0.7423,111,41,34,105
+hgb_lr003_depth3_leaf25_l2_5,HistGradientBoosting,all_26,2,15,serilog/serilog,134,66,68,0.5023,0.5485,0.2891,0.7143,0.9848,0.5603,0.6119,0.4,0.6915,0.9848,0.5328,0.5672,11,57,1,65
+hgb_lr003_depth3_leaf25_l2_5,HistGradientBoosting,all_26,3,3,LuckyPennySoftware/MediatR,91,43,48,0.7069,0.6051,0.2239,0.65,0.6047,0.7027,0.6923,0.3,0.6565,1.0,0.4886,0.5055,3,45,0,43
+hgb_lr003_depth3_leaf25_l2_5,HistGradientBoosting,all_26,4,16,App-vNext/Polly,34,17,17,0.9204,0.8434,0.1472,0.8,0.7059,0.9231,0.8235,0.3,0.8889,0.9412,0.8421,0.8824,14,3,1,16
+hgb_lr003_depth3_leaf25_l2_5,HistGradientBoosting,all_26,5,14,FluentValidation/FluentValidation,28,14,14,0.551,0.5219,0.2389,0.6,0.6429,0.5625,0.5714,0.3,0.7179,1.0,0.56,0.6071,3,11,0,14
+gb_lr005_depth3_leaf8_sub08,Gradient Boosting,all_26,1,4,Humanizr/Humanizer,291,139,152,0.7695,0.6307,0.2089,0.6459,0.5971,0.7034,0.6873,0.25,0.7771,0.8777,0.6971,0.7595,99,53,17,122
+gb_lr005_depth3_leaf8_sub08,Gradient Boosting,all_26,2,15,serilog/serilog,134,66,68,0.5938,0.5905,0.2809,0.6957,0.9697,0.5424,0.5821,0.4,0.6842,0.9848,0.5242,0.5522,9,59,1,65
+gb_lr005_depth3_leaf8_sub08,Gradient Boosting,all_26,3,3,LuckyPennySoftware/MediatR,91,43,48,0.6965,0.6667,0.2248,0.6024,0.5814,0.625,0.6374,0.25,0.7027,0.907,0.5735,0.6374,19,29,4,39
+gb_lr005_depth3_leaf8_sub08,Gradient Boosting,all_26,4,16,App-vNext/Polly,34,17,17,0.8131,0.7182,0.208,0.5714,0.4706,0.7273,0.6471,0.25,0.8421,0.9412,0.7619,0.8235,12,5,1,16
+gb_lr005_depth3_leaf8_sub08,Gradient Boosting,all_26,5,14,FluentValidation/FluentValidation,28,14,14,0.5255,0.4868,0.2695,0.625,0.7143,0.5556,0.5714,0.25,0.7368,1.0,0.5833,0.6429,4,10,0,14
+gb_lr003_depth2_leaf12_sub08,Gradient Boosting,all_26,1,4,Humanizr/Humanizer,291,139,152,0.7762,0.6456,0.1929,0.7132,0.6978,0.7293,0.732,0.25,0.7774,0.8921,0.6889,0.756,96,56,15,124
+gb_lr003_depth2_leaf12_sub08,Gradient Boosting,all_26,2,15,serilog/serilog,134,66,68,0.5566,0.6003,0.2546,0.7222,0.9848,0.5702,0.6269,0.35,0.6952,0.9848,0.5372,0.5746,12,56,1,65
+gb_lr003_depth2_leaf12_sub08,Gradient Boosting,all_26,3,3,LuckyPennySoftware/MediatR,91,43,48,0.6999,0.6434,0.223,0.6098,0.5814,0.641,0.6484,0.3,0.6667,0.814,0.5645,0.6154,21,27,8,35
+gb_lr003_depth2_leaf12_sub08,Gradient Boosting,all_26,4,16,App-vNext/Polly,34,17,17,0.917,0.8337,0.1556,0.8,0.7059,0.9231,0.8235,0.25,0.8947,1.0,0.8095,0.8824,13,4,0,17
+gb_lr003_depth2_leaf12_sub08,Gradient Boosting,all_26,5,14,FluentValidation/FluentValidation,28,14,14,0.5,0.476,0.2534,0.7059,0.8571,0.6,0.6429,0.35,0.6857,0.8571,0.5714,0.6071,5,9,2,12
+lr_c01_std_bal,Logistic Regression,all_26,1,4,Humanizr/Humanizer,291,139,152,0.766,0.6821,0.2201,0.5968,0.5324,0.6789,0.6564,0.3,0.7247,0.7482,0.7027,0.7285,108,44,35,104
+lr_c01_std_bal,Logistic Regression,all_26,2,15,serilog/serilog,134,66,68,0.754,0.7158,0.2091,0.7111,0.7273,0.6957,0.709,0.25,0.6596,0.9394,0.5082,0.5224,8,60,4,62
+lr_c01_std_bal,Logistic Regression,all_26,3,3,LuckyPennySoftware/MediatR,91,43,48,0.5669,0.5295,0.2734,0.481,0.4419,0.5278,0.5495,0.3,0.5243,0.6279,0.45,0.4615,15,33,16,27
+lr_c01_std_bal,Logistic Regression,all_26,4,16,App-vNext/Polly,34,17,17,0.7889,0.6793,0.2442,0.1905,0.1176,0.5,0.5,0.3,0.7059,0.7059,0.7059,0.7059,12,5,5,12
+lr_c01_std_bal,Logistic Regression,all_26,5,14,FluentValidation/FluentValidation,28,14,14,0.6378,0.5613,0.2722,0.5926,0.5714,0.6154,0.6071,0.25,0.7368,1.0,0.5833,0.6429,4,10,0,14
+lr_c1_std_bal,Logistic Regression,all_26,1,4,Humanizr/Humanizer,291,139,152,0.7238,0.6592,0.2481,0.5508,0.4676,0.6701,0.6357,0.25,0.7158,0.7338,0.6986,0.7216,108,44,37,102
+lr_c1_std_bal,Logistic Regression,all_26,2,15,serilog/serilog,134,66,68,0.7447,0.692,0.2218,0.7114,0.803,0.6386,0.6791,0.25,0.6772,0.9697,0.5203,0.5448,9,59,2,64
+lr_c1_std_bal,Logistic Regression,all_26,3,3,LuckyPennySoftware/MediatR,91,43,48,0.5504,0.5255,0.2874,0.4675,0.4186,0.5294,0.5495,0.3,0.4946,0.5349,0.46,0.4835,21,27,20,23
+lr_c1_std_bal,Logistic Regression,all_26,4,16,App-vNext/Polly,34,17,17,0.8166,0.7202,0.2284,0.4167,0.2941,0.7143,0.5882,0.25,0.8421,0.9412,0.7619,0.8235,12,5,1,16
+lr_c1_std_bal,Logistic Regression,all_26,5,14,FluentValidation/FluentValidation,28,14,14,0.5816,0.5207,0.324,0.3478,0.2857,0.4444,0.4643,0.25,0.7222,0.9286,0.5909,0.6429,5,9,1,13
+lr_c01_robust_bal,Logistic Regression,all_26,1,4,Humanizr/Humanizer,291,139,152,0.796,0.7038,0.2044,0.6245,0.5683,0.693,0.6735,0.3,0.7792,0.8633,0.7101,0.7663,103,49,19,120
+lr_c01_robust_bal,Logistic Regression,all_26,2,15,serilog/serilog,134,66,68,0.713,0.6651,0.2293,0.7273,0.7879,0.6753,0.709,0.25,0.6702,0.9697,0.512,0.5299,7,61,2,64
+lr_c01_robust_bal,Logistic Regression,all_26,3,3,LuckyPennySoftware/MediatR,91,43,48,0.6192,0.5731,0.2499,0.5,0.4186,0.6207,0.6044,0.25,0.6825,1.0,0.5181,0.5604,8,40,0,43
+lr_c01_robust_bal,Logistic Regression,all_26,4,16,App-vNext/Polly,34,17,17,0.8478,0.765,0.1987,0.5926,0.4706,0.8,0.6765,0.25,0.8421,0.9412,0.7619,0.8235,12,5,1,16
+lr_c01_robust_bal,Logistic Regression,all_26,5,14,FluentValidation/FluentValidation,28,14,14,0.5969,0.5405,0.2903,0.4167,0.3571,0.5,0.5,0.25,0.6842,0.9286,0.5417,0.5714,3,11,1,13
+lr_c01_robust_corr_pruned,Logistic Regression,corr_pruned_085,1,4,Humanizr/Humanizer,291,139,152,0.7972,0.7046,0.2031,0.6295,0.5683,0.7054,0.6804,0.35,0.739,0.7842,0.6987,0.7354,105,47,30,109
+lr_c01_robust_corr_pruned,Logistic Regression,corr_pruned_085,2,15,serilog/serilog,134,66,68,0.7259,0.6805,0.2241,0.6963,0.7121,0.6812,0.694,0.3,0.6559,0.9242,0.5083,0.5224,9,59,5,61
+lr_c01_robust_corr_pruned,Logistic Regression,corr_pruned_085,3,3,LuckyPennySoftware/MediatR,91,43,48,0.6233,0.5667,0.2499,0.5205,0.4419,0.6333,0.6154,0.3,0.6609,0.8837,0.5278,0.5714,14,34,5,38
+lr_c01_robust_corr_pruned,Logistic Regression,corr_pruned_085,4,16,App-vNext/Polly,34,17,17,0.8166,0.714,0.2203,0.4167,0.2941,0.7143,0.5882,0.25,0.8205,0.9412,0.7273,0.7941,11,6,1,16
+lr_c01_robust_corr_pruned,Logistic Regression,corr_pruned_085,5,14,FluentValidation/FluentValidation,28,14,14,0.6122,0.5468,0.2875,0.4167,0.3571,0.5,0.5,0.25,0.7,1.0,0.5385,0.5714,2,12,0,14
+rf_compact_calibrated_sigmoid,Calibrated RF,all_26,1,4,Humanizr/Humanizer,291,139,152,0.7846,0.6337,0.1872,0.7266,0.7266,0.7266,0.7388,0.35,0.7947,0.8633,0.7362,0.7869,109,43,19,120
+rf_compact_calibrated_sigmoid,Calibrated RF,all_26,2,15,serilog/serilog,134,66,68,0.592,0.5517,0.2614,0.7104,0.9848,0.5556,0.6045,0.3,0.6701,0.9848,0.5078,0.5224,5,63,1,65
+rf_compact_calibrated_sigmoid,Calibrated RF,all_26,3,3,LuckyPennySoftware/MediatR,91,43,48,0.6773,0.5802,0.2319,0.6916,0.8605,0.5781,0.6374,0.35,0.661,0.907,0.52,0.5604,12,36,4,39
+rf_compact_calibrated_sigmoid,Calibrated RF,all_26,4,16,App-vNext/Polly,34,17,17,0.8997,0.8194,0.1714,0.56,0.4118,0.875,0.6765,0.35,0.8333,0.8824,0.7895,0.8235,13,4,2,15
+rf_compact_calibrated_sigmoid,Calibrated RF,all_26,5,14,FluentValidation/FluentValidation,28,14,14,0.5765,0.5224,0.2379,0.7273,0.8571,0.6316,0.6786,0.35,0.7222,0.9286,0.5909,0.6429,5,9,1,13

@@ -1,0 +1,14 @@
+# Agent-OM Development, GUI, Plotting & Packaging Dependencies (Python 3.13)
+-r requirements.txt
+
+# Desktop GUI (Qt6)
+PySide6>=6.8.0
+
+# Scientific Charts & Evaluation Plots
+matplotlib>=3.9.0
+
+# GUI Automated Testing
+pytest-qt>=4.4.0
+
+# Standalone Application Packaging
+pyinstaller>=6.11.0

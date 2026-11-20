@@ -17,6 +17,17 @@ VALID_PROFILES = (
     "upstream_lite_parity",
     "local_adapted",
     "experimental",
+    "local_4b_baseline",
+    "local_4b_optimized",
+    "local_4b_reasoning",
+)
+
+STRICT_4B_PROFILES = frozenset(
+    {
+        "local_4b_baseline",
+        "local_4b_optimized",
+        "local_4b_reasoning",
+    }
 )
 
 PROTECTED_DATABASES = frozenset({"agent_om_local"})
@@ -33,8 +44,12 @@ CLOUD_MODEL_PREFIXES = (
 DEFAULT_EMBEDDING_DIMENSIONS: Dict[str, int] = {
     "nomic-embed-text": 768,
     "nomic-embed-text:latest": 768,
+    "mxbai-embed-large": 1024,
+    "mxbai-embed-large:latest": 1024,
     "bge-m3": 1024,
     "bge-m3:latest": 1024,
+    "all-minilm": 384,
+    "all-minilm:latest": 384,
     "llama3:8b": 4096,
     "llama3:latest": 4096,
     # Reference-only metadata for upstream product baseline reporting (never executed):
@@ -157,6 +172,8 @@ class AppConfig:
     sort_bnode_triples: bool = True
     predicate_scope: str = "head"  # "head" (10 lex + 18 sem + bnode) or "pvl_v1" (2 lex + 7 sem)
     tool_routing_mode: str = "deterministic"  # "deterministic" or "llm_json"
+    enforce_4b_limit: bool = False
+    max_parameters: int = 4_000_000_000
 
     def __post_init__(self) -> None:
         self.project_root = Path(self.project_root)
@@ -316,6 +333,90 @@ class AppConfig:
                 "predicate_scope": "head",
                 "tool_routing_mode": "deterministic",
             }
+        elif profile_name == "local_4b_baseline":
+            profile_defaults = {
+                **base_db,
+                "profile_name": "local_4b_baseline",
+                "reference_only": False,
+                "db_name": "agent_om_4b_baseline",
+                "default_llm": "qwen2.5:3b",
+                "default_embedding_model": "nomic-embed-text",
+                "embedding_dim": 768,
+                "temperature": 0.0,
+                "seed": 42,
+                "llm_top_k": 1,
+                "top_p": 1.0,
+                "repeat_penalty": 1.0,
+                "num_ctx": 2048,
+                "reasoning": False,
+                "skip_empty_chunks": True,
+                "combine_properties_sort": True,
+                "indent_validation_prompt": True,
+                "semantic_concat_separator": "\n",
+                "strip_llm_responses": True,
+                "sort_lexical_annotations": True,
+                "sort_bnode_triples": True,
+                "predicate_scope": "head",
+                "tool_routing_mode": "deterministic",
+                "enforce_4b_limit": True,
+                "max_parameters": 4_000_000_000,
+            }
+        elif profile_name == "local_4b_optimized":
+            profile_defaults = {
+                **base_db,
+                "profile_name": "local_4b_optimized",
+                "reference_only": False,
+                "db_name": "agent_om_4b_optimized",
+                "default_llm": "qwen2.5:3b",
+                "default_embedding_model": "nomic-embed-text",
+                "embedding_dim": 768,
+                "temperature": 0.0,
+                "seed": 42,
+                "llm_top_k": 1,
+                "top_p": 1.0,
+                "repeat_penalty": 1.0,
+                "num_ctx": 2048,
+                "reasoning": False,
+                "skip_empty_chunks": True,
+                "combine_properties_sort": True,
+                "indent_validation_prompt": False,
+                "semantic_concat_separator": "\n",
+                "strip_llm_responses": True,
+                "sort_lexical_annotations": True,
+                "sort_bnode_triples": True,
+                "predicate_scope": "head",
+                "tool_routing_mode": "deterministic",
+                "enforce_4b_limit": True,
+                "max_parameters": 4_000_000_000,
+            }
+        elif profile_name == "local_4b_reasoning":
+            profile_defaults = {
+                **base_db,
+                "profile_name": "local_4b_reasoning",
+                "reference_only": False,
+                "db_name": "agent_om_4b_reasoning",
+                "default_llm": "deepseek-r1:1.5b",
+                "default_embedding_model": "nomic-embed-text",
+                "embedding_dim": 768,
+                "temperature": 0.0,
+                "seed": 42,
+                "llm_top_k": 1,
+                "top_p": 1.0,
+                "repeat_penalty": 1.0,
+                "num_ctx": 2048,
+                "reasoning": False,
+                "skip_empty_chunks": True,
+                "combine_properties_sort": True,
+                "indent_validation_prompt": False,
+                "semantic_concat_separator": "\n",
+                "strip_llm_responses": True,
+                "sort_lexical_annotations": True,
+                "sort_bnode_triples": True,
+                "predicate_scope": "head",
+                "tool_routing_mode": "deterministic",
+                "enforce_4b_limit": True,
+                "max_parameters": 4_000_000_000,
+            }
         else:  # experimental
             profile_defaults = {
                 **base_db,
@@ -393,6 +494,40 @@ class AppConfig:
                 )
         validate_loopback_host(self.db_host)
         validate_loopback_url(self.ollama_host)
+
+    def build_chat_provider(self, validate_on_init: bool = False) -> Any:
+        """Instantiate separated `LocalChatProvider` enforcing <=4B parameter limits when configured."""
+        self.ensure_executable()
+        from .llm.chat_provider import LocalChatProvider
+
+        return LocalChatProvider(
+            model_name=self.default_llm,
+            base_url=self.ollama_host,
+            temperature=self.temperature,
+            seed=self.seed,
+            top_k=self.llm_top_k,
+            top_p=self.top_p,
+            repeat_penalty=self.repeat_penalty,
+            num_ctx=self.num_ctx,
+            reasoning=self.reasoning,
+            enforce_4b_limit=self.enforce_4b_limit or (self.profile_name in STRICT_4B_PROFILES),
+            max_parameters=self.max_parameters,
+            validate_on_init=validate_on_init,
+        )
+
+    def build_embedding_provider(self, validate_on_init: bool = False) -> Any:
+        """Instantiate separated `LocalEmbeddingProvider` enforcing exact vector dimension parity."""
+        self.ensure_executable()
+        from .llm.embedding_provider import LocalEmbeddingProvider
+
+        return LocalEmbeddingProvider(
+            model_name=self.default_embedding_model,
+            expected_dim=self.vector_length,
+            base_url=self.ollama_host,
+            ctx_size=self.num_ctx,
+            allow_llama_bridge=str(self.default_embedding_model).lower().startswith("llama3"),
+            validate_on_init=validate_on_init,
+        )
 
     def build_chat_llm(self, **overrides: Any) -> Any:
         """Instantiate a configured local `ChatOllama` model with explicit sampling parameters."""
@@ -485,6 +620,8 @@ class AppConfig:
             "sort_bnode_triples": self.sort_bnode_triples,
             "predicate_scope": self.predicate_scope,
             "tool_routing_mode": self.tool_routing_mode,
+            "enforce_4b_limit": self.enforce_4b_limit,
+            "max_parameters": self.max_parameters,
         }
 
 

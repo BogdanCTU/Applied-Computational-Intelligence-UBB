@@ -3,225 +3,142 @@
 **Project:** Machine Learning-Based Software Defect Prediction for C# Source Code  
 **Institution:** Faculty of Mathematics and Computer Science, Babeș-Bolyai University  
 **Course:** Computational Intelligence in Software Engineering (CISE) — Project 2  
-**Role:** Canonical Technical Methodology & Data Engineering Reference  
 
 ---
 
-## 1. Overview & Data Pipeline Architecture
+## 1. Pipeline Stages
 
-The objective of this pipeline is to construct a leak-free, reproducible, method-level empirical dataset for software defect prediction in C# source code. The end-to-end data engineering architecture spans seven stages:
-
-```
-[1. GitHub Discovery & Repository Selection]
-                     │
-                     ▼
-[2. Full-History Git Mining & Commit Persistence]
-                     │
-                     ▼
-[3. Heuristic Bug-Fixing Commit (BFC) Detection]
-                     │
-                     ▼
-[4. SZZ Line Blame Tracing & Bug-Inducing Commit (BIC) Identification]
-                     │
-                     ▼
-[5. Roslyn AST Enclosing Method Localization & Metric Extraction]
-                     │
-                     ▼
-[6. Production Code Filtering & Candidate-Clean Sampling (1:1 Ratio)]
-                     │
-                     ▼
-[7. Repository-Aware Snapshot Versioning & Leakage-Free Partitioning]
-```
+| Stage | Component | Operation |
+| :---: | :--- | :--- |
+| 1 | `GitHubClient` | Query GitHub REST API (`GET /search/repositories`) and register C# repositories (requires network access). |
+| 2 | `RepositoryManager`, `CommitCollector` | Clone full Git history locally and persist commit metadata and file diffs in SQLite. |
+| 3 | `BugFixDetector` | Score commit messages using issue references and defect keyword regexes ($\text{confidence} \ge 0.50$). |
+| 4 | `SZZAnalyzer` | Trace deleted or modified production C# lines in fixing commits to candidate Bug-Inducing Commits (BICs) via `git blame -w -M -C`. |
+| 5 | `LabelManager` | Map blamed lines to enclosing C# method AST nodes in the pre-fix parent commit (`label = 1`) and sample candidate-clean methods from `HEAD` (`label = 0`). |
+| 6 | `FeatureExtractor`, `RoslynClient` | Extract 26 static code metrics per method via the .NET 9.0 Roslyn CLI analyzer. |
+| 7 | `DatasetBuilder`, `ExperimentRunner`, `run_model_optimization.py` | Export versioned CSV snapshots and evaluate models using 5-fold baseline `GroupKFold` and $5 \times 4$ nested `GroupKFold`. |
 
 ---
 
-## 2. Repository Selection & Discovery Criteria
+## 2. Repository Selection Criteria
 
-Repositories are discovered via the GitHub REST API (`GET /search/repositories`) and filtered automatically according to empirical software engineering standards:
-
-| Selection Dimension | Criterion | Methodological Rationale |
+| Criterion | Filter / Rule | Rationale |
 | :--- | :--- | :--- |
-| **Language Target** | `language:csharp` | Restricts syntax to C# compilation units. |
-| **Popularity & Maturity** | $\ge 100$ GitHub Stars | Filters out transient toy projects, student homework, and unmaintained personal forks. |
-| **Codebase Scale** | $\ge 100$ KB physical repository size | Ensures non-trivial project volume with meaningful method distributions. |
-| **Fork Exclusion** | `fork:false` | Eliminates duplicated histories and synthetic cross-project overlap. |
-| **Maintenance Status** | `archived:false` | Guarantees active maintenance practices and standard issue-tracking conventions. |
-| **Licensing** | Permissive Open Source (MIT, Apache-2.0, BSD) | Complies with research and educational analysis guidelines. |
+| Language | `language:csharp` | Restricts compilation units to C#. |
+| Popularity | $\ge 100$ stars | Excludes trivial or unmaintained repositories. |
+| Repository Size | $\ge 100$ KB | Ensures sufficient method count and commit history. |
+| Fork Status | `fork:false` | Avoids duplicate histories across repositories. |
+| Archive Status | `archived:false` | Selects actively maintained projects. |
+| License | MIT, Apache-2.0, BSD | Permits academic source analysis. |
 
-### Selected Training & Holdout Repositories
+### Selected Repositories
 
-| Repository ID | Full Name | Domain / Specialty | Role in Evaluation |
-| :---: | :--- | :--- | :---: |
-| **Repo #4** | `Humanizr/Humanizer` | String manipulation & localization library | Training (Fold 1 Val) |
-| **Repo #15** | `serilog/serilog` | High-performance diagnostic logging library | Training (Fold 2 Val) |
-| **Repo #3** | `LuckyPennySoftware/MediatR` | In-process mediator messaging framework | Training (Fold 3 Val) |
-| **Repo #16** | `App-vNext/Polly` | Resilience and transient-fault-handling library | Training (Fold 4 Val) |
-| **Repo #14** | `FluentValidation/FluentValidation` | Fluent input validation rules engine | Training (Fold 5 Val) |
-| **Repo #17** | `JamesNK/Newtonsoft.Json` | Standard .NET JSON serialization library | **Independent Holdout** |
-
----
-
-## 3. Full-History Git Mining & Incremental Synchronization
-
-Cloning and commit traversal are implemented in `2_SourceCode/Python/repositories/` and `services/mining/` using `GitPython`:
-
-1. **Full-History Preservation:** Repositories are cloned without `--depth` constraints. SZZ line-level blame tracing strictly requires an unbroken commit DAG and ancestor walks.
-2. **Local Path Isolation:** Repositories reside under `data/repositories/{owner}/{name}`. Path slugs are validated against `^[a-zA-Z0-9_\-\.]+$` to block directory traversal vulnerabilities.
-3. **Incremental Synchronization:**
-   - Commit collection queries existing hashes in SQLite (`SELECT commit_sha FROM commits WHERE repository_id = ?`).
-   - Commits reachable from the default branch `HEAD` are traversed chronologically. Previously processed commit hashes are skipped.
-   - New commits and associated file modifications (`commit_files` records) are persisted in atomic transactions of 100 commits to support interruption recovery.
+| Repository ID | Full Name | Domain | Role |
+| :---: | :--- | :--- | :--- |
+| 4 | `Humanizr/Humanizer` | String manipulation and localization | Training / Outer Fold 1 (291 methods) |
+| 15 | `serilog/serilog` | Structured diagnostic logging | Training / Outer Fold 2 (134 methods) |
+| 3 | `LuckyPennySoftware/MediatR` | In-process mediator messaging | Training / Outer Fold 3 (91 methods) |
+| 16 | `App-vNext/Polly` | Resilience and transient-fault handling | Training / Outer Fold 4 (34 methods) |
+| 14 | `FluentValidation/FluentValidation` | Fluent validation rules engine | Training / Outer Fold 5 (28 methods) |
+| 17 | `JamesNK/Newtonsoft.Json` | JSON serialization framework | Historical Baseline Holdout (159 methods; excluded from optimization) |
+| 1 | `commandlineparser/commandline` | Command-line argument parsing | Dataset #1 Exploratory (101 methods) |
 
 ---
 
-## 4. Bug-Fixing Commit (BFC) Detection
+## 3. Git Mining and Bug-Fixing Commit Detection
 
-Candidate bug-fixing commits are identified using a multi-pattern heuristic classifier (`2_SourceCode/Python/services/mining/bug_fix_detector.py`):
-
-1. **Issue Reference Linking (Base Score $\ge 0.55$):**
-   - Matches issue-closing directives: `(fix|fixes|fixed|resolve|resolves|resolved|close|closes|closed)\s+(gh-|#)?\d+`.
-2. **Defect Keyword Heuristics:**
-   - Scans commit messages for defect indicators: `bug`, `fix`, `defect`, `regression`, `crash`, `exception`, `nullreference`, `deadlock`, `race condition`, `memory leak`.
-3. **False-Positive Penalties:**
-   - Non-defect maintenance commits (`typo`, `formatting`, `stylecop`, `readme`, `docs`, `release`, `bump version`) are penalized.
-   - Commits that modify zero C# files receive a $-0.35$ penalty.
-   - Massive multi-file bulk refactorings (>30 modified files) receive a $-0.25$ confidence deduction.
-4. **Classification Boundary:**
-   - Commits with aggregate confidence score $\ge 0.50$ are classified as candidate Bug-Fixing Commits.
+1. **Full-History Cloning:** Repositories are cloned without `--depth` truncation into `1_Database/Repositories/{owner}/{name}` so ancestor blame walks remain intact.
+2. **Incremental Commit Persistence:** Commits reachable from the default branch `HEAD` are persisted in batches of 100 along with modified file paths (`commit_files`).
+3. **Bug-Fix Scoring (`services/mining/bug_fix_detector.py`):**
+   - Issue-closing references (`(fix|fixes|fixed|resolve|resolves|resolved|close|closes|closed)\s+(gh-|#)?\d+`) add base confidence $\ge 0.55$.
+   - Defect keywords (`bug`, `fix`, `defect`, `regression`, `crash`, `exception`, `nullreference`, `deadlock`, `race condition`, `memory leak`) increase confidence.
+   - Non-code or maintenance keywords (`typo`, `formatting`, `stylecop`, `readme`, `docs`, `release`, `bump version`), commits modifying zero `.cs` files ($-0.35$), and bulk edits modifying $>30$ files ($-0.25$) reduce confidence.
+   - Commits with net confidence $\ge 0.50$ are marked as candidate bug-fixing commits.
 
 ---
 
-## 5. SZZ Algorithm: Blame Tracing & Bug-Inducing Commits (BICs)
+## 4. SZZ Line-Blame Attribution
 
-Defect-inducing historical revisions are identified using an enhanced implementation of the Śliwerski–Zimmermann–Zeller (SZZ) algorithm (`2_SourceCode/Python/services/mining/szz_analyzer.py`):
+`SZZAnalyzer` (`services/mining/szz_analyzer.py`) links candidate bug-fixing commits to candidate Bug-Inducing Commits (BICs):
 
-```
-[Candidate Bug-Fixing Commit (BFC)]
-                 │
-                 ▼ (Diff against mainline parent; strip comments & whitespace)
-[Modified / Deleted Production C# Lines]
-                 │
-                 ▼ (git blame -w -M -C --porcelain)
-[Candidate Bug-Inducing Commit (BIC)]
-                 │
-                 ▼ (Roslyn AST Enclosing Method Locator)
-[Pre-Fix Method Observation: Label 1]
-```
-
-### SZZ Algorithmic Rules:
-1. **Mainline Parent Comparison:** For merge commits with multiple parents, the diff is computed strictly against `parents[0]` (the target mainline parent) to isolate modifications merged into trunk.
-2. **Noise & Whitespace Filtering:**
-   - Empty lines and pure whitespace edits are ignored.
-   - Comment modifications (`//`, `/*`, `*`) are stripped.
-   - Isolated syntactic punctuation tokens (`{`, `}`, `;`) are omitted.
-3. **Move & Copy Detection:**
-   - Git blame runs with `-w` (ignore whitespace), `-M` (detect line moves within file), and `-C` (detect line copies from other files).
-   - Blame traces are executed on the immediate pre-fix parent commit to identify the exact commit that introduced each deleted or modified line.
-4. **Self-Reference Prevention:** Commits where `inducing_commit_sha == fixing_commit_sha` are discarded.
+1. **Mainline Parent Diff:** Diffs are computed against `parents[0]` to isolate mainline changes in merge commits.
+2. **Syntactic Line Filtering:** Blank lines, comment lines (`//`, `/*`, `*`), and isolated brace or semicolon tokens (`{`, `}`, `;`) are ignored.
+3. **Git Blame Execution:** `git blame -w -M -C --porcelain` runs on the pre-fix parent commit (`-w` ignores whitespace, `-M` tracks intra-file moves, `-C` tracks cross-file copies).
+4. **Self-Reference Filtering:** Traces where `inducing_commit_sha == fixing_commit_sha` are discarded.
 
 ---
 
-## 6. Method-Level Defect Labeling & Sampling Strategy
+## 5. Method-Level Labeling and Sampling
 
-The atomic observation unit is an individual C# method syntax node:
+| Label | Designation | Construction Rule | Methodological Constraint |
+| :---: | :--- | :--- | :--- |
+| `1` | Defect-Prone | Enclosing C# method AST node in the pre-fix revision at the blamed line. | Heuristic SZZ attribution; refactoring or tangled commits can introduce label noise. |
+| `0` | Candidate-Clean | Production method sampled from `HEAD` with no recorded SZZ bug-fixing traces in the mined commit window. | Open-World Assumption: absence of recorded fixes does not establish confirmed defect-free code. |
+| `-1` | Uncertain | Modifications outside method bodies or ambiguous traces. | Excluded from supervised training and evaluation snapshots. |
 
-### 6.1 Label 1: SZZ-Derived Defect Observations
-- Located by mapping blamed line numbers to the enclosing method syntax node in the pre-fix revision (`commit_sha = bic_sha`).
-- Captures the exact syntactic state of the method when the defect was introduced, prior to correction.
-
-### 6.2 Label 0: Candidate-Clean Observations
-- Sampled from stable repository `HEAD` commits.
-- **Open-World Assumption (OWA):** In empirical software engineering, methods without recorded bug fixes cannot be proven to be permanently defect-free (latent or unreported bugs may exist). They are scientifically classified as *candidate clean*, indicating the absence of bug-fixing traces in the observed Git history.
-- To avoid temporal leakage, candidate-clean methods are sampled only from methods that have survived untouched by bug fixes throughout the mined commit history.
-- **Temporal Asymmetry:** Defect-prone methods capture historical pre-fix revisions at the time the defect was introduced, whereas candidate-clean methods are sampled from the latest stable HEAD revision. While this ensures candidate-clean methods survived historical bug fixes, it introduces a temporal asymmetry between historical pre-fix code and contemporary HEAD code that represents an inherent methodological characteristic of repository mining under OWA.
-
-### 6.3 1:1 Class Balancing
-To prevent supervised estimators from degenerating into trivial majority predictors, candidate-clean methods are sampled to match the volume of SZZ-derived defective methods within each repository:
-- Dataset Snapshot #2: 279 positive (48.27%) and 299 candidate-clean (51.73%) across 5 training repositories ($N = 578$).
-- Independent Holdout: 79 positive (49.69%) and 80 candidate-clean (50.31%) in `Newtonsoft.Json` ($N = 159$).
+- **Class Balancing (~1:1):** Candidate-clean methods are sampled per repository to match the count of SZZ-labeled defect-prone methods (Dataset #2: 279 defect-prone, 299 candidate-clean; Historical Holdout: 79 defect-prone, 80 candidate-clean).
+- **Temporal Difference:** Defect-prone methods are extracted from historical pre-fix commits, whereas candidate-clean methods are sampled from `HEAD`.
 
 ---
 
-## 7. Production-Code Source-Path Classification
+## 6. Production Source-Path Filtering
 
-To guarantee ecological validity and prevent test fixtures from biasing defect predictions, all candidate files pass through a strict classification filter (`2_SourceCode/Python/utils/source_classifier.py`):
+`is_production_csharp_file()` (`utils/source_classifier.py`) excludes non-production files prior to observation creation:
 
-1. **Extension Verification:** Must have `.cs` extension (case-insensitive).
-2. **Build Artifact Rejection:** Files residing in `obj/`, `bin/`, `.vs/`, `packages/`, or `artifacts/` are excluded.
-3. **Generated Code Rejection:** Files matching `*.Designer.cs`, `*.g.cs`, `*.i.cs`, or `*.generated.cs` are excluded.
-4. **Test Directory Exclusion:** Paths matching `Tests/`, `Test/`, `Specs/`, `Testing/`, `test-utils/`, and C# test project suffix conventions (`*.Tests/`, `*.Specs/`, `*.UnitTests/`, `*.IntegrationTests/`) are rejected.
-5. **Test Fixture Naming Exclusion:** Filenames matching `*Tests.cs`, `*Test.cs`, `*Specs.cs`, `*Fixture.cs`, or `*Tester.cs` are rejected.
-6. **Legitimate Non-Test Whitelisting:** Preserves non-test words (`ContestManager.cs`, `ProtestHandler.cs`), non-test directories (`src/TestingInfrastructure/ProductionTestConfiguration.cs`), and public assertions packaged in production DLLs (`src/FluentValidation/TestHelper/ValidatorTestExtensions.cs`).
+| Rule Type | Excluded Patterns |
+| :--- | :--- |
+| Extension | Non-`.cs` files |
+| Build & Package Directories | `obj/`, `bin/`, `.vs/`, `packages/`, `artifacts/` |
+| Generated Code | `*.Designer.cs`, `*.g.cs`, `*.i.cs`, `*.generated.cs` |
+| Test Directories & Projects | `Tests/`, `Test/`, `Specs/`, `Testing/`, `test-utils/`, `*.Tests/`, `*.Specs/`, `*.UnitTests/`, `*.IntegrationTests/` |
+| Test Filenames | `*Tests.cs`, `*Test.cs`, `*Specs.cs`, `*Fixture.cs`, `*Tester.cs` |
 
-All 578 training observations and 159 holdout observations were verified to have **0% test leakage**.
+Legitimate production files containing substrings such as `ContestManager.cs`, `ProtestHandler.cs`, or `ValidatorTestExtensions.cs` are preserved.
 
 ---
 
-## 8. Static Code Metrics Suite (26 Roslyn Features)
+## 7. Static Code Metrics (26 Roslyn Features)
 
-The .NET 9.0 Roslyn Analyzer (`Microsoft.CodeAnalysis.CSharp`) extracts 26 static features across five categories:
+The .NET 9.0 Roslyn analyzer (`2_SourceCode/RoslynAnalyzer/`) computes 26 method-level metrics:
 
-| Category | Feature Name | Description & Roslyn AST Calculation Rule |
+| Category | Metric | Definition |
 | :--- | :--- | :--- |
-| **Basic Size** | `loc` | Non-empty physical lines spanning the method syntax node. |
-| **Basic Size** | `logical_loc` | Count of executable statements + 1 for expression body. |
-| **Basic Size** | `method_length` | Total raw character count of method text including trivia. |
-| **Basic Size** | `parameter_count` | Number of formal parameters in `method.ParameterList`. |
-| **Basic Size** | `local_variable_count` | Number of `VariableDeclaratorSyntax` nodes declared in the method. |
-| **Basic Size** | `statement_count` | Number of `StatementSyntax` descendants (excluding root block). |
-| **Basic Size** | `return_count` | Number of `ReturnStatementSyntax` nodes (or 1 if expression-bodied). |
-| **Complexity** | `cyclomatic_complexity` | McCabe metric: $1 + \text{if} + \text{ternary} + \text{loops} + \text{switch cases} + \text{catch} + \text{logical ops}$. |
-| **Complexity** | `max_nesting_depth` | Deepest block nesting level (`if`, `while`, `for`, `switch`, `try`, `using`, `lock`). |
-| **Complexity** | `boolean_operator_count` | Bitwise & unary boolean negation operators (`!`, `^`, `&`, `\|`). |
-| **Complexity** | `logical_operator_count` | Short-circuit boolean operators (`&&`, `\|\|`, null-coalescing `??`). |
-| **Complexity** | `conditional_expression_count` | Ternary conditional expressions (`? :`). |
-| **Control Flow** | `if_count` | Count of `IfStatementSyntax` nodes. |
-| **Control Flow** | `switch_count` | Count of `SwitchStatementSyntax` and `SwitchExpressionSyntax` nodes. |
-| **Control Flow** | `loop_count` | Total `for`, `foreach`, `while`, and `do-while` loops. |
-| **Control Flow** | `try_catch_count` | Count of `TryStatementSyntax` blocks. |
-| **Control Flow** | `throw_count` | Count of explicit `throw` statements and expressions. |
-| **Control Flow** | `break_continue_count` | Count of `break` and `continue` jump statements. |
-| **Structure / OOP** | `method_call_count` | Count of `InvocationExpressionSyntax` nodes. |
-| **Structure / OOP** | `field_access_count` | Member access expressions targeting fields (lowercase / `_` convention). |
-| **Structure / OOP** | `property_access_count` | Member access expressions targeting properties (PascalCase convention). |
-| **Structure / OOP** | `assignment_count` | Count of `AssignmentExpressionSyntax` expressions. |
-| **Structure / OOP** | `object_creation_count` | Count of `new Foo(...)` object allocation expressions. |
-| **Structure / OOP** | `is_static` | Boolean indicator (1 if method carries `static` modifier, else 0). |
-| **Structure / OOP** | `is_async` | Boolean indicator (1 if method carries `async` modifier, else 0). |
-| **Structure / OOP** | `is_generic` | Boolean indicator (1 if method defines type parameters, else 0). |
+| Basic Size | `loc` | Non-empty physical lines spanning the method node |
+| Basic Size | `logical_loc` | Executable statements (+1 for expression body) |
+| Basic Size | `method_length` | Character length of the method syntax span |
+| Basic Size | `parameter_count` | Formal parameters in `ParameterList` |
+| Basic Size | `local_variable_count` | `VariableDeclaratorSyntax` nodes in method scope |
+| Basic Size | `statement_count` | `StatementSyntax` descendants (excluding root block) |
+| Basic Size | `return_count` | `ReturnStatementSyntax` nodes (or 1 for expression body) |
+| Complexity | `cyclomatic_complexity` | $1 + \text{if} + \text{ternary} + \text{loops} + \text{switch cases} + \text{catch} + \text{logical ops}$ |
+| Complexity | `max_nesting_depth` | Maximum block nesting depth (`if`, `loop`, `switch`, `try`, `using`, `lock`) |
+| Complexity | `boolean_operator_count` | Bitwise and unary boolean operators (`!`, `^`, `&`, `\|`) |
+| Complexity | `logical_operator_count` | Short-circuit boolean and null-coalescing operators (`&&`, `\|\|`, `??`) |
+| Complexity | `conditional_expression_count` | Ternary conditional expressions (`? :`) |
+| Control Flow | `if_count` | `IfStatementSyntax` nodes |
+| Control Flow | `switch_count` | `SwitchStatementSyntax` and `SwitchExpressionSyntax` nodes |
+| Control Flow | `loop_count` | `for`, `foreach`, `while`, and `do-while` statements |
+| Control Flow | `try_catch_count` | `TryStatementSyntax` blocks |
+| Control Flow | `throw_count` | Explicit `throw` statements and expressions |
+| Control Flow | `break_continue_count` | `break` and `continue` statements |
+| Structure / OOP | `method_call_count` | `InvocationExpressionSyntax` nodes |
+| Structure / OOP | `field_access_count` | Member access expressions targeting fields |
+| Structure / OOP | `property_access_count` | Member access expressions targeting properties |
+| Structure / OOP | `assignment_count` | `AssignmentExpressionSyntax` nodes |
+| Structure / OOP | `object_creation_count` | `new` object creation expressions |
+| Structure / OOP | `is_static` | `1` if `static` modifier present, else `0` |
+| Structure / OOP | `is_async` | `1` if `async` modifier present, else `0` |
+| Structure / OOP | `is_generic` | `1` if generic type parameters present, else `0` |
 
-### AST Extraction Rules
-- **Local Functions and Lambdas:** Statements, variable declarations, and loops inside nested local functions (`LocalFunctionStatementSyntax`) or lambda expressions (`SimpleLambdaExpressionSyntax`) are isolated and excluded from outer method metrics.
-- **Standalone Snippet Parsing:** When analyzing bare code snippets, the analyzer wraps the snippet inside `class __DummyContainer__ { ... }` to guarantee valid syntax tree compilation.
+Statements, variables, and returns inside nested local functions or lambda expressions are excluded from the enclosing method's counts.
 
 ---
 
-## 9. Data Leakage Prevention Guarantees
+## 8. Validation Protocols and Leakage Prevention
 
-1. **Repository-Level Partitioning:** All cross-validation splits use `GroupKFold` grouped strictly by `repository_id`. Methods from the same codebase never appear in both training and validation slices.
-2. **In-Fold Preprocessing:**
-   - Median imputation and constant feature pruning are fitted strictly on each fold's training slice.
-   - For linear models, `StandardScaler` is fitted exclusively on training folds.
-3. **Independent Holdout Separation:** `JamesNK/Newtonsoft.Json` was cloned, mined, and evaluated as an independent holdout repository evaluated post-freeze as supported by dated experiment records.
+| Protocol | Outer Split | Inner Split | Preprocessing & Feature Selection | Threshold Selection | Holdout Usage |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Baseline Cross-Validation** (`run_final_experiment.py`) | 5-fold `GroupKFold` by `repository_id` | None | Median imputation, zero-variance pruning, and `StandardScaler` (for LR) fitted per training fold | Selected on pooled outer out-of-fold predictions ($\tau^* = 0.40$) | Evaluated once on `Newtonsoft.Json` ($N=159$) |
+| **Nested Model Optimization** (`run_model_optimization.py`) | 5-fold `GroupKFold` by `repository_id` | 4-fold `GroupKFold` on the 4 outer-training repositories | Imputation, zero-variance pruning, feature selection (`all_26`, `corr_pruned_085`, `inner_perm_top12`, `theoretical_core10`), and scaling (`StandardScaler` / `RobustScaler`) fitted strictly inside training partitions | Selected on pooled inner out-of-fold predictions ($\tau_{\text{inner}}^*$) per outer fold | Excluded (`Newtonsoft.Json` not used during optimization) |
 
----
-
-## 10. Dataset Versioning & Database Schema
-
-All raw and processed data are maintained in SQLite (`1_Database/SQLite/bug_detection.db`) with relational integrity:
-
-```
-repositories (1) ───< commits (N) ───< commit_files (N)
-       │                    │
-       │                    └───< szz_results (N)
-       │
-       └───< observations (N) ───(1:1)─── features (26 columns)
-                   │
-                   └───< dataset_observations >─── datasets (versioned snapshots)
-```
-
-### Versioned Snapshots
-- **Snapshot #1 (`csharp_empirical_v1`, v1.0.0):** 483 observations across 3 repositories (`Humanizer`, `MediatR`, `commandline`). Preserved as initial corpus (226 defect-prone, 257 candidate-clean).
-- **Snapshot #2 (`csharp_empirical_v2`, v2.0.0):** 578 observations across 5 repositories (`Humanizer`, `Serilog`, `MediatR`, `Polly`, `FluentValidation`). Authoritative training corpus (279 defect-prone, 299 candidate-clean).
-- **Independent Holdout (`newtonsoft_holdout`):** 159 observations from `Newtonsoft.Json`. Evaluated as an independent test set (79 defect-prone, 80 candidate-clean; total evaluated corpus: 737 observations).
-
+Five-fold `GroupKFold` was used for outer validation. Four-fold `GroupKFold` was used for inner model and threshold selection. Each validation fold contained a repository excluded from the corresponding training partition.

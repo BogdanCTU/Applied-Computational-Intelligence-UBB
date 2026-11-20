@@ -58,9 +58,13 @@ def resolve_project_paths() -> ProjectPaths:
         original_repo_dir = project_root / "original_repo"
     output_dir = project_root / "output"
     replication_runs_dir = output_dir / "replication_runs"
-    exports_dir = output_dir / "exports"
+    exports_dir = replication_runs_dir / "exports"
     docs_dir = project_root / "docs"
+    if not docs_dir.is_dir() and (project_root / "1_Documents" / "2_Project").is_dir():
+        docs_dir = project_root / "1_Documents" / "2_Project"
     venv_upstream_python = project_root / ".venv_upstream" / "Scripts" / "python.exe"
+    if not venv_upstream_python.is_file() and (project_root / ".venv_upstream" / "bin" / "python").is_file():
+        venv_upstream_python = project_root / ".venv_upstream" / "bin" / "python"
 
     return ProjectPaths(
         is_frozen=is_frozen,

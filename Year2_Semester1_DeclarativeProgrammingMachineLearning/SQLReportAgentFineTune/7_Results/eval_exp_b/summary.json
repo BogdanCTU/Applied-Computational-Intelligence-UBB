@@ -1,0 +1,20 @@
+{
+  "total_samples": 25,
+  "valid_sql_count": 25,
+  "valid_sql_rate": 100.0,
+  "exact_match_count": 6,
+  "exact_match_rate": 24.0,
+  "execution_match_count": 14,
+  "execution_accuracy": 56.0,
+  "execution_accuracy_ci_95": [
+    36.0,
+    76.0
+  ],
+  "average_latency_ms": 4222.05,
+  "error_distribution": {
+    "none": 14,
+    "schema_linking_error": 2,
+    "execution_mismatch": 8,
+    "syntax_error": 1
+  }
+}

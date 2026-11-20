@@ -1,146 +1,92 @@
-# Software Verification, Empirical Validation & Methodological Limitations
+# Software Verification, Empirical Validation, and Methodological Limitations
 
 **Project:** Machine Learning-Based Software Defect Prediction for C# Source Code  
 **Institution:** Faculty of Mathematics and Computer Science, Babeș-Bolyai University  
 **Course:** Computational Intelligence in Software Engineering (CISE) — Project 2  
-**Role:** Canonical Verification, Validation & Academic Limitations Reference  
 
 ---
 
-## 1. Distinction Between Verification and Validation
+## 1. Software Verification
 
-In rigorous software engineering and machine learning research, software verification and empirical validation address distinct scientific questions:
+### 1.1 Automated Regression Test Suite
 
-- **Software Verification ("Is the software built correctly?"):** Verifies that the implementation executes deterministically according to architectural specifications, passes regression unit/integration suites, builds without compiler errors, preserves data schemas, and handles inference edge-cases.
-- **Empirical Validation ("Does the model generalize to real-world software?"):** Evaluates whether learned statistical associations generalize to unseen production codebases, measures out-of-domain discrimination, tests probability calibration, and analyzes failure modes on real code.
+The test suite (`2_SourceCode/Tests/`) comprises 16 modules (123 tests) executed via `pytest`:
 
----
+| Test Module | Tests | Scope |
+| :--- | ---: | :--- |
+| `test_bug_fix_detector.py` | 3 | Regex bug-fix scoring and manual overrides |
+| `test_bug_predictor.py` | 7 | Method/file inference, risk categorization, and feature attribution |
+| `test_commit_collector.py` | 2 | Git commit traversal and incremental persistence |
+| `test_config.py` | 3 | Settings initialization and unpickle module aliases |
+| `test_database.py` | 3 | SQLite schema, foreign keys, and CRUD transactions |
+| `test_dataset_builder_and_exporter.py` | 3 | Feature matrix construction and CSV/JSON export |
+| `test_experiment_runner.py` | 7 | 5-Fold `GroupKFold` partitioning and metric aggregation |
+| `test_fluentvalidation_pilot.py` | 2 | Production source filtering on pilot repository |
+| `test_github_client.py` | 6 | GitHub REST API search and rate-limit handling |
+| `test_label_manager.py` | 3 | SZZ observation creation and candidate-clean sampling |
+| `test_ml_pipeline.py` | 6 | Preprocessing, model training, and bundle serialization |
+| `test_model_baselines.py` | 5 | Multi-model baseline comparisons |
+| `test_repository_manager.py` | 3 | Git clone and update lifecycle |
+| `test_roslyn_metrics.py` | 6 | .NET Roslyn AST metric calculation |
+| `test_source_classifier.py` | 61 | Production vs. test C# file path filtering |
+| `test_szz_analyzer.py` | 3 | `git blame` line attribution and BIC extraction |
+| **Total** | **123** | **100% Pass Rate (offline execution with mocked network calls)** |
 
-## 2. Software Verification & Engineering Integrity
+### 1.2 Roslyn Analyzer and Model Bundle Verification
 
-### 2.1 Automated Test Suite Execution
-The automated test suite (`2_SourceCode/Tests/`) is implemented using `pytest` and verifies every system component:
-
-```
-2_SourceCode/Tests/test_bug_fix_detector.py              ... [PASS]
-2_SourceCode/Tests/test_bug_predictor.py                 ....... [PASS]
-2_SourceCode/Tests/test_commit_collector.py              .. [PASS]
-2_SourceCode/Tests/test_config.py                        ... [PASS]
-2_SourceCode/Tests/test_database.py                      ... [PASS]
-2_SourceCode/Tests/test_dataset_builder_and_exporter.py  ... [PASS]
-2_SourceCode/Tests/test_experiment_runner.py             ....... [PASS]
-2_SourceCode/Tests/test_fluentvalidation_pilot.py        .. [PASS]
-2_SourceCode/Tests/test_github_client.py                 ...... [PASS]
-2_SourceCode/Tests/test_label_manager.py                 ... [PASS]
-2_SourceCode/Tests/test_ml_pipeline.py                   ...... [PASS]
-2_SourceCode/Tests/test_model_baselines.py               ..... [PASS]
-2_SourceCode/Tests/test_repository_manager.py            ... [PASS]
-2_SourceCode/Tests/test_roslyn_metrics.py                ...... [PASS]
-2_SourceCode/Tests/test_source_classifier.py             ............................................................. [PASS]
-2_SourceCode/Tests/test_szz_analyzer.py                  ... [PASS]
-
-============================== 123 passed in 31.38s ==============================
-```
-
-- **Total Test Cases:** Exactly **123 automated tests**.
-- **Exit Code:** `0` (100% passing rate).
-- **Execution Mode:** Offline and deterministic; network and external APIs are mocked via `pytest-mock`.
-
-### 2.2 Microsoft Roslyn Compiler Platform Build Verification
-The static code metric extraction engine is built on Microsoft Roslyn (`Microsoft.CodeAnalysis.CSharp`, .NET 9.0 SDK):
-- **Project Location:** `2_SourceCode/RoslynAnalyzer/`
-- **Compiler Platform:** .NET 9.0 (`net9.0`)
-- **Compilation Status:** `dotnet build --configuration Release` completes with **0 errors and 0 warnings**.
-- **Cross-Platform Compatibility:** Source text is normalized (`\r\n` $\to$ `\n`) before syntax tree generation, ensuring identical character and line metrics across Windows, macOS, and Linux.
-
-### 2.3 Model Loading & Inference Smoke Tests
-The serialized winning model bundle was audited via automated runtime assertions:
-- **Bundle File:** `4_AppBuild/Assets/Models/exp_final_5fold_v2_best_rf_compact_regularized.joblib` (SHA-256: `625992350a78d28277c3521a3ff97f5e28cda4d4f6996c1dc90374512c19cb1e`).
-- **Deserialization Integrity:** Loads cleanly via `BugPredictor.from_model_identifier()`.
-- **Standalone Snippet Ingestion:** Correctly wraps bare method snippets inside `class __DummyContainer__ { ... }` to construct valid syntax trees.
-- **Preprocessor Schema Alignment:** Missing input metrics are median-imputed; constant features dropped during training are filtered out before being passed to `model.predict_proba()`.
+| Check | Target | Result |
+| :--- | :--- | :--- |
+| .NET Build | `2_SourceCode/RoslynAnalyzer/RoslynAnalyzer.csproj` (`Release`) | 0 warnings, 0 errors |
+| Line-Ending Normalization | `RoslynClient.extract_methods` (`\r\n` $\to$ `\n`) | Consistent spans across Windows, macOS, and Linux |
+| Preserved Baseline Models | `exp_final_5fold_v2_best_rf_compact_regularized.joblib`, `rf_csharp_empirical_model.joblib` | SHA-256 checksums unchanged; loadable via `BugPredictor` |
+| Optimized Versioned Models | `et_nested_opt_v3_depth6_leaf6_log2.joblib`, `rf_nested_opt_v3_depth6_leaf8_log2.joblib` | Verified in `ModelManager`, `BugPredictor`, and Streamlit UI |
 
 ---
 
-## 3. Empirical Machine Learning Validation
+## 2. Empirical Validation and Error Analysis
 
-### 3.1 Independent Real-World Holdout (`JamesNK/Newtonsoft.Json`)
-To evaluate true generalization to an external codebase, `JamesNK/Newtonsoft.Json` (Repo #17, 11,000 GitHub stars) was maintained as an independent holdout repository evaluated after training models, preprocessing pipelines, and decision thresholds were frozen, as documented by dated artifacts.
+### 2.1 Nested Cross-Validation on Dataset #2 ($N = 578$, 5 Repositories)
 
-Evaluating the frozen model on **159 production methods** (79 SZZ-derived defect-prone, 80 candidate-clean from stable HEAD) yielded:
-- **Nominal Threshold ($\tau = 0.50$):**
-  - Accuracy: **74.21%** (118/159)
-  - Precision: **69.79%** (67/96)
-  - Recall: **84.81%** (67/79 defects caught)
-  - F1-Score: **0.7657**
-  - ROC-AUC: **0.8209** | PR-AUC: **0.7917** | Brier Score: **0.1713**
-- **CV-Tuned Threshold ($\tau^* = 0.40$):**
-  - Accuracy: **75.47%** (120/159)
-  - Precision: **69.61%** (71/102)
-  - Recall: **89.87%** (71/79 defects caught)
-  - F1-Score: **0.7845**
+| Model | Outer ROC-AUC | Outer PR-AUC | Outer Brier | Nested $\tau_{\text{inner}}^*$ F1 | Pooled OOF F1 ($\tau_{\text{inner}}^*$) | Pooled OOF Recall ($\tau_{\text{inner}}^*$) | Pooled OOF Precision ($\tau_{\text{inner}}^*$) | Pooled Confusion Matrix [TN, FP, FN, TP] |
+| :--- | :---: | :---: | :---: | :---: | ---: | ---: | ---: | :---: |
+| Baseline RF (`rf_compact_regularized`) | 0.7037 ± 0.1292 | 0.6405 ± 0.1135 | 0.2146 ± 0.0398 | 0.7408 ± 0.0760 | 0.7294 | 88.89% | 61.85% | `[146, 153, 31, 248]` |
+| Optimized RF (`rf_nested_opt_v3_depth6_leaf8_log2`) | 0.7216 ± 0.1156 | 0.6465 ± 0.1026 | 0.2055 ± 0.0374 | 0.7539 ± 0.0706 | 0.7406 | 88.53% | 63.66% | `[158, 141, 32, 247]` |
+| Optimized Extra Trees (`et_nested_opt_v3_depth6_leaf6_log2`) | 0.7349 ± 0.0703 | 0.6443 ± 0.0496 | 0.2062 ± 0.0213 | 0.7667 ± 0.0723 | 0.7653 | 91.76% | 65.64% | `[165, 134, 23, 256]` |
 
-The holdout results confirm that the 5-fold cross-validation estimates ($F_1 = 0.6859, \text{AUC} = 0.7025$) were conservative. The model successfully generalized to an entirely unseen, industrial-grade library without intra-repository data leakage.
+### 2.2 Error Analysis on Dataset #2 (`3_TestResults/ModelOptimization/error_analysis.csv`)
 
-### 3.2 Qualitative Prediction Sample Analysis
-To understand model decision boundaries and failure modes, representative cases from `Newtonsoft.Json` were audited:
+For `et_nested_opt_v3_depth6_leaf6_log2` under nested threshold evaluation ($N = 578$):
 
-#### True Positives (High-Complexity Orchestrators)
-- **`CalculatePropertyDetails`** ($P(\text{defect-prone}) = 0.9155$): $\text{LOC} = 78, \text{Complexity} = 22, \text{Parameters} = 11, \text{Nesting} = 2$. Coordinates property deserialization across 11 arguments and 22 branching paths. SZZ traced a critical null-reference regression directly to this method (fixed in commit `142f5cb0`).
-- **`ReadMetadataPropertiesToken`** ($P(\text{defect-prone}) = 0.8870$): $\text{LOC} = 75, \text{Complexity} = 17, \text{Statements} = 59, \text{Nesting} = 6$. Extreme nesting and high statement density accurately triggered high risk flags.
+| Quadrant | Count | Median `loc` (Mean) | Median `logical_loc` (Mean) | Median `cc` (Mean) | Median `nesting` (Mean) | Structural Interpretation |
+| :--- | ---: | :---: | :---: | :---: | :---: | :--- |
+| True Positive (TP) | 256 | 18.5 (30.33) | 7.0 (12.67) | 2.0 (4.74) | 1.0 (1.17) | Multi-statement methods with elevated branching and call density |
+| True Negative (TN) | 165 | 3.0 (4.06) | 1.0 (1.12) | 1.0 (1.02) | 0.0 (0.02) | Short 1-statement methods and property helpers |
+| False Positive (FP) | 134 | 15.0 (18.26) | 5.0 (8.07) | 2.0 (3.43) | 1.0 (0.87) | Candidate-clean methods with elevated structural complexity (27 have `cc >= 6` or `loc >= 35`) |
+| False Negative (FN) | 23 | 5.0 (6.74) | 1.0 (1.13) | 1.0 (1.17) | 0.0 (0.04) | Short methods (18/23 have `loc <= 12` and `cc <= 2`) where defects are semantic rather than structural |
 
-#### False Positives (Defensively Programmed Parsers)
-- **`BsonReader.ReadString`** ($P(\text{defect-prone}) = 0.8514$): $\text{LOC} = 54, \text{Complexity} = 9, \text{Statements} = 35, \text{Nesting} = 4$. Low-level binary buffer parsing with extensive boundary checks. While clean in Git history, its procedural density matches defect-prone profiles; flagging it provides maintainability value.
+### 2.3 Historical Baseline Holdout (`JamesNK/Newtonsoft.Json`, $N = 159$)
 
-#### False Negatives (Concise Semantic Flaws)
-- **`JContainer.Values`** ($P(\text{defect-prone}) = 0.1944$): $\text{LOC} = 11, \text{Complexity} = 1, \text{Statements} = 1$.
-- **`JContainer.IsMultiContent`** ($P(\text{defect-prone}) = 0.2279$): $\text{LOC} = 4, \text{Complexity} = 1, \text{Statements} = 1$.
-- **Fundamental Theoretical Insight:** Both methods are 1-statement generic wrappers. The historical defects recorded in Git were subtle LINQ type-covariance mismatches. Because static AST metrics capture syntactic complexity rather than semantic type systems or runtime contracts, the model cannot detect defects in a 4-line method with cyclomatic complexity of 1.
+The historical holdout evaluation was executed once for the original baseline RF (`rf_compact_regularized`) prior to the optimization experiment:
+
+| Evaluation | Threshold | Accuracy | Precision | Recall | F1 | ROC-AUC | PR-AUC | Brier | Confusion Matrix [TN, FP, FN, TP] |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :---: |
+| Baseline RF Nominal | 0.50 | 74.21% | 69.79% | 84.81% | 0.7657 | 0.8209 | 0.7917 | 0.1713 | `[51, 29, 12, 67]` |
+| Baseline RF Unnested CV-Tuned | 0.40 | 75.47% | 69.61% | 89.87% | 0.7845 | 0.8209 | 0.7917 | 0.1713 | `[49, 31, 8, 71]` |
+
+`Newtonsoft.Json` was not used during the nested optimization experiment. These holdout metrics apply only to the historical baseline model, not to the newly optimized models.
 
 ---
 
-## 4. Academic & Methodological Limitations
+## 3. Methodological Limitations
 
-### 4.1 Balanced Dataset Benchmark vs. Operational Precision (Base-Rate Fallacy)
-- **Dataset Context:** Training and holdout datasets were sampled at an approximate **1:1 class ratio** (~48%–50% defect-prone) to prevent machine learning estimators from collapsing into trivial majority predictors.
-- **Production Reality:** In industrial production repositories, the natural defect prevalence of C# methods is typically **$2\%\text{--}10\%$** (severe class imbalance).
-- **Illustrative Bayesian Scenario:**
-  Using the holdout sensitivity ($71/79 \approx 89.87\%$) and specificity ($49/80 = 61.25\%$, giving False Positive Rate $= 1 - 0.6125 = 38.75\%$), we calculate the expected operational precision at a hypothetical **5% defect prevalence** using Bayes' theorem:
-  $$P(\text{Bug} \mid \text{Alert}) = \frac{P(\text{Alert} \mid \text{Bug}) \cdot P(\text{Bug})}{P(\text{Alert} \mid \text{Bug}) \cdot P(\text{Bug}) + P(\text{Alert} \mid \text{Clean}) \cdot P(\text{Clean})}$$
-  $$P(\text{Bug} \mid \text{Alert}) = \frac{0.8987 \times 0.05}{0.8987 \times 0.05 + 0.3875 \times 0.95} = \frac{0.04494}{0.04494 + 0.36813} = \frac{0.04494}{0.41306} \approx \mathbf{10.88\%}$$
-- **Academic Caveat:** Reported precision ($69.61\%\text{--}69.79\%$) represents a balanced evaluation benchmark. In low-prevalence production codebases, operational triage precision will decrease significantly due to the base-rate effect.
-
-### 4.2 SZZ Label Limitations
-- Defect labels are derived via SZZ `git blame` tracing. SZZ relies on heuristics (line changes in bug-fixing commits) and may occasionally attribute defects to incidental refactoring or cleanup commits rather than true defect-inducing logic.
-- SZZ labels represent heuristic approximations of defect-inducing revisions, not infallible ground truth.
-
-### 4.3 Candidate-Clean Label Limitations (Open-World Assumption)
-- Methods sampled from stable repository `HEAD` revisions without recorded bug fixes are classified as *candidate clean*.
-- Under the Open-World Assumption of software engineering, the absence of defect reports does not prove that code is permanently defect-free. Latent, unobserved, or yet-unreported bugs may exist.
-
-### 4.4 Out-of-Fold Threshold Tuning Optimism (Absence of Nested CV)
-- The decision threshold ($\tau^* = 0.40$) was selected by sweeping across aggregated out-of-fold probability predictions from the same 5-fold cross-validation used for model selection, rather than within a nested cross-validation loop or on an independent validation split.
-- Tuning on out-of-fold predictions avoids in-sample training bias but may introduce mild optimistic selection bias into the cross-validation metrics (F1 = 0.7405, Accuracy = 70.42%).
-- This optimism was empirically evaluated by freezing the threshold prior to evaluating the independent holdout (`Newtonsoft.Json`), where the 0.40 cutoff confirmed genuine generalizability.
-
-### 4.5 Repository-Level Generalization Scope
-- The 6 evaluated repositories (`Humanizer`, `Serilog`, `MediatR`, `Polly`, `FluentValidation`, `Newtonsoft.Json`) represent mature, highly starred open-source libraries.
-- Proprietary enterprise systems with monorepo architectures, heavy legacy dependencies, or different engineering cultures may exhibit distinct defect distributions.
-
-### 4.6 Absence of External Human Developer Feedback
-- External human practitioner feedback was **not collected** due to academic course constraints.
-- [DEVELOPER_STUDY_TEMPLATE.md](../07_AcademicReport/DEVELOPER_STUDY_TEMPLATE.md) is published as a formal, reproducible research protocol instrument for future human evaluation, not evidence of a completed human study.
-- Qualitative review was conducted via automated AST inspection and Git history analysis by the automated research pipeline, not human software engineers.
-
-### 4.7 Temporal Asymmetry Between Defect-Prone and Candidate-Clean Observations
-- Defect-prone observations are extracted from historical pre-fix revisions at the specific commit where the bug was introduced, whereas candidate-clean observations are sampled from the latest stable `HEAD` revision.
-- While this sampling strategy ensures that candidate-clean methods survived historical bug fixes across the observed Git history, it creates a temporal asymmetry between historical and contemporary source code snapshots that constitutes an inherent characteristic of version-control mining under the Open-World Assumption.
-
----
-
-## 5. Future Research Directions
-
-1. **Semantic Embeddings (CodeBERT / Graph Neural Networks):** Augmenting static AST metrics with neural token embeddings and Control Flow Graph (CFG) representations to detect semantic bugs in concise 1-line methods.
-2. **Just-In-Time (JIT) Developer Metrics:** Integrating author experience, commit churn, and temporal metrics alongside static code metrics.
-3. **Automated Refactoring Guidance:** Coupling defect alerts with Roslyn code refactoring providers to automatically suggest extract-method refactorings for methods with high cyclomatic complexity and deep nesting.
-
+| Limitation | Description and Impact |
+| :--- | :--- |
+| **Small Repository Count and Size Imbalance** | Only 5 repositories were used for training and nested cross-validation (`N = 578`). `Humanizer` accounts for 50.35% of observations (291/578), whereas `Polly` (34) and `FluentValidation` (28) represent 10.73% combined. |
+| **No New External Holdout for Optimized Models** | Because `Newtonsoft.Json` was previously examined for the baseline model, it was excluded from optimization. Evaluating external generalization of `et_nested_opt_v3_depth6_leaf6_log2` and `rf_nested_opt_v3_depth6_leaf8_log2` requires mining a new unseen repository. |
+| **Static Metric Boundary on Semantic Defects** | Static AST metrics measure syntactic structure and cannot detect single-line semantic, literal, or type-contract bugs (`18/23` false negatives in Dataset #2 have `loc <= 12` and `cc <= 2`). |
+| **Candidate-Clean Labels (Open-World Assumption)** | Negative observations (`label = 0`) have no recorded bug fixes in the mined commit window but are not confirmed defect-free. Complex candidate-clean methods flagged as false positives may harbor latent defects or maintenance risk. |
+| **Heuristic SZZ Labels and Temporal Difference** | Positive labels (`label = 1`) rely on commit message patterns and `git blame` tracing on historical pre-fix commits, whereas candidate-clean observations (`label = 0`) are sampled from contemporary `HEAD` revisions. |
+| **Base-Rate Fallacy in Production** | Training and holdout sets use ~1:1 class balancing (~48%–50% positive). In production repositories with 2%–10% defect prevalence, operational precision decreases substantially (e.g., at 5% prevalence, sensitivity $89.87\%$ and false positive rate $38.75\%$ yield a Bayesian precision of $\approx 10.88\%$). |
+| **Deployment Threshold Alignment** | Nested cross-validation selects fold-specific inner thresholds ($\tau_{\text{inner}}^* \in \{0.35, 0.40\}$ for Extra Trees), whereas `BugPredictor.predict_from_metrics()` computes binary `predicted_label` via `model.predict()` ($\tau = 0.50$) and maps probabilities to Low ($\le 0.30$), Medium ($0.31\text{--}0.60$), and High ($> 0.60$) risk bands. |
+| **Absence of Human Study Data** | [DEVELOPER_STUDY_TEMPLATE.md](../07_AcademicReport/DEVELOPER_STUDY_TEMPLATE.md) is an unadministered research protocol template; no human participant ratings were collected. |
+| **Generalization Scope** | Nested cross-validation metrics are empirical estimates on the 5 C# repositories in Dataset #2 and do not establish universal generalization across all C# codebases. |

@@ -1,0 +1,26 @@
+# Core Framework & Compute (Apple Silicon Native)
+mlx>=0.32.0
+mlx-lm>=0.32.0
+mlx-metal>=0.32.0
+
+# LLM & Tokenization
+transformers>=5.0.0
+huggingface_hub>=0.24.0
+safetensors>=0.8.0
+sentencepiece>=0.2.0
+
+# Data Processing & Utilities
+pyyaml>=6.0
+pydantic>=2.10.0
+sqlparse>=0.5.0
+sqlglot>=25.0.0
+pandas>=2.2.0
+numpy>=2.0.0
+requests>=2.31.0
+httpx>=0.27.0
+rich>=13.0.0
+tqdm>=4.66.0
+
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0

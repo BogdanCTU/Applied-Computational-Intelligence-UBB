@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sql-finetune-lab"
+version = "1.0.0"
+description = "Independent Text-to-SQL LLM Fine-Tuning Laboratory on Apple Silicon MLX"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Independent Research Lab" }]
+dependencies = [
+    "mlx>=0.32.0",
+    "mlx-lm>=0.32.0",
+    "mlx-metal>=0.32.0",
+    "transformers>=5.0.0",
+    "huggingface_hub>=0.24.0",
+    "safetensors>=0.8.0",
+    "sentencepiece>=0.2.0",
+    "pyyaml>=6.0",
+    "pydantic>=2.10.0",
+    "sqlparse>=0.5.0",
+    "pandas>=2.2.0",
+    "numpy>=2.0.0",
+    "requests>=2.31.0",
+    "httpx>=0.27.0",
+    "rich>=13.0.0",
+    "tqdm>=4.66.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["1_Source"]
+
+[tool.pytest.ini_options]
+testpaths = ["3_Tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"

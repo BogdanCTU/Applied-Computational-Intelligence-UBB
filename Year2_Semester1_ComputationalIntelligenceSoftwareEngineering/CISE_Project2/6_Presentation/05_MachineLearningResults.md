@@ -2,70 +2,66 @@
 
 ---
 
-## 1. The 11-Classifier Comparison Benchmark
+## 1. Baseline vs. Nested Optimization Results (Dataset #2, $N=578$)
 
-Eleven candidate machine-learning classifiers were evaluated using 5-fold `GroupKFold` cross-validation partitioned strictly by repository:
+Twenty model configurations across 6 classifier families were evaluated under the $5 \times 4$ nested repository-level `GroupKFold` protocol (`scikit-learn 1.9.1`). Below are the primary configurations compared against the original baseline (`rf_compact_regularized`):
 
-| Model Classifier | Accuracy | Precision | Recall | F1 Score | ROC-AUC | MCC | Brier Score |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Random Forest (Champion)** | **67.13%** | **64.06%** | **73.48%** | **0.6845** | **0.7208** | **+0.3478** | **0.2079** |
-| Extra Trees | 65.57% | 63.02% | 70.25% | 0.6644 | 0.7061 | +0.3142 | 0.2185 |
-| Gradient Boosting (sklearn) | 65.40% | 63.64% | 66.31% | 0.6495 | 0.6970 | +0.3090 | 0.2223 |
-| LightGBM | 64.71% | 62.77% | 66.67% | 0.6466 | 0.7001 | +0.2954 | 0.2255 |
-| CatBoost | 65.05% | 63.67% | 65.23% | 0.6444 | 0.7018 | +0.3018 | 0.2212 |
-| XGBoost | 64.01% | 62.33% | 65.23% | 0.6375 | 0.6957 | +0.2810 | 0.2319 |
-| Logistic Regression (L2) | 63.15% | 62.90% | 58.78% | 0.6078 | 0.6728 | +0.2625 | 0.2304 |
-| Multi-Layer Perceptron (MLP)| 61.94% | 60.57% | 60.93% | 0.6075 | 0.6582 | +0.2386 | 0.2380 |
-| Support Vector Machine (RBF) | 61.59% | 60.91% | 57.71% | 0.5926 | 0.6541 | +0.2309 | 0.2401 |
-| Decision Tree (CART) | 59.52% | 58.05% | 58.78% | 0.5841 | 0.5950 | +0.1899 | 0.4048 |
-| Gaussian Naive Bayes | 53.63% | 51.68% | 74.55% | 0.6105 | 0.6279 | +0.0934 | 0.3592 |
+| Model Configuration | Outer ROC-AUC | Outer PR-AUC | Outer Brier | Nested $\tau$ F1 | Pooled OOF ROC-AUC | Pooled OOF F1 | Pooled Recall | Pooled Precision | Pooled Accuracy |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Original Baseline (`rf_compact_regularized`)** | 0.7037 $\pm$ 0.1292 | 0.6405 $\pm$ 0.1135 | 0.2146 $\pm$ 0.0398 | 0.7408 $\pm$ 0.0760 | 0.7024 | 0.7294 | 86.02% | 63.32% | 69.20% |
+| **Optimized Random Forest (`rf_nested_opt_v3_depth6_leaf8_log2`)** | 0.7216 $\pm$ 0.1156 | **0.6465 $\pm$ 0.1026** | **0.2055 $\pm$ 0.0374** | 0.7539 $\pm$ 0.0706 | 0.7213 | 0.7406 | 88.53% | 63.66% | 70.07% |
+| **Optimized Extra Trees (`et_nested_opt_v3_depth6_leaf6_log2`)** | **0.7349 $\pm$ 0.0703** | 0.6443 $\pm$ 0.0496 | 0.2062 $\pm$ 0.0213 | **0.7667 $\pm$ 0.0723** | **0.7470** | **0.7653** | **91.76%** | **65.64%** | **72.84%** |
+| Calibrated Extra Trees (`et_calibrated_sigmoid`) | 0.7279 $\pm$ 0.0679 | 0.6380 $\pm$ 0.0568 | 0.2116 $\pm$ 0.0268 | 0.6775 $\pm$ 0.0598 | 0.6725 | 0.6626 | 99.64% | 49.64% | 50.87% |
+| Logistic Regression (`lr_l2_C0.1_balanced`) | 0.6929 $\pm$ 0.0888 | 0.6251 $\pm$ 0.0972 | 0.2400 $\pm$ 0.0309 | 0.7186 $\pm$ 0.0734 | 0.6923 | 0.7130 | 82.08% | 63.02% | 67.99% |
+| HistGradientBoosting (`hgb_depth4_leaf15_lr03`) | 0.6531 $\pm$ 0.1304 | 0.6080 $\pm$ 0.1342 | 0.2512 $\pm$ 0.0642 | 0.6845 $\pm$ 0.0928 | 0.6641 | 0.6951 | 81.72% | 60.48% | 65.40% |
 
----
+*Note on Historical Baseline Figures:* In the original unnested 5-fold `GroupKFold` benchmark (`3_TestResults/CrossValidation/experiment_results.json`, `scikit-learn 1.6.1`), `rf_compact_regularized` achieved fold-mean F1 `0.6859`, ROC-AUC `0.7025`, Brier `0.2144`, and pooled OOF F1 `0.7405` at fixed $\tau^* = 0.40$ (`67.13%` accuracy at $\tau = 0.50$).
 
-## 2. Accuracy Figure Reconciliation
+### Hyperparameter Comparison
 
-In the final 5-fold cross-validation experiment, three distinct accuracy metrics are reported depending on the mathematical framing:
-
-| Metric Type | Value | Formula / Basis | Interpretation |
-| :--- | :---: | :--- | :--- |
-| **5-Fold CV Fold Mean** | **$67.34\% \pm 4.91\%$** | $\frac{1}{5} \sum_{k=1}^5 \text{Acc}_k$ | Unweighted average across the 5 repository folds ($70.45, 58.96, 65.93, 73.53, 67.86$) |
-| **Pooled Nominal Out-of-Fold** | **$67.13\%$** | $\frac{388}{578}$ ($\tau = 0.50$) | Overall accuracy on pooled predictions at default 0.50 threshold ($TN=183, FP=116, FN=74, TP=205$) |
-| **Pooled Tuned Out-of-Fold** | **$70.42\%$** | $\frac{407}{578}$ ($\tau^* = 0.40$) | Optimal operating point balancing precision ($64.21\%$) and high defect recall ($87.46\%$, F1 $0.7405$) |
+| Parameter | Baseline RF (`rf_compact_regularized`) | Optimized RF (`rf_nested_opt_v3_depth6_leaf8_log2`) | Optimized Extra Trees (`et_nested_opt_v3_depth6_leaf6_log2`) |
+| :--- | :---: | :---: | :---: |
+| Estimator | `RandomForestClassifier` | `RandomForestClassifier` | `ExtraTreesClassifier` |
+| `n_estimators` | 100 | 200 | 200 |
+| `max_depth` | 8 | 6 | 6 |
+| `min_samples_split` | 5 | 10 | 8 |
+| `min_samples_leaf` | 4 | 8 | 6 |
+| `max_features` | `'sqrt'` | `'log2'` | `'log2'` |
+| `class_weight` | `'balanced'` | `'balanced'` | `'balanced'` |
 
 ---
 
-## 3. Independent Holdout Evaluation (`Newtonsoft.Json`)
+## 2. Per-Repository Performance (Outer Test Folds)
 
-To test true out-of-sample generalization, the champion model was evaluated against an untouched holdout codebase (159 observations: 79 defect-prone, 80 candidate-clean):
-
-| Quadrant | Prediction Outcome | Observations | Proportion |
-| :--- | :--- | :---: | :---: |
-| **True Positive (TP)** | Correctly Intercepted Defect | 71 | 44.65% |
-| **True Negative (TN)** | Correctly Identified Candidate-Clean | 49 | 30.82% |
-| **False Positive (FP)** | False Alarm (Candidate-Clean Flagged) | 31 | 19.50% |
-| **False Negative (FN)** | Missed Defect | 8 | 5.03% |
-| **Total** | Independent Holdout Corpus | **159** | **100.0%** |
-
-- **Defect Recall:** **$89.87\%$** ($71 / 79$ defects captured)
-- **Specificity:** **$61.25\%$** ($49 / 80$ candidate-clean methods passed)
-- **Holdout Accuracy:** **$75.47\%$** ($120 / 159$)
-- **Holdout F1 Score:** **$0.7845$**
-- **Holdout ROC-AUC:** **$0.7958$**
+| Outer Fold | Held-Out Repository | $N$ | Baseline RF ROC-AUC | Optimized RF ROC-AUC | Optimized ET ROC-AUC | Baseline RF Nested F1 | Optimized RF Nested F1 | Optimized ET Nested F1 |
+| :---: | :--- | ---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Fold 1 | `Humanizr/Humanizer` | 291 | 0.7280 | 0.7510 | **0.7689** | 0.7688 | 0.7853 | **0.8068** |
+| Fold 2 | `serilog/serilog` | 134 | 0.5882 | 0.6317 | **0.6958** | 0.6418 | 0.6569 | **0.6667** |
+| Fold 3 | `LuckyPennySoftware/MediatR` | 91 | 0.6475 | 0.6494 | **0.6905** | 0.7302 | 0.7385 | **0.7500** |
+| Fold 4 | `App-vNext/Polly` | 34 | **0.9256** | 0.9221 | 0.8581 | **0.8718** | **0.8718** | **0.8718** |
+| Fold 5 | `FluentValidation/FluentValidation` | 28 | 0.6292 | 0.6538 | **0.6611** | 0.6914 | 0.7170 | **0.7381** |
+| **Mean $\pm$ SD** | **5 Repositories** | **578** | **0.7037 $\pm$ 0.1292** | **0.7216 $\pm$ 0.1156** | **0.7349 $\pm$ 0.0703** | **0.7408 $\pm$ 0.0760** | **0.7539 $\pm$ 0.0706** | **0.7667 $\pm$ 0.0723** |
 
 ---
 
-## 4. Top Feature Importances (Gini Impurity)
+## 3. Feature Collinearity & Permutation Importance
 
-Which code characteristics predict defects most strongly?
+- **Collinearity:** 11 feature pairs exceed $|r| \ge 0.85$ on Dataset #2 (`loc` vs. `logical_loc` $r = 0.9967$; `loc` vs. `method_length` $r = 0.9951$; `cyclomatic_complexity` vs. `if_count` $r = 0.8808$). Removing collinear features (`rf_corr_pruned_085`) slightly reduced outer ROC-AUC (`0.7155` vs. `0.7216`); full-26 tree ensembles with `max_features='log2'` handled collinearity more effectively.
+- **Top Permutation Features (Out-of-Fold ROC-AUC Drop):** `parameter_count` (`+0.0802`), `method_length` (`+0.0258`), `loc` (`+0.0170`), `statement_count` (`+0.0145`), and `logical_loc` (`+0.0141`).
+- **Brier Score vs. Calibration:** Uncalibrated regularized ensembles achieved lower Brier error (`0.2055` RF, `0.2062` ET) than `CalibratedClassifierCV` (`0.2116` sigmoid, `0.2202` isotonic), because fitting calibration parameters across 4 heterogeneous inner repositories distorted fold-boundary probability scales.
 
-| Rank | Feature Name | Importance | Interpretation |
-| :---: | :--- | :---: | :--- |
-| 1 | `method_length` | **20.5%** | Total character span of the method declaration |
-| 2 | `parameter_count` | **12.5%** | Number of inputs passed into the method |
-| 3 | `loc` | **12.4%** | Physical lines of code |
-| 4 | `method_call_count` | **8.7%** | Number of external and internal method invocations |
-| 5 | `statement_count` | **6.2%** | Number of executable statements |
-| 6 | `property_access_count` | **5.4%** | Density of property getters/setters |
-| 7 | `logical_loc` | **4.9%** | Executable lines of code |
-| 8 | `cyclomatic_complexity` | **3.8%** | McCabe control-flow branches ($M = \pi + 1$) |
+---
 
+## 4. Historical External Holdout (`JamesNK/Newtonsoft.Json`, $N=159$)
+
+The independent holdout set was evaluated once on the historical baseline model (`rf_compact_regularized` at $\tau^* = 0.40$) and was **not used** during nested optimization:
+
+| Metric | Historical Baseline (`rf_compact_regularized`, $\tau^* = 0.40$) |
+| :--- | :---: |
+| Confusion Matrix ($N = 159$) | $TP = 71, TN = 49, FP = 31, FN = 8$ |
+| Holdout Recall / Precision | 89.87% / 69.61% |
+| Holdout Accuracy / Specificity | 75.47% / 61.25% |
+| Holdout F1 Score | 0.7845 |
+| Holdout ROC-AUC / Brier Score | 0.8209 / 0.1713 |
+
+*Methodological Constraint:* Because `Newtonsoft.Json` was previously inspected for baseline reporting, the optimized models (`et_nested_opt_v3_depth6_leaf6_log2` and `rf_nested_opt_v3_depth6_leaf8_log2`) were not evaluated on it. A new unseen C# repository is required for external holdout validation of the optimized models.

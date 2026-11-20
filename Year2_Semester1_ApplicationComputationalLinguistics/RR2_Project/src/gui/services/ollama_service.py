@@ -45,14 +45,29 @@ class OllamaService:
             names = [str(m.get("name", "")) for m in models_raw]
             details: List[Dict[str, Any]] = []
             for m in models_raw:
+                mname = str(m.get("name", ""))
+                total_params = None
+                is_4b_compliant = None
+                try:
+                    from ...llm.model_registry import STRICT_4B_MAX_PARAMETERS, ModelRegistry
+                    from ...llm.ollama_client import OllamaClient
+
+                    reg = ModelRegistry(OllamaClient(base_url=self.base_url, timeout_s=3.0))
+                    meta = reg.inspect_model(mname)
+                    total_params = meta.total_parameter_count
+                    is_4b_compliant = meta.is_strict_4b_compliant
+                except Exception:
+                    pass
                 details.append(
                     {
-                        "name": str(m.get("name", "")),
+                        "name": mname,
                         "size_gb": round(float(m.get("size", 0)) / (1024**3), 2),
                         "digest": str(m.get("digest", ""))[:16],
                         "family": str((m.get("details") or {}).get("family", "")),
                         "parameter_size": str((m.get("details") or {}).get("parameter_size", "")),
                         "quantization": str((m.get("details") or {}).get("quantization_level", "")),
+                        "total_parameter_count": total_params,
+                        "is_strict_4b_compliant": is_4b_compliant,
                     }
                 )
 

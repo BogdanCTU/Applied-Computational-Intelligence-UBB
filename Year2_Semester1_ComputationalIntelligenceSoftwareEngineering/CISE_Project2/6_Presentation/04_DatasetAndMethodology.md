@@ -4,61 +4,63 @@
 
 ## 1. Mined Open-Source C# Repositories
 
-Seven prominent C# repositories were mined to construct the empirical benchmark datasets:
+Seven open-source C# repositories were mined across Dataset #1, Dataset #2, and the historical external holdout set:
 
-| Repository | Domain | Stars | Commits | Role in Study |
-| :--- | :--- | :---: | :---: | :--- |
-| **App-vNext/Polly** | Resilience & Transient Faults | 13.5k | 2,800+ | Cross-Validation Fold 1 |
-| **commandlineparser/commandline** | CLI Parsing Library | 5.2k | 1,400+ | Cross-Validation Fold 2 |
-| **Humanizr/Humanizr** | String Manipulation & Formatting | 8.8k | 1,900+ | Cross-Validation Fold 3 |
-| **LuckyPennySoftware/21Questions** | Game Engine & Logic | 0.1k | 300+ | Cross-Validation Fold 4 |
-| **serilog/serilog** | Diagnostic Logging Framework | 7.1k | 1,800+ | Cross-Validation Fold 4 |
-| **FluentValidation/FluentValidation** | Complex Input Validation Rules | 9.4k | 2,200+ | Cross-Validation Fold 5 |
-| **JamesNK/Newtonsoft.Json** | High-Performance JSON Library | 11.2k | 2,100+ | **Independent Holdout** |
+| Repository | Domain | Dataset #1 ($N=483$) | Dataset #2 ($N=578$) | Historical Holdout ($N=159$) | Role in Validation |
+| :--- | :--- | ---: | ---: | ---: | :--- |
+| `Humanizr/Humanizer` | String & Data Manipulation | 291 | 291 | 0 | Training / Outer Fold 1 |
+| `serilog/serilog` | Structured Diagnostic Logging | 0 | 134 | 0 | Training / Outer Fold 2 |
+| `LuckyPennySoftware/MediatR` | In-Process Messaging | 91 | 91 | 0 | Training / Outer Fold 3 |
+| `App-vNext/Polly` | Resilience & Transient Faults | 0 | 34 | 0 | Training / Outer Fold 4 |
+| `FluentValidation/FluentValidation` | Validation Rules Engine | 0 | 28 | 0 | Training / Outer Fold 5 |
+| `commandlineparser/commandline` | CLI Argument Parsing | 101 | 0 | 0 | Dataset #1 Only |
+| `JamesNK/Newtonsoft.Json` | JSON Serialization | 0 | 0 | 159 | Historical Holdout (Baseline Only) |
+
+### Dataset #2 Repository Breakdown ($N = 578$)
+
+| Repository | Total Methods | Defect-Prone ($y=1$) | Candidate-Clean ($y=0$) | Defect Rate | Share of Corpus |
+| :--- | ---: | ---: | ---: | ---: | ---: |
+| `Humanizr/Humanizer` | 291 | 155 | 136 | 53.26% | 50.35% |
+| `serilog/serilog` | 134 | 49 | 85 | 36.57% | 23.18% |
+| `LuckyPennySoftware/MediatR` | 91 | 44 | 47 | 48.35% | 15.74% |
+| `App-vNext/Polly` | 34 | 17 | 17 | 50.00% | 5.88% |
+| `FluentValidation/FluentValidation` | 28 | 14 | 14 | 50.00% | 4.84% |
+| **Total** | **578** | **279** | **299** | **48.27%** | **100.00%** |
 
 ---
 
-## 2. Dataset Construction & The SZZ Heuristic
+## 2. SZZ Labeling & Filtering Protocol
 
 ```mermaid
 flowchart LR
-    FixCommit["Bug-Fixing Commit<br/>(e.g., 'Fix null pointer in retry')"] --> Blame["git blame -w -M -C<br/>(Trace deleted lines)"]
+    FixCommit["Bug-Fixing Commit"] --> Blame["git blame -w -M -C"]
     Blame --> BIC["Bug-Inducing Commit (BIC)"]
-    BIC --> PreFix["Enclosing Method at BIC<br/>(Pre-Fix State)"]
-    PreFix --> Label1["Label 1: Defect-Prone Method"]
+    BIC --> PreFix["Enclosing Method at BIC"]
+    PreFix --> Label1["Label 1: Defect-Prone (279)"]
     
-    HEAD["Stable HEAD Revision<br/>(Zero fix traces)"] --> Clean["Candidate Clean Method"]
-    Clean --> Label0["Label 0: Candidate-Clean Method"]
+    HEAD["Stable HEAD Revision<br/>(Zero Fix Traces)"] --> Clean["Production Filter"]
+    Clean --> Label0["Label 0: Candidate-Clean (299)"]
 ```
 
-### Key Methodological Controls
-1. **The Open-World Assumption (OWA):** Methods without recorded bug fixes are defined as *candidate-clean* rather than defect-free, acknowledging that unobserved latent defects may exist in production code.
-2. **Production Code Filtering:** All candidate source files must pass `is_production_csharp_file()`:
-   - Excludes test projects (`*.Tests/`, `*.Specs/`, `*.UnitTests/`).
-   - Excludes test files (`*Tests.cs`, `*Test.cs`, `*Fixture.cs`).
-   - Excludes build/generated files (`obj/`, `bin/`, `*.Designer.cs`, `*.g.cs`).
+- **Open-World Assumption (OWA):** Methods with zero bug-fix blame history are labeled *candidate-clean* ($y=0$), as latent unobserved defects may still exist.
+- **Production C# Filter:** `is_production_csharp_file()` excludes test directories (`test/`, `tests/`, `*.Tests/`), test files (`*Test.cs`, `*Tests.cs`, `*Fixture.cs`), build directories (`obj/`, `bin/`), and generated code (`*.Designer.cs`, `*.g.cs`).
 
 ---
 
 ## 3. The 26 Roslyn Static Metrics
 
-The Roslyn analyzer calculates 26 static features spanning 5 metric families:
-
-| Metric Family | Feature Count | Key Metrics Included |
+| Metric Category | Count | Metrics |
 | :--- | :---: | :--- |
-| **Code Size & Volume** | 6 | `loc`, `logical_loc`, `method_length`, `parameter_count`, `local_variable_count`, `statement_count` |
-| **Control Flow Complexity** | 7 | `cyclomatic_complexity` (McCabe), `max_nesting_depth`, `if_count`, `switch_count`, `loop_count`, `break_continue_count`, `conditional_expression_count` |
-| **Expressions & Operators** | 3 | `boolean_operator_count`, `logical_operator_count`, `assignment_count` |
-| **Exceptions & Errors** | 2 | `try_catch_count`, `throw_count` |
-| **Coupling & OOP Flags** | 8 | `method_call_count`, `field_access_count`, `property_access_count`, `object_creation_count`, `is_static`, `is_async`, `is_generic`, `return_count` |
+| **Size & Volume** | 6 | `loc`, `logical_loc`, `method_length`, `statement_count`, `parameter_count`, `local_variable_count` |
+| **Control-Flow Complexity** | 7 | `cyclomatic_complexity`, `max_nesting_depth`, `if_count`, `switch_count`, `loop_count`, `break_continue_count`, `conditional_expression_count` |
+| **Operators & Assignments** | 3 | `boolean_operator_count`, `logical_operator_count`, `assignment_count` |
+| **Exception Handling** | 2 | `try_catch_count`, `throw_count` |
+| **Coupling & Modifiers** | 8 | `method_call_count`, `field_access_count`, `property_access_count`, `object_creation_count`, `return_count`, `is_static`, `is_async`, `is_generic` |
 
 ---
 
-## 4. Benchmark Datasets Summary
+## 4. Nested Repository-Level Validation ($5 \times 4$ `GroupKFold`)
 
-- **Dataset #1 (Initial Corpus):** 483 methods (226 defect-prone, 257 candidate-clean) across 3 repositories (`Humanizer`, `CommandLineParser`, `MediatR`).
-- **Dataset #2 (Expanded Benchmark):** 578 methods (279 defect-prone, 299 candidate-clean) across 5 training repositories (`Humanizer`, `Serilog`, `MediatR`, `Polly`, `FluentValidation`).
-- **Independent Holdout:** 159 methods (79 defect-prone, 80 candidate-clean) from `Newtonsoft.Json`.
-- **Combined Corpus:** 737 method observations evaluated across training and independent holdout stages.
-- **Holdout Partition:** 159 observations from `Newtonsoft.Json` reserved strictly for final generalization testing.
-
+- **Outer Loop (5-Fold `GroupKFold`):** Each outer fold holds out 1 of the 5 repositories in Dataset #2 for unbiased cross-repository testing while training on the remaining 4 repositories.
+- **Inner Loop (4-Fold `GroupKFold`):** Within each outer training split, a 4-fold inner `GroupKFold` (holding out 1 training repository per inner fold) generates inner out-of-fold probability predictions.
+- **Leakage Prevention:** Median imputation, optional scaling, correlation/SelectKBest feature filtering, and decision threshold selection ($\tau \in [0.30, 0.70]$, step $0.05$) are fitted strictly inside the training partition of each fold. `JamesNK/Newtonsoft.Json` was completely excluded from the optimization pipeline.
