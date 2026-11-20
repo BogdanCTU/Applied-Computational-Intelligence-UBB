@@ -74,11 +74,14 @@ This runs PyInstaller cleanly using `agent_om.spec` (`--onedir` mode for fast st
 1. **1. Dashboard:** Displays live health badges for PostgreSQL (`127.0.0.1:5432`), Ollama (`127.0.0.1:11434`), `original_repo/` read-only verification (`8,358` files), indexed run counts, workflow shortcuts, and the CMT–ConfOf benchmark comparison table.
 2. **2. Environment Diagnostics:** Inspects OS, Python/executable runtime mode, NVIDIA GPU/VRAM (`nvidia-smi`), installed Ollama models and SHA digests, PostgreSQL databases, `pgvector` version, and table row counts/vector dimensions. Allows creating new isolated PostgreSQL databases with one click.
 3. **3. Dataset Manager:** Discovers read-only OAEI datasets in `original_repo/data/` (defaulting to `conference/cmt-confof/component`) or lets you browse custom local `.owl`/`.rdf`/`.xml` source, target, and reference alignments, previewing triple counts, classes, object/datatype properties, and gold alignments.
-4. **4. Configuration Profiles:** Switches between the 4 explicit profiles:
+4. **4. Configuration Profiles:** Switches between the 7 explicit profiles:
    - `upstream_product_reference` (read-only GPT-4o + `text-embedding-ada-002` reference metadata; cloud execution blocked)
    - `upstream_lite_parity` (`llama3:8b` + `llama3:8b` `4096`-dim, `temp=0.0, seed=42, top_k=1, repeat_penalty=1.0`, 28-space prompt, empty semantic chunks skipped)
    - `local_adapted` (`qwen3.5:9b` `reasoning=False` + `nomic-embed-text` `768`-dim)
    - `experimental` (customizable cosine similarity threshold, `top_k`, `rrf_k`, predicate scope `head` vs `pvl_v1`, and tool routing `deterministic` vs `llm_json`)
+   - `local_4b_baseline` (verified $\le 4.0\text{B}$ parameter model `qwen2.5:3b` [$3.09\text{B}$] + `nomic-embed-text` `768`-dim, parity 28-space validation prompt, strict runtime $\le 4,000,000,000$ parameter enforcement)
+   - `local_4b_optimized` (verified $\le 4.0\text{B}$ parameter model `qwen2.5:3b` [$3.09\text{B}$] + `nomic-embed-text` `768`-dim, clean non-indented validation prompt, strict runtime $\le 4.0\text{B}$ enforcement)
+   - `local_4b_reasoning` (verified $\le 4.0\text{B}$ reasoning model `deepseek-r1:1.5b` [$1.78\text{B}$] + `nomic-embed-text` `768`-dim, strict runtime $\le 4.0\text{B}$ enforcement)
    Includes JSON preset import/export.
 5. **5. Replication Wizard (14 Stages):** Executes either end-to-end local replication from raw XML ontologies or the isolated upstream `Agent-OM-Lite` harness on a background `QThread` so the UI never freezes. Tracks stages `1`–`14` live and provides a red **Cancel Active Run** button for cooperative cancellation.
 6. **6. Pipeline Stage Inspector:** Searchable, sortable per-entity table inspecting cleaned syntactic text, LLM lexical explanations, semantic verbalizations, top-k retrieval candidates, RRF fused lists, validation prompts/responses, and final match status.

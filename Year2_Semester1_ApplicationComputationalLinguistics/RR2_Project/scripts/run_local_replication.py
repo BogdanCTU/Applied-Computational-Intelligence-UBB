@@ -73,6 +73,9 @@ def run_local_experiment(
     reciprocal_merger: bool = True,
     stage_callback: Optional[Callable[[str, int, int, str], None]] = None,
     should_cancel: Optional[Callable[[], bool]] = None,
+    llm_model_override: Optional[str] = None,
+    embedding_model_override: Optional[str] = None,
+    embedding_dim_override: Optional[int] = None,
 ) -> Dict[str, Any]:
     """Execute a complete or matching-only local replication experiment and save all artifacts."""
     default_data_dir = (
@@ -89,6 +92,12 @@ def run_local_experiment(
     overrides: Dict[str, Any] = {}
     if db_name_override:
         overrides["db_name"] = db_name_override
+    if llm_model_override:
+        overrides["default_llm"] = llm_model_override
+    if embedding_model_override:
+        overrides["default_embedding_model"] = embedding_model_override
+    if embedding_dim_override is not None:
+        overrides["embedding_dim"] = int(embedding_dim_override)
     if similarity_threshold is not None:
         overrides["similarity_threshold"] = float(similarity_threshold)
     if top_k is not None:
@@ -106,6 +115,18 @@ def run_local_experiment(
 
     app_cfg = AppConfig.from_profile(profile_name, **overrides)
     app_cfg.ensure_executable()
+
+    # Phase 3 & 6: Runtime verification of chat model (including strict <=4B parameter check) and embedding dimension
+    verified_chat_meta = None
+    verified_emb_meta = None
+    try:
+        chat_prov = app_cfg.build_chat_provider(validate_on_init=True)
+        verified_chat_meta = chat_prov.verified_metadata.to_dict() if chat_prov.verified_metadata else None
+        emb_prov = app_cfg.build_embedding_provider(validate_on_init=True)
+        verified_emb_meta = emb_prov.verified_metadata.to_dict() if emb_prov.verified_metadata else None
+    except Exception:
+        if app_cfg.enforce_4b_limit:
+            raise
 
     runs_root = Path(output_base_dir or (app_cfg.output_dir / "replication_runs")).resolve()
     run_dir = runs_root / experiment_id
@@ -141,6 +162,8 @@ def run_local_experiment(
         "validate_matches": validate_matches,
         "reciprocal_merger": reciprocal_merger,
         "config": app_cfg.to_metadata_dict(),
+        "verified_chat_model_metadata": verified_chat_meta,
+        "verified_embedding_model_metadata": verified_emb_meta,
     }
     (run_dir / "config_snapshot.json").write_text(
         json.dumps(cfg_snapshot, indent=2), encoding="utf-8"
@@ -540,6 +563,10 @@ def main() -> int:
     parser.add_argument("--target", type=Path, default=None, help="Path to target ontology.")
     parser.add_argument("--reference", type=Path, default=None, help="Path to reference alignment XML.")
     parser.add_argument("--db-name", default=None, help="Optional isolated PostgreSQL DB name override.")
+    parser.add_argument("--llm-model", default=None, help="Optional local Ollama chat model override.")
+    parser.add_argument("--embedding-model", default=None, help="Optional local Ollama embedding model override.")
+    parser.add_argument("--embedding-dim", type=int, default=None, help="Optional embedding dimension override.")
+    parser.add_argument("--reuse-features-csv", type=Path, default=None, help="Optional ontology_matching.csv to reuse.")
     parser.add_argument("--max-entities", type=int, default=None, help="Optional cap per ontology side.")
     parser.add_argument("--skip-retrieval", action="store_true", help="Reuse populated DB tables for matching rerun.")
     parser.add_argument("--similarity-threshold", type=float, default=None)
@@ -570,6 +597,7 @@ def main() -> int:
         db_name_override=args.db_name,
         max_entities_per_side=args.max_entities,
         skip_retrieval=args.skip_retrieval,
+        reuse_features_csv=args.reuse_features_csv,
         similarity_threshold=args.similarity_threshold,
         top_k=args.top_k,
         rrf_k=args.rrf_k,
@@ -580,6 +608,9 @@ def main() -> int:
         validate_matches=not args.no_validate,
         reciprocal_merger=not args.no_merger,
         should_cancel=lambda: cancel_flag["cancelled"],
+        llm_model_override=args.llm_model,
+        embedding_model_override=args.embedding_model,
+        embedding_dim_override=args.embedding_dim,
     )
     print(json.dumps(summary.get("final_metrics") or {"status": summary["status"]}, indent=2))
     return 0 if summary["status"] == "completed" else 2
