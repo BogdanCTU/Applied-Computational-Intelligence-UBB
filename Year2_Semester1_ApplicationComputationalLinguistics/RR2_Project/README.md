@@ -228,33 +228,43 @@ Run individual test categories:
 
 ## 12. Results and Scientific Evaluation Summary
 
-Evaluation on the **OAEI Conference CMT–ConfOf benchmark** ($16$ ground-truth equivalences across $162 \times 162$ classes and $206 \times 258$ properties):
+Evaluation on the **OAEI Conference CMT–ConfOf benchmark** (`162` entities: `88` CMT, `74` ConfOf; `16` ground-truth equivalences):
 
-| Tier / Experiment ID | Chat Model (Exact Params) | Embedding Model (Dim) | Prompt / Threshold $\tau$ | TP | FP | FN | Precision | Recall | **$F_1$-Score** | MRR | Hits@3 | Compliant ≤4B? |
-| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Tier 1 (Paper Reference)** | `gpt-4o` (Cloud API) | `text-embedding-ada-002` | Upstream ($\tau=0.90$) | 13 | 2 | 3 | `0.8667` | `0.8125` | **`0.8387`** | — | — | No (Cloud) |
-| **Tier 1 (Paper Open-Weight)** | `llama3:8b` ($8.03\text{B}$) | `llama3:8b` ($4096$-d) | Upstream ($\tau=0.90$) | 12 | 4 | 4 | `0.7500` | `0.7500` | **`0.7500`** | — | — | No ($8.03\text{B}$) |
-| **Tier 2 (Historical Local 8B)** | `llama3:8b` ($8.03\text{B}$) | `llama3:8b` ($4096$-d) | Upstream ($\tau=0.50$) | 8 | 3 | 8 | `0.7273` | `0.5000` | **`0.5926`** | `0.6406` | `0.6875` | No ($8.03\text{B}$) |
-| **Tier 2 (Historical Local 12B)** | `gemma4:12b` ($12.38\text{B}$) | `nomic-embed-text` ($768$-d) | Compact ($\tau=0.90$) | 9 | 3 | 7 | `0.7500` | `0.5625` | **`0.6429`** | `0.6562` | `0.6875` | No ($12.38\text{B}$) |
-| **Tier 3 (`local_4b_default` / `E1`)** | **`qwen2.5:3b` ($3.09\text{B}$)** | **`nomic-embed-text` ($768$-d)** | **Compact ($\tau=0.90$)** | **9** | **4** | **7** | **`0.6923`** | **`0.5625`** | **`0.6207`** | **`0.6562`** | **`0.6875`** | **YES ($\le 4\text{B}$)** |
-| **Tier 4 (`E2` Embedding Swap)** | `qwen2.5:3b` ($3.09\text{B}$) | `mxbai-embed-large` ($1024$-d) | Compact ($\tau=0.90$) | 9 | 4 | 7 | `0.6923` | `0.5625` | **`0.6207`** | `0.6562` | `0.6875` | **YES ($\le 4\text{B}$)** |
-| **Tier 4 (`E3` Upstream Prompt)** | `qwen2.5:3b` ($3.09\text{B}$) | `nomic-embed-text` ($768$-d) | Upstream ($\tau=0.50$) | 8 | 10 | 8 | `0.4444` | `0.5000` | **`0.4706`** | `0.6562` | `0.6875` | **YES ($\le 4\text{B}$)** |
-| **Tier 4 (`E4` Threshold $\tau=0.70$)** | `qwen2.5:3b` ($3.09\text{B}$) | `nomic-embed-text` ($768$-d) | Compact ($\tau=0.70$) | 8 | 5 | 8 | `0.6154` | `0.5000` | **`0.5517`** | `0.6562` | `0.6875` | **YES ($\le 4\text{B}$)** |
-| **Tier 4 (`E5` Non-Compliant 4.54B)** | `qwen3.5:4b` ($4.54\text{B}$) | `nomic-embed-text` ($768$-d) | Compact ($\tau=0.90$) | 9 | 4 | 7 | `0.6923` | `0.5625` | **`0.6207`** | `0.6562` | `0.6875` | No ($4.54\text{B}$) |
-| **Tier 4 (`E6` Threshold $\tau=0.85$)** | `qwen2.5:3b` ($3.09\text{B}$) | `nomic-embed-text` ($768$-d) | Compact ($\tau=0.85$) | 8 | 4 | 8 | `0.6667` | `0.5000` | **`0.5714`** | `0.6562` | `0.6875` | **YES ($\le 4\text{B}$)** |
-| **Tier 4 (`E6` Threshold $\tau=0.875$)** | `qwen2.5:3b` ($3.09\text{B}$) | `nomic-embed-text` ($768$-d) | Compact ($\tau=0.875$) | 8 | 3 | 8 | `0.7273` | `0.5000` | **`0.5926`** | `0.6562` | `0.6875` | **YES ($\le 4\text{B}$)** |
-| **Tier 4 (`E7` 1.78B Reasoner)** | `deepseek-r1:1.5b` ($1.78\text{B}$) | `nomic-embed-text` ($768$-d) | Compact ($\tau=0.90$) | 8 | 3 | 8 | `0.7273` | `0.5000` | **`0.5926`** | `0.6562` | `0.6875` | **YES ($\le 4\text{B}$)** |
+| Tier / Experiment ID | Chat Model (Verified Params) | Embedding Model (Dim) | $\tau$ | Pred | TP | FP | FN | Precision (%) | Recall (%) | **$F_1$ (%)** | Runtime (s) | LLM Calls (Total / Val) | Bypasses | $\le 4\text{B}$ Compliant? |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **1. Original Paper / v1.0.1 Table** | `gpt-4o-2024-05-13` (Cloud) | `text-embedding-ada-002` (`1536`) | `0.90` | 9 | 6 | 3 | 10 | `66.67%` | `37.50%` | **`48.00%`** | N/A | N/A | N/A | No (Cloud) |
+| **1. Official Repo Committed HEAD** | `gpt-4o-2024-05-13` (Cloud) | `text-embedding-ada-002` (`1536`) | `0.90` | 8 | 6 | 2 | 10 | `75.00%` | `37.50%` | **`50.00%`** | N/A | N/A | N/A | No (Cloud) |
+| **2. Official Repo Lite Table** | `llama3:8b` ($8.03\text{B}$) | `llama3:8b` (`4096`) | `0.90` | 7 | 4 | 3 | 12 | `57.14%` | `25.00%` | **`34.78%`** | N/A | N/A | N/A | No ($8.03\text{B}$) |
+| **2. Official Repo Executed (`Exp B`)** | `llama3:8b` ($8.03\text{B}$) | `llama3:8b` (`4096`) | `0.90` | 12 | 5 | 7 | 11 | `41.67%` | `31.25%` | **`35.71%`** | `2,584.34` | `1,627` / `760` | `0` | No ($8.03\text{B}$) |
+| **3. Local 8B Parity (`Exp C` R1)** | `llama3:8b` ($8.03\text{B}$) | `llama3:8b` (`4096`) | `0.90` | 12 | 6 | 6 | 10 | `50.00%` | `37.50%` | **`42.86%`** | `1,377.25` | `507` / `130` | `12` | No ($8.03\text{B}$) |
+| **3. Local 8B Parity (`Exp C` R2–3)** | `llama3:8b` ($8.03\text{B}$) | `llama3:8b` (`4096`) | `0.90` | 11 | 6 | 5 | 10 | **`54.55%`** | **`37.50%`** | **`44.45%`** | `290.84`* | `128` / `128` | `12` | No ($8.03\text{B}$) |
+| **3. Local Adapted (`Exp D` >4B)** | `qwen3.5:4b` ($4.54\text{B}$) | `nomic-embed-text` (`768`) | `0.90` | 6 | 4 | 2 | 12 | `66.67%` | `25.00%` | **`36.36%`** | `95.14`* | `8` / `8` | `12` | No ($4.54\text{B}$) |
+| **4. Strict $\le 4\text{B}$ Baseline (`E1` R1–3)** | **`qwen2.5:3b` ($3.09\text{B}$)** | **`nomic-embed-text` (`768`)** | `0.90` | 6 | 4 | 2 | 12 | **`66.67%`** | **`25.00%`** | **`36.36%`** | `491.61`* | `59` / `59` | `12` | **YES ($\le 4\text{B}$)** |
+| **4. Strict $\le 4\text{B}$ Clean Prompt (`E2`)** | **`qwen2.5:3b` ($3.09\text{B}$)** | **`nomic-embed-text` (`768`)** | `0.90` | 6 | 4 | 2 | 12 | **`66.67%`** | **`25.00%`** | **`36.36%`** | `490.09`* | `59` / `59` | `12` | **YES ($\le 4\text{B}$)** |
+| **4. Strict $\le 4\text{B}$ Alt Embed (`E5`)** | **`qwen2.5:3b` ($3.09\text{B}$)** | **`mxbai-embed-large` (`1024`)** | `0.90` | 6 | 4 | 2 | 12 | **`66.67%`** | **`25.00%`** | **`36.36%`** | `449.46`* | `52` / `52` | `12` | **YES ($\le 4\text{B}$)** |
+| **4. Strict $\le 4\text{B}$ $\tau=0.85$ (`E6a` Final)** | **`qwen2.5:3b` ($3.09\text{B}$)** | **`nomic-embed-text` (`768`)** | `0.85` | 6 | 4 | 2 | 12 | `66.67%` | `25.00%` | **`36.36%`** | `2,152.88`* | `274` / `274` | `12` | **YES ($\le 4\text{B}$)** |
+| **4. Strict $\le 4\text{B}$ $\tau=0.85$ (`E6a` S2T Val)** | **`qwen2.5:3b` ($3.09\text{B}$)** | **`nomic-embed-text` (`768`)** | `0.85` | 9 | 6 | 3 | 10 | **`66.67%`** | **`37.50%`** | **`48.00%`** | — | `135` (S2T) | `6` | **YES ($\le 4\text{B}$)** |
+| **4. Strict $\le 4\text{B}$ $\tau=0.875$ (`E6b` No-Val)** | **No LLM Validation (`0B`)** | **`nomic-embed-text` (`768`)** | `0.875` | 13 | 7 | 6 | 9 | **`53.85%`** | **`43.75%`** | **`48.28%`** | `31.88` | `0` | — | **YES ($\le 4\text{B}$)** |
+| **4. Strict $\le 4\text{B}$ Reasoner (`E7`)** | **`deepseek-r1:1.5b` ($1.78\text{B}$)** | **`nomic-embed-text` (`768`)** | `0.90` | 6 | 4 | 2 | 12 | **`66.67%`** | **`25.00%`** | **`36.36%`** | `2,392.25`* | `49` / `49` | `12` | **YES ($\le 4\text{B}$)** |
+
+*\*Matching-and-validation runtime reusing indexed hybrid-memory tables (`--skip-retrieval`).*
 
 ### Key Scientific Takeaways
-1. **Exceeding 8B Historical Performance under the ≤4B Cap:** The adapted `local_4b_default` configuration (`qwen2.5:3b` [$3.09\text{B}$] + `nomic-embed-text:latest` [$137\text{M}$, $768$-dim] + compact prompt + $\tau=0.90$) achieves **$F_1 = 0.6207$** ($\text{Precision} = 0.6923$, $\text{Recall} = 0.5625$), outperforming the historical local `llama3:8b` ($8.03\text{B}$) run ($F_1 = 0.5926$) by **$+2.81\%$** while using **$60\%$ fewer parameters** and running **$35\%$ faster** ($40.2\text{s}$ vs $62.2\text{s}$).
-2. **100% Determinism (`E1` $\times 3$):** Three independent repetitions of `local_4b_default` at `temperature=0.0` produced identical predictions ($\text{TP}=9, \text{FP}=4, \text{FN}=7$, $\sigma_{F_1} = 0.0000$).
-3. **Eliminating Small-Model `Yes`-Bias (`E1` vs `E3`):** Replacing the verbose upstream prompt ($\tau=0.50$) with the compact structured prompt and $\tau=0.90$ reduced False Positives from $10 \to 4$ ($-60\%$) and improved $F_1$ by **$+15.01$ percentage points** ($0.4706 \to 0.6207$).
+1. **Repaired Local 8B Parity Outperforms Upstream `Agent-OM-Lite` (`Exp C` vs. `Exp B`):** Resolving the nine source-level discrepancies (`DISC-01` through `DISC-09`) raised local `llama3:8b` (`4096`-dim) performance on `CMT–ConfOf` from the upstream repository's $F_1 = 34.78\%$ (reported) / $35.71\%$ (executed) to **$F_1 = 44.45\%$ ($P = 54.55\%, R = 37.50\%$)**.
+2. **100% Determinism & Competitive $\le 4\text{B}$ Accuracy (`E1` $\times 3$):** Three independent repetitions of `qwen2.5:3b` ($3.09\text{B}$) + `nomic-embed-text` ($768$-dim) achieved **$100\%$ identical predictions** ($\text{TP}=4, \text{FP}=2, \text{FN}=12$, $P=66.67\%, R=25.00\%, F_1=36.36\% \pm 0.00\%$), outperforming the upstream `Agent-OM-Lite` (`llama3:8b`) baseline ($34.78\%$ / $35.71\%$) using **$61\%$ fewer parameters**.
+3. **Directional Prompt Asymmetry Discovery (`E6a` / `E6b`):** Dedicated `nomic-embed-text` embeddings recover $7/16$ gold pairs ($F_1 = 48.28\%$ at $\tau = 0.875$) before LLM validation, and `qwen2.5:3b` validates $6/16$ gold pairs ($F_1 = 48.00\%$ at $\tau = 0.85$) in the $O_1 \to O_2$ direction (matching the paper's `GPT-4o` $48.00\%$), while reverse $O_2 \to O_1$ prompt ordering conservatively rejects `confOf:Member_PC` and `confOf:hasTitle`.
 
-Full analysis, metrics, and figures are available in [`5_Results/README.md`](5_Results/README.md) and [`5_Results/scientific_evaluation/SCIENTIFIC_EVALUATION_REPORT.md`](5_Results/scientific_evaluation/SCIENTIFIC_EVALUATION_REPORT.md).
+Full analysis, metrics, and figures are available in [`6_Documentation/ACADEMIC_EVALUATION.md`](6_Documentation/ACADEMIC_EVALUATION.md), [`5_Results/README.md`](5_Results/README.md), and [`5_Results/scientific_evaluation/SCIENTIFIC_EVALUATION_REPORT.md`](5_Results/scientific_evaluation/SCIENTIFIC_EVALUATION_REPORT.md).
 
 ---
 
-## 13. Documentation Links
+## 13. Documentation & Academic Presentation Links
+- **Academic Evaluation & Paper Comparison Report:** [`6_Documentation/ACADEMIC_EVALUATION.md`](6_Documentation/ACADEMIC_EVALUATION.md)
+- **Final Project Status & Verification Report:** [`6_Documentation/FINAL_PROJECT_STATUS.md`](6_Documentation/FINAL_PROJECT_STATUS.md)
+- **Academic Presentation Materials (`6_Documentation/presentation/`):**
+  - **Slide-by-Slide Presentation Outline:** [`6_Documentation/presentation/PRESENTATION_OUTLINE.md`](6_Documentation/presentation/PRESENTATION_OUTLINE.md)
+  - **Live Desktop & CLI Demonstration Guide:** [`6_Documentation/presentation/DEMO_GUIDE.md`](6_Documentation/presentation/DEMO_GUIDE.md)
+  - **Defense Questions & Answers (Q&A):** [`6_Documentation/presentation/QUESTIONS_AND_ANSWERS.md`](6_Documentation/presentation/QUESTIONS_AND_ANSWERS.md)
 - **General Technical & Scientific Manual:** [`6_Documentation/GENERAL_DOCUMENTATION.md`](6_Documentation/GENERAL_DOCUMENTATION.md)
 - **Quick-Start Guide:** [`6_Documentation/QUICK_GUIDE.md`](6_Documentation/QUICK_GUIDE.md)
 - **Final Reorganization & Verification Report:** [`6_Documentation/FINAL_REORGANIZATION_REPORT.md`](6_Documentation/FINAL_REORGANIZATION_REPORT.md)

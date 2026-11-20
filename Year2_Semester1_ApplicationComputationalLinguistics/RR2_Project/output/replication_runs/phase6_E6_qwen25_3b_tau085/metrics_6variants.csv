@@ -1,0 +1,7 @@
+variant,predicted,tp,fp,fn,precision_pct,recall_pct,f1_pct,f1_exact_pct
+1_s2t_without_validation,60,9,51,7,15.0,56.25,23.68,23.684211
+2_t2s_without_validation,66,9,57,7,13.64,56.25,21.96,21.95122
+3_merge_without_validation,15,7,8,9,46.67,43.75,45.16,45.16129
+4_s2t_with_validation,9,6,3,10,66.67,37.5,48.0,48.0
+5_t2s_with_validation,6,4,2,12,66.67,25.0,36.36,36.363636
+6_final_with_validation_and_merger,6,4,2,12,66.67,25.0,36.36,36.363636
