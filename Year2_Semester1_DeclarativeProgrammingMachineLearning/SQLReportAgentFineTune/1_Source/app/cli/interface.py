@@ -150,6 +150,22 @@ def cmd_eval(args: argparse.Namespace) -> int:
     else:
         test_examples = splits["test_unseen"]
 
+    # Handle stratified sampling or manifest
+    manifest_path = getattr(args, "manifest", None)
+    if manifest_path:
+        p = Path(manifest_path).resolve()
+        if p.exists():
+            with open(p, "r", encoding="utf-8") as f:
+                m_data = json.load(f)
+            m_ids = set(m_data.get("sample_ids", []))
+            test_examples = [ex for ex in test_examples if ex.example_id in m_ids]
+            print(f"Loaded {len(test_examples)} samples from manifest: {p.name}")
+    elif getattr(args, "stratified", False) and track == "unseen":
+        from app.evaluation.sampler import StratifiedSampler
+        sampler = StratifiedSampler(seed=42)
+        test_examples = sampler.sample_unseen(test_examples, target_size=200)
+        print(f"Selected {len(test_examples)} stratified unseen samples across all 22 DBs.")
+
     engine = InferenceEngine(model_path_or_id=resolved_model, adapter_path=adapter_path)
     evaluator = ExecutionEvaluator(engine=engine, db_map=db_map)
 
@@ -282,6 +298,8 @@ def run_cli() -> int:
     p_ev.add_argument("--adapter", type=str, default=None, help="Path to LoRA adapter")
     p_ev.add_argument("--limit", type=int, default=None, help="Limit number of test samples")
     p_ev.add_argument("--track", type=str, choices=["unseen", "known"], default="unseen", help="Evaluation track: unseen (Track 2) or known (Track 1)")
+    p_ev.add_argument("--stratified", action="store_true", help="Use stratified 200-sample unseen benchmark")
+    p_ev.add_argument("--manifest", type=str, default=None, help="Path to sample manifest JSON")
 
     # compare
     p_cp = subparsers.add_parser("compare", help="Compare baseline vs fine-tuned results")

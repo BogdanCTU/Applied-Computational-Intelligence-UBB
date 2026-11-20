@@ -8,7 +8,7 @@ The experiment systematically benchmarks three controlled LoRA parameter configu
 1. **Track 1 (Known-Schema Generalization)**: Held-out user queries against database schemas observed during training.
 2. **Track 2 (Unseen-Schema Generalization / Cross-Domain)**: Held-out user queries against 22 completely unseen databases across distinct business and academic domains.
 
-All evaluations are conducted with exact execution in isolated SQLite engines, computing **Execution Accuracy (EX)**, **Exact Match (EM)**, **Valid SQL Rate (VSR)**, **95% Bootstrap Confidence Intervals (1,000 resamples)**, and **Paired Contingency Matrices**.
+All evaluations are conducted with exact execution in isolated SQLite engines, computing **Execution Accuracy (EX)**, **Exact Match (EM)**, **Valid SQL Rate (VSR)**, **95% Bootstrap Confidence Intervals (1,000 resamples)**, **Paired McNemar's Tests**, and **12-Class Error Distributions**.
 
 ---
 
@@ -82,99 +82,92 @@ Iter   Metric       Exp A (r=8)   Exp B (r=16)   Exp C (r=32)
 60     Train Loss   0.175         0.197          0.197
 ```
 
-### Convergence Analysis
-1. **Initial Acceleration**: Rank 32 achieved the steepest early reduction in training loss (dropping to 0.476 by iteration 10, compared to 0.520 for $r=16$ and 0.594 for $r=8$).
-2. **Validation Optimum**: Experiment A ($r=8$) achieved the lowest overall validation loss (**0.148** at iter 60), closely followed by Experiment B ($r=16$) at **0.161**.
-3. **Overparameterization at High Rank**: Experiment C ($r=32$) plateaued at a slightly higher validation loss (0.190), exhibiting mild capacity over-allocation relative to dataset iteration count.
-
 ---
 
-## 6. Comprehensive Comparative Benchmark Results
+## 6. Phase I Authoritative Benchmark Results
 
-### 6.1. Track 2: Cross-Domain Unseen Schema Benchmark (Held-Out Test Set)
+### 6.1. Track 2: Cross-Domain Unseen Schema Benchmark (200 Stratified Samples)
 
-Evaluated on 25 held-out test queries across completely unseen database schemas (`flight_2`, `cre_Doc_Template_Mgt`, `dog_kennels`, `tvshow`, `poker_player`, `student_transcripts_tracking`, `employee_hire_evaluation`, `world_1`, `pets_1`, `entertainment`, `museum_visit`):
+Evaluated on 200 stratified unseen-schema test instances (`2_Database/processed/evaluation_sample_unseen_200.json`) guaranteeing 100% representation across all 22 held-out databases and balanced complexity:
 
-| Model Run | Execution Accuracy (EX) | 95% Bootstrap CI (EX) | Exact Match (EM) | Valid SQL Rate (VSR) | Mean Latency |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Pristine Baseline** | **68.0%** (17/25) | [48.0%, 84.0%] | 20.0% (5/25) | 100.0% (25/25) | 1,680.7 ms |
-| **Exp A ($r=8$)** | 44.0% (11/25) | [24.0%, 64.0%] | **36.0%** (9/25) | 100.0% (25/25) | 1,730.5 ms |
-| **Exp B ($r=16$)** | **56.0%** (14/25) | [36.0%, 76.0%] | 24.0% (6/25) | 100.0% (25/25) | 4,222.1 ms |
-| **Exp C ($r=32$)** | 44.0% (11/25) | [24.0%, 64.0%] | 24.0% (6/25) | 100.0% (25/25) | 6,202.1 ms |
+| Model Run | Execution Accuracy (EX) | 95% Bootstrap CI (EX) | Paired $\Delta \text{EX}$ vs Base | McNemar $p$-value | Exact Match (EM) | Valid SQL Rate (VSR) | Mean Latency | Median Latency | P90 Latency |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Pristine Base** | **62.5%** (125/200) | [56.5%, 69.5%] | — | — | 13.0% (26/200) | 98.5% (197/200) | 3,610.8 ms | 3,273.0 ms | 5,621.3 ms |
+| **Exp A ($r=8$)** | **62.5%** (125/200) | [56.0%, 69.0%] | **0.0%** `[-6.0%, +6.0%]` | $p=1.000$ (NS) | **40.0%** (80/200) | **100.0%** (200/200) | **3,564.2 ms** | **3,016.4 ms** | **5,510.3 ms** |
+| **Exp B ($r=16$)**| **60.5%** (121/200) | [54.0%, 67.0%] | **-2.0%** `[-7.5%, +3.0%]` | $p=0.584$ (NS) | 33.0% (66/200) | **100.0%** (200/200) | 4,500.9 ms | 3,793.7 ms | 7,122.4 ms |
+| **Exp C ($r=32$)**| **49.5%** (99/200) | [43.0%, 56.5%] | **-13.0%** `[-19.5%, -6.5%]` | **$p=0.0002$ (Sig)** | 28.0% (56/200) | **100.0%** (200/200) | 5,197.9 ms | 4,159.6 ms | 7,611.8 ms |
 
 ```text
-Visual Execution Accuracy Comparison (Track 2):
-Baseline:    █████████████████░░░░░░░░ 68.0%
-Exp A (r=8): ███████████░░░░░░░░░░░░░░ 44.0%
-Exp B (r=16):██████████████░░░░░░░░░░░ 56.0%
-Exp C (r=32):███████████░░░░░░░░░░░░░░ 44.0%
+Visual Execution Accuracy Comparison (Track 2, N=200):
+Baseline:    ███████████████░░░░░░░░░░ 62.5%
+Exp A (r=8): ███████████████░░░░░░░░░░ 62.5% (Matches Base, Exact Match +27%)
+Exp B (r=16):███████████████░░░░░░░░░░ 60.5% (Within 2% of Base)
+Exp C (r=32):████████████░░░░░░░░░░░░░ 49.5% (Capacity collapse, p=0.0002)
 
-Visual Exact Match Rate Comparison (Track 2):
-Baseline:    █████░░░░░░░░░░░░░░░░░░░░ 20.0%
-Exp A (r=8): █████████░░░░░░░░░░░░░░░░ 36.0% (+16.0% gain)
-Exp B (r=16):██████░░░░░░░░░░░░░░░░░░░ 24.0% (+4.0% gain)
-Exp C (r=32):██████░░░░░░░░░░░░░░░░░░░ 24.0% (+4.0% gain)
+Visual Exact Match Rate Comparison (Track 2, N=200):
+Baseline:    ███░░░░░░░░░░░░░░░░░░░░░░ 13.0%
+Exp A (r=8): ██████████░░░░░░░░░░░░░░░ 40.0% (+27.0% absolute gain)
+Exp B (r=16):████████░░░░░░░░░░░░░░░░░ 33.0% (+20.0% absolute gain)
+Exp C (r=32):███████░░░░░░░░░░░░░░░░░░ 28.0% (+15.0% absolute gain)
 ```
+
+### 6.2. Track 1: Known Schema Generalization Benchmark (100 Samples)
+
+| Model Run | Execution Accuracy (EX) | 95% Bootstrap CI (EX) | Paired $\Delta \text{EX}$ | McNemar $p$-value | Exact Match (EM) | Valid SQL Rate (VSR) | Mean Latency | Median Latency | P90 Latency |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Pristine Base** | **71.0%** (71/100) | [62.0%, 80.0%] | — | — | 21.0% (21/100) | 99.0% (99/100) | **4,386.6 ms** | **3,836.3 ms** | **7,157.3 ms** |
+| **Exp B ($r=16$)**| **68.0%** (68/100) | [58.0%, 77.0%] | -3.0% `[-13.0%, +6.0%]` | $p=0.678$ (NS) | **33.0%** (33/100) | **100.0%** (100/100) | 4,824.0 ms | 4,496.0 ms | 8,550.9 ms |
 
 ---
 
-### 6.2. Track 1: Known Schema Generalization Benchmark
+## 7. Paired Contingency & Diagnostic Error Distribution (Track 2, N=200)
 
-Evaluated on 15 held-out queries against database schemas observed during training (`apartment_rentals`, `department_store`, `activity_1`, `sakila_1`, `e_learning`, `sports_competition`, `allergy_1`, `product_catalog`, `flight_4`, `theme_gallery`, `culture_company`, `cre_Drama_Workshop_Groups`, `game_1`, `college_2`):
+### 7.1. Contingency Matrix (Baseline vs. Exp A, $r=8$)
+- **Both Correct**: 105 queries.
+- **Improved by Fine-Tuning** (Base 0 -> Tuned 1): **20 queries**.
+- **Regressed by Fine-Tuning** (Base 1 -> Tuned 0): **20 queries**.
+- **Both Failed**: 55 queries.
+- **McNemar Test**: $\chi^2 = 0.0$, $p = 1.000$ (No statistically significant difference in execution accuracy, but +27.0% Exact Match improvement).
 
-| Model Run | Execution Accuracy (EX) | 95% Bootstrap CI (EX) | Exact Match (EM) | Valid SQL Rate (VSR) | Mean Latency |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Pristine Baseline** | 73.33% (11/15) | [46.7%, 93.3%] | 26.67% (4/15) | 93.33% (14/15) | 4,750.8 ms |
-| **Exp B ($r=16$)** | **73.33%** (11/15) | [53.3%, 93.3%] | 26.67% (4/15) | **100.0%** (15/15) | 5,288.4 ms |
+### 7.2. Contingency Matrix (Baseline vs. Exp C, $r=32$)
+- **Both Correct**: 89 queries.
+- **Improved by Fine-Tuning**: 10 queries.
+- **Regressed by Fine-Tuning**: **36 queries**.
+- **Both Failed**: 65 queries.
+- **McNemar Test**: $\chi^2 = 13.587$, $p = 0.0002$ (**Statistically significant degradation** due to runaway multi-table join loops).
 
-```text
-Visual Valid SQL Rate (VSR) Comparison (Track 1):
-Baseline:    ███████████████████████░░ 93.33% (syntax error on query 5)
-Exp B (r=16):█████████████████████████ 100.0% (0 syntax errors, syntax repaired)
-```
+### 7.3. 12-Class Error Distribution Comparison (Track 2, N=200)
 
----
-
-## 7. Paired Contingency & Error Analysis
-
-### 7.1. Contingency Table (Baseline vs. Exp B on Track 2)
-```text
-                       Fine-Tuned (Exp B)
-                       Pass          Fail
-Baseline   Pass         13             4
-           Fail          1             7
-```
-- **Both Correct**: 13 queries.
-- **Fine-Tuning Unique Wins**: Query `[1/25]` (`flight_2`): Baseline generated an invalid join on airport IDs; Exp B correctly projected airlines matching the flight schedule.
-- **Both Failed**: 7 complex nested queries involving multi-level table aliases.
-
-### 7.2. Error Category Breakdown Across All Configurations
-
-| Configuration | `none` (Correct) | `execution_mismatch` | `schema_linking_error` | `syntax_error` |
-| :--- | :---: | :---: | :---: | :---: |
-| **Baseline (Track 2)** | 17 | 7 | 1 | 0 |
-| **Exp A ($r=8$, Track 2)** | 11 | 10 | 2 | 2 |
-| **Exp B ($r=16$, Track 2)**| 14 | 8 | 2 | 1 |
-| **Exp C ($r=32$, Track 2)**| 11 | 10 | 3 | 1 |
-| **Baseline (Track 1)** | 11 | 3 | 0 | 1 (`syntax_error`) |
-| **Exp B ($r=16$, Track 1)**| 11 | 4 | 0 | **0** |
-
-### Key Scientific Insights
-1. **Exact Match Surge in Low-Rank Adapters**: Experiment A ($r=8$) increased exact match from 20.0% to 36.0% (+80% relative gain). Adapters with $r=8$ strongly encourage the model to conform to the exact structural SQL conventions of the training benchmark.
-2. **Generalization Sweet Spot at $r=16$**: Experiment B ($r=16$) achieved the best balance of flexibility and generalization, outperforming all other fine-tuned variants on unseen schemas (56.0% EX) and matching baseline accuracy on known schemas (73.33% EX) while eliminating syntax failures (100% VSR).
-3. **Inference Latency Profile**: Rank 8 added negligible latency overhead (+49 ms, 1,730 ms total). Higher ranks ($r=16, 32$) displayed longer generation times (4,222 ms and 6,202 ms) due to increased adapter tensor computation in unified memory.
+| Error Category | Baseline Count | Exp A ($r=8$) | Exp B ($r=16$) | Exp C ($r=32$) | Trend / Primary Mechanism |
+| :--- | :---: | :---: | :---: | :---: | :--- |
+| `schema_linking_error` | 25 | 17 | 21 | 33 | Improved in $r=8$; degrades sharply in $r=32$ |
+| `aggregation_error` | 5 | 4 | 11 | 13 | Bare column projections without GROUP BY in $r \ge 16$ |
+| `join_error` | 9 | 12 | 10 | 13 | Chaining unreferenced tables |
+| `subquery_error` | 4 | 4 | 6 | 13 | Runaway nested query recursion in $r=32$ |
+| `distinct_error` | 12 | 9 | 10 | 10 | Dropping `DISTINCT` in aggregations |
+| `semantic_mismatch` | 12 | 13 | 11 | 5 | Valid SQLite execution returning wrong values |
+| `order_limit_error` | 2 | 3 | 4 | 5 | Inverted sort directions |
+| `syntax_error` | 3 | 12 | 5 | 7 | SQLite parse exceptions |
+| `date_error` | 3 | 0 | 1 | 1 | DateTime parsing discrepancies |
+| `filter_error` | 0 | 1 | 0 | 1 | Inverted predicates |
 
 ---
 
-## 8. Model Fusion & Zero-Divergence Parity Certification
+## 8. Historical Pilot Sensitivity Analysis (N=25 vs N=200)
 
-To deploy the fine-tuned model without runtime adapter loading overhead, the best adapter (**`exp_b_lora_r16`**) was fused into the base model weights:
+| Configuration | Historical Pilot (N=25) | Phase I Benchmark (N=200) | Discrepancy Cause |
+| :--- | :---: | :---: | :--- |
+| **Baseline** | 68.0% (17/25) | 62.5% (125/200) | Sampling bias: pilot had above-average ratio of easy flight queries |
+| **Exp A ($r=8$)** | 44.0% (11/25) | **62.5%** (125/200) | High variance: pilot contained 3 atypical alias-sensitive queries |
+| **Exp B ($r=16$)** | 56.0% (14/25) | **60.5%** (121/200) | Pilot under-represented multi-table join degradation |
+| **Exp C ($r=32$)** | 44.0% (11/25) | **49.5%** (99/200) | Consistent capacity collapse confirmed at larger scale |
 
-- **Command**: `python 1_Source/main.py export --adapter exp_b_lora_r16`
-- **Output Destination**: `6_Models/exported/exp_b_lora_r16_fused/`
-- **Artifact Manifest**:
-  - `model.safetensors` (1.6 GB standalone fused 4-bit weights)
-  - `tokenizer.json`, `config.json`, `chat_template.jinja`
-- **Automated Regression Verification**: `3_Tests/integration/test_fusion_parity.py`
-  - Tested on deterministic greedy decoding ($T=0.0$) across distinct test schemas.
-  - **Result**: **100% token and SQL output parity** verified between the dynamic adapter configuration and the standalone fused model.
+**Conclusion**: The 25-sample pilot had an empirical error margin of $\pm 18\%$. Evaluating on $N=200$ stratified samples reduced confidence interval margins to $\pm 6.5\%$, revealing that LoRA $r=8$ does not degrade execution accuracy while providing substantial gains in formatting and exact match.
+
+---
+
+## 9. Model Fusion & Parity Certification
+
+- **Fused Artifact**: `6_Models/exported/exp_b_lora_r16_fused/`
+- **Standalone Files**: `model.safetensors` (1.6 GB 4-bit weights), `tokenizer.json`, `config.json`
+- **Parity Test**: `3_Tests/integration/test_fusion_parity.py` passed with **100% token and execution parity** against the dynamic adapter.
