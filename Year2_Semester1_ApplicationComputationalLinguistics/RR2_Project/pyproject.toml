@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-om-local"
+version = "1.0.0"
+description = "Agent-OM: Scientific Replication, Python 3.13 Modernisation, Local <=4B LLM Adaptation and Desktop Application"
+readme = "README.md"
+requires-python = ">=3.13"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Applied Computational Intelligence Replication Team (UBB)"}
+]
+dependencies = [
+    "rdflib>=7.0.0",
+    "breame>=0.1.2",
+    "pandas>=2.0.3",
+    "numpy>=1.26.4",
+    "psycopg2-binary>=2.9.9",
+    "asyncpg>=0.28.0",
+    "pgvector>=0.2.5",
+    "ollama>=0.3.0",
+    "langchain-core>=0.2.0",
+    "langchain-ollama>=0.1.0",
+    "langchain-text-splitters>=0.2.0",
+    "pyyaml>=6.0.1",
+    "python-dotenv>=1.0.1",
+    "pytest>=8.0.0",
+    "tqdm>=4.66.0",
+    "colorama>=0.4.6",
+]
+
+[project.optional-dependencies]
+dev = [
+    "PySide6>=6.8.0",
+    "matplotlib>=3.9.0",
+    "pytest-qt>=4.4.0",
+    "pyinstaller>=6.11.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["2_Tests"]
+python_files = ["test_*.py"]
+pythonpath = ["."]
