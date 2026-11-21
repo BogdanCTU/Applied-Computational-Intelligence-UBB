@@ -1,0 +1,148 @@
+Today, I will be covering on the topic, Agentic Grafra, that helps us to unlock the full potential of multi-hiss.
+for presenting within the graph. And at this point, I feel like I'm running a mini-series inside the Neo4j community, because for the
+Those who don't know, this is my
+third talk at this conference and I'm really conscious on two things not to repeat myself across these different talks and to provide maximum value. So what I'm going to do is like.
+and before I get into the actual topic, I just want to give a quick recap on what we covered in the previous sessions. During my first talk, I was covering on the topic on how to reach
+the knowledge from any documents that you might be having with the help of custom pipeline that you build yourself rather than relying on the existing frameworks.
+that will give you higher control and you will be able to retrieve the information more efficiently. So the end goal of the first talk was to form the lexical graph and the domain.
+graph and how to bridge them so that you could traverse between these two graphs. And recently, I also did another talk at the notes here conference where I was talking about
+the graph track implementation and I was comparing between the vector RAG and the graph RAG and having said this, so these two talks are not a prerequisite for understanding today's
+session, but it is always good to understand the fundamentals. So moving on to the next slide where we exactly left office we were using an even management platform.
+for the previous session and we were comparing the solution across two different ways. One, we were using the vector rack which is the traditional vector rack like we were using.
+we could use any vector database for that matters, which has the native vector search capability. Essentially like what you will be doing is like you need to generate the embeddings for the data that you own.
+and then you need to do similarity search against the database to retrieve the top k similar chunks out of it and then you respond back to the user. So this is pretty much
+straight forward water vector rectus and we covered another another dimension that is the graph rack which helps us to traverse along different relations.
+and cover multiple nodes and entities with the help of graph representation. And we were able to find that graph rack was performing way better than the vector rack.
+almost all the scenarios. Now you might be thinking like if it is able to perform way much better than the vector rack, why do we even need to consider about the
+The main drawback that we had in the graph rack earlier was that we had one generalized cipher query that was working perfectly fine for two different traversal strategies. One is
+the breadth for search and the depth for search. So we were using one cipher query, which was performing well for the demo purpose that we did earlier. But once we start to deploy.
+this as an application and once we start to give this to the end user, you will soon find that this is not a relatable solution and also a scale
+solution because as when your knowledge graph is growing, your database call is going to be too expensive and it is not going to scale well.
+Also another drawback that we found out is that there are n number of possibilities our end user could ask as a query, right? Because you really can't predict
+what a specific question is going to be in advance, unless you have a time machine, right? Even in that case, like it is really difficult for you to define a solution.
+around those different possible combination of questions. So what we found sooner or later is that we need to have different traversal strategies for different queries. For example.
+Some of the questions might be too simple that could be handled better with the vector rag alone and some question might be too broad for example if the query is about
+give me talk, give me similar talks around a particular topic in different events. So this would be requiring a breadth for search across different
+and neighboring notes that you might be having in your knowledge graph. And the third option would be a depth-first traversal. Sometimes you need to specifically
+hours deeper into one particular area to retrieve efficient information out of it. And we also found out that the users were also asking something information from
+the internet. So we need to cater all these different needs and it is nearly impossible for you to define a solution that has predefined the methods for all these different possible
+combinations. So what we need is like we need an intelligent solution that will be able to do this real-time decision on the flow and
+and it helps us to route two different parts that we might be having. So that is the reason why we are getting into this agency graph for implementation. Whatever we said.
+just know in addition to that the graph rack should also have its own boundaries and the validations because you you shouldn't be given
+the these agents with all the controls and specifically how we are restricting it is with the God right that we define within the solution which
+we will be covering in deeper in the coming slides but the idea is to have the boundary around which these agents can perform these decisions and
+you could also find the trade-off in this table. So if you compare the vector graph, vector log and the graph log, you will be at most using one LLM call for generating the response.
+And also for generating the embeddings, you will be also requiring one more call to the embedding model. In addition to that, there were no other LLM calls that you might be making.
+in those two previous cases. But in case of Agent Agrafrak, you might at least need call to 20 LLM calls depending on how many agents you'd
+defined within an workflow and how accurate your answer should be. So based on the accuracy and the reliability of the solution and also on the use case, you might be picking either
+of these three different solutions. And for this talk, we are specifically going to focus on the agent aircraft. So this is the big picture of what we have implemented.
+And if there is anything that you need to take away from this session, this would be it because this is a generalized version of what we have implemented and we will be seeing a deeper version of.
+this particular architecture in the coming slide, but this is more generalized version, which could be applied to any divine that you might be handling. So everything starts with the question.
+from the user. So once the question gets passed on to the next stage, we have a planning stage which decides based on the question like how it needs to route to different.
+agents that we have internally. So it also helps us to split the question if there are multiple sub questions within a single prompt. So this planner
+does this job and the next phase is the retrieval phase where we had specifically different agents that runs in parallel to cater the SNE.
+And we move on to the next stage, which is the validation stage. We validate the response that we receive from all these different agents that runs in parallel.
+check the evidence if whatever the requirement has been matched with the evidence if it is not we will retry once to go back to the retrieval phase and it will again
+through those different stages to give back the efficient information back to the user. So once we get to the validation stage, once it is complete.
+We move to the final stage, which is responding back to the user. So along with the answer, we also provide them with the actual citations, the reference links.
+to where it has been actually spoke. So this is the entire big picture of the oral architecture of what we have implemented. And internally, we have
+Godrails and we have thresholds for each and every aspects that you might be thinking of. So specifically we
+implemented four different agents, four different patterns in our solution. The first pattern is the planning pattern as we seen in the previous slide. The router.
+that's this planning stage which splits the question based on the question like if it needs to be splitted across multiple sub-tasks it does that and also it does the
+routing part and in addition to that it also gives you what task need to be done for the next stage. So these are taken care in the planning.
+stage and then comes to the reflection where we have seen the validator agent that does this reflection pattern. It is not just validating the response.
+that we receive from these different agents. It is also letting you know what exactly is missed from the previous run so that we will know what additional knowledge that we need to
+tree from the graph. And this is what the reflection pattern is about. And we specifically used multiple different tools for each of these different independent agents that we had.
+and we also have different architectures for collaborating with multiple agents which we will see in detail. So first of all, let's see.
+how the knowledge graph looks like. So this is exactly where we left off from the previous session at the node. So we were forming the lexical graph and the domain graph.
+And in the lexical graph is nothing but you cater all the information from the document that you might be having. So specifically for our case in the event management system. So we need to.
+to retrieve the information from the podcast, from the recordings, video recordings, and also in case of slides, it is gonna be PDF or Doc file. So from all those different
+formats, file formats, we need to retrieve the information efficiently and form the nodes in this way. So we will be having a document and inside the document
+we will be having multiple sections and each of those sections will be having the chunks. Now the chunk is something that you will be generating as an embedding along with the actual text.
+And in addition to this, we also did multiple relationships that we established between two different talks at entirely different conferences, just to link.
+based on the concepts and based on the similarity of those different talks. So that helps us to traverse the graph way much better than before. And in the domain graph we
+we had the actual domain that we are handling. It is the user node session, organization venue on the event. So the way how we bridge between these two different gases.
+graph is using the user node and that is how we will be able to traverse between these two graphs. Now coming on to the agents, we have totally eight agents in place.
+that act independently. The first agent is the router agent, which spreads the question into a sub-task and also route to different agents.
+that we have internally. And the next one is the traversal rotor. So this traversal rotor is responsible for handling the traversal strategies whether to.
+go with an DFS approach or the DFS approach and then the semantic researcher comes into the place where we will be retrieving the actual passage based on the semantic meaning of the question and
+the graph researcher does multi-hops follow different relationships within your graph and then we also have a web researcher with the table so basically if
+The question is also containing about some sub-task that requires you to get the information from the internet. We use this kind of on web agent, which runs in parallel with this.
+and the other graph researcher that we have to retrieve efficient information from the outside source in addition to what we have internally and
+Finally, like we have the synthesizer, we check whatever the information retrieved from all these different agents is actually capturing the needs of the requirement that is being prompted by the planner.
+And then we move on to the next agent, which is the validated agent, which not only validates what is the actual response that we got from those different agents, but it also lets you know.
+What is actually missing in all those different passages that has been retrieved because it knows the requirement from the planner and it knows what is mean missed in those passages and we will do.
+the retrieval phase one second and finally we have the answer generator which which is going to just respond back in the natural language way along with the citations that is retrieved
+along the these different agents. So this is the deeper version of what we have seen in the big workflow. So it starts with the question and it
+on to the router and in the router as we said earlier it can be either split as an internal route only or it could be a web route if the question is only
+to fetch the information from the external source. It will be a web route or it could be a mixer route where you need to get the information from both the internal and as for the web source.
+So this is what the planner does and it will create a plan for each of these different researches that we have and then comes the graph context. So you might be thinking at this point like why do we.
+even need a graph context, because everything starts with a similarity search. Even in our graph rack, we did the same. We had the similarity search in the first place, and then we traversed.
+graph. It is the same approach that we use here. The only difference is that like how we are traversing the graph based on the query that will give you a reliable solution.
+Once you are past these graph context stage, you will get into the traversal rotor, which actually decides what route it needs to take based on the
+task it has been given. Either it can go with the BFS or the DFS. So it will traverse all the nodes, all the entities that needs to
+retrieve the information from. And with those node information and the relationship information, we will get to these different researchers. One is the semantic researcher, the other one is.
+the graph researcher and the third one is the web researcher. The semantic researcher is going to retrieve the similar chunks out of your knowledge graph based on this similarity search. It is going to retrieve the
+actual X chunk. This is the stage where you will be returning the actual X and same goes with the graph researcher in addition to what the semantic
+such a dust, it will traverse the graph to the domain graphs to see if any information from the domain graph needs to be retrieved and also it will help you to
+to traverse down the DFS or the BFS, which is being responded back with the Travis rotor. And the third one is the web processor, which is an optional one. You could either relay on this.
+or not based on the query. So, once all these different agents does its work, we move on to the synthesizing phase where we will be actually validating where
+where we will be creating an evidence based on these different agents and then we will move on to the validator phase. So this phase will actually validates the evidence
+the response that we received. And if there is any gap, it will retry once and we will be providing the answer back to the user.
+So this is in detail about what each stage does. So this is the exact output of the planar region. So this planar region has one LLM call that needs to do and
+We have provided one tool which is to submit the plan for the further stages to take up. So at the end of this planner agent task.
+What we will be getting is a response in this format where we will be having an internal task if we need to retrieve the information from the knowledge graph and the graph task is to.
+let the graph researcher know what it needs to do and we will be having a set of requirements to see like what is the claim and what is the actual relationship that needs to pick and also
+the claim against the evidence. So this is the way since it is an array. So even if you have multiple tasks within a single problem, it will be able to create all
+those individual task sub task under the single requirement and you will be able to move on to the next step, which is the graph context retrieval. So as I said,
+before this is where you will be doing the similarity search against the database that you have and we will be retrieving the chunks in addition to what we have retrieved.
+here. We also traverse across different relationships like contains similar to and we will do a few hops to retrieve specific information about that particular
+So this particular graph context query is not essentially retrieving all the different neighboring nodes that we had as an earlier.
+like in the previous session, we were having a generalized safe query, which was doing that exact mistake where we were exploring almost entire neighboring node and.
+It was also going deeper into the knowledge graph. And we were avoiding that specific traversal with this approach. And we were only expanding the nodes that are.
+relevant to that particular question. And once it is retrieved, we will be moving on to the next stage. But you need to understand what is the exact drawback that we have.
+between the graph rack and this agency graph rack, right? So, so this is the exact robot that we had earlier. So we when we did the graph rack, we had this generalized.
+of a query that was performing well for both the BFS and the DFS query. And what it turns out to be is that we had our own.
+two not one KB of files returned back for a single query and you might be thinking like how many notes has been retrieved for this particular single query and
+And that is how inefficient that graph rack could be. And moving forward with our
+lot better than what we had as the database retrieval as well. So it is even efficient in the database retrieval side and also from the storage perspective. So this is what
+of the traversal agent does, as you might already be aware, what BFS and BFS do. So in that BFS, based on the question, if it needs to find the neighboring nodes,
+It will traverse the neighboring nodes before going into the child nodes of it. And in the DFS, we will be picking up one particular node and we will be traversing deep down the graph.
+Then we had these different multiple researchers which runs in parallel and each of these researchers have their own set of tools, the semantic researchers
+as the semantic search capability and also to find the passage and the graph researcher in addition to what we had in the semantic we also have the way to traverse the graph and all
+the tools that we provide to these agents or read-only tools because we are really careful on the boundaries that we define for these agents.
+Nowhere you will be able to find a place where the agent is able to create its own Cypher query because we want to restrict that way and the final research is the web research.
+which makes use of tablet to do the web search. And once all these different agents does its work, we will be having an evidence ledger, which will be an input to the value.
+So this validator as I said before it is going to run against the requirement which is prepared by the planner and it will see if it is matching if it is not it is gonna go.
+back to the previous step, the researcher's step, and then it is going to rerun and it is going to give the response back. And you can also control this retry, the number of retries that you need to do.
+specifically in our case we had only one retry and this could be modifiable for different use cases that you might be having and finally we will be responding back with us
+and so there are different architectures that we followed across these different implementation. I will just give you a quick overview of what are the different architectures that we followed.
+We have the single agent rotor specifically for if you consider the planner agent that we had it works in the similar way which creates the planner creates the plan for different
+agents and it routes to different sub agents in a way. And we also had the multi-agent architecture. If you think of an orchestration that we had in place that runs in parallel.
+it is similar to what we had as a multi-Asian architecture and we also have an hierarchical way of what needs to be done in the first place and how it needs to go as a sequence.
+and the corrective architecture is something that we've seen in the validator where it validates against the evidence and go back to the retrieval phase if it is not, if it is not.
+not giving a correct response. And we also have the adaptive architecture. So the router agent does this perfectly because it routes based on the particular
+question to different agents and finally we have this graph based architecture in the graph researcher region where it is able to traverse our graph down via the
+of the DFS. I will quickly show you how this looks like an in the domain.
+Okay, so we have.
+a predefined set of questions that is defined for this demo. And let me run through all the example questions and we will see how each of these different agents performs.
+So first of all, it goes into the planning phase. As you could see, it defines a plan for those sub-agents that we have internally. So it knows like what is the...
+and how it needs to split between different tasks. And then it goes to the graph context stage where it retrieves the information based on the similarity search.
+and then it goes to the traversal router. So now it decides on whether it needs to go route the DFS or the DFS. And then the semantic researcher, graph researcher.
+Here you could see there is no web researcher because this particular question doesn't require you to fetch the information from the outside shows. So that is why we have only two agents here.
+and the next step is the synthesizer which creates the evidence brief and that acts as an input for the validator region and this one is approved in the round one itself because
+All the evidence that has been provided as a response from the previous agents was able to cater the need of the requirements that is planned by the planner. And finally, we were able to
+generate the response. So now, if we compare this against the vector rack, obviously, the agent graph rack is going to be favored for almost all the areas.
+So we had this AI judge in place, which is not by us towards the graph right approach. And it is randomly generating the response based on what it.
+sees between these two different solutions. And what I specifically will do is like after this session, I will try to upload these slides and the demo in my
+while and you could verify this later. So let me go back to the slide.
+In terms of the guardrails, we had these guardrails in all these different six layers. So in terms of the inputs, we decide how it needs to be out.
+In terms of the tool access, we were really careful on what are the permissions that needs to be given to a particular agent, nowhere you could see an agent is writing its own
+you can see it is performing a right operation. And also from the budget perspective, we are constraining the number of tool calls that it makes and number of models, model calls it makes.
+And also from the evidence grounding, we have already seen how we are synthesizing and creating an evidence. And in terms of observability and the output gates, we also have that in place.
+So specifically how you can choose between these three different strategies is that if your answer does not depends on if you want to if you are having
+some goodies and if your answer is not depending on it is not really complex and it doesn't require you to follow the relationships you could go with the vector rack approach and if it essentially
+needs to do across the retrieval, across the relationships, you could go across the graph rack. And if it is different for different questions, you could go across the agency graph rack approach.
+and with that I am gonna end the session today and if you have any questions feel free to reach out to me on the LinkedIn and I will make sure to share the slides
+on the demo in a few minutes. Thank you everyone.
+and we hope you enjoy the rest of your your nose 2026. Thank you.

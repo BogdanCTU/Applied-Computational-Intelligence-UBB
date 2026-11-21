@@ -1,41 +1,22 @@
-# 01 — Project Overview
+# Slide 1 — Project Overview: Static Bug Detection in C# (`v3.0.0`)
 
-**Project:** Machine Learning-Based Software Defect Prediction for C# Source Code  
-**Course:** Computational Intelligence in Software Engineering (CISE Project 2)  
-**Institution:** Babeș-Bolyai University, Faculty of Mathematics and Computer Science  
-**Program:** M.Sc. Applied Computational Intelligence  
-
----
-
-## 1. System Summary
-
-The system predicts method-level defect risk in C# source code by combining Git/SZZ defect mining, Roslyn syntax tree analysis, and repository-grouped ensemble classifiers.
-
-```mermaid
-flowchart LR
-    Source["C# Source Code"] --> Roslyn["Roslyn AST Analysis<br/>(26 Static Metrics)"]
-    Roslyn --> Model["Ensemble Classifier<br/>(5x4 Nested GroupKFold)"]
-    Model --> Score["Defect Probability<br/>& Risk Tier"]
-```
-
-- **Target Language:** C# (.NET 9.0)
-- **Granularity:** Method-level (methods, constructors, accessors)
-- **Feature Representation:** 26 static AST and complexity metrics extracted via `Microsoft.CodeAnalysis.CSharp`
-- **Validation Protocol:** 5-fold outer $\times$ 4-fold inner nested repository-level `GroupKFold` cross-validation
-- **Output:** Defect probability score ($[0.0, 1.0]$), risk tier (`Low <= 0.30`, `Medium 0.31-0.60`, `High > 0.60`), and top feature importances
+**Machine Learning-Based Bug Detection in C# Source Code**  
+Babeș-Bolyai University — M.Sc. Applied Computational Intelligence  
+Course: Computational Intelligence in Software Engineering (CISE), Project 2  
 
 ---
 
-## 2. Motivation
+## Core Mission & Transformation
 
-Manual code review and unit testing cannot be applied with equal depth across all methods in large software repositories. Method-level defect prediction provides a quantitative triage signal to prioritize code review effort toward structurally complex or high-risk methods.
+- **Goal:** Provide a reproducible static ML risk indicator capable of triaging entire C# classes, structs, records, and `.cs` source files **without executing code**.
+- **v2 → v3 Evolution:**
+  - **Repository Scale:** `5` training repos $\rightarrow$ **`106` processed public C# repositories** (`300` discovered, `15` documented exclusions, `0` failures).
+  - **Granularity:** Isolated methods (`26` features) $\rightarrow$ **C# classes/structs/records (`40` isolated Roslyn metrics `v3.0.0`) + multi-class `.cs` file aggregation**.
+  - **Precision Objective:** Exceed `>= 75%` minimum / `>= 80%` preferred precision while maintaining `>= 50%` recall under strict zero-leakage repository grouping.
+- **Headline Result (`class_precision_champion_v3` at $\tau = 0.600$):**
+  - **82.30% Precision / 61.71% Recall** (`5x4` Nested `GroupKFold` OOF, `84` dev repos)
+  - **83.43% Precision / 61.99% Recall / 0.8449 ROC-AUC** (`22`-repo untouched holdout, `981` classes)
 
 ---
 
-## 3. Core Implementation Components
-
-1. **Empirical Dataset Construction:** Mined 7 open-source C# repositories (`Humanizr/Humanizer`, `serilog/serilog`, `LuckyPennySoftware/MediatR`, `App-vNext/Polly`, `FluentValidation/FluentValidation`, `commandlineparser/commandline`, and `JamesNK/Newtonsoft.Json`), yielding Dataset #1 ($N = 483$), Dataset #2 ($N = 578$), and an independent historical holdout set ($N = 159$).
-2. **SZZ Defect Labeling:** Identified bug-fixing commits via regex classification and traced deleted/modified lines to pre-fix Bug-Inducing Commits (BICs) using `git blame -w -M -C`.
-3. **Roslyn Static Metric Engine:** Extracted 26 method-level syntax and complexity metrics from production C# files while excluding test and auto-generated code.
-4. **Nested Repository-Level Optimization:** Evaluated 20 model and preprocessing configurations under a $5 \times 4$ nested `GroupKFold` protocol on Dataset #2 (`et_nested_opt_v3_depth6_leaf6_log2`: Outer ROC-AUC `0.7349 ± 0.0703`, Pooled OOF F1 `0.7653`; `rf_nested_opt_v3_depth6_leaf8_log2`: Outer ROC-AUC `0.7216 ± 0.1156`, Outer Brier `0.2055 ± 0.0374`).
-5. **Interactive Inspection Application:** Implemented an 8-page Streamlit interface for repository mining, SZZ inspection, dataset export, model training/evaluation, and live C# method scoring.
+*Next:* [Problem & Objectives](02_ProblemAndObjectives.md)

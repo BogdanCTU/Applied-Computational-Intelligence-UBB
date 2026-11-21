@@ -79,3 +79,38 @@ The exported CSV datasets contain 35 columns: 8 metadata/provenance columns, 1 b
 - **Validation Partitioning:** 578 observations partitioned by `repository_name` under 5-fold outer $\times$ 4-fold inner nested `GroupKFold` cross-validation.
 - **Historical Independent Holdout (`1_Database/SQLite/bug_detection.db`):** `JamesNK/Newtonsoft.Json` (159 observations: 79 defect-prone, 80 candidate-clean), used exclusively for historical baseline evaluation (`rf_compact_regularized`) and excluded from nested model optimization.
 
+
+
+---
+
+## Dataset Snapshot #3: `csharp_class_empirical_v3` (Version 3.0.0 — Class-Level Multi-Repository Corpus)
+
+- **File**: `1_Database/Datasets/Processed/csharp_class_empirical_v3_v3.0.0.csv`
+- **Metadata**: `1_Database/Datasets/Processed/csharp_class_empirical_v3_v3.0.0_metadata.json`
+- **Manifest**: `1_Database/Datasets/Processed/csharp_class_empirical_v3_v3.0.0_manifest.json`
+- **SHA-256 Checksum**: `7087edb539cf44690a3b97fbd66f6cf0cd6853b320c328f4f58522561a07e70c`
+- **Generation Date**: `2026-11-21T13:02:31Z` (Pipeline run `class_v3_20261121_124127`)
+- **Granularity**: **Class / Struct / Record** (`class_observations` + `class_features` joined via `dataset_class_observations`)
+- **Observation Count**: `5,711` classes (`2,829` defect-prone / Label 1 = `49.54%`, `2,882` candidate-clean / Label 0 = `50.46%`) across **`106` distinct public C# GitHub repositories** (`300` discovered, `304` candidates queued, `106` processed, `15` excluded with documented reasons, `0` failures).
+- **Columns**: `62` exported CSV columns (`22` provenance/identifier/target metadata columns + `40` isolated numeric Roslyn `v3.0.0` class metrics with `0` missing values).
+
+### Duplicate & Leakage Audit Summary (`collection_summary_v3.json`)
+
+- **Candidate Records Before Filtering**: `5,743`
+- **Intra-Repository Exact Hash Duplicates Removed**: `28`
+- **Repeated Structural Revision Duplicates Removed**: `4`
+- **Cross-Repository Exact Duplicates Detected/Removed**: `0`
+- **Conflicting Candidate-Clean Excluded**: `0`
+- **Test Files Excluded**: `0` (all excluded upstream via `is_production_csharp_file()`)
+- **Legitimate Historical Revisions Retained**: `819` (same class across distinct defect commits/SHAs; separated at repository level during ML splitting so historical revisions never leak across train/validation/test folds)
+- **Final Retained Rows**: `5,711`
+
+### 40 Class-Level Feature Columns (Roslyn Analyzer Schema `v3.0.0`)
+
+All metrics strictly exclude direct nested types (`GetTypeOwnedNodes<T>` AST isolation and nested line span subtraction):
+
+1. Size & Member Composition (12): `class_loc`, `class_logical_loc`, `method_count`, `constructor_count`, `property_count`, `field_count`, `nested_type_count`, `total_parameter_count`, `max_parameter_count`, `total_local_variable_count`, `total_statement_count`, `total_return_count`
+2. Complexity & Nesting (6): `total_cyclomatic_complexity`, `mean_method_complexity`, `max_method_complexity`, `std_method_complexity`, `max_nesting_depth`, `mean_nesting_depth`
+3. Control Flow & Operators (9): `total_boolean_operator_count`, `total_logical_operator_count`, `total_conditional_expression_count`, `total_if_count`, `total_switch_count`, `total_loop_count`, `total_try_catch_count`, `total_throw_count`, `total_break_continue_count`
+4. Coupling & Memory (5): `total_method_call_count`, `total_field_access_count`, `total_property_access_count`, `total_assignment_count`, `total_object_creation_count`
+5. Modifiers & Derived Ratios (8): `static_method_count`, `async_method_count`, `generic_method_count`, `high_complexity_method_count`, `large_method_count`, `complexity_concentration`, `structural_density`, `wmc_density`

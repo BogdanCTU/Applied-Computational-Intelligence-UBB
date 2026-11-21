@@ -1,0 +1,43 @@
+{
+  "created_at_utc": "2026-11-02T18:47:52.504002+00:00",
+  "root": "E:\\_3_Master\\Applied-Computational-Intelligence-UBB\\Year2_Semester1_ApplicationComputationalLinguistics\\RR2_Project\\agent_om_local\\docs",
+  "excluded_top_dirs": [],
+  "directory_count": 0,
+  "file_count": 8,
+  "aggregate_sha256": "91ad180c63049e2b915062c32f053641eb1bff92bfeb1fb22b4af458fde48dcf",
+  "directories": [],
+  "files": {
+    "IMPLEMENTATION_STATUS.md": {
+      "size": 17321,
+      "sha256": "daf8cc99259104996f7d170d4a6f583d0558e7e2f951b9bdc58150f4dc8e4b81"
+    },
+    "phase0_audit_report.md": {
+      "size": 19547,
+      "sha256": "44ddc06f678f0608959d2dbfc60b3a10bd23a37fd74f3a93229807fec2fc6a30"
+    },
+    "step4_corrections.md": {
+      "size": 8672,
+      "sha256": "6e40defcd430344249b587ca26e81af53f2b16e5a9364181fb01bcf9c0d0772b"
+    },
+    "step6_final_audit.md": {
+      "size": 9736,
+      "sha256": "65cfb51a042c14144da52db9ce90fc045291a702b02c7b9868baa597ebc4e1a4"
+    },
+    "step7b_threshold_validation_report.md": {
+      "size": 24480,
+      "sha256": "405c0d60a4960ddfd2b5446fa501987660fe2c134155caebd48643e22ad4a0bb"
+    },
+    "step7c_ablation_plan.md": {
+      "size": 21547,
+      "sha256": "38c5c934ea9d9901432644ee68ab70cf9df794b2f3d1275ec39062b02bcaf54e"
+    },
+    "step7d1_reproducibility_report.md": {
+      "size": 8693,
+      "sha256": "4702c87076a4ae216bd9c7d9531f813f0866fd3f15233dafe3ebe509765e8c00"
+    },
+    "step7d_prompt_order_report.md": {
+      "size": 16170,
+      "sha256": "ad8e2de8153c731854abf06893910c28e1915973b5df3e6fc11bbeca6a1af503"
+    }
+  }
+}

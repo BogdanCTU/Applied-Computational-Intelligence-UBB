@@ -1,11 +1,9 @@
-"""Repository-aware cross-validation and leakage prevention module.
-Implements strict GroupKFold validation ensuring no cross-repository information leakage.
-"""
+"""Repository-aware cross-validation, precision-oriented threshold selection, and leakage prevention."""
 from __future__ import annotations
 
 import time
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import GroupKFold
@@ -15,6 +13,7 @@ from sklearn.metrics import (
     precision_score,
     recall_score,
     f1_score,
+    fbeta_score,
     roc_auc_score,
     average_precision_score,
     confusion_matrix,
@@ -63,16 +62,7 @@ def check_repository_readiness(
     n_splits: int = 5,
     group_col: str = "repository_id",
 ) -> RepositoryReadinessReport:
-    """Inspect repository grouping and determine feasibility for GroupKFold.
-    
-    Args:
-        metadata: DataFrame containing repository group identifiers.
-        n_splits: Number of requested folds (default: 5).
-        group_col: Column name denoting repository identity.
-        
-    Returns:
-        RepositoryReadinessReport with diagnostic information and recommendations.
-    """
+    """Inspect repository grouping and determine feasibility for GroupKFold."""
     if group_col not in metadata.columns:
         raise CrossValidationError(f"Metadata DataFrame is missing required grouping column '{group_col}'.")
 
@@ -190,31 +180,146 @@ def compute_threshold_curve(
     if thresholds is None:
         thresholds = [0.20, 0.30, 0.40, 0.45, 0.50, 0.55, 0.60, 0.70, 0.80]
 
+    y_true_arr = np.asarray(y_true).astype(int)
+    y_prob_arr = np.asarray(y_prob).astype(float)
+
     curve = []
     for t in thresholds:
-        y_pred = (y_prob >= t).astype(int)
-        acc = float(accuracy_score(y_true, y_pred))
-        prec = float(precision_score(y_true, y_pred, zero_division=0))
-        rec = float(recall_score(y_true, y_pred, zero_division=0))
-        f1 = float(f1_score(y_true, y_pred, zero_division=0))
-        cm = confusion_matrix(y_true, y_pred, labels=[0, 1]).tolist()
-        # [ [TN, FP], [FN, TP] ]
-        tn = cm[0][0]
-        fp = cm[0][1]
-        fn = cm[1][0]
-        tp = cm[1][1]
+        y_pred = (y_prob_arr >= t).astype(int)
+        acc = float(accuracy_score(y_true_arr, y_pred))
+        prec = float(precision_score(y_true_arr, y_pred, zero_division=0))
+        rec = float(recall_score(y_true_arr, y_pred, zero_division=0))
+        f1 = float(f1_score(y_true_arr, y_pred, zero_division=0))
+        f05 = float(fbeta_score(y_true_arr, y_pred, beta=0.5, zero_division=0))
+        cm = confusion_matrix(y_true_arr, y_pred, labels=[0, 1]).tolist()
+        tn, fp = cm[0][0], cm[0][1]
+        fn, tp = cm[1][0], cm[1][1]
+        fpr = float(fp / max(1, fp + tn))
         curve.append({
-            "threshold": round(t, 2),
+            "threshold": round(float(t), 4),
             "accuracy": round(acc, 4),
             "precision": round(prec, 4),
             "recall": round(rec, 4),
             "f1": round(f1, 4),
+            "f05": round(f05, 4),
+            "fpr": round(fpr, 4),
+            "predicted_positives": int(tp + fp),
             "true_negatives": int(tn),
             "false_positives": int(fp),
             "false_negatives": int(fn),
             "true_positives": int(tp),
         })
     return curve
+
+
+def select_precision_optimal_threshold(
+    y_true: np.ndarray,
+    y_prob: np.ndarray,
+    min_precision_preferred: float = 0.80,
+    min_precision_acceptable: float = 0.75,
+    min_recall: float = 0.50,
+    min_predicted_positives: int = 5,
+    thresholds: Optional[List[float]] = None,
+) -> Dict[str, Any]:
+    """Select an operating decision threshold strictly from inner-fold CV probabilities.
+
+    Prioritizes Precision >= 0.80 (then >= 0.75) while keeping meaningful recall (>= 0.50)
+    and avoiding degenerate thresholds that flag almost nothing.
+    """
+    if thresholds is None:
+        thresholds = [round(x, 2) for x in np.arange(0.30, 0.90, 0.02)]
+
+    curve = compute_threshold_curve(y_true, y_prob, thresholds=thresholds)
+    nontrivial = [c for c in curve if c["predicted_positives"] >= min_predicted_positives]
+    if not nontrivial:
+        nontrivial = [c for c in curve if c["predicted_positives"] >= 1] or curve
+
+    tier1 = [
+        c for c in nontrivial
+        if c["precision"] >= min_precision_preferred and c["recall"] >= min_recall
+    ]
+    if tier1:
+        best = max(tier1, key=lambda c: (c["f05"], c["precision"], c["f1"]))
+        criterion = f"tier1_precision>={min_precision_preferred:.2f}_recall>={min_recall:.2f}_max_f05"
+        return {"selected_threshold": best["threshold"], "criterion": criterion, "inner_metrics": best, "curve": curve}
+
+    tier2 = [
+        c for c in nontrivial
+        if c["precision"] >= min_precision_acceptable and c["recall"] >= min_recall
+    ]
+    if tier2:
+        best = max(tier2, key=lambda c: (c["f05"], c["f1"], c["precision"]))
+        criterion = f"tier2_precision>={min_precision_acceptable:.2f}_recall>={min_recall:.2f}_max_f05"
+        return {"selected_threshold": best["threshold"], "criterion": criterion, "inner_metrics": best, "curve": curve}
+
+    tier3 = [c for c in nontrivial if c["recall"] >= min_recall]
+    if tier3:
+        best = max(tier3, key=lambda c: (c["f05"], c["precision"], c["f1"]))
+        criterion = f"tier3_recall>={min_recall:.2f}_max_f05"
+        return {"selected_threshold": best["threshold"], "criterion": criterion, "inner_metrics": best, "curve": curve}
+
+    best = max(nontrivial, key=lambda c: (c["f05"], c["f1"], c["precision"]))
+    return {
+        "selected_threshold": best["threshold"],
+        "criterion": "tier4_fallback_max_f05",
+        "inner_metrics": best,
+        "curve": curve,
+    }
+
+
+def compute_binary_classification_metrics(
+    y_true: np.ndarray,
+    y_prob: np.ndarray,
+    threshold: float = 0.50,
+) -> Dict[str, Any]:
+    """Compute complete classification, ranking, and calibration metrics at a given threshold."""
+    y_t = np.asarray(y_true).astype(int)
+    y_p = np.asarray(y_prob).astype(float)
+    y_pred = (y_p >= threshold).astype(int)
+
+    acc = float(accuracy_score(y_t, y_pred))
+    prec = float(precision_score(y_t, y_pred, zero_division=0))
+    rec = float(recall_score(y_t, y_pred, zero_division=0))
+    f1 = float(f1_score(y_t, y_pred, zero_division=0))
+    f05 = float(fbeta_score(y_t, y_pred, beta=0.5, zero_division=0))
+
+    cm = confusion_matrix(y_t, y_pred, labels=[0, 1]).tolist()
+    tn, fp = cm[0][0], cm[0][1]
+    fn, tp = cm[1][0], cm[1][1]
+    fpr = float(fp / max(1, fp + tn))
+
+    has_multi = len(np.unique(y_t)) > 1
+    roc_auc = float(roc_auc_score(y_t, y_p)) if has_multi else 0.5
+    pr_auc = float(average_precision_score(y_t, y_p)) if has_multi else float(np.mean(y_t == 1))
+    brier = float(brier_score_loss(y_t, y_p)) if len(y_t) > 0 else 0.5
+
+    return {
+        "threshold": round(float(threshold), 4),
+        "accuracy": round(acc, 4),
+        "precision": round(prec, 4),
+        "recall": round(rec, 4),
+        "f1": round(f1, 4),
+        "f05": round(f05, 4),
+        "fpr": round(fpr, 4),
+        "roc_auc": round(roc_auc, 4),
+        "pr_auc": round(pr_auc, 4),
+        "brier_score": round(brier, 4),
+        "detected_defects": int(tp),
+        "total_defects": int(tp + fn),
+        "confusion_matrix": cm,
+        "true_negatives": int(tn),
+        "false_positives": int(fp),
+        "false_negatives": int(fn),
+        "true_positives": int(tp),
+    }
+
+
+def compute_bayesian_precision(sensitivity: float, false_positive_rate: float, prevalence: float) -> float:
+    """Estimate expected precision under a target base-rate prevalence using Bayes' theorem."""
+    denom = sensitivity * prevalence + false_positive_rate * (1.0 - prevalence)
+    if denom <= 0.0:
+        return 0.0
+    return round((sensitivity * prevalence) / denom, 4)
 
 
 class RepositoryGroupKFoldValidator:
@@ -240,13 +345,7 @@ class RepositoryGroupKFoldValidator:
         y: pd.Series,
         metadata: pd.DataFrame,
     ) -> List[Tuple[np.ndarray, np.ndarray]]:
-        """Validate grouping constraints and generate leakage-free fold indices.
-        
-        Guarantees:
-        1. Number of distinct repositories >= n_splits (when strict_repo_count=True).
-        2. No repository appears in both training and validation folds of any split.
-        3. Every repository appears in exactly one validation fold.
-        """
+        """Validate grouping constraints and generate leakage-free fold indices."""
         if self.group_col not in metadata.columns:
             raise CrossValidationError(f"Metadata must contain '{self.group_col}' column.")
 
@@ -272,25 +371,21 @@ class RepositoryGroupKFoldValidator:
         gkf = GroupKFold(n_splits=splits_to_use)
         splits = list(gkf.split(X, y, groups=groups))
 
-        # Verification pass: check strict non-overlap and single validation appearance
         repo_val_appearances: Dict[Any, int] = {r: 0 for r in unique_repos}
 
         for fold_idx, (train_idx, val_idx) in enumerate(splits, 1):
             train_r = set(metadata.iloc[train_idx][self.group_col].unique())
             val_r = set(metadata.iloc[val_idx][self.group_col].unique())
 
-            # 1. Zero leakage check
             overlap = train_r.intersection(val_r)
             if overlap:
                 raise CrossValidationError(
                     f"Fatal repository leakage in fold {fold_idx}: Repositories present in both train and val: {overlap}"
                 )
 
-            # 2. Track validation occurrences
             for r in val_r:
                 repo_val_appearances[r] += 1
 
-        # 3. Validate every repo appeared in exactly one validation fold
         for r, count in repo_val_appearances.items():
             if count != 1:
                 raise CrossValidationError(
@@ -328,17 +423,13 @@ class RepositoryGroupKFoldValidator:
             train_repos = sorted(list(meta_f_tr[self.group_col].unique()))
             val_repos = sorted(list(meta_f_val[self.group_col].unique()))
 
-            # --- Independent Per-Fold Preprocessing (Zero Leakage) ---
             preproc = DataPreprocessor(
                 impute_missing=self.impute_missing,
                 remove_constant=self.remove_constant,
             )
-            # Fit strictly on fold training data
             X_f_tr = preproc.fit_transform(X_f_tr_raw)
-            # Transform fold validation data using fold's fitted preprocessor
             X_f_val = preproc.transform(X_f_val_raw)
 
-            # Optional feature standardization (e.g. for Logistic Regression) strictly within fold
             if needs_scaling:
                 scaler = StandardScaler()
                 X_f_tr = pd.DataFrame(
@@ -352,13 +443,11 @@ class RepositoryGroupKFoldValidator:
                     index=X_f_val.index,
                 )
 
-            # --- Fit Estimator ---
             t_train_start = time.time()
             model = model_factory()
             model.fit(X_f_tr, y_f_tr)
             train_duration = time.time() - t_train_start
 
-            # --- Validation Inference ---
             t_val_start = time.time()
             y_pred = model.predict(X_f_val)
             val_duration = time.time() - t_val_start
@@ -366,7 +455,6 @@ class RepositoryGroupKFoldValidator:
             has_proba = hasattr(model, "predict_proba")
             y_prob = model.predict_proba(X_f_val)[:, 1] if has_proba else None
 
-            # --- Metrics Calculation ---
             acc = float(accuracy_score(y_f_val, y_pred))
             prec = float(precision_score(y_f_val, y_pred, zero_division=0))
             rec = float(recall_score(y_f_val, y_pred, zero_division=0))
@@ -393,7 +481,6 @@ class RepositoryGroupKFoldValidator:
 
             cm = confusion_matrix(y_f_val, y_pred, labels=[0, 1]).tolist()
 
-            # Record out-of-fold predictions
             oof_y_true.extend(y_f_val.tolist())
             if y_prob is not None:
                 oof_y_prob.extend(y_prob.tolist())
@@ -427,7 +514,6 @@ class RepositoryGroupKFoldValidator:
 
         total_duration = time.time() - start_time
 
-        # --- Aggregate Statistics Across Folds ---
         metric_keys = [
             "accuracy", "precision", "recall", "f1", "roc_auc",
             "average_precision", "brier_score", "train_duration_s", "val_duration_s"
@@ -443,14 +529,12 @@ class RepositoryGroupKFoldValidator:
                 "max": round(float(np.max(vals)), 4),
             }
 
-        baseline_aggregate: Dict[str, Dict[str, float]] = {}
-
         return CrossValidationResults(
             n_splits=len(splits),
             n_repos=n_repos,
             fold_metrics=fold_metrics_list,
             aggregate_metrics=aggregate,
-            baseline_metrics=baseline_aggregate,
+            baseline_metrics={},
             total_duration_s=total_duration,
             oof_predictions={"y_true": oof_y_true, "y_prob": oof_y_prob},
         )

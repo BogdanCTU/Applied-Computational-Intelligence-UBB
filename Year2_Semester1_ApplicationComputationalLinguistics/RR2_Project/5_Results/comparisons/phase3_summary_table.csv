@@ -1,0 +1,6 @@
+comparison,source_uri_jaccard,target_uri_jaccard,entity_id_exact_match_pct,entity_name_exact_match_pct,syntactic_exact_match_pct,lexical_mean_word_jaccard,semantic_null_agreement_pct,semantic_mean_word_jaccard,dims_equal,syntactic_top1_match_pct,lexical_top1_match_pct,semantic_top1_match_pct,candidate_union_jaccard,rrf_top1_agreement_pct,validation_decision_agreement_pct,final_merged_jaccard
+Upstream Lite vs Local Parity,1.0,1.0,100.0,100.0,100.0,0.6119,100.0,0.7024,True,,,,,,,0.5625
+Upstream Lite vs Local Adapted,1.0,1.0,0.0,6.17,100.0,0.3097,100.0,0.377,False,,,,,,,0.4615
+Local Parity vs Local Adapted,1.0,1.0,0.0,6.17,100.0,0.3131,100.0,0.3762,False,91.36,91.36,56.17,0.4784,50.0,93.33,0.5
+Committed GPT-4o vs Local Adapted,1.0,1.0,100.0,100.0,100.0,1.0,100.0,1.0,False,,,,,,,0.6667
+Committed GPT-4o vs Upstream Lite,1.0,1.0,0.0,6.17,100.0,0.3097,100.0,0.377,False,,,,,,,0.5714

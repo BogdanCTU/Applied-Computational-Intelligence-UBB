@@ -1,130 +1,81 @@
-# C# Defect Predictor: Machine Learning-Based Software Defect Prediction
+# Machine Learning-Based Bug Detection in C# Source Code (v3.0.0)
 
-Method-level software defect prediction for C# source code using Microsoft Roslyn static code metrics, SZZ git blame localization, nested repository-level cross-validation, and a local Streamlit workbench.
+**Institution:** Babeș-Bolyai University, Faculty of Mathematics and Computer Science  
+**Programme:** Applied Computational Intelligence, Master's Degree  
+**Course:** Computational Intelligence in Software Engineering (CISE), Project 2  
 
-Developed for the Computational Intelligence in Software Engineering course at Babeș-Bolyai University (Master in Applied Computational Intelligence).
-
----
-
-## 1. Project Purpose
-
-This system extracts 26 static Abstract Syntax Tree (AST) metrics from individual C# methods using Microsoft Roslyn, assigns heuristic defect labels from version-control history via the SZZ algorithm, and evaluates supervised classifiers across repository boundaries using nested `GroupKFold` cross-validation.
+> **Scope Disclaimer:** This system is a **static machine learning defect indicator** trained on historical Git bug-fix commits and SZZ blame mappings across public C# repositories. It is **not** a formally verified bug prover; flagged classes indicate elevated statistical propensity for defects under historical SZZ evidence, while unflagged code represents candidate-clean code under the Open-World Assumption.
 
 ---
 
-## 2. Main Capabilities
+## Executive Summary
 
-- **Repository Collection and Git Mining:** Search public C# repositories via the GitHub REST API, clone commit histories, and detect candidate bug-fixing commits using regex heuristics. (Requires network access; source analysis and inference run locally.)
-- **SZZ Defect Localization:** Trace lines modified or deleted in bug-fixing commits to candidate bug-inducing commits using `git blame -w -M -C`.
-- **Production Source Filtering:** Exclude test projects, test fixtures, build directories, and generated files prior to dataset construction.
-- **Roslyn Static Metric Extraction:** Compute 26 size, complexity, control-flow, and object-oriented metrics at the method level via `.NET 9.0` and `Microsoft.CodeAnalysis.CSharp`.
-- **Nested Repository-Level Validation:** Evaluate models using 5-fold outer `GroupKFold` and 4-fold inner `GroupKFold` so model selection, feature selection, and threshold tuning occur strictly inside training partitions.
-- **Method-Level Inference:** Score standalone C# methods or `.cs` files locally in the Streamlit workbench.
+Version `3.0.0` transforms the project from a 5-repository method-level prototype into a **106-repository class- and file-level C# static bug detection platform** optimized for **high precision**:
 
----
-
-## 3. Architecture Overview
-
-```text
-CISE_Project2/
-├── README.md                                  # Project overview and quickstart
-├── app.py                                     # Root Streamlit entrypoint
-├── pytest.ini                                 # Automated test configuration
-├── requirements.txt                           # Python dependencies
-├── 1_Database/                                # SQLite database, schemas, and CSV datasets
-├── 2_SourceCode/                              # Python modules, .NET 9.0 Roslyn analyzer, scripts, tests
-├── 3_TestResults/                             # Baseline CV, holdout, audit, and nested optimization results
-├── 4_AppBuild/                                # Serialized model bundles and Windows launcher
-├── 5_Documentation/                           # Technical specifications and academic reports
-└── 6_Presentation/                            # Academic defense presentation decks
-```
-
-| Component | Technology | Version | Role |
-| :--- | :--- | :--- | :--- |
-| Runtime | Python | >= 3.11 | Data pipeline, machine learning, and UI |
-| Compiler Platform | .NET SDK / `Microsoft.CodeAnalysis.CSharp` | 9.0 / 4.12.0 | C# AST parsing and 26 static code metrics |
-| Machine Learning | `scikit-learn`, `pandas`, `numpy`, `joblib` | >= 1.5.0 | Preprocessing, nested `GroupKFold` validation, and inference |
-| Storage | SQLite3 | 3.x | Local relational persistence (`1_Database/SQLite/bug_detection.db`) |
-| Interface | Streamlit, Plotly | >= 1.40.0 | Local multi-page workbench |
-| Testing | `pytest`, `pytest-mock` | >= 8.3.0 | Offline unit and integration test suite (123 tests) |
+- **Empirical Corpus (`csharp_class_empirical_v3` v3.0.0):** `5,711` production C# class/struct/record observations (`2,829` defect-prone / `49.54%`, `2,882` candidate-clean / `50.46%`) mined across **`106` distinct public GitHub C# repositories** (`300` discovered, `304` candidates evaluated, `15` documented exclusions, `0` collection failures; SHA-256: `7087edb539cf44690a3b97fbd66f6cf0cd6853b320c328f4f58522561a07e70c`).
+- **Granularity & Roslyn `v3.0.0` Feature Extractor:** Dedicated .NET 9.0 Roslyn CLI analyzing classes, structs, records, and multi-class `.cs` files via `--batch-stdin` NDJSON streaming. Extracts **40 isolated class-level static metrics** (strictly excluding nested types from parent metrics and enclosing line counts) while retaining full backward compatibility for the legacy **26 method-level metrics**.
+- **Precision Optimization & Validation Protocol:** Partitioned strictly by repository into **`84` Development repositories** (`4,730` classes) and **`22` untouched Independent Holdout repositories** (`981` classes). All 7 required ML families (`DummyClassifier`, `LogisticRegression`, `DecisionTreeClassifier`, `RandomForestClassifier`, `ExtraTreesClassifier`, `HistGradientBoostingClassifier`, `CalibratedClassifierCV`) were evaluated under **5x4 Nested GroupKFold** with **inner-fold precision threshold selection**.
+- **Headline Champion Result (`class_precision_champion_v3` = `rf_opt_depth12_leaf4_log2`, threshold $\tau = 0.600$):**
+  - **Nested CV OOF (84 dev repos):** **Precision = 82.30%** (outer mean `82.45% +/- 2.70%`), Recall = `61.71%`, F1 = `70.53%`, ROC-AUC = `0.8260`, PR-AUC = `0.8280`.
+  - **Untouched 22-Repo Holdout (981 classes):** **Precision = 83.43%**, **Recall = 61.99%**, **F1 = 71.13%**, **ROC-AUC = 0.8449**, **PR-AUC = 0.8327**, **FPR = 11.00%** (`TP=287, FP=57, FN=176, TN=461`).
+  - Surpasses both the **>= 75%** minimum acceptable target and the **>= 80%** preferred precision target while maintaining recall above the **>= 50%** floor.
 
 ---
 
-## 4. Installation and Execution
+## Model Benchmark Comparison (`3_TestResults/ClassModelOptimization/`)
 
-### System Requirements
+| Rank / Model Family | Config ID | Threshold ($\tau$, Inner CV) | Nested OOF Prec / Rec / F1 | Holdout Prec | Holdout Rec | Holdout F1 | Holdout ROC-AUC |
+|---|---|---:|---|---:|---:|---:|---:|
+| **Random Forest (Champion)** | `rf_opt_depth12_leaf4_log2` | `0.60` | **82.30%** / 61.71% / **70.53%** | **83.43%** | **61.99%** | **71.13%** | 0.8449 |
+| Random Forest (Unweighted) | `rf_opt_depth10_leaf6_unweighted` | `0.60` | 81.69% / 61.83% / 70.39% | 82.66% | 61.77% | 70.70% | 0.8460 |
+| Calibrated Ensemble (Sigmoid RF) | `calibrated_rf_sigmoid` | `0.64` | 81.56% / 61.71% / 70.26% | 83.09% | 61.56% | 70.72% | **0.8478** |
+| Extra Trees | `et_opt_depth10_leaf4_log2_bal` | `0.60` | 82.63% / 61.12% / 70.26% | 83.33% | 58.32% | 68.61% | 0.8368 |
+| Calibrated Ensemble (Isotonic ET) | `calibrated_et_isotonic` | `0.64` | 82.11% / 60.74% / 69.83% | 83.28% | 58.10% | 68.45% | 0.8365 |
+| Random Forest (Baseline) | `rf_baseline_compact` | `0.62` | 82.27% / 60.40% / 69.66% | 82.88% | 59.61% | 69.35% | 0.8428 |
+| HistGradientBoosting (Unweighted) | `hgb_depth4_leaf25_unweighted` | `0.64` | 81.40% / 60.86% / 69.65% | 81.85% | 57.45% | 67.51% | **0.8502** |
+| HistGradientBoosting (Balanced) | `hgb_depth5_leaf20_l2_2` | `0.66` | 82.01% / 58.20% / 68.08% | 83.06% | 54.00% | 65.45% | 0.8433 |
+| Logistic Regression (Balanced L2) | `lr_std_l2_c01_bal` | `0.58` | 80.82% / 60.57% / 69.24% | 80.18% | 56.80% | 66.50% | 0.8184 |
+| Decision Tree (Depth 6 Balanced) | `dt_depth6_leaf10_bal` | `0.70` | 81.61% / 53.25% / 64.45% | 84.23% | 50.76% | 63.34% | 0.7953 |
+| DummyClassifier (Stratified) | `dummy_stratified` | `0.30` | 49.43% / 49.49% / 49.46% | 44.83% | 47.73% | 46.23% | 0.4761 |
 
-| Requirement | Specification |
-| :--- | :--- |
-| Python | 3.11 or higher |
-| .NET SDK | 9.0 or higher (`dotnet --version`) |
-| Git | Command-line client in system `PATH` |
-| Network | Required only for GitHub repository search and cloning |
+---
 
-### Setup and Launch (Linux / macOS)
+## System Quick Start
 
+### 1. Build the Roslyn Static Analyzer (.NET 9.0)
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
 dotnet build 2_SourceCode/RoslynAnalyzer/RoslynAnalyzer.csproj -c Release
-python -m streamlit run app.py
 ```
 
-### Setup and Launch (Windows PowerShell)
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install --upgrade pip
-pip install -r requirements.txt
-dotnet build 2_SourceCode\RoslynAnalyzer\RoslynAnalyzer.csproj -c Release
-python -m streamlit run app.py
-```
-
-### Automated Tests
-
+### 2. Launch the Class & File Bug Detection Web Application
 ```bash
-pytest
+.venv/bin/streamlit run 2_SourceCode/Python/app.py
+```
+Supports **Paste C# Class/Struct/Record**, **Upload Complete `.cs` File** (multi-class analysis with file-level max/mean/flagged risk aggregation + per-class drill-down), and **Legacy Method Diagnostic Mode**.
+
+### 3. Re-Run Class ML Optimization or Data Collection
+```bash
+.venv/bin/python 2_SourceCode/Scripts/run_100_repo_class_pipeline.py --target-repos 106 --max-discover 300 --max-commits 250
+.venv/bin/python 2_SourceCode/Scripts/run_class_model_optimization.py
+```
+
+### 4. Run Automated Tests
+```bash
+.venv/bin/pytest -v
 ```
 
 ---
 
-## 5. Dataset and Model Summary
+## Project Documentation Map
 
-### Datasets
-
-| Dataset | Observations | Defect-Prone (1) | Candidate-Clean (0) | Repositories | Purpose |
-| :--- | ---: | ---: | ---: | :--- | :--- |
-| `csharp_empirical_v1` (v1.0.0) | 483 | 226 (46.79%) | 257 (53.21%) | `Humanizer` (291), `CommandLineParser` (101), `MediatR` (91) | Initial exploratory corpus |
-| `csharp_empirical_v2` (v2.0.0) | 578 | 279 (48.27%) | 299 (51.73%) | `Humanizer` (291), `Serilog` (134), `MediatR` (91), `Polly` (34), `FluentValidation` (28) | 5-fold `GroupKFold` and nested CV benchmark |
-| Historical holdout | 159 | 79 (49.69%) | 80 (50.31%) | `JamesNK/Newtonsoft.Json` (159) | Historical external evaluation of baseline RF (excluded from optimization) |
-
-Positive labels (`1`) are heuristic SZZ attributions from bug-fixing commits. Negative labels (`0`) are candidate-clean methods sampled from `HEAD` with no recorded bug fixes in the mined commit window.
-
-### Model Configurations (Trained on Dataset #2, $N = 578$)
-
-| Parameter | Baseline RF (`rf_compact_regularized`) | Optimized RF (`rf_nested_opt_v3_depth6_leaf8_log2`) | Optimized Extra Trees (`et_nested_opt_v3_depth6_leaf6_log2`) |
-| :--- | ---: | ---: | ---: |
-| Estimator | `RandomForestClassifier` | `RandomForestClassifier` | `ExtraTreesClassifier` |
-| Estimators (`n_estimators`) | 100 | 200 | 200 |
-| Maximum depth (`max_depth`) | 8 | 6 | 6 |
-| Minimum split (`min_samples_split`) | 5 | 10 | 8 |
-| Minimum leaf (`min_samples_leaf`) | 4 | 8 | 6 |
-| Maximum features (`max_features`) | `sqrt` | `log2` | `log2` |
-| Class weight | `balanced` | `balanced` | `balanced` |
-| Random state | 42 | 42 | 42 |
-
-### Nested Cross-Validation Comparison (Dataset #2, 5 Outer $\times$ 4 Inner `GroupKFold`)
-
-| Model | Outer ROC-AUC | Outer PR-AUC | Outer Brier | Outer F1 ($\tau=0.50$) | Nested $\tau_{\text{inner}}^*$ F1 | Pooled OOF F1 ($\tau_{\text{inner}}^*$) | Pooled OOF Recall ($\tau_{\text{inner}}^*$) | Pooled OOF Precision ($\tau_{\text{inner}}^*$) | Pooled OOF Accuracy ($\tau_{\text{inner}}^*$) |
-| :--- | :---: | :---: | :---: | :---: | :---: | ---: | ---: | ---: | ---: |
-| Baseline RF (`rf_compact_regularized`) | 0.7037 ± 0.1292 | 0.6405 ± 0.1135 | 0.2146 ± 0.0398 | 0.6879 ± 0.0243 | 0.7408 ± 0.0760 | 0.7294 | 88.89% | 61.85% | 68.17% |
-| Optimized RF (`rf_nested_opt_v3_depth6_leaf8_log2`) | 0.7216 ± 0.1156 | 0.6465 ± 0.1026 | 0.2055 ± 0.0374 | 0.7517 ± 0.0709 | 0.7539 ± 0.0706 | 0.7406 | 88.53% | 63.66% | 70.07% |
-| Optimized Extra Trees (`et_nested_opt_v3_depth6_leaf6_log2`) | 0.7349 ± 0.0703 | 0.6443 ± 0.0496 | 0.2062 ± 0.0213 | 0.6867 ± 0.1394 | 0.7667 ± 0.0723 | 0.7653 | 91.76% | 65.64% | 72.84% |
-
-- **Historical Baseline Holdout (`JamesNK/Newtonsoft.Json`, $N = 159$):** Evaluated once for the original baseline RF prior to optimization (at $\tau = 0.50$: Accuracy 74.21%, Precision 69.79%, Recall 84.81%, F1 0.7657, ROC-AUC 0.8209, Brier 0.1713; at unnested CV threshold $\tau^* = 0.40$: Accuracy 75.47%, Precision 69.61%, Recall 89.87%, F1 0.7845). `Newtonsoft.Json` was excluded from the optimization experiment; the optimized models have not yet been evaluated on a new independent repository.
-- **Deployed Application Configuration:** All four serialized `.joblib` bundles in `4_AppBuild/Assets/Models/` (`et_nested_opt_v3_depth6_leaf6_log2`, `rf_nested_opt_v3_depth6_leaf8_log2`, `exp_final_5fold_v2_best_rf_compact_regularized`, and `rf_csharp_empirical_model`) are selectable in the UI, with `et_nested_opt_v3_depth6_leaf6_log2` listed first. During live inference (`BugPredictor`), `predicted_label` uses `model.predict()` ($\tau = 0.50$), while `risk_category` maps `predict_proba()` to Low ($\le 0.30$), Medium ($0.31\text{--}0.60$), and High ($> 0.60$) risk bands.
-
----
+- [Executive Summary](SUMMARY_DOC.md)
+- [System Architecture](5_Documentation/01_Architecture/SYSTEM_ARCHITECTURE.md)
+- [Database Schema](1_Database/Schema/database_schema.md) & [Database Architecture](5_Documentation/02_Database/DATABASE_ARCHITECTURE.md)
+- [Dataset Schema](1_Database/Schema/dataset_schema.md)
+- [Source Code Guide](5_Documentation/03_SourceCode/SOURCE_CODE_GUIDE.md)
+- [ML Methodology](5_Documentation/04_MachineLearning/PROJECT_METHODOLOGY.md) & [Experimental Results](5_Documentation/04_MachineLearning/EXPERIMENTAL_RESULTS.md)
+- [Validation & Limitations](5_Documentation/05_Validation/VALIDATION_AND_LIMITATIONS.md)
+- [User Guide](5_Documentation/06_UserGuide/USER_GUIDE.md)
+- [Academic Final Report](5_Documentation/07_AcademicReport/FINAL_REPORT.md)
+- [Presentation Slides (`6_Presentation/`)](6_Presentation/01_ProjectOverview.md)
+- [Archived Method-Level Artifacts](5_Documentation/08_Archive/README.md) & [Defense Validation](5_Documentation/09_Defense/DEFENSE_PACKAGE_VALIDATION.md)

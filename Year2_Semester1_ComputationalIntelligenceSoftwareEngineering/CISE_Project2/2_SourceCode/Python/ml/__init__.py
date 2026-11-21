@@ -5,8 +5,11 @@ from ml.evaluator import ModelEvaluator
 from ml.model_manager import ModelManager, ModelManagerError
 from ml.predictor import (
     BugPredictor,
+    ClassPrediction,
+    FilePredictionResult,
     MethodPrediction,
     PredictorError,
+    NoClassesFoundError,
     NoMethodsFoundError,
     ModelCompatibilityError,
 )
@@ -18,6 +21,9 @@ from ml.cross_validation import (
     RepositoryGroupKFoldValidator,
     FoldMetrics,
     CrossValidationResults,
+    select_precision_optimal_threshold,
+    compute_binary_classification_metrics,
+    compute_bayesian_precision,
 )
 from ml.experiment_runner import (
     ExperimentConfig,
@@ -35,8 +41,11 @@ __all__ = [
     "ModelManager",
     "ModelManagerError",
     "BugPredictor",
+    "ClassPrediction",
+    "FilePredictionResult",
     "MethodPrediction",
     "PredictorError",
+    "NoClassesFoundError",
     "NoMethodsFoundError",
     "ModelCompatibilityError",
     "CrossValidationError",
@@ -46,6 +55,9 @@ __all__ = [
     "RepositoryGroupKFoldValidator",
     "FoldMetrics",
     "CrossValidationResults",
+    "select_precision_optimal_threshold",
+    "compute_binary_classification_metrics",
+    "compute_bayesian_precision",
     "ExperimentConfig",
     "ExperimentRunner",
     "ConfigurationResult",

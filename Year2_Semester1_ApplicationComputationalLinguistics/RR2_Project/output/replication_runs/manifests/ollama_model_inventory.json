@@ -1,0 +1,195 @@
+{
+  "generated_at_utc": "2026-11-20T12:51:51.264625+00:00",
+  "ollama_base_url": "http://127.0.0.1:11434",
+  "ollama_version": "0.40.16",
+  "strict_4b_parameter_ceiling": 4000000000,
+  "summary": {
+    "total_installed_models": 6,
+    "strict_4b_compliant_chat_models": [
+      "deepseek-r1:1.5b",
+      "qwen2.5:3b"
+    ],
+    "excluded_over_4b_chat_models": [
+      "gemma4:12b",
+      "qwen3.5:4b"
+    ],
+    "dedicated_embedding_models": [
+      "mxbai-embed-large:latest",
+      "nomic-embed-text:latest"
+    ]
+  },
+  "live_verified_4b_chat_models": {
+    "qwen2.5:3b": {
+      "total_parameter_count": 3085938688,
+      "parameter_size_label": "3.1B",
+      "is_strict_4b_compliant": true,
+      "digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+      "status": "VERIFIED_COMPLIANT_LE_4B"
+    },
+    "deepseek-r1:1.5b": {
+      "total_parameter_count": 1777088000,
+      "parameter_size_label": "1.8B",
+      "is_strict_4b_compliant": true,
+      "digest": "e0979632db5a88d1a53884cb2a941772d10ff5d055aabaa6801c4e36f3a6c2d7",
+      "status": "VERIFIED_COMPLIANT_LE_4B"
+    }
+  },
+  "live_verified_embedding_models": {
+    "nomic-embed-text:latest": {
+      "verified_dimension": 768,
+      "total_parameter_count": 136727040,
+      "digest": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+      "status": "VERIFIED_LIVE"
+    },
+    "mxbai-embed-large:latest": {
+      "verified_dimension": 1024,
+      "total_parameter_count": 334092288,
+      "digest": "468836162de7f81e041c43663fedbbba921dcea9b9fefea135685a39b2d83dd8",
+      "status": "VERIFIED_LIVE"
+    }
+  },
+  "models": [
+    {
+      "name": "deepseek-r1:1.5b",
+      "digest": "e0979632db5a88d1a53884cb2a941772d10ff5d055aabaa6801c4e36f3a6c2d7",
+      "size_bytes": 1117322768,
+      "architecture": "qwen2",
+      "family": "qwen2",
+      "format": "gguf",
+      "runner": "ggml",
+      "quantization_level": "Q4_K_M",
+      "parameter_size_label": "1.8B",
+      "total_parameter_count": 1777088000,
+      "active_parameter_count": null,
+      "context_length": 131072,
+      "embedding_length": 1536,
+      "capabilities": [
+        "tools",
+        "thinking",
+        "completion"
+      ],
+      "supports_completion": true,
+      "supports_embedding": false,
+      "is_strict_4b_compliant": true,
+      "compliance_note": "COMPLIANT: 1,777,088,000 total parameters <= 4,000,000,000 (4.0B ceiling)."
+    },
+    {
+      "name": "qwen2.5:3b",
+      "digest": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b",
+      "size_bytes": 1929912432,
+      "architecture": "qwen2",
+      "family": "qwen2",
+      "format": "gguf",
+      "runner": "ggml",
+      "quantization_level": "Q4_K_M",
+      "parameter_size_label": "3.1B",
+      "total_parameter_count": 3085938688,
+      "active_parameter_count": null,
+      "context_length": 32768,
+      "embedding_length": 2048,
+      "capabilities": [
+        "completion",
+        "tools"
+      ],
+      "supports_completion": true,
+      "supports_embedding": false,
+      "is_strict_4b_compliant": true,
+      "compliance_note": "COMPLIANT: 3,085,938,688 total parameters <= 4,000,000,000 (4.0B ceiling)."
+    },
+    {
+      "name": "mxbai-embed-large:latest",
+      "digest": "468836162de7f81e041c43663fedbbba921dcea9b9fefea135685a39b2d83dd8",
+      "size_bytes": 669615493,
+      "architecture": "bert",
+      "family": "bert",
+      "format": "gguf",
+      "runner": "ggml",
+      "quantization_level": "F16",
+      "parameter_size_label": "334M",
+      "total_parameter_count": 334092288,
+      "active_parameter_count": null,
+      "context_length": 512,
+      "embedding_length": 1024,
+      "capabilities": [
+        "embedding"
+      ],
+      "supports_completion": false,
+      "supports_embedding": true,
+      "is_strict_4b_compliant": true,
+      "compliance_note": "COMPLIANT: 334,092,288 total parameters <= 4,000,000,000 (4.0B ceiling)."
+    },
+    {
+      "name": "nomic-embed-text:latest",
+      "digest": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+      "size_bytes": 274302450,
+      "architecture": "nomic-bert",
+      "family": "nomic-bert",
+      "format": "gguf",
+      "runner": "ggml",
+      "quantization_level": "F16",
+      "parameter_size_label": "137M",
+      "total_parameter_count": 136727040,
+      "active_parameter_count": null,
+      "context_length": 2048,
+      "embedding_length": 768,
+      "capabilities": [
+        "embedding"
+      ],
+      "supports_completion": false,
+      "supports_embedding": true,
+      "is_strict_4b_compliant": true,
+      "compliance_note": "COMPLIANT: 136,727,040 total parameters <= 4,000,000,000 (4.0B ceiling)."
+    },
+    {
+      "name": "gemma4:12b",
+      "digest": "c7597fc90b86aff6965317f37dd5465402284e26382d9b4bf2dfe3ef1491f4b6",
+      "size_bytes": 7714091504,
+      "architecture": "gemma4_unified",
+      "family": "gemma4_unified",
+      "format": "safetensors",
+      "runner": "mlx",
+      "quantization_level": "nvfp4",
+      "parameter_size_label": "12.4B",
+      "total_parameter_count": 12382568756,
+      "active_parameter_count": null,
+      "context_length": 262144,
+      "embedding_length": 3840,
+      "capabilities": [
+        "completion",
+        "vision",
+        "audio",
+        "tools",
+        "thinking"
+      ],
+      "supports_completion": true,
+      "supports_embedding": false,
+      "is_strict_4b_compliant": false,
+      "compliance_note": "EXCLUDED FROM <=4B: 12,382,568,756 total parameters exceeds 4,000,000,000 (4.0B ceiling) by 8,382,568,756."
+    },
+    {
+      "name": "qwen3.5:4b",
+      "digest": "7f3251fa6878a78a606bcb3c074283306e5ad2ea411a7774a9dd98a4bc7f2d13",
+      "size_bytes": 3973305013,
+      "architecture": "qwen3_5",
+      "family": "qwen3_5",
+      "format": "safetensors",
+      "runner": "mlx",
+      "quantization_level": "nvfp4",
+      "parameter_size_label": "4.5B",
+      "total_parameter_count": 4538986496,
+      "active_parameter_count": null,
+      "context_length": 262144,
+      "embedding_length": 2560,
+      "capabilities": [
+        "completion",
+        "vision",
+        "thinking",
+        "tools"
+      ],
+      "supports_completion": true,
+      "supports_embedding": false,
+      "is_strict_4b_compliant": false,
+      "compliance_note": "EXCLUDED FROM <=4B: 4,538,986,496 total parameters exceeds 4,000,000,000 (4.0B ceiling) by 538,986,496."
+    }
+  ]
+}

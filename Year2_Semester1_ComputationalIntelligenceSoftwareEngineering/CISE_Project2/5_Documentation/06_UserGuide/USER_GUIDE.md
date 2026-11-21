@@ -2,7 +2,7 @@
 
 **Application:** C# Defect Predictor (Streamlit Workbench)  
 **Entry Point:** `app.py` (`2_SourceCode/Python/app.py`)  
-**System:** CISE Project 2 — Machine Learning-Based Software Defect Prediction for C# Source Code  
+**System:** CISE Project 2 — Machine Learning-Based Bug Detection in C# Source Code  
 
 ---
 
@@ -13,7 +13,7 @@
 | Python | >= 3.11 (with packages from `requirements.txt`) |
 | .NET SDK | 9.0 (`dotnet build 2_SourceCode/RoslynAnalyzer/RoslynAnalyzer.csproj -c Release`) |
 | Git | Command-line client in system `PATH` |
-| Network | Required only for GitHub repository search and cloning |
+| Network | Required only for GitHub repository discovery and cloning |
 
 ### Launch Commands
 
@@ -34,30 +34,33 @@ Or run `4_AppBuild\Windows\run_app.bat`.
 
 ## 2. Application Pages and Functionality
 
+All pages share the unified `ModelManager.list_saved_models()` registry and reflect the class/file-level corpus alongside preserved legacy method-level artifacts.
+
 | Page | Primary Controls | Outputs |
 | :--- | :--- | :--- |
-| **Dashboard** | Navigation only | System summary metrics, observation class distribution table, latest SQLite registered model summary, 5-stage pipeline overview, and methodological constraints table. |
-| **Repository Collection** | GitHub search filters, manual URL input, clone/pull, commit extraction, DB unlink | Discovered repository list, managed repositories table, sync status, and recent commit preview. |
-| **Bug Analysis & SZZ** | Repository selector, bug-fix confidence slider, SZZ runner, observation extractors, label override buttons | Filtered commit list, SZZ line-blame trace table, and pre-fix/post-fix method inspection with manual label overrides (`1`, `0`, `-1`). |
-| **Dataset Management** | Batch feature extraction, metric selector, snapshot builder, CSV exporter | Extraction progress, dataset snapshots table, class and evidence tables, boxplot distributions, correlation matrix, and CSV downloads. |
-| **Model Training** | Dataset selector, Random Forest hyperparameter sliders, holdout ratio, `GroupKFold` fold count | Repository split counts, cross-validation vs. holdout metrics table, and saved `.joblib` model bundle. |
-| **Model Evaluation** | Model selector, evaluation tabs | Accuracy/Precision/Recall/F1/ROC-AUC/PR-AUC metrics, confusion matrix, classification report, ROC/PR curves, MDI and permutation feature importances, and hyperparameters. |
-| **Real-World Bug Prediction** | Model selector, C# method editor, `.cs` file uploader, repository validation benchmark, history controls | Method risk score (`[0.0, 1.0]`), risk category (`Low`, `Medium`, `High`), binary predicted class ($\tau = 0.50$), influential metrics table, all 26 Roslyn metrics, batch file CSV export, and validation error analysis. |
-| **Settings** | GitHub PAT input, storage directory paths, Roslyn `.csproj` path, risk thresholds, privacy toggles | Session configuration updates and prediction history cleanup. |
+| **Dashboard** | Navigation only | Processed/registered repository counts, class observation label distribution, active champion model metrics & stored threshold from the unified registry, 5-stage class/file pipeline, and methodological constraints. |
+| **Repository Collection** | Paginated GitHub discovery (`Batch Discovery`), checkpoint/run monitor (`Collection Runs & Progress`), manual URL import, repo sync/commit extraction | Composite selection rankings, exclusion reasons, checkpoint progress toward 100+ repositories, and per-repo mining stats. |
+| **Bug Analysis & SZZ** | Strict bug-fix threshold slider, SZZ runner, class observation extractor & audit overrides (`1`, `0`, `-1`), legacy method tab | Classified bug-fixing commits, SZZ line-blame traces, and class-level pre-fix vs. post-fix code inspection with BIC provenance. |
+| **Dataset Management** | Batch 40-metric class extraction, dataset snapshot viewer, boxplots across 40 features, custom snapshot builder & CSV/manifest export | Extraction counts, repository distribution table, feature distribution plots, and SHA-256 checksummed exports. |
+| **Model Training** | Dataset selector (class or method), 6 model family options, hyperparameters, repository holdout ratio, inner-CV precision threshold optimization | Repository-separated GroupKFold CV vs. untouched holdout Precision/Recall/F1/ROC-AUC and serialized `.joblib` bundle with stored threshold. |
+| **Model Evaluation** | Multi-model nested benchmark table, unified model selector, confusion matrix, ROC/PR curves, MDI & permutation importances, split provenance | Stored decision threshold, nested CV vs. holdout metrics, confusion matrices, and feature rankings. |
+| **Real-World Bug Detection** | **Input A:** C# class editor; **Input B:** `.cs` file upload; repository class validation benchmark; prediction history & legacy method diagnostic | Class defect probability (`predict_proba()`), stored-threshold binary label (`Defect-Prone Class (1)` / `Candidate-Clean Class (0)`), risk category, 40 class metrics, file-level multi-class summary, and individual class drill-down. |
+| **Settings** | GitHub PAT, collection concurrency/commit/checkpoint limits, Roslyn timeout, storage paths, risk tier sliders, unified default model selector | Session configuration updates and prediction history management. |
 
 ---
 
-## 3. Available Model Bundles and Threshold Configuration
+## 3. Prediction Semantics & File-Level Aggregation
 
-| Model Name (`4_AppBuild/Assets/Models/`) | Estimator | Training Dataset | Role |
-| :--- | :--- | :--- | :--- |
-| `et_nested_opt_v3_depth6_leaf6_log2` | `ExtraTreesClassifier` | Dataset #2 ($N=578$, 5 repos) | Default selected model in Model Evaluation & Defect Prediction (Nested CV Rank #1 by ROC-AUC `0.7349` and Nested F1 `0.7667`) |
-| `rf_nested_opt_v3_depth6_leaf8_log2` | `RandomForestClassifier` | Dataset #2 ($N=578$, 5 repos) | Optimized Random Forest variant (Outer ROC-AUC `0.7216`, Outer Brier `0.2055`, Nested F1 `0.7539`) |
-| `exp_final_5fold_v2_best_rf_compact_regularized` | `RandomForestClassifier` | Dataset #2 ($N=578$, 5 repos) | Preserved baseline Random Forest model (Outer ROC-AUC `0.7037`, Nested F1 `0.7408`) |
-| `rf_csharp_empirical_model` | `RandomForestClassifier` | Dataset #1 ($N=382$ train) | Preserved initial exploratory model registered in SQLite |
-
-- **Binary Classification Threshold (`predicted_label`):** `BugPredictor` uses `model.predict()`, which applies the nominal $\tau = 0.50$ probability cutoff.
-- **Risk Category Ceilings (`risk_category`):** `PredictionSettings` defaults to Low risk ($\le 0.30$), Medium risk ($0.31\text{--}0.60$), and High risk ($> 0.60$), adjustable in **Settings**.
+1. **Class-Level Prediction (Primary Task):**
+   - `defect_probability`: Estimated via `model.predict_proba(X_proc)[:, 1]`.
+   - `predicted_label`: Explicitly computed by comparing `defect_probability >= bundle["decision_threshold"]` (never relying on an implicit `0.50` `model.predict()` cutoff when an optimized threshold is stored).
+   - `risk_category`: Triage band based on `PredictionSettings` defaults (`Low risk <= 0.30`, `Medium risk 0.31–0.60`, `High risk > 0.60`), kept conceptually distinct from binary classification.
+2. **File-Level Analysis (`.cs` Upload):**
+   - Every `class`, `struct`, and `record` declared in the uploaded `.cs` file receives an independent `ClassPrediction`.
+   - The file summary reports `classes_analyzed_count`, `classes_flagged_count`, `highest_class_risk_score`, `mean_class_risk_score`, `max_defect_probability`, and `file_risk_category`.
+   - Elevated probabilities or flagged classifications indicate structural defect propensity supported by historical SZZ evidence, not formal verification of a confirmed defect.
+3. **Legacy Method Compatibility:**
+   - Preserved method-level bundles (`et_nested_opt_v3_depth6_leaf6_log2`, `rf_nested_opt_v3_depth6_leaf8_log2`, `exp_final_5fold_v2_best_rf_compact_regularized`, `rf_csharp_empirical_model`) remain selectable for the legacy single-method diagnostic view.
 
 ---
 
@@ -66,6 +69,5 @@ Or run `4_AppBuild\Windows\run_app.bat`.
 | Symptom | Cause | Corrective Action |
 | :--- | :--- | :--- |
 | `RoslynAnalyzer.dll` missing or build error | .NET 9.0 analyzer binary not compiled or `dotnet` not in `PATH` | Install .NET 9.0 SDK and run `dotnet build 2_SourceCode/RoslynAnalyzer/RoslynAnalyzer.csproj -c Release`. |
-| No models listed on Defect Prediction page | Model directory misconfigured or empty | Verify `4_AppBuild/Assets/Models/` contains `.joblib` bundles in **Settings**. |
-| `Database locked` error | Concurrent write transaction on SQLite | Wait for active batch extraction/mining to complete; WAL mode handles concurrent reads. |
-| GitHub API rate limit error | Unauthenticated GitHub API quota (60 requests/hr) reached | Provide a GitHub Personal Access Token in **Settings** or `.env` (`GITHUB_TOKEN`). |
+| Compatibility warning on Real-World Bug Detection page | A legacy method-level model is selected while analyzing a class/file | Select a `class`-granularity model (e.g. `class_precision_champion_v3`) in the Unified Registry dropdown. |
+| GitHub API rate limit error | Unauthenticated GitHub API quota reached during discovery | Provide a GitHub Personal Access Token in **Settings** or `.env` (`GITHUB_TOKEN`), or resume from checkpoint. |

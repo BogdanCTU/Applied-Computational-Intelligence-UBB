@@ -1,0 +1,132 @@
+[20:41:34] from sign up to kick off. How many staff hours does a case consume? How often do errors and rework occur? And what is the client's experience?
+[20:41:46] need a value realization computation. We need to start from the benefits, subtract the implementation cost, the operational cost, the cost of rework of risk.
+[20:41:58] including training, monitoring and also ongoing vendor dependency. Finally, we talk about the people. Now we have automation. It has freed up capacity.
+[20:42:10] or what happens next? Will this improve your services? Will you grow without adding equivalent administrative efforts? Or will you reduce costs?
+[20:42:22] leaders, the representatives, the administrators need to make their decision openly. The teams need to understand how the rules will change.
+[20:42:34] they need to build new skills. The aim is not to hide workflow or the workforce impact behind shiny technology. No, it is to design better work and mine.
+[20:42:46] this change responsibly. You can train 5,000 people to prompt inside a broken system. And what do you get? You get 5,000...
+[20:42:58] faster people in that same broken system. There is something I want to challenge all with.
+[20:43:10] For the next 30 days, I want us to choose just one process, one that matters to your client that will matter to the parent that will matter to your staff that
+[20:43:22] match that to even other educators and especially your bottom line. Name one end-to-end owner not just the five departments or they or a community that
+[20:43:34] has no final decision making capability. What a countable individual. Next, you need to follow the real work. Map out the current states. You capture
+[20:43:46] the baseline for time, for effort, for error and customer impact. Then you redesign before you auto-knit. We need to remove the waste.
+[20:43:58] verify the end-offs, we decide what should remain human and test a small, well-defined pilot. Of course, we don't need to transfer
+[20:44:10] from the entire organization by next week, that's not what we're calling for, but we need to show that there's a better way of walking and that this deriving
+[20:44:22] benefits that are measurable. So the next time a shiny and exciting AI product lands in your inbox we need to ask one question before we
+[20:44:34] click by. Are we improving the work or simply making the mess move faster? Process clarity is the infrastructure that makes AI
+[20:44:46] Again, process first, then an AI-informed redesign. Don't automate the mess. I want those all to type in the charts. Don't automate.
+[20:44:58] meet the mess. Can we say that? Don't automate the mess. We need to redesign the walk. Exactly. Don't automate the mess. We need to redesign the walk.
+[20:45:10] then let's AIFU transform it. So finally, I have an executive AI ready.
+[20:45:23] a Playbook, executive AI-ready operation Playbook I want to share with us so we can scan this QR code for the Playbook and also
+[20:45:35] So please connect with us for your AI-ready process diagnosis. Again, we start with just one process and then gradually we move through the entire...
+[20:45:47] organization but first one process and then we see the results of that. Thank you.
+[20:45:59] Okay, thank you so much. Thank you so
+[20:46:11] great presentation, great presentation. And as we think about AI and education for the teachers and the parents that are here, you think about how you can change your work habits, utilizing AI.
+[20:46:23] and how you can tie this in. Stacy, I'm going to turn it over to you. Awesome. Thank you. Thank you so much, Alicia. And when we talk about how workflows, et cetera work,
+[20:46:35] There is a behind the scenes in education systems, right? And so I can see where this can be useful inside of educator spaces for them.
+[20:46:47] systems. Everybody has a back office and so we want to make sure that that back office is running efficiently. Guys, I just want to make sure that you're checking the chat and you're seeing that there's now the link to
+[20:46:59] give feedback for toast and toast and I want to thank you so much for your presentation. Keep the momentum going guys as we give that feedback. We're getting ready to welcome our next.
+[20:47:11] speaker to the stage.
+[20:47:23] Amazing speaker in artificial intelligence. This speaker will talk about smart nursing operations, the future of nursing education, autonomous licensure, and lifelong career advancement.
+[20:47:35] She is the founder and CEO of Nina Nurse's Continuing Education, Smart Nursing, and Smart Nursing Institute, a registered nurse, nurse educator, and certified AI
+[20:47:47] nurse architect. She is also a California Board of Registered Nursing approved continuing education provider who has helped train more than 2,365 healthcare professionals.
+[20:47:59] with a vision to educate and empower 100,000 healthcare professionals by 2030. Her mission? Create more nurses, change lives, and get more nurses into tech.
+[20:48:11] Please welcome Nina M. Stevenson, RN. Let's see.
+[20:48:23] Can you see my screen? All right. Thank you guys for being here. Have you been here a Thursday, Friday, and today's Saturday. Thank you guys so much for being here.
+[20:48:35] We really appreciate you guys. All right. So today, I'll be you guys. I'm Nina Maria Stevenson. Everybody calls me nurse Nina. Some of the things that I do is I help.
+[20:48:47] create health tech careers, those jobs. I write nursing curriculum. I develop automation, patient care solutions. I also educate and certify nurses and health care professionals.
+[20:48:59] in artificial intelligence and by getting them involved becoming consultants, architect and things of that sort. And a lot of our students are also consultants just like myself in partnership with AI and division.
+[20:49:11] So I'm grateful for that. Thank you guys. So some of the clients that we serve is AI healthcare professionals, right? Nursing schools, healthcare facilities, and also AI workforce, some workforce development programs.
+[20:49:23] I have a disclaimer, this view and tool shared in this presentation are my own. I am not endorsed by AI Education Summit. I'm an independent third-party presenter and a consultant in the AR certification.
+[20:49:35] Program my presentation is based on my expert expertise and my experience so I present you guys today smart nursing operations I know my presentation is going to be a lot. We'll put it together
+[20:49:47] I've been talking about the future of nursing education, autonomous licensure that I've created, and a lifelong career advancement. So again, you guys know, we do not have enough.
+[20:50:00] I think anybody's been in a hospital clinic facility. You guys know this worldwide. We are short 5.8 million nurses, which is a huge problem. That's a lot of people and this number actually can.
+[20:50:12] used to grow. In the United States alone, we are short 207,000 registered nurses and we also short 320,000 licensed practical nurses which are the licensed
+[20:50:24] are underneath a registered nurse. That is a lot of people. So the world, we are all short millions of nurses, but actually we have a lot of students that want to become nurses, but here in American.
+[20:50:36] other countries, we are actually turning students away. So some of the problems that we have in education for our nursing and healthcare is we don't have enough seats. There's not enough seats for people to.
+[20:50:48] be able to get their nursing education. So there are schools, they're available, but we can't take in enough students because we don't have enough instructors. Sometimes all the students have a lot of experience with one of the
+[20:51:00] other consultants talked about earlier, but it doesn't count. So they have all these work experience education maybe from other schools, but it doesn't count. So they're forced to start over and also education has not kept up with technology.
+[20:51:12] So lots of problems, right? But some of the solutions I came up with is I created an autonomous nursing licensure pathway. It's one of a kind. It's a pathway students can come in with their education.
+[20:51:24] experience they already have, and they could actually become a nurse. Without going to traditional nursing school, without going to clinicals, without even applying to a nursing school, now there is a pathway all built from.
+[20:51:36] artificial intelligence. It is accessible, it is affordable, and everyone is welcome to come in. It also provides AI healthcare pathways. So one of the solutions, like I told you guys, my
+[20:51:48] is to create more nurses. How can I do this? I have to get something to where everybody around the world could enter a space, and they could come in here autonomously without having to hire more instructors, without needing
+[20:52:00] more space without needing more clinical sites, I was able to create this and it's pretty cool. So I call it smart nursing. So that's smart nursing operation system that has all these different avenues for people to come in.
+[20:52:12] become licensed or nurse. On top of all that of them becoming nurses, I also wanted to change people's lives. I wanted people to come in with the education experience they already had and be able to get different
+[20:52:24] advancement careers, maybe more certifications. So we were able to put all of that in one system, making it accessible for people to get access anywhere around the world, making it affordable, making their renewal.
+[20:52:36] that they do have a license also embedded in this system and making this a lifetime companion for them. So they can come into this smart nursing ecosystem as a pre-nerthing student even if they not.
+[20:52:48] want to do nursing, they want to be a CNA, they want to be a home health aide, somebody that will take care of you in your home, or a licensed nurse, or they want to advance their career to become an even a doctoral level nurse.
+[20:53:00] all together now in one system, the curriculum, the clinical skills, everything in one. So this is my solution to also get more nurses into tech, building a system where they
+[20:53:12] can come in and they can be a nurse in school and they can already see the curriculum that they're interested in for us becoming into tech. This system also builds on the education experience they're currently doing in the system and they
+[20:53:24] currently have done outside the system. So as they're working, they're completing courses, they're working at their job. It actually builds their catalogs for them. So all in one ecosystem, you can become a certified AI nurse.
+[20:53:36] consultant, educate our architect, even an automation officer, all with our smart nursing education. This is what our command center looks like inside smart nursing. We actually have live in
+[20:53:48] Okay, thanks to Hagen. We have live instruction that actually teach and this has been great for students and they really love it. We have been able to integrate two schools into our platform. One that I did.
+[20:54:00] as a mock just for brand new nursing students that just came in, have no idea of what they're doing, and also graduate students that actually finished their entire nursing program. But the problem that
+[20:54:13] help with that school was they were having a hard time getting the students out. So they finished a program but they couldn't pass their exit exam to get out of the program. So with both of those group of students it was 15 each 30 students
+[20:54:24] students, the new students are the new grad students are actually top of their class and 92% and the outgoing class actually all past their exit exam. So the platform shows that.
+[20:54:37] students like it is very engaging, is interactive, and it's actually available 24 hours a day, right? Who can get a two-round 2 AM, right? So Grace is one of the amazing live
+[20:54:49] I was able to integrate through Hey, Jen and everybody loves it. And this is actually a platform where any school can come in here, use our curriculum, the teachers, the tutors, everything is all set.
+[20:55:01] This site, the system also built Savora, which she is a tutor. She's always available. She's able to ask their questions. She's able to teach them based on their gaps of where they come in at, and she's able to
+[20:55:13] to guide them along the way. So this is our system, you guys. We have Savora. We have holographic patient labs, publishing with our books, smart education. We have even an electronic healthcare record that we have in here.
+[20:55:25] where students can actually study before they get to clinicals, even a scholarship hub, to have them come in here and be able to leave affordable without all the student debt, which is a big problem.
+[20:55:37] The system was designed by integrity. We do have verified documents in there. Any course that they take will be verified and the system is trusted. We trust in the bill and not bolt it on, right?
+[20:55:49] So the payoff is huge. We'll be able to, with one system now, create more nurses and create a stronger workforce all with the power of AI. So smart nursing makes the possibility now of becoming a nurse.
+[20:56:01] more personalized and also possible with the power I really has been changed in life. So I thank you guys and I want you guys to walk away with something. Okay, I'd love to teach. So a lot of this.
+[20:56:13] student, the instructors and people that I talked to and I was telling about this presentation. I'm telling about the summit. They said, well, Nina, I want something to help me teach my students. I want something to help me do. Everybody wanted the same thing. They wanted.
+[20:56:25] presentation, they wanted to be able to access some questions, they wanted to be able to find data, and another thing they wanted to be able to do videos and be affordable, because everybody spending a ton of money on all
+[20:56:37] these tools so I want to show you guys how to build your own AI instructor who wants to build their own AI instructor today and it'll be quick we're probably doing about five minutes okay so
+[20:56:49] So I want you guys to focus on this, pick one job, want you to write some instructions, give it your curriculum, you can upload whatever it is that you like to teach, and then test it. Give it to somebody, let it test it, and there you go.
+[20:57:01] There's no code needed, there's no calls, you're gonna do it free, and you will be the instructor, okay? It's your course, you have an AI instructor, or your tutor, whatever you wanna call it. And this will be built from your curriculum, okay?
+[20:57:13] It says about 15 minutes, but it won't even take that long. Okay. All right. Let's see who wants to build their own age and we are going to do this in Gemini. So I want you.
+[20:57:25] guys to go to Gemini is everybody following me let me know let's see so when you go to Gemini once you guys to go if you've been in Gemini your options may be a little bit different
+[20:57:37] So I want you guys to go to gyms. It's either going to be under where you have customized at or you're going to have to press this setting button at the bottom. It'll be down there. So it just depends on if you've used this platform before or not.
+[20:57:49] So you just select gems, you go to new gem, you're going to select your new gem, and then you're going to give it a name, a description, some instructions, and if you want, you can put some details.
+[20:58:01] on what you wanted to do. Give us some knowledge base on your class, your curriculum, presentations, outlines, anything that you have that you've used to teach from. That's what you can use, okay?
+[20:58:13] So for mine, I'm just going to say AI educator, okay, in the description, I'm going to say teach GED.
+[20:58:25] Right? Some of the instructions I wanted to do this, what you wanted to do, teach from a sixth grade level.
+[20:58:37] reading, writing, and English. Very simple, right? So I'm gonna default tools. You can add if you wanted to create videos for you.
+[20:58:50] right? Is everybody asking me to want videos? If you want it to be music, if you want images, anything that you want, you can click it there. Okay. And then a knowledge base is going to be your files, whatever it is that you have your presentation.
+[20:59:02] your power points, anything like that. And you do have to upload this one, unfortunately. Okay, you have to upload this one. I'm gonna go to, I'm just gonna put in our present, this one here.
+[20:59:14] And that's it you guys and you just save it. Okay, so now you have a tool that is building this created right start to share or you can
+[20:59:26] share it out. You can press share, have the link and send it out to your students, okay? So this will have all your stuff in there, right? So you can design a lot of schools are struggling with.
+[20:59:38] AI and what tools to use, you can create your own tool. You can have your students use your tool based on your information so they don't have to go outside looking for all this different information. Okay.
+[20:59:50] You guys, it was everybody able to do it. Do you guys need some help? And in the chat, I can put a little cheat sheet that I created for you guys.
+[21:00:02] I'm going to put it in the chat. Let me see here. I'm going to put the little cheat sheet in the chat because I want you guys to do this.
+[21:00:14] And they can all see the chat, right? So that's a little cheat sheet. So you guys can follow step by step. That's how I did it and make your own AI.
+[21:00:26] agent, okay, AI educator. You're educated can do so much for you more than you can even think is so helpful. It is super, super great. Do you guys have any questions about that? Love that.
+[21:00:38] the cheat sheet. Good. Thank you. Good. You guys have any questions? That would be great to showcase local vote. Yep. Step and you got it. So if you guys are doing got it, I want you guys to.
+[21:00:50] practice that and all you need to do is just pick it, give it. Give it one job, right? Because you don't want to give it too many instructions. Give it one job, right?
+[21:01:02] instructions, if you don't know what you teach, you need some help, go to touch EPT. You can put this exactly like this or use the prompts that I gave you. Just copy, paste, fill in the gaps, okay? Give it your curriculum, give it your
+[21:01:14] your presentations, give it your power points, and then test it, give it to your students or give it to another instructor that teaches something similar to you, but it's super simple, right? Now with the Power BI, all the things Alicia teaches
+[21:01:26] us. We don't need any code. And with this method, this tool, there's no cost. And you are the instructor. Okay, your students learn from the curriculum that you provided. So work on it today, build your
+[21:01:38] curriculum and it takes you probably about 10 or 15 minutes, but that will be it. Okay, so just understand and make sure you give it a roll, make sure you give it a job, make sure you give it a method so you can you know.
+[21:01:50] it knows what it's supposed to do. And I like limits because I'm in health care. I want to make sure that they are not going to go outside of what I'm teaching my students, right? Because I want them to learn from what I'm teaching them.
+[21:02:02] you have limits. And then you guys, I have a special offer for you. I want you to introduce you guys to our smart education platform. Smart education is a new part of smart nursing for us. It's an application.
+[21:02:14] that truly guides instructors, nurses to create their own educational presentations, simulations if you want to create a mock simulation, feedback systems, and make education exciting.
+[21:02:26] engaging again. It is my free gift to you and today's lesson teaches method from step by step. So it's a smart nursing, educational course, playbook, so how you got for 97. It's free, correct?
+[21:02:38] playbook behind today's lesson all right so scan the QR code if you're on your phone watching this and you're like me now I'm on my phone you can go into free dot smart nursing dot AI you should be able to get it as well
+[21:02:50] you guys have any questions and let me go back to the
+[21:03:02] Awesome sauce. I think we're seeing people asking for the QR code for sure. Okay, you guys got the QR code.
+[21:03:14] Alright, I'm excited for you guys. Thank you guys for listening to my presentation. I appreciate you guys and we'll get off to the next speaker. Thank you so much.
+[21:03:27] Nina, listen, I want to grab you for a quick second because... Can you hear me? Yes, I can hear you. Awesome. I just want to grab you for a quick second.
+[21:03:39] Oh, can you hear me? Could you hear me all the time? Yes. Oh my God. It's fine. It's fine. You can hear me now. Okay. Beautiful. Beautiful. We are seeing them.
+[21:03:51] drop in the link. So guys, as you go ahead and click on the link to give Nina some feedback. We're also putting up the QR code. So you have it both ways. I see excellent job. Thank you. Thank you.
+[21:04:03] Yes, Nina, thank you. Of course, you know, I just love anything that gets built, right? You said something so important there, you know, about using the different tools. Let's just build.
+[21:04:15] a gem right now and a gem is an agent. How would you say that being in the consultant program has made you feel more confident about building things like agents like your entire platform?
+[21:04:27] I'll definitely, you know, the biggest thing I take away from the program is the community. Being able to network with like minded individuals, being able to pick doctors, brainer, what do you think about this?
+[21:04:39] and some working with some other nurses like that's been my biggest takeaway from the program and the continuing education like every time some come out there goes Alicia so we're always learning you know all the new
+[21:04:51] things that everybody reaches out to me because they think I know everything but I'm like no I'm getting it from Alicia so so yeah I think that's been the biggest takeaway but yeah I just love it how much is there constantly to learn.
+[21:05:03] and all the amazing people she brings it to the community, like it's priceless, priceless, priceless. If you guys thinking about getting the certification, you better lock in now. Let me tell you something. Thank you for sharing that.
+[21:05:15] because we have been dropping the link for creating a consulting call. So just booking a consulting call. So you can get some insight and advice and become a part of the program.
+[21:05:27] Everybody that we've talked to so far has had their different reasons. Nina just talked about the community and she also mentioned something that was mentioned by a speaker before. Listen.
+[21:05:39] AI something new dropping every week every day almost you can find something new and you may be wondering you know where do I see myself in all that I don't know I'm an educator I don't know if I need to do the console
+[21:05:51] don't think well you won't know until you have a conversation so I'm encouraging you guys to go ahead and get the call going. In addition to getting the call going we're about to step
+[21:06:03] into some really interesting afternoon presentations y'all know what's coming up right y'all know what's coming up I'm so excited but if you missed anything if you missed Thursday if you missed Friday if you missed earlier this morning
+[21:06:15] or if you just want to make sure that you are tracking all of the beautiful freebies like what me that just showed I'm like if you missed that QR code just get the VIP just for that like hello the
+[21:06:27] you that is in VIP is priceless. Nina, you gave me the word. Thank you very much, sister. It is priceless. So we have some links there. Thank you, support,
+[21:06:39] for dropping all the links and I'm gonna get out of the way so we can welcome our next speaker to the stage and I'm gonna grab me a little afternoon coffee.
+[21:06:51] so that I can come back talking straight. I'm gonna grab the next speaker. Up next, we have another amazing speaker in artificial intelligence.
+[21:07:03] This speaker will talk about before you approve that AI tool, what every educational leader must ask. She is the founder of Quantum Flex Solutions and creator of the Trust Framework.
+[21:07:16] a peer-reviewed and globally published AI governance model with nearly two decades in federal and private sector cybersecurity. She is also the 2026 cyber jutsu cyber jutsu cyber jutsu cyber jutsu cyber jutsu cyber jutsu cyber jutsu cyber jutsu cyber jutsu cyber jutsu cyber jutsu cyber jutsu cyber jutsu cyber jutsu cyber jutsu cyber jutsu cyber
+[21:07:27] of the year, a 2026 100 women of excellence honoree, a former MIT teaching assistant and author of the two time number one Amazon bestseller.
+[21:07:39] raising AI right. Please welcome Christina Cooper. So join me in the comments as we welcome our next speaker.
+

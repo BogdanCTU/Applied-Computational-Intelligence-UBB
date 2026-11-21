@@ -32,3 +32,32 @@ This release provides an empirical machine-learning pipeline and local Streamlit
 ### C. Streamlit Workbench and Inference Configuration
 - Eight pages: Dashboard, Repository Collection, Bug Analysis & SZZ, Dataset Management, Model Training, Model Evaluation, Defect Prediction, and Settings.
 - Live inference in `BugPredictor` uses `model.predict()` ($\tau = 0.50$) for binary `predicted_label` and maps `predict_proba()` to Low ($\le 0.30$), Medium ($0.31\text{--}0.60$), and High ($> 0.60$) risk categories.
+
+
+---
+
+# Release Notes — Version 3.0.0 (100+ Repository Class & File-Level Transformation)
+
+**Release Date:** November 21, 2026  
+**Scope:** Full research & engineering transformation from a 5-repository method-level predictor into a 106-repository class- and file-level static C# bug detection platform optimized for high precision (`>= 80%`).
+
+## Major Highlights
+
+1. **106-Repository Empirical C# Class Corpus (`csharp_class_empirical_v3` v3.0.0)**
+   - Expanded GitHub discovery (`github_client.py`), shallow-free full-history clone handling (`repository_manager.py`), single-call Git log ingestion (`commit_collector.py`), strict bug-fix commit filtering (`bug_fix_detector.py`), and cached SZZ blame tracing (`szz_analyzer.py`).
+   - Built a resumable, checkpointed pipeline (`2_SourceCode/Scripts/run_100_repo_class_pipeline.py`) that mined `300` candidate repos (`304` queued), documented `15` exclusions, and processed **`106` repositories** (`0` failures) yielding **`5,711` class observations** (`2,829` defect-prone, `2,882` candidate-clean; SHA-256 `7087edb5...`).
+
+2. **Roslyn Analyzer `v3.0.0` (40 Class Metrics + Multi-Class `.cs` Support)**
+   - Extended `2_SourceCode/RoslynAnalyzer/Program.cs` with C# `LanguageVersion.Latest` parsing, isolated class/struct/record extraction (`GetTypeOwnedNodes<T>`), `--batch-stdin` NDJSON streaming, 40 class-level static metrics, and full backward compatibility for the original 26 method-level metrics.
+
+3. **Precision-Optimized ML Engine (7 Model Families)**
+   - Evaluated `DummyClassifier`, `LogisticRegression`, `DecisionTreeClassifier`, `RandomForestClassifier`, `ExtraTreesClassifier`, `HistGradientBoostingClassifier`, and `CalibratedClassifierCV` using strict repository-grouped `5x4` Nested `GroupKFold` (`84` dev repos / `4,730` classes) plus an untouched `22`-repository holdout (`981` classes).
+   - Selected `class_precision_champion_v3` (`rf_opt_depth12_leaf4_log2` with inner-CV decision threshold `tau = 0.600`), achieving **82.30% precision / 61.71% recall** in Nested CV OOF and **83.43% precision / 61.99% recall / 0.8449 ROC-AUC** on the untouched holdout — surpassing both the `>= 75%` minimum and `>= 80%` preferred precision targets without holdout leakage.
+   - Deployed 8 versioned class-level `.joblib` bundles alongside all 4 preserved historical method-level bundles.
+
+4. **Class & Full `.cs` File Streamlit Application**
+   - Updated `2_SourceCode/Python/app.py` and all 8 Streamlit pages under `2_SourceCode/Python/application/pages/` via a unified `ModelManager` registry.
+   - Updated `BugPredictor` (`predict_class_code`, `predict_csharp_file`, plus legacy `predict_method_code`) to classify directly against `predict_proba()[:, 1] >= decision_threshold`.
+
+5. **Historical Preservation**
+   - Preserved all v1/v2 method-level CSVs (`csharp_empirical_v1_v1.0.0.csv`, `csharp_empirical_v2_v2.0.0.csv`), all 4 historical `.joblib` bundles, all original SQLite `observations`/`features` rows, a pre-migration DB archive (`bug_detection_method_v2_archive.db`), and historical `3_TestResults/CrossValidation` and `HoldoutEvaluation` JSON reports intact.

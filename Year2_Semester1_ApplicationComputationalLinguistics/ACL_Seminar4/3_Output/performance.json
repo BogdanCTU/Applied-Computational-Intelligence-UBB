@@ -1,0 +1,38 @@
+{
+  "student_name": "Popa Bogdan-Stefan",
+  "dataset_name": "CACM",
+  "documents_count": 3204,
+  "index_build_time_ms": 49.76,
+  "avg_retrieval_time_ms": 0.0867,
+  "median_retrieval_time_ms": 0.071,
+  "num_stop_words": 7,
+  "stop_words": [
+    "the",
+    "of",
+    "a",
+    "and",
+    "to",
+    "is",
+    "in"
+  ],
+  "stop_word_frequencies": {
+    "the": 11014,
+    "of": 9029,
+    "a": 6017,
+    "and": 4536,
+    "to": 3770,
+    "is": 3727,
+    "in": 3446
+  },
+  "index_size_bytes": 1851078,
+  "index_size_mb": 1.77,
+  "corpus_size_bytes": 2187734,
+  "corpus_size_mb": 2.09,
+  "index_to_corpus_ratio_pct": 84.61,
+  "vocabulary_size_before": 8798,
+  "vocabulary_size_after": 8791,
+  "total_tokens_before": 172680,
+  "total_tokens_after": 131141,
+  "timing_repetitions": 500,
+  "benchmark_timer": "time.perf_counter_ns"
+}

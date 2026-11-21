@@ -1,0 +1,226 @@
+[18:44:32] in their job searches. So also not teaching somebody to say just use AI because to me that's not a comprehensive plan and it's not a cohesive lesson plan.
+[18:44:45] And I have some research to actually help me back it up. So as you see on my screen, I have two different statistics and it's not just me saying use AI.
+[18:44:57] for this interview prep or resume my writing. Jobs for Future survey American workers just this year in 2026. Only 36% said they have the training.
+[18:45:09] and resources to use AI on the job. Go figure that because what this actually shows us is this was down 45% from the year before.
+[18:45:21] I've even experienced this even at my own job. I was just told put digital fluency on your LPM and guess what? You figure it out. So the people who need the bread.
+[18:45:33] most are getting the least help across it. The next statistic I'm going to share with you, MIT did a, they did a
+[18:45:45] search on 480,000 job seekers. And those job seekers actually used AI. Now, the thing about that is when they used AI, they were 8% more
+[18:45:57] likely to get hired. The thing about that is not because they were better workers, they used better words. So the gap is not whether adults can learn a
+[18:46:09] It's whether it's anybody really ready to teach them and that's the gap in my title and the bridge is simply just teaching them because a lot of people really want to use it.
+[18:46:21] They just don't even know where to start. So right now I'm going to give you three things that can bridge the gap between adults and AI learning. First and foremost, when you teach
+[18:46:33] adults, you start with the task, not the tool. Going back to my story about the Nicholas house, nobody in that room came to learn AI. Nobody.
+[18:46:45] Nobody said, hey, I'm going to sign up for AI. No, they actually came in there to get a job. They wanted to learn how to interview, and they wanted to learn how to resume prep.
+[18:46:57] But the thing about it, I taught them how to get there with AI. The thing, even in that room, as I realized, I can hand them a tool, right? I can hand them a tool.
+[18:47:09] But guess what? If I give them a tool and I don't give them the task, guess what? I've actually handed them absolutely nothing. And so that's why I, as an adult teacher,
+[18:47:21] with the task and not the tool. The second thing I want you to know about adult learners is the experience is already there. Adults don't walk in a room empty. They
+[18:47:33] They simply don't. They walk in a room with 20 years of life. 20 years plus of life experiences. They have jobs. They have
+[18:47:45] kids, they have bills, problems they've solved that nobody ever saw, right? And so the experience is not the problem that I found, the words were the problem.
+[18:47:57] and that brings me also to my number three. But before I share my number three, I want to go back to number two because I just thought about it. If you think about somebody and
+[18:48:09] And I was sharing with them in that class that anything that you've done over time, it's a steal. Think about it. If somebody who can calm down an angry customer at a register, I was sharing with them.
+[18:48:21] that's actually a skill and it's actually a real one and employers actually pay for that but nobody ever told them that it was a skill and nobody ever told them that it was a name.
+[18:48:33] So it never makes it to a resume and it never comes out in an interview. So if you think about those odd jobs that you do on the regular caregiving, even if it's just.
+[18:48:45] customer service are doing any type of volunteer work, those things are skills and they deserve to actually go on your resume. That's the gap, not the experience.
+[18:48:57] use AI to actually show those skills on your resume. So just a reminder. And then the third thing I always tell you about bridging education
+[18:49:09] with opportunity for adults is that ready means they can do it without you. Meaning, when I say they are ready and they can do it without you, that means they can run the prompt.
+[18:49:21] can open the tool. They can judge what comes back and they can actually say it to a real person. To me, that is actually ready. Everything short of that is actually attended.
+[18:49:34] So I've just given you three things for adult education that we can use as far as bridging the gap from education and opportunity. One, you start with the task.
+[18:49:46] not the tool, two, you have to realize that the experience is already there, and three, ready means they can actually do things without you.
+[18:49:58] So I want to show you kind of what that looks like. The other day, I wanted to kind of set up a lesson plan for the class that I was teaching. And so I want to show you.
+[18:50:10] in chat GPT what that looks like. I actually asked chat GPT to actually write me a lesson for that room at the Nicholas house so we can begin to prepare for the
+[18:50:22] process. I want you to watch what it gets right and what it doesn't know and so if you want to follow along I'm gonna drop the prompt in the chat as well.
+[18:50:46] It says IT.
+[18:51:10] the rest want to be ready for theirs.
+[18:51:22] playing language.
+[18:51:34] Well, now you're back to me.
+[18:51:46] So I have a couple of notes.
+[18:51:58] the volume on the video? Oh, I'm sorry. I'm sharing share with this phone. I'm sorry, say that again.
+[18:52:10] share with some of the checkbox. Okay. So if you can't find it there, you can stop the share and re-share.
+[18:52:22] Okay, my apologies. I didn't know you well couldn't hear it. I'm sorry. So you would stop this chair not the slide.
+[18:52:34] Okay, one second. All right, so check remember what the check is on the right hand side. Yeah, it's on shout sound. It's on it. So make sure that your volume on your computer.
+[18:52:46] turn up as well and then you just start the video from the start okay okay my apologies for that that's the wrong one
+[18:52:58] Remember guys, you can also have a headset plugged in and you can't hear it well. Okay.
+[18:53:10] So start back from that slide. Yeah, I'm going back to it. Okay, thank you.
+[18:53:22] Please let me know if that's better.
+[18:53:35] Is it for you guys? And here's my room. 12 adults. Hearing it better than before. Okay, perfect. So start from the beginning again. Okay, I will. Thank you.
+[18:53:47] And now that I have opened my chat remember going to the slide show I've already pasted the video. Yes, and then you can click on yeah
+[18:53:59] and I'll start it over. And now that I have opened my chat GPT, you can see I've already pasted my prompt. And here's my room. 12 adults.
+[18:54:11] Evening class most have never used AI one has a customer service interview next week and I need a lesson So I'm going to enter
+[18:54:23] And my prompt is going to start working. It says, I teach a one hour evening class for adult learners at a transitional housing program in Atlanta. About 12 people, most of them never used a.
+[18:54:35] A few have never heard of it. One of them has a customer service interview next week and the rest want to be ready for theirs. Write me a 20 minute lesson that teaches them to use chat GPT.
+[18:54:47] to prepare for that interview, format it as a table, time, what I say, what they do, plain language, and no jargon. And guess what? 10 seconds?
+[18:54:59] later, timed, formatted, and if you've never built a lesson in AI, well, now you have a prompt to help you do so. And that should be your first aha moment.
+[18:55:11] Now, watch me do what you would do with the four questions that we kind of talked about earlier today. One, does it start with the task? Almost. It's built around the interview, which is.
+[18:55:23] Okay, but the first row shut says, welcome and introduce AI, show how chat GPT works. As a teacher of an adult learner, I would actually fit that. The tool before the task.
+[18:55:35] I would not do. Secondly, does it draw out what they already know? No, it does not. Again, I'd ask one question before anybody touches the keyboard.
+[18:55:47] falls apart when you're not at work. That question would be my lesson. Three, I'm looking at this information and does it build toward them doing it without me?
+[18:55:59] it practices it makes the answer better but it does this with all of me in the room so the next step I would probably say isn't about wrapping it up it's read your answer
+[18:56:11] to the next person and see if they say that doesn't sound like you. And if they say that, that means you need to fix it. Then I would run this back three times tonight out loud.
+[18:56:23] without your instructor. Now, if I'm continuing to look down this, for does it know my room? Well, if we really go back up and look at all the information that it gave us, this section right here.
+[18:56:35] here where it says show how chat GPT works, that's going to be more than three to six minutes. For me, it's going to be like maybe 10 to 15. And the reason I say that, because in that timeframe,
+[18:56:47] You're going to be setting up accounts. You're going to be setting up a password. Somebody's phone is going to have 4% left on it. And so you're going to spend that time literally trying to get everyone together.
+[18:56:59] before you even start the class. So yes, chat GPT has done 80% of the work. I'm going to have to do the other 20%. So the good thing about it is AI Drafts.
+[18:57:11] but I get to decide what goes into my class. So, as you can see, chat GPT does in a major...
+[18:57:23] job so kind of to give you a recap so I gave it my prompt as you saw 10 seconds it wrote a lesson that would have normally taken me an hour
+[18:57:35] The only thing about it is about 80% of it was right. The other 20% is why we are in the room. So it didn't know my learners as you can see.
+[18:57:47] one of the things that you know chat GPT does not know and it assumed everybody had a device and a quiet place to practice it never asked what they already knew so and then it
+[18:57:59] end it with wrap up, which is not a plan for somebody who has an actual interview on Tuesday. And so that's the three things right there that I was sharing with you earlier. That was the task.
+[18:58:11] which I feel like chat GPT got it, the experience, it skipped it, ready, it actually never got there. And so AI gets to draft exactly what you do, however,
+[18:58:23] a teacher, you get to decide exactly what you put into your lesson plan. And one of the other things that I wanted to share that we did in the Nicholas house, you can go in and you
+[18:58:35] You can ask GPT to ask you five questions that they think. We did an actual job off of Indeed.
+[18:58:47] we'd impaste it that resume the job description in chat GPT, and we ask chat GPT to give us five questions that they think that the hiring manager would answer.
+[18:59:00] chat GPT did that and it also gave them feedback on their answer. So that's another way we can do interview prep with chat GPT as well. Now while
+[18:59:11] you are actually teaching these things, there's one more thing that I want you all to understand that you have to teach adult learners. And that is judgment first machine.
+[18:59:24] second. The reason I say that is because AI will flatter your learners. It will give them the best answer they have never never heard of. It will hand them a title they
+[18:59:36] never held and the number they can't take take back. And so when you teach, you always teach the check before you teach the prompt. And that's why I always teach judgment for
+[18:59:48] machine second. Every line is theirs or it's gone. You have to fact check everything that AI gives you. And you teach the
+[19:00:00] role, not the tool. Think about things when you're teaching the adult learner. Does this adult have a device that works? Do they have internet that holds? Do they have a quiet place to practice?
+[19:00:12] after the kids are down. And so a link does very little for somebody who needs help opening it. So with this being said, I want to ask you one more question before we get to.
+[19:00:24] Have you ever handed somebody a tool and called it training? Just out of curiosity, that's a yes or no question. You can just drop your answer in the chat.
+[19:00:36] I see some nose. Have you ever handed somebody good? Great. I'm so happy because I have been one of
+[19:00:48] of those people that have actually done that. I'm glad to see there are a lot of nodes. And so, I wanna be honest, that's why we're here. I see one person that didn't leave me hanging, Shaya.
+[19:01:00] because I've done that and so my thing is you can't hand adults just a tool they have to have some sort of training if you teach adults the thing about it is you
+[19:01:12] can pick one real task that your learners can learn, run the prompt with them, let them get it wrong, let them run the check, you know, give them the tools that they need to work the task that they need.
+[19:01:24] need. If you run a program, ask who your AI training actually reaches and then actually tailor your lessons around those adults.
+[19:01:36] the ones that even haven't heard of A.I. And whichever you are, measure what matters. The thing about it is, attendance tells you who came, follow through,
+[19:01:48] tells you what the teaching made possible. I'm going to say that again. Attendance tells you who came, but the follow through tells you what the teaching made possible.
+[19:02:00] With that being said, I'm going to close by handing you all the bridge kit and the QR code is on the screen. This is actually something that you can actually
+[19:02:12] teach somebody on a Monday especially if you're teaching the adults again it's called the bridge kit it's free and I overdid it on purpose the prompt you just watched and the four questions there's
+[19:02:24] resume prompts, the check, the hiring manager in your pocket. It's six 20 minute lessons written out what you say, what they do. There's actually tools for the GE.
+[19:02:36] for the ESL, for the letters somebody can't make sense of. I've also included some printable cards. It's 46 pages of great information that you can
+[19:02:48] to teach AI to the grown folk in your life. So scan the code, also my contact information is in the kit as well. And so
+[19:03:00] Here's my challenge to you for the next seven days for those of you that teach adult learners. Choose one adult and spend 20 minutes teaching them one used
+[19:03:12] right? So then, guess what? And the QR is still on there. Tell me about yourself. Those are the four words that we started.
+[19:03:24] with. Tell me about yourself. Now think about one of your learners who could use a little help answering that with an interview they had coming up. What could you teach them this
+[19:03:37] week to get there. This is what AI for transformation means to me. Not the tool itself, but to me, it's all about the teaching. I'm Dawn Love and
+[19:03:49] I make AI make sense. Are you ready to AI? Make it make sense, Dom. Make it make sense. Okay, the math was math thing.
+[19:04:01] of the things. This was really great content. I echo, I think, yeah, there goes Andrew saying it in the chat. I echo that sentiment. Please give Dawn her flowers and all the
+[19:04:13] love. Yes. I see you. Thank you. You know what? I think the practicality of what we're seeing this morning, guys, is what has been resonating. And I'm in
+[19:04:25] you all to think about just how much new insight you're getting today. We started off with trust. We got into just the human side of things and now we're creating that bridge.
+[19:04:37] for our adult learners and I love the examples that you give because oftentimes we just think you know you're grown you don't need to keep learning but all of us are learning right all of us are learning don't
+[19:04:49] What has this participation in the AI consultant program held to you as an adult with your learning?
+[19:05:01] amazing. When I first started out learning AI, I really struggled because I really didn't know what I was doing, but the moment I started learning from
+[19:05:13] Alicia and the red excuse me they literally broke it down for me because I'm not tech savvy first and foremost I do love the teach and I know I wanted to teach it
+[19:05:25] And so they actually gave me the tools to actually help me teach those that don't know AI. So it has been an amazing experience. Excellent. Excellent. Thank you for.
+[19:05:37] that and this is why it's so important guys for us to encourage all the persons that are a part of this summit to think about becoming a part of the consultant program.
+[19:05:49] And not only that I want to make sure that you are capturing all the insights I have been shared because it's been a lot of information So we're gonna drop the VIP link for you and make sure that
+[19:06:01] you can also book some time if you are contemplating becoming a part of the consultant program. So look in the chat, you're going to be seeing some fun work for you to do, right? Make sure.
+[19:06:13] So you get your VIP links if you have not already captured the information and especially if Saturday is your day one. Maybe you weren't with us on Thursday and Friday. And so you're just joining us. Don't worry.
+[19:06:25] we got you boo we got you so make sure that you go ahead and click on the link to get that VIP and then of course participating as a part of this community is also
+[19:06:37] accessible and available to you. So we'll get called to become a part of the community and also make sure that you're checking on the VIP link as we get ready to bring our next speaker.
+[19:06:49] to the stage. So please keep the momentum going in the chat. We want to make our speakers feel welcome, welcome, welcome them as they come to the stage, everybody. Up next.
+[19:07:01] We have another amazing speaker in artificial intelligence. This speaker will talk about the AI Ready Leader, leading higher education into the future of work. She is a certified AI
+[19:07:13] consultant and strategist with more than two decades of leadership in higher education, career development, and workforce innovation. Having served as Assistant Dean, Professor, and Director of
+[19:07:25] career services. She is also the author of Jump Start Your Career Now, creator of a career resource recognized among Forbes' top 75 websites for your career and a 2020
+[19:07:37] women we admire honoree in Houston. Please welcome Dr. Sarah David. So join me in the comments as we welcome our next speaker.
+[19:08:01] On mute again.
+[19:08:14] Thank you very much. What a wonderful introduction. I'm excited to be here and thank you so much for AI, innovation, and Alicia, and Loretta, and the team for allowing me this opportunity.
+[19:08:25] So today I invite you to imagine a new kind of team.
+[19:08:38] Excuse me, there's what's happening. I'm trying to find something.
+[19:08:50] and I can't pull up here, give me one second. My slide view.
+[19:09:02] I, um, notes of you. It's not. So you're just seeing the slide alone. I can stop by and re-share. I stopped this share. Remember, you're going to open the notes.
+[19:09:14] and the slide and then you share only the slide via the window.
+[19:09:26] Okay guys, let's get Dr. Sarah feeling welcome by just dropping in the chat. We're happy you're.
+[19:09:38] here. Take your time. You got it. It's coming together. And while she's pulling up her presentation, guys, I just want you to say where you are.
+[19:09:50] Now that you are five speakers in. So this morning, I had some people that were just like, I just need my coffee. Some people were curious. Some people were excited. Where are we?
+[19:10:02] right now with our AI temperature. I'm energized. Okay, I see you. I know right now I'm feeling very informed. I feel very smart right now. I've been learning so much.
+[19:10:14] I've been learning so much this morning that I'm feeling a little like, you know, I could do a little bit more educating. I actually think I could go into the school and I've never thought about being
+[19:10:26] and educator in school because I got the kids and I've been seeing them. I've been seeing them going in with the teachers and I'm like, I can't do this. I can't do this. So I'm happy to see. Oh, I see Keisha says empowered, excited.
+[19:10:38] and ready to begin. Here comes Dr. Sarah. Are you ready to go? Ready to go. Awesome. Thank you. Thank you so much. Yes, again, thank you for all of y'all.
+[19:10:50] and the little sisters and the team. Excited to be here. We've had some wonderful speakers, so I'm really happy to be here today. So today I actually invite you to imagine a new kind of team.
+[19:11:02] and what leading it could ask of you. I'm Dr. Sarah David. My work and background is in hiring.
+[19:11:14] education, workforce innovation, and AI consulting. And I actually am excited to be a part of this new opportunity as it relates to AI and to teach others how
+[19:11:26] to take advantage of this wonderful process. So welcome to the AI Ready Leader leading higher education into
+[19:11:38] to the future of work, let's focus on the teams that you lead. And just as a disclaimer here, the views and tools shared in this presentation are my own.
+[19:11:50] and are not endorsed by the AI Education Summit. I'm an independent third-party presenter and a consultant in the AI certified consultant program. My presentation is based on my expertise and experience.
+[19:12:02] So what if your next team member wasn't human? Just think about that for just a moment. The work I work with in higher education has been around a lot of adult learners.
+[19:12:14] And the framework of how we are working and what we're used to is changing because of AI. So look at that MDC at the leadership table. Picture the work waiting for you tomorrow.
+[19:12:26] Your expectations are changing, your staff is stretched, and important opportunity needs attention. So, AI may offer support, but the executive question goes deeper than choosing a tool.
+[19:12:38] What work should change? Think about that. What work should change? Who will direct the work? How will you know they're ready? So keep one challenge if you would.
+[19:12:50] from your own organization, in mind, and consider where you would first put AI to work. If AI joined your team tomorrow.
+[19:13:02] where would you put it to work first? I would love to see what your comments are in the chat to see where you would put AI to work first, whether it's in your business or in your organization.
+[19:13:14] Alright, so now picture the person who would manage that support.
+[19:13:27] What would they assign? What would they check? What would they bring back to you as the boss or the supervisor? So keep both your chosen function and that human manager in mind as we go through this.
+[19:13:39] useful AI support still needs someone to actually direct the work. The AI Ready Leader has two connected responsibilities. First, they lead differently.
+[19:13:51] redesign workflows around human judgment and AI capabilities with clear ownership and appropriate limits. Second, want to prepare people differently. Develop employees, managers, and adult learners.
+[19:14:03] who can direct AI-supported work. They can question that work. They can verify it and remain accountable. So for higher education and workforce leaders, that includes the people preparing to enter those
+[19:14:15] organization so the students and people that we teach. A new operating model works when people can lead within that. The future of work has a new org chart.
+[19:14:27] start with the people and executive leaders set strategic direction, define submission, establish accountability and makes the final decision. But a human program manager directs the work. They coordinate.
+[19:14:39] AI supported tasks, they evaluate recommendations, and check for quality and missing perspectives. So now look at the support that manager may be able to direct.
+[19:14:51] Here's one leader in a new kind of team. The executive owns direction and the decision. The human manager directs research, analysis, strategy, and communication through one AI worker.
+[19:15:03] These are four support capabilities in one workspace, not for independent agents. So watch the middle of this chart. The manager must translate priorities into assignments,
+[19:15:15] Xana results, coordinate human expertise, and decide what deserves your attention. So who is ready to lead this collaboration in your organization? Is this you? If that's you in the chat, please.
+[19:15:27] me in the chat if this is you, if you're the person that's going to leave this within your organization or your business or your life.
+[19:15:39] All right, what would you need to change about the role and expectations before asking somebody to do that for you? Things to consider. So here's Harbor.
+[19:15:51] learning a career center, a fictional organization, the executive wants people to reach support beyond normal business hours using the existing team. The executive assigns a human program manager
+[19:16:03] to develop a recommendation, and this is the mission, improve access while protecting service quality. So the executive sets the outcome.
+[19:16:15] The Human Program Manager directs the work one AI workspace supports research, analysis, strategy, and communications. And in the next 46 seconds, watch for one thing.
+[19:16:27] The human question that changes the recommendation the executive sets the mission improve access beyond business hours a human manager
+[19:16:39] directs the work in one AI workspace. Research organizes evidence. Analysis compares options. Strategy proposes a pilot. Communications
+[19:16:51] Drafts the brief. The initial candidate emphasizes evening video with an access caveat. The manager asks, who does video leave out? Phone preference.
+[19:17:03] This has mattered. The revision adds phone callbacks within four potential staff hours weekly. The executive considers a conditional pilot. People remain accountable.
+[19:17:15] The executives
+[19:17:27] That's the mission. Improve access beyond business.
+[19:17:39] hours. A human manager directs the work. Sorry about that. Notice what changed. Did you notice what changed? The first draft offered evening video appointments.
+[19:17:52] The Human Manager asked who video would leave out the reviewed recommendation as planned phone callbacks. The revised design proposes three video hours and one call back hours.
+[19:18:04] weekly within the potential for our capacity. That allocation still needs a human coverage approval. So the manager must confirm access, protect, date, time, service.
+[19:18:16] and verify approved tools. So human judgment made the recommendation stronger. It is a better recommendation, not an approved launch.
+[19:18:28] So now imagine that you're the executive, and if you could type this in the chat your answer. Would you, A, approve video only? B, request more analysis without defining.
+[19:18:40] the next step or C, authorize a small pilot after access and coverage checks. What would you determine? What would you decide? Okay, we have somebody who's this.
+[19:18:52] See, okay, think about what would you need the manager to report back before expanding the service.
+[19:19:04] Our choice would be a conditional pilot after the manager verifies access and staffing coverage.
+[19:19:16] contain human handling of sensitive cases. Review evidence after four weeks before expanding. The executive says to conditions, the manager owns the work. AI supports both that executive and
+[19:19:28] the manager. So think about which of those responsibilities would you want clearly assigned in your organization or your business. So we know we're redesigned.
+[19:19:40] work, but are we redesigning how we prepare people? Could your next graduate or newest employee lead work like this, do you think?
+[19:19:52] I think someone could leave this type of work type yes or no in the chat based on what you know right now. Reliability is a requirement. Yes, Sabrina, could they recognize?
+[19:20:04] an incomplete recommendation or request a useful revision and explain why it improved the result. Knowing how to use AI is not the same as knowing how to lead AI-supported work.
+[19:20:16] which is important. Organizational transformation and workforce preparation have to happen together. We need those capabilities visible in our expectations and in the work people demonstrate.
+[19:20:28] So consider a familiar assignment, for example, produce a recommendation on improving access to a service. We might judge the final page for clarity and logic, now ask for
+[19:20:40] evidence of how the person directed and improved the work. Show the assignment that they gave the AI. Check a claim against the information. Identify a perspective the recommendation may have missed. Request a revision.
+[19:20:52] Then defend the final decision and its limits. Now, we can evaluate judgment as well as writing. For an employee, this becomes a coaching conversation. For an adult learner, it becomes
+[19:21:04] comes an assessment that reveals thinking. For a manager, it shows where someone can handle the responsibilities in the middle of that new org chart.
+[19:21:16] So what skills should leaders develop? People need to delegate an appropriate task with clear boundaries. They need to evaluate evidence and recognize what an output cannot establish.
+[19:21:28] need to coordinate with colleagues whose expertise matters. They also need to own the decision, explaining it clearly enough that someone can actually question it. AI literacy provides a really good
+[19:21:40] foundation, but practice with feedback develops the ability to lead the work. Power skills like critical thinking, communication, and sound judgment matter throughout this entire
+[19:21:52] process is really important. It's not enough for the work to just look good. Can our people explain the thinking behind it, the judgment and the decisions behind that output?
+[19:22:04] So the AI team advantage puts this into practice through my AI Ready Aim framework. AI Ready leadership begins with three actions.
+[19:22:17] can create meaningful value. Choose work that matters and to find the outcome you want to improve. I integrate AI into workflows where people remain accountable.
+[19:22:29] managers role the AI support in each review point and M mobilize your people with the resources to lead evaluate and improve AI support at work. You could test the manageable workflow and the
+[19:22:41] the people responsible before expanding it. And here's a question for you to consider. Which mission is valuable? What must a human approve? How will staff learn to question the results?
+[19:22:53] So what does this look like? So let's start with A for assess. So you can return to your organization. So for example, a college president might ask a dean to.
+[19:23:05] compare employer expectations with program outcomes, and then they can bring in the faculty into reviewing the implications. A workforce executive might ask a team lead to improve participant support and check.
+[19:23:17] whether the new process actually reaches people. And a business owner might ask a manager to turn customer feedback into a service recommendation, each is a leadership mission.
+[19:23:29] and your organization could benefit from this kind of support, do you think? Just think about that with yourselves and you can actually workshop this with
+[19:23:41] the tool I'm going to give you later. So choose one with enough value to matter and clear enough boundaries to test.
+[19:23:53] AI could help me help my team with blank. What would that be for you? AI could help my team or myself with blank. What could AI help you?
+[19:24:05] with. And you've learned a whole lot about things that you could do during the summit about how it could help. So the human manager must verify blank. That's the second question. The human manager must verify
+[19:24:17] blank. Now you add the executive decision. What would need your approval before the work moved forward? You have the beginnings of a workflow. So start with non-sensitive information and
+[19:24:29] in an approved environment based on, again, your organization. Give the manager a clear standard. Decide what evidence would justify continuing, changing, or stopping the approach. Then review what the people involved
+[19:24:41] learned. Even a workflow that needs revision can reveal a lot of things. It can reveal unclear responsibilities. It can reveal weak information and what your team needs to practice next.
+[19:24:53] And finally, we have M for Mobilize. So your two responsibilities meet right here. Redesign how work happens and prepare the people who will lead it. Stab, need, practice inside real
+[19:25:05] workflows with feedback and accountability. Managers need to supervise AI-supported work and know when human expertise matters. Adult learners and workforce participants, they need to demonstrate those
+[19:25:17] capabilities before an employer expects him on the job. It's not enough to build AI-powered organizations. We must also build an AI-ready workforce. So higher education and workforce education.
+[19:25:29] help shape the people who will lead within these changing organizations. So keep this mission you chose earlier, the human manager you pictured, and the responsibility that needs review.
+[19:25:41] My free resource is the AI Team Advantage Builder AI Power Team. It's a practical starting point. It's going to help you identify a mission, clarify human and AI responsibilities.
+[19:25:53] and begin designing a human AI workflow. It's starting questions are the ones you actually already explored today. So you already started with this project. So what valuable mission is support? Cool.
+[19:26:05] work and where must a person make the decision. So lead people in AI together and prepare the next generation do the same.
+[19:26:17] I can create value, I integrate it where people remain accountable and mobilize the people who will lead it, lead differently, prepare people differently.
+[19:26:30] work has a new org chart. The question is, are you ready to lead it? Thank you so much. I'm Dr. Sarah David. Thank you so much, Dr. Sarah David. I don't know much.
+[19:26:42] but I'm ready to lead once again. I'm ready to lead once again. You know one of the things I love about AI.SARA that you brought front and center with this presentation? When I was in my...
+[19:26:54] C sweet nine to five. There was so much that I did not know that I didn't know. And what this does is it helps us to recognize that we don't need to be.
+[19:27:06] worried about trying to change the job or change the person. We just need to redesign the way we think about bringing ourselves to the stage. And I would love for you to share with us.
+[19:27:18] one thing if we could take nothing else away from this presentation today what is the one thing that you know based on your experience that's going to help us with redesigning the way we think about leader
+[19:27:30] leadership in this era? Yes. I think it's really important that people there on this summit right now, you're in the right place, it's really important because
+[19:27:42] Work is changing and we're going to need to be learn how to work alongside AI as co-workers. And so as you're building your own business or you're moving up with an organization, it's going to be really important that
+[19:27:54] you understand how to incorporate these skills into, integrate it into the work you're doing because employers are doing that. Companies are doing it. Organizations are already doing those things.
+[19:28:06] And this is exactly where you learn is through AI in a vision and the programs that they have here are fantastic. I always come back just to get up to date on new things because every
+[19:28:18] everything's changing so quickly. Oh, I love that. Well, welcome back. I'm happy to have caught this presentation. Guys, please make sure to keep that momentum going. Give Sarah David her love.
+[19:28:30] of her flowers, her feedback. There's links there. And then there's the QR code here. We want to keep that momentum going guys as we welcome our next speaker. Thank you so much, Dr. Sarah.
+[19:28:42] for your insight. We loved the presentation. Thank you. Up next, we have another amazing speaker in artificial intelligence.
+[19:28:54] This speaker will talk about what would you stop doing using the page framework to redefine education and work with AI. She is the founder of the Brand Intelligence Think Tank.
+[19:29:06] strategic advisor, speaker, and certified AI consultant with more than 12 years of experience in product leadership and digital strategy. She is also the creator of her signature platform.
+[19:29:18] transformation, people, places, and things, which connects human behavior, environments, and systems to intelligent execution. Please welcome Terracell Bradley.
+[19:29:30] me in the comments as we welcome our next speaker.
+[19:29:42] I'm the sheriff show. Can you hear me now? Yes, but we're in some feedback.
+[19:29:54] Back your near a train station or something. Well, hold on just a second. Are you near a fun? Just a second.
+[19:30:06] Okay, so as Terri Shell gets her background going, we want to make sure that we are all saying.
+

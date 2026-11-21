@@ -1,0 +1,451 @@
+{
+  "run_a_label": "Upstream Agent-OM-Lite (phase1_cmt_confof_agent_om_lite_v1)",
+  "run_b_label": "Local Parity (phase5_expC_local_parity_run1)",
+  "1_extracted_entities": {
+    "a_source_count": 88,
+    "b_source_count": 88,
+    "source_uri_jaccard": 1.0,
+    "source_only_in_a": [],
+    "source_only_in_b": [],
+    "a_target_count": 74,
+    "b_target_count": 74,
+    "target_uri_jaccard": 1.0,
+    "target_only_in_a": [],
+    "target_only_in_b": [],
+    "a_total_rows": 162,
+    "b_total_rows": 162
+  },
+  "2_entity_ids": {
+    "shared_entities": 162,
+    "exact_entity_id_matches": 162,
+    "exact_entity_id_match_pct": 100.0,
+    "mismatch_count": 0,
+    "sample_mismatches": []
+  },
+  "3_entity_names": {
+    "exact_name_matches": 162,
+    "exact_name_match_pct": 100.0
+  },
+  "4_annotations_and_metadata": {
+    "a_metadata_records": 0,
+    "b_metadata_records": 0,
+    "a_non_null_semantic_entities": 162,
+    "b_non_null_semantic_entities": 162
+  },
+  "5_cleaned_syntactic_names": {
+    "exact_matches": 162,
+    "exact_match_pct": 100.0,
+    "diff_count": 0,
+    "sample_diffs": []
+  },
+  "6_lexical_verbalizations": {
+    "exact_matches": 15,
+    "exact_match_pct": 9.26,
+    "mean_word_jaccard": 0.6119,
+    "a_mean_char_len": 703.0,
+    "b_mean_char_len": 705.2
+  },
+  "7_semantic_verbalizations": {
+    "exact_matches": 35,
+    "exact_match_pct": 21.6,
+    "null_vs_non_null_agreement_pct": 100.0,
+    "mean_word_jaccard": 0.7024,
+    "a_mean_char_len": 707.7,
+    "b_mean_char_len": 680.2
+  },
+  "8_text_chunk_counts": {
+    "a": {
+      "total_entities": 162,
+      "syntactic_chunks": 162,
+      "lexical_chunks": 358,
+      "semantic_chunks": 314
+    },
+    "b": {
+      "total_entities": 162,
+      "syntactic_chunks": 162,
+      "lexical_chunks": 367,
+      "semantic_chunks": 304
+    }
+  },
+  "9_embedding_dimensions": {
+    "a_embedding_dim": 4096,
+    "b_embedding_dim": 4096,
+    "dimensions_equal": true
+  },
+  "10_similarity_scores": {
+    "a": {
+      "syntactic": {
+        "count_with_hits": 0,
+        "mean_top1_sim": 0.0,
+        "min_top1_sim": 0.0,
+        "max_top1_sim": 0.0
+      },
+      "lexical": {
+        "count_with_hits": 0,
+        "mean_top1_sim": 0.0,
+        "min_top1_sim": 0.0,
+        "max_top1_sim": 0.0
+      },
+      "semantic": {
+        "count_with_hits": 0,
+        "mean_top1_sim": 0.0,
+        "min_top1_sim": 0.0,
+        "max_top1_sim": 0.0
+      }
+    },
+    "b": {
+      "syntactic": {
+        "count_with_hits": 25,
+        "mean_top1_sim": 0.95505,
+        "min_top1_sim": 0.903,
+        "max_top1_sim": 1.0
+      },
+      "lexical": {
+        "count_with_hits": 12,
+        "mean_top1_sim": 0.92821,
+        "min_top1_sim": 0.90288,
+        "max_top1_sim": 0.99999
+      },
+      "semantic": {
+        "count_with_hits": 77,
+        "mean_top1_sim": 0.92111,
+        "min_top1_sim": 0.90027,
+        "max_top1_sim": 0.96323
+      }
+    }
+  },
+  "11_syntactic_candidates": {
+    "comparable_queries": 0,
+    "top1_uri_match_pct": null,
+    "mean_set_jaccard": null
+  },
+  "12_lexical_candidates": {
+    "comparable_queries": 0,
+    "top1_uri_match_pct": null,
+    "mean_set_jaccard": null
+  },
+  "13_semantic_candidates": {
+    "comparable_queries": 0,
+    "top1_uri_match_pct": null,
+    "mean_set_jaccard": null
+  },
+  "14_combined_candidate_unions": {
+    "comparable_queries": 0,
+    "mean_union_uri_jaccard": null,
+    "a_non_empty_queries": 0,
+    "b_non_empty_queries": 92
+  },
+  "15_rrf_rankings": {
+    "comparable_queries": 0,
+    "rrf_top1_uri_agreement_pct": null
+  },
+  "16_validation_decisions": {
+    "a_total_validations": 0,
+    "a_bypasses": 0,
+    "a_accepted": 0,
+    "b_total_validations": 140,
+    "b_bypasses": 12,
+    "b_accepted": 54,
+    "shared_evaluated_pairs": 0,
+    "decision_agreement_pct": null
+  },
+  "17_reciprocal_merger_and_final_alignment": {
+    "s2t_validated_jaccard": 0.3171,
+    "t2s_validated_jaccard": 0.4103,
+    "final_merged_jaccard": 0.5625,
+    "a_final_count": 13,
+    "b_final_count": 12,
+    "shared_final_pairs": [
+      [
+        "http://cmt#Administrator",
+        "http://confOf#Administrator"
+      ],
+      [
+        "http://cmt#Author",
+        "http://confOf#Author"
+      ],
+      [
+        "http://cmt#Conference",
+        "http://confOf#Conference"
+      ],
+      [
+        "http://cmt#Paper",
+        "http://confOf#Paper"
+      ],
+      [
+        "http://cmt#PaperFullVersion",
+        "http://confOf#Regular"
+      ],
+      [
+        "http://cmt#Person",
+        "http://confOf#Person"
+      ],
+      [
+        "http://cmt#ProgramCommitteeMember",
+        "http://confOf#Member_PC"
+      ],
+      [
+        "http://cmt#maxPapers",
+        "http://confOf#maxChoice"
+      ],
+      [
+        "http://cmt#writtenBy",
+        "http://confOf#writtenBy"
+      ]
+    ],
+    "only_in_a_final_pairs": [
+      [
+        "Entity1",
+        "Entity2"
+      ],
+      [
+        "http://cmt#acceptPaper",
+        "http://confOf#writes"
+      ],
+      [
+        "http://cmt#assignedTo",
+        "http://confOf#hasHomePage"
+      ],
+      [
+        "http://cmt#paperAssignmentFinalizedBy",
+        "http://confOf#hasAdministrativeEvent"
+      ]
+    ],
+    "only_in_b_final_pairs": [
+      [
+        "http://cmt#ConferenceMember",
+        "http://confOf#Participant"
+      ],
+      [
+        "http://cmt#hasConferenceMember",
+        "http://confOf#hasPhone"
+      ],
+      [
+        "http://cmt#title",
+        "http://confOf#hasTitle"
+      ]
+    ],
+    "a_metrics": {
+      "tp": 5,
+      "fp": 8,
+      "fn": 11,
+      "predicted_count": 13,
+      "reference_count": 16,
+      "precision_pct": 38.46,
+      "recall_pct": 31.25,
+      "f1_pct": 34.48,
+      "precision_exact_pct": 38.461538,
+      "recall_exact_pct": 31.25,
+      "f1_exact_pct": 34.482759,
+      "tp_pairs": [
+        [
+          "http://cmt#Administrator",
+          "http://confOf#Administrator"
+        ],
+        [
+          "http://cmt#Author",
+          "http://confOf#Author"
+        ],
+        [
+          "http://cmt#Conference",
+          "http://confOf#Conference"
+        ],
+        [
+          "http://cmt#Person",
+          "http://confOf#Person"
+        ],
+        [
+          "http://cmt#ProgramCommitteeMember",
+          "http://confOf#Member_PC"
+        ]
+      ],
+      "fp_pairs": [
+        [
+          "Entity1",
+          "Entity2"
+        ],
+        [
+          "http://cmt#Paper",
+          "http://confOf#Paper"
+        ],
+        [
+          "http://cmt#PaperFullVersion",
+          "http://confOf#Regular"
+        ],
+        [
+          "http://cmt#acceptPaper",
+          "http://confOf#writes"
+        ],
+        [
+          "http://cmt#assignedTo",
+          "http://confOf#hasHomePage"
+        ],
+        [
+          "http://cmt#maxPapers",
+          "http://confOf#maxChoice"
+        ],
+        [
+          "http://cmt#paperAssignmentFinalizedBy",
+          "http://confOf#hasAdministrativeEvent"
+        ],
+        [
+          "http://cmt#writtenBy",
+          "http://confOf#writtenBy"
+        ]
+      ],
+      "fn_pairs": [
+        [
+          "http://cmt#ConferenceMember",
+          "http://confOf#Member"
+        ],
+        [
+          "http://cmt#Paper",
+          "http://confOf#Contribution"
+        ],
+        [
+          "http://cmt#PaperFullVersion",
+          "http://confOf#Paper"
+        ],
+        [
+          "http://cmt#ProgramCommitteeChair",
+          "http://confOf#Chair_PC"
+        ],
+        [
+          "http://cmt#SubjectArea",
+          "http://confOf#Topic"
+        ],
+        [
+          "http://cmt#email",
+          "http://confOf#hasEmail"
+        ],
+        [
+          "http://cmt#hasAuthor",
+          "http://confOf#writtenBy"
+        ],
+        [
+          "http://cmt#hasBeenAssigned",
+          "http://confOf#reviewes"
+        ],
+        [
+          "http://cmt#hasSubjectArea",
+          "http://confOf#dealsWith"
+        ],
+        [
+          "http://cmt#title",
+          "http://confOf#hasTitle"
+        ],
+        [
+          "http://cmt#writePaper",
+          "http://confOf#writes"
+        ]
+      ]
+    },
+    "b_metrics": {
+      "tp": 6,
+      "fp": 6,
+      "fn": 10,
+      "predicted_count": 12,
+      "reference_count": 16,
+      "precision_pct": 50.0,
+      "recall_pct": 37.5,
+      "f1_pct": 42.86,
+      "precision_exact_pct": 50.0,
+      "recall_exact_pct": 37.5,
+      "f1_exact_pct": 42.857143,
+      "tp_pairs": [
+        [
+          "http://cmt#Administrator",
+          "http://confOf#Administrator"
+        ],
+        [
+          "http://cmt#Author",
+          "http://confOf#Author"
+        ],
+        [
+          "http://cmt#Conference",
+          "http://confOf#Conference"
+        ],
+        [
+          "http://cmt#Person",
+          "http://confOf#Person"
+        ],
+        [
+          "http://cmt#ProgramCommitteeMember",
+          "http://confOf#Member_PC"
+        ],
+        [
+          "http://cmt#title",
+          "http://confOf#hasTitle"
+        ]
+      ],
+      "fp_pairs": [
+        [
+          "http://cmt#ConferenceMember",
+          "http://confOf#Participant"
+        ],
+        [
+          "http://cmt#Paper",
+          "http://confOf#Paper"
+        ],
+        [
+          "http://cmt#PaperFullVersion",
+          "http://confOf#Regular"
+        ],
+        [
+          "http://cmt#hasConferenceMember",
+          "http://confOf#hasPhone"
+        ],
+        [
+          "http://cmt#maxPapers",
+          "http://confOf#maxChoice"
+        ],
+        [
+          "http://cmt#writtenBy",
+          "http://confOf#writtenBy"
+        ]
+      ],
+      "fn_pairs": [
+        [
+          "http://cmt#ConferenceMember",
+          "http://confOf#Member"
+        ],
+        [
+          "http://cmt#Paper",
+          "http://confOf#Contribution"
+        ],
+        [
+          "http://cmt#PaperFullVersion",
+          "http://confOf#Paper"
+        ],
+        [
+          "http://cmt#ProgramCommitteeChair",
+          "http://confOf#Chair_PC"
+        ],
+        [
+          "http://cmt#SubjectArea",
+          "http://confOf#Topic"
+        ],
+        [
+          "http://cmt#email",
+          "http://confOf#hasEmail"
+        ],
+        [
+          "http://cmt#hasAuthor",
+          "http://confOf#writtenBy"
+        ],
+        [
+          "http://cmt#hasBeenAssigned",
+          "http://confOf#reviewes"
+        ],
+        [
+          "http://cmt#hasSubjectArea",
+          "http://confOf#dealsWith"
+        ],
+        [
+          "http://cmt#writePaper",
+          "http://confOf#writes"
+        ]
+      ]
+    }
+  }
+}

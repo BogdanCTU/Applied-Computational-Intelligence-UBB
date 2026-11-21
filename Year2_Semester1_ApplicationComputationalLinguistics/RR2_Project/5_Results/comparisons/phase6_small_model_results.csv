@@ -1,0 +1,11 @@
+experiment_group,experiment_id,profile,chat_model,embedding_model,embedding_dim,similarity_threshold,tool_routing_mode,indent_prompt,predicted_count,tp,fp,fn,precision_pct,recall_pct,f1_pct,runtime_s,validation_llm_calls,validation_bypasses,router_calls,prompt_tokens,completion_tokens,total_tokens
+E1_run1,phase6_E1_qwen25_3b_baseline_run1,local_4b_baseline,qwen2.5:3b,nomic-embed-text,768,0.9,deterministic,True,6,4,2,12,66.67,25.0,36.36,589.4561,59,12,0,3828,6514,10342
+E1_run2,phase6_E1_qwen25_3b_baseline_run2,local_4b_baseline,qwen2.5:3b,nomic-embed-text,768,0.9,deterministic,True,6,4,2,12,66.67,25.0,36.36,492.7307,59,12,0,3828,6425,10253
+E1_run3,phase6_E1_qwen25_3b_baseline_run3,local_4b_baseline,qwen2.5:3b,nomic-embed-text,768,0.9,deterministic,True,6,4,2,12,66.67,25.0,36.36,490.4859,59,12,0,3828,6425,10253
+E2_optimized_prompt,phase6_E2_qwen25_3b_optimized_prompt,local_4b_optimized,qwen2.5:3b,nomic-embed-text,768,0.9,deterministic,False,6,4,2,12,66.67,25.0,36.36,490.0852,59,12,0,3592,6247,9839
+E3_router_det_4ent,phase6_E3_qwen25_3b_router_det_4ent,local_4b_optimized,qwen2.5:3b,nomic-embed-text,768,0.9,deterministic,False,1,1,0,15,100.0,6.25,11.76,0.5671,0,2,0,0,0,0
+E4_router_llm_4ent,phase6_E4_qwen25_3b_router_llm_4ent,local_4b_optimized,qwen2.5:3b,nomic-embed-text,768,0.9,llm_json,False,1,1,0,15,100.0,6.25,11.76,28.7254,0,2,12,2028,336,2364
+E5_mxbai_1024d,phase6_E5_qwen25_3b_mxbai_1024d,local_4b_optimized,qwen2.5:3b,mxbai-embed-large,1024,0.9,deterministic,False,6,4,2,12,66.67,25.0,36.36,449.4567,52,12,0,3115,5759,8874
+E6_tau085,phase6_E6_qwen25_3b_tau085,local_4b_optimized,qwen2.5:3b,nomic-embed-text,768,0.85,deterministic,False,6,4,2,12,66.67,25.0,36.36,2152.8817,274,12,0,16492,29786,46278
+E6_tau0875,phase6_E6_qwen25_3b_tau0875,local_4b_optimized,qwen2.5:3b,nomic-embed-text,768,0.875,deterministic,False,6,4,2,12,66.67,25.0,36.36,1268.4756,163,12,0,9833,17473,27306
+E7_deepseek_r1_15b,phase6_E7_deepseek_r1_15b_full,local_4b_reasoning,deepseek-r1:1.5b,nomic-embed-text,768,0.9,deterministic,False,6,4,2,12,66.67,25.0,36.36,2392.2484,49,12,0,1708,61555,63263

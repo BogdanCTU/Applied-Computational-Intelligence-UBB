@@ -1,0 +1,221 @@
+[19:30:42] And thank you for everyone in the room. I'm excited to be here with you all today. My journey with AI actually began 15 years ago when I started exploring machine learning.
+[19:30:54] through a common course on IBM's learning platform. I was also learning Python and began to understand what was possible with technology. For fast sports
+[19:31:06] Several years, I eventually started digging into open AI technology. I created my first digital product and developed a framework for improving AI generated images during that time.
+[19:31:18] I was working in a variety of AI tools practically every night and sometimes waking up in the morning. I realized I could bring my own ideas and solutions to fruition fast.
+[19:31:31] I was partnering with AI to build faster, examining the evidence, and reaching assessment sooner. But I was still doing thinking, doing the thinking, and it was me making.
+[19:31:43] incisions. Oh, by the way, I am Terri Shell Bradley. I am a strategic advisor, speaker, and of course, and a certified AI consultant. I also am the founder of brand intelligence.
+[19:31:55] think tank and through my career I worked with some of the largest brands in the world and today I partnered with organizations and executive teams to navigate transformation and prove how they are
+[19:32:07] operate and use AI strategically. Now, let me ask you something. What if the greatest opportunity AI offers you isn't helping?
+[19:32:19] need to do more, help you to recognize what you no longer need. Think about it for a moment. And that brings me to the question I want you to carry throughout the session. What would you stop?
+[19:32:31] not what app would you add, or how much can you produce, but what would work to describe? What would work deserves to be questioned?
+[19:32:43] And you know we have to talk about that disclaimer. The views and tools shared in this presentation are my own and are not endorsed by the AI Education Summit. I'm independent.
+[19:32:55] third-party presenter and consultant in the AI certified consultant program. My presentation is based on my expertise and experience.
+[19:33:07] Now, all right, let's get involved in the conversation. I'm going to take a quick pulse of the audience. So I'm going to ask a question and I'm going to read the answer.
+[19:33:19] and you drop the answer in the chat. Are you using AI to improve how you work or are you just doing more work faster?
+[19:33:31] A, mostly doing the same work faster. B, using AI to redefine how we work. C, a little bit of A or B, and then D. You haven't even figured it out yet.
+[19:33:43] Okay, it's a variety of people in here. Okay, I'm the ones that are cutting for you that you have to do something about that. Okay, let's see.
+[19:33:55] So efficiency isn't necessarily transformation. Just because we're getting some
+[19:34:07] something done faster, doesn't mean we're fundamentally changing the way we work. And that's what I want us to think about today. Are we simply using AI to accelerate?
+[19:34:19] always done, or are we willing to question the work itself because real transformation requires us to rethink not just our tools, but our processes, our decisions and the world.
+[19:34:31] people play. So let's look at what it takes to move beyond efficiency and correct meaningful transformation. That's where teach comes into place.
+[19:34:43] Before we ask what AI can do, we need to ask what the work requires. Not every task should be automated. Not every process should survive. And not every decision.
+[19:34:55] and belongs to technology. The objective is meaningful value, not simply more activity.
+[19:35:07] Teach. T is for trend. Remove low value work. E is ease. Simplify what remains before introducing any type of technology.
+[19:35:19] And then A, is for automate, let technology execute reliable, predictable tasks. And C, collaborate, use AI to strengthen human capabilities so you want to partner with.
+[19:35:31] AI. And in human land or a live corporation is called it human in the loop, protect judgment and accountability.
+[19:35:44] So these are a couple of words. I just think sounds similar and some people get them confused. I want to make sure we're all on the same page. They're not identical so.
+[19:35:56] Automation means the system performs a task. Automation means AI makes a person more capable and collaboration
+[19:36:08] how the person and AI are working together. Human-led or human-in-the-loop means the person remains responsible for the decision, and in its education, those distinctions matter.
+[19:36:20] Now that you have seen how teaching can apply to lesson plans, let's look at another
+[19:36:32] example on following it all through the way. So imagine a group of educators reviewing a student's academic process to determine whether additional support
+[19:36:44] is needed. They gather updates and classroom observations, review information, identify concerns, and recommend support to communicate the decision and follow up on progress.
+[19:36:56] sound straightforward, right? But here's the challenge. The same information may appear in multiple forms, emails and documents. Educators spend valuable time gathering and repeating it for
+[19:37:08] and set a focusing on the decision that mattered. The team needs one clear summary to determine what support is needed, who will provide it, and how progress which we can.
+[19:37:20] track. Now let's look at the six steps across the bottom. Gather, review, prioritize, recommend and communicate and follow.
+[19:37:32] How should people enter the same update three times? If it's repeated, repeated review or report doesn't help the team decide what, decide the help, question whether it needs to.
+[19:37:44] be used to exist. This isn't a permission to remove required records. We keep the evidence and safeguard what matters while removing unnecessary repetition.
+[19:37:56] If it should, why is it, why is it so hard? Instead of separating forms, gather emails confusing.
+[19:38:08] offs imagining one shared update for the format and one meeting brief simplified before introducing technology automates.
+[19:38:20] Now, which one main task are repetitive and structured, depending on the number of technologies to execute, transforming approved updates and categorizing routine items?
+[19:38:32] victims, drafting summaries, and sending reminders may qualify, but we still need to meet rules and accuracy checks and a way to escalate.
+[19:38:44] Now, where can AI strengthen a human? This is where they're going to partner. Other, a better way to say it is work to AI and people partner together, collaborate is where my own AI.
+[19:38:56] journey connects with this framework. I could bring an idea or a question and AI help me explore it, evaluate information more quickly. In our example, educators frames questions and
+[19:39:08] the privacy boundaries. AI helps find the patterns and draft a brief, educate or check context, and challenge the output. Collaboration is the relationship and augmentation.
+[19:39:20] is the benefit. And finally, human led or for human in the loop. And I can help organize what we know.
+[19:39:32] educators interpret the needs. Decide what help is needed. Communicate with the people involved and remain accountable for follow-up. Speed matters, but relationships, context, and human responsibility.
+[19:39:44] that are more when the decision has consequences. Before opening an AI tool, prepare the work, map the steps, define the outcome.
+[19:39:56] name the pain point or the friction, and establish your privacy or their guardrails or policies or what must be in place. Then if useful ask an approved...
+[19:40:08] AI tool to challenge your first pass. Now let AI help analyze them. Here's an example. Here's an XR.
+[19:40:20] of the prompt. I'll read part of the prompt, redefine this support planning review workflow to reduce preparation work and improve follow-up. Educators gather updates.
+[19:40:32] observations, notes on health already provided. They duplicate updates across forms and emails and some wise means of re on health, communicate decisions and track actions.
+[19:40:44] So it describes the workbook as AI applies each part of teach and requests it improves sequence along with the risk assumptions and require a human review.
+[19:40:56] So this is an example and you're going to get the actual full prompt to use then. Now let's put your judgment to test. When I say
+[19:41:09] student support, I'm referring to academic assistance, resources, or accommodations a student may need to succeed. So here's a scenario. AI analyzes a student support
+[19:41:21] information and recommends a course of action. An experienced educator disagrees. What should actually happen? Let's look at your choices. If you are going to read all of the choices and if you drop a
+[19:41:33] B, C, or D into the chat. So A, follow AI because it's recommended based on one more data. B, follow the educator because experience should always take priority for C.
+[19:41:45] examine the evidence, challenge both sets of assumptions, and make informed human decision, or is it D, request another AI recommendation followed with whichever answers appears most.
+[19:41:57] Okay, we all have it right. It is C. Some people get it wrong. So examine the evidence, challenge both sets of assumption and make an informed human.
+[19:42:09] decision. So that's good. That's good. Now, suppose I suggested automatically scoring concerns and escalate only high priority ones.
+[19:42:21] but who decided what counts as urgent and what happens with incomplete information. Could context change the priority? That's why a person must receive.
+[19:42:33] the consequential decisions before anything is deport, deport lies or escalated. AI can recommend people remain accountable.
+[19:42:45] Look at the difference. First, we had multiple inputs. We had duplicate reporting manual organization.
+[19:42:57] and manual follow-up. Now, after we enter the prompt in our approved AI tool, now we have a standardized intake system, assisted organization, and analyst's clear human
+[19:43:09] in review. Educator led decisions. We have tracked actions and we haven't simply sped up the old workflow. We have redesigned it how the work moves and protects.
+[19:43:21] who owns the decision. Now let's bring everything we've discussed back to our own work. I want you to think about one workflow you work
+[19:43:33] repeated regularly. It could be sorting emails, preparing for meetings, or following up on decisions, choosing something that happens often creates some friction, just a pain point, and is within your ability to influence.
+[19:43:45] You don't need to solve anything just yet. Right now, I want you to identify one workflow you believe could be improved. Take a moment. Now, keep that exact workflow.
+[19:43:57] in mind because we're going to use it on the next slide. Let's take that same workflow. You just identify and put it in the teach work framework. We're not.
+[19:44:09] starting over with the new example. We're going to work with the exact same work boat you just selected. So you haven't told me, but you know what that is. And we're going to ask five questions. What could you stop doing?
+[19:44:21] what could become simpler, automate what could technology execute, and then collaborate. Where can AI strengthen you?
+[19:44:33] or your team, human let what should people continue to own. As for example, if your workflow is sorting emails, perhaps one change is moving newsletters on
+[19:44:45] automatically into a read later folder. And let's return to the question we started. What would you stop doing?
+[19:44:57] Think about the workflow you just identified and one change you selected. Here's my challenge. What will you do differently tomorrow? Maybe you'll eliminate one unnecessary step. Maybe you'll simplify your
+[19:45:09] process, or maybe you'll reconsider or AI actually belongs. Whatever you choose, start with one change, because you know your workflow better than me, and meaningful
+[19:45:21] to begin with major overhaul, sometimes it begins with questioning something you have it always done. AI will continue to become one, become more capable and the capability is not
+[19:45:34] decision. The decision is what we choose to do with it. Don't begin with what else can AI help me do. Begin with what work no longer needs to be done. And sometimes the most intelligent
+[19:45:46] decision is what we're willing to redefine. And if you are like, if you like to put teach into practice, stand your close to download the teach framework guideline, y'all.
+[19:45:58] also receive the complete AI prompt to help you apply your framework to your own work club. And if you're interested in bringing tea to your organization, you can explore the opportunity. Also, it's been a pleasure speaking.
+[19:46:10] this to everyone you could have spent your time with anyone today and I want to leave you with something to the speakers and everyone in the room if we are all great and if someone has not told you that today
+[19:46:22] I think you are great too. I'm signing off. I am Terry Shell Bradley. Thank you so much, Terry Shell, and you are great. You are great, and this was a great presentation.
+[19:46:34] The Teach framework is so applicable. Guys, please give Teri Shell her flowers, her fire, and her feedback. The feedback link is being
+[19:46:46] in the chat. This presentation was so on point. I really am able to now think through teach. As an educator, I can think through teach myself. Thank you so much.
+[19:46:58] Terri Shell excellent presentation and guys. Thank you for participating. I saw you responding in the chat. This is great. Please give Terri Shell her flowers fire and her feedback.
+[19:47:10] by clicking on the link or by choosing the QR code. Awesome job. I see that. I see the flowers. Thank you so much. Keep that momentum going guys as we welcome our next speaker.
+[19:47:22] to the stage. Up next we have another
+[19:47:34] amazing speaker in artificial intelligence. This speaker will talk about, from syllabus to command center, AI dashboards for educators. She is the founder of the Care Institute for AI
+[19:47:46] Strategy and creator of the care model for human-centered AI strategy with more than 20 years in education and an M&A in counseling psychology. She is also the author of the AI
+[19:47:58] classroom revolution beyond the Blackboard and was named one of Black leaders worldwide's women you need to know for 2026. Please welcome Kelly Spain. So join me in the comments.
+[19:48:10] as we welcome our next speaker.
+[19:48:22] I hope you are. I hope you are. Let me get my things set up. Let me share my screen and we're going to get started. While I'm doing that, I just want to thank the little sisters.
+[19:48:34] I have been a part of this platform since 2024. And so yeah, I'm one of the OGs. I'm one of the OGs. And so I am.
+[19:48:46] So glad to be a part of this summit, to be able to show you all the things that's going on in my world.
+[19:48:58] Please do me. We see the slide.
+[19:49:10] Here we go. Okay. So you can see my slide. Correct. Awesome. Awesome. Awesome. All right. Well, thank you.
+[19:49:23] Thank you so much for being here. And again, I want to thank the little sisters, Alicia and Loretta and all of the AI and the vision team and the summit team, the coaches and everybody for this amazing
+[19:49:35] platform. Over the next few minutes, I'm going to talk about how AI can support educators. So we'll look at how we prepare students for a working world that are
+[19:49:47] already uses AI and how that same technology might help with some of the work we all carry. But before we jump in, anytime I do a training, I always want to know who I'm talking to.
+[19:49:59] So, put a one in the chat if you are a K-12 educator and then put a two in the chat if you are a higher ed educator.
+[19:50:11] see who's out here, right? So we see two, we see one, two. All right. So we, I see a lot of my higher ed education.
+[19:50:23] And I'm so glad to see because this is for you. The K-12, I'm not going to leave you out at all because I do have something for you.
+[19:50:35] as well, but today I will be representing the higher ed world. So just a little bit about me. I am the founder of
+[19:50:47] of ABC's Mom Biz and the Care Institute for AI Strategy. I also created the Care Model for Human Centered AI Strategy. I am also the proud author of
+[19:50:59] the A.I. class and revolution beyond the Black Board. My work is really about helping people make thoughtful decisions about A.I. Where can it help? What needs to be double checked?
+[19:51:11] And where do people still need to make the final call themselves? Yes, that human aspect. So that shows up in the training, faculty developments, curriculum work, and
+[19:51:23] building workflows that support the people doing the work. And today I'm bringing all of that into a place every educator knows well, our courses.
+[19:51:35] So, we're going to talk about two things that I care about.
+[19:51:47] students to leave our classrooms ready for the world they're walking into, right? Second, we know educators are already caring a lot. So as we talk about preparing students to
+[19:51:59] use AI responsibly. I also want us to ask a second question, how can AI support you? And we're going to start with something you already have, your syllabus.
+[19:52:11] So let's read the disclaimer that we've all heard for the past three days. The views and tools I'm sharing today on my own.
+[19:52:23] They are not endorsed by the AI Education Summit. I am presenting independently, and I'm also a consultant in the AI Certified Consultant Program. As you listen, please.
+[19:52:35] Keep in mind your own institution's policies, approved tools, and course requirements. Okay.
+[19:52:47] So, we're going to start with a brief opening to set the stage for this conversation. You know what? I don't think I shared this out. Let me do that really quickly. Share.
+[19:52:59] All right, let's go. Before we talk about whether AI belongs in a
+[19:53:11] in our classrooms, I want to show you where our students are going.
+[19:53:59] So here's something that you may
+[19:54:12] not have caught, but in the beginning that was my AI twin. I wrote every word it said and how I decided how to use it. And that's a perfect example of the response.
+[19:54:23] ability that comes with these tools. So the workplace examples in
+[19:54:36] that video was why this conversation matters. Our students are going to meet AI in different ways depending on their field and that brings up a very important question.
+[19:54:48] If the working world is what we're preparing them for, then where are they supposed to learn how to work with AI responsibly?
+[19:55:00] Some students are already experimenting with these tools. We all know that, right? But knowing how to get an answer isn't the same as knowing how to evaluate that answer. Can they tell when
+[19:55:12] information needs checking? Can they explain what they accepted and what they rejected? Do they know they need to show the work on their own? Those decisions students need chances to
+[19:55:24] practice. So where does that practice belong? So we're having two different conversations. I've been in many set of education.
+[19:55:36] in settings, classrooms, the educators lounge. And there's two conversations that goes on. The first one is about restriction, right? Some assignments need to...
+[19:55:48] to show what a student can do on their own and an educator can have a very good reason to restrict AI there. But then the second one is about preparation. Students also need chances.
+[19:56:00] to learn how to use AI responsibly when it is appropriate. So where are you today? Type 1 for restricting, 2 for preparing, or maybe it's both. Let me see.
+[19:56:12] those answers. We see two, okay, I had a lot of.
+[19:56:24] preparation. Okay, good. I'm seeing some both. So for those who've chosen both, both can be true at the same time. One assignment might allow AI and as students to
+[19:56:36] explain how they used it, show what they checked, and own the final work. And then another assignment might ask them to show what they know without it. Those choices should tie back to what we want.
+[19:56:48] students to learn and what the assessment needs to show. AI doesn't have to belong in every assignment, but students need somewhere to build the judgment that responsible use
+[19:57:00] takes and somebody has to decide where those chances go, how to explain them and how to access them. That somebody is us educators.
+[19:57:12] So educators, okay, this again, this is for you, my higher ed. How many classes are you carrying this term? I want to see that number dropping a chat.
+[19:57:24] Those of you who are educators, how many classes? Let's see, four, three.
+[19:57:36] I knew there was one. I knew there was one. Yes, too. All right. So in every one of those classes comes with its own prep, its own assignments.
+[19:57:48] feedback and student questions. Then you're assessing outcomes, answering emails, finishing reports, and jumping between platforms. And now we're
+[19:58:01] you to think carefully about AI literacy too. That work matters, but we have to take seriously the workload of the people we're asking to do it. So my next question is this. How?
+[19:58:12] How can this technology help you with the work you already carry? So think about where your course information actually is.
+[19:58:25] Your syllabus says what students should learn. Assignment instructions say what they'll do. Your rubric says what you'll assess. Do dates live in the LMS and remove.
+[19:58:37] Minders might be somewhere else totally entirely different. And you're the one holding all these connections where in your head, right? Which assignment measures each outcome?
+[19:58:49] Is anything missing? Have I made an AI expectations clear? We all have the information. We just have to open five different things to see how it all fits together.
+[19:59:01] What would help is one view that pulls it all together so we can look at it and make decisions. That's the connection problem and that's what I am here to help.
+[19:59:13] So, if we're asking educators to carry this, the same technology should help carry some of the load.
+[19:59:25] Let's start with the syllabus. First, we identify the outcomes and the assessments we already have. Then, AI suggests connections. What looks aligned, what might be...
+[19:59:37] what might be partial and where the evidence could be missing. But here's the key. The educator makes the call. We will always be at the center. A suggested connect.
+[19:59:49] action still has to be checked against what students actually do and what the rubric actually measures. And if the syllabus only lists an assignment title, I may need the instructions.
+[20:00:01] or the rubric before I decide anything. The Command Center puts this whole review in one view, and it gives you a place to approve, reject, or revise every Friday.
+[20:00:13] So let's go take a look at that.
+[20:00:25] So this sample I am using would be the Psychology 101. I'm a Psychology major so I will always have all the
+[20:00:37] psychology, all things into all of my trainings. I will say that I use Claude Code and Codex to develop this Educators Command Center.
+[20:00:49] If anybody knows me, I am a truly an app girl. So anything I see a need of, I'm going to develop an app for it. So I already loaded it.
+[20:01:01] for time on consumption. I loaded it and I'm going to already show you how it's going to be set up. So if you look here
+[20:01:13] at the course at a glance. The syllabus that we uploaded here, it has four outcomes, five assessments, three are aligned, and then there's one gap.
+[20:01:25] and then four pending and zero approved. So let's now look at the table. So each one of these dots or each one of these learning outcomes are
+[20:01:37] listed by the assessments that it provides. So each one of the dot shows where students actually demonstrate an outcome. A field dot means it's measured.
+[20:01:49] A ring, if it comes up, means it's partly measured. And then no dot means it's not measured at all. And as you can see, learning outcome three.
+[20:02:01] analyzing ethical issues and psychological research is in red because there's no assessment that is there to measure it. So here is why.
+[20:02:13] So we're going to scroll down to your review then it lists all of your learning comms in your review and here it is where you can do a proof reject or even add a note.
+[20:02:25] All right, so why is learning outcome three not reviewed? Because there is an ethical gap, there's a gap in between the learning
+[20:02:37] come and then the measures, there's no measure it assessed for that particular outcome. So ethics is taught in weeks three and four, but no assignment actually asks students to answer.
+[20:02:49] lies an ethical issue. And here's the line right here that says it exactly from our syllabus. So I can check it myself instead of just taking a word for it.
+[20:03:01] Okay, and then before I go in to approve anything, what do you think I should do? Approve this finding, check more evidence first.
+[20:03:13] type a proof or check in the chat. Let me see what you think.
+[20:03:25] All right check check somebody said add note check and add note okay awesome awesome all right good so just to remember
+[20:03:38] either answer proves the point because again, you are the one that is deciding. So I'm going to approve it and I'm also going to add a note. All right, let's see.
+[20:03:49] And the note says, add an ethics case analysis to the mini project so students analyze an
+[20:04:02] issue in research okay and then I'm going to save it. Then I'm going to approve and then because all of the other ones are aligned we're
+[20:04:14] want to approve, approve, and approve, okay? All right, so now my decision and my plan are safe together right on this outcome. If I come back next time or somebody asks how.
+[20:04:26] I'm addressing this calm. It will already be there. But approving doesn't fix anything. The fix is the next step. And that part is mine. So I go into the mini project.
+[20:04:38] and add that ethics case analysis and then I update my syllabus. Then when I go back to map the updated syllabus, that red dot will then show the
+[20:04:50] the green dot or the no dot will now show the green dot. So outcome three will be measured in the A. I found the gap, but I decided how to close it.
+[20:05:02] So if we scroll up to AI expectations by assignment, one more thing will show you. It also shows where the AI is restricted in the assessment, where it is allowed.
+[20:05:14] where some of it may be unclear for each assignment. So students aren't left guessing. And then my favorite part is this asking.
+[20:05:26] your command center. I can ask my course a question in plain language. Remember the question we started with? Where are students supposed to learn to use AI responsibly?
+[20:05:38] Okay, well then let's ask it. The policy asks students to verify claims, protect personal information, and disclose AI health. That is the real language.
+[20:05:50] My syllabus tells the students, again, let's make sure we're verifying. We're protecting all of our PIs and we're also disclosing. But no assignment.
+[20:06:02] them to practice it. The expectation is there, but the practice is not. So the last line says your call. It suggests one assignment where I could add a short note about how
+[20:06:14] they use AI and what they checked. It doesn't decide for me, the instructor decide. So AI surface the pattern, I make the call.
+[20:06:26] So, let's go back.
+[20:06:38] back to the beginning. So this now brings you back to the courses that you teach. What
+[20:06:50] was actually measured. What would you change if the evidence isn't there? You don't have to start by reviewing a whole program or rebuilding a course. Start with the one outcome.
+[20:07:02] and the evidence you already have. Figure out what you know and what you still need to check and one improvement makes worth making. So get this and try this.
+[20:07:14] with your own syllabus. I'm going to now offer you the QR code on your screen. This is your free command center kit. Go ahead and scan it now. My website and link.
+[20:07:26] in information or email or there too if you'd like to stay connected. Here's the last thing I want to leave you with. AI can help us examine the information. A command center can help us bring it together.
+[20:07:38] but our judgment is what gives that information its educational value. Thank you so much for spending your time with me. Hold on to that outcome you typed in that chat because that's your first step.
+[20:07:50] for the Command Center. Thank you. Awesome, awesome, awesome job, Kelly. Please give Kelly her flowers. I love that when you.
+[20:08:02] And then you said hold on to that outcome because we so often forget that there has to be an intention behind all of this AI work. Now, Kelly, I don't know if you are.
+[20:08:14] be yesterday, but I talked about being a data geek and how much I love dashboards. Yes. Yes. I'm adding another dashboard. Absolutely.
+[20:08:27] Okay, thank you so, so much. One thing that I did want to step into with you very quickly was just how being a part of the AI console.
+[20:08:39] program helped you with navigating this new way of sharing information.
+[20:08:51] program. Like I said, since 2024, I consider myself one of the OG cohorts. I mean, two or three, right? So I was there from in the beginning. And the actual
+[20:09:03] of AI since then to now has been absolutely incredible. I always make sure even my business even in the academia.
+[20:09:15] space that I am in for my nine to five, always make sure that I am keeping up. I am staying attuned. I am staying, you know, abreast of all the changes because listen, even last.
+[20:09:27] week, AI has changed. And so if we as educators can make sure that we are always keeping abreast of it, you know, it's a tool. It is used to be my AI twin.
+[20:09:39] said AI assists educators but educators always make that last call so it's a tool and as long as I'm going to be in this this consulting program and always be be look be
+[20:09:51] to all of the new trends of AI. I'm going to stay, stay, stay tuned and stay abreast. Oh, I love that. Being a part of the consultant program helps her to stay.
+[20:10:03] a tune and as a breast as an educator because we have got to stay on top of the changes. And as you said, AI changed just last week. A couple months ago, we had a whole new model.
+[20:10:15] also you have to keep a breast and the AI consultant program helps you to do that. So I'm just asking for support to just drop the link to book a call to participate.
+[20:10:27] to talk with somebody, get more information. I also saw earlier where someone was mentioning about getting VIP already, but they wanted to do this in person. So the first step...
+[20:10:39] That is, of course, getting the VIP so you can go back and see all of the amazing things shared by our different educators that came on and talked about AI and education.
+[20:10:51] through 12, higher ed, continuing ed, elder ed, no matter what level of educator you are, there has been something for you. And if you missed it, the best way to
+[20:11:03] is to get that VIP link. No, we are getting ready to go for a break, but before you go take your break. I need y'all to know we got some goodies.
+[20:11:15] after the break. Not only as a reminder, do we have Ava, our 13 year old superstar that's gonna come on here and teach us some stuff, but the
+[20:11:27] Alicia herself is going to be joining us after the break. Okay, so you know guys that it is about to get lit up in here after we take our
+[20:11:39] break. I see her in the chat. Hey, hey, Alicia. Hey, hey, I'm so excited about after the break. Okay, so it's literally just a few minutes. There's usually a jam session. I always
+[20:11:51] myself jamming but we are about to get turned all the way up on this fabulous sensational Saturday after we come back from the break so make sure that you not only grab yourself a
+[20:12:03] snack and, you know, run to the restroom, et cetera, but drop the link, share it with somebody so they can join and help us close out the AI Education Summit in- Recording Stop.
+[20:12:15] fashion. Alright, so in 10 minutes time, I expect to see you guys back here. Come back with a friend. Come back. Reporting in progress. Okay. After the break, we're about to get even more.
+[20:12:27] more lit than we have been all morning. See you guys in 10 minutes.
+[20:12:39] I think they can make it a better place.
+[20:12:51] I know this love was brighter than tomorrow.
+[20:13:03] And there's no class, no person, get me
+[20:13:52] You know why there's a love that cannot lie Love is strong and only cares what you're hoping
+[20:14:04] You see this weekend I feel existing and starting
+[20:14:28] Let it play.
+[20:14:40] I need for God.
+[20:17:04] Amen.
+[20:17:53] the world we live once.
+[20:18:05] It's gonna be real good Gonna make a difference I'm gonna make it right
+[20:18:17] I turned up a collarbone My favorite winter code This thing is a blowing mama
+[20:18:29] See the kids in the street Without enough to eat Who am I to be blind? Rectaining I can see the enemies of the street
+[20:19:29] It's kind of the answer goes up
+[20:19:53] Bye!
+

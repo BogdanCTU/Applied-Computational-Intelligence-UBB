@@ -1,0 +1,149 @@
+everyone and welcome to node 26.
+We're so excited to have you joining us today. Up next, we have Octum Wing presenting Agent Emery Beyond Vectors. We're looking so forward to a great session, so without further ado,
+do over to you. Great. Hello everyone. I'm Oxford from Clickhouse and as you all know, yeah, Clickhouse is one of the most.
+to use the open source data warehouse and the new hoodie is the most used graph database. So how can we combine the best part of two words? So.
+Let's begin. So let's have a serial like, wouldn't some boss asking the data agent, what's a net renewal effect last time?
+And sometimes our agent will get the wrong server quickly. But sometimes it will go wrong. In this case, it will give us the revenue.
+As we can know, the net value is not that, because the response is not counted. So what was in the memory cost that?
+Well, after asking some questions like, what's your best room you want me to impact like my soul? The room is very hard to hear. So if we want to use something like that, just wait.
+her search and finding the most relevant talk or knowledge from age memory or long-based skills will go to something like that, revenue, because some will order up.
+all those amount. But then the wrong answer comes up because it's similar he's higher than the rounds. So when we
+So, we will find there's another conclusion from the financial rule. The next revenue should be equal to other matters to reforms.
+But even two, both are recall. The older notes run the first cause the most, the revenue is keywords or that sentence.
+So, what can we do to make it better, to make it an agent answering possible, press it, press it.
+Today, most agent memory works like first user custom chart and two output, and it's time to embed it in the story in the vector index.
+And then when we try to recall, there's a top key by similarity, and we just, most of the agent does pay things to pay the accountant to recall.
+into the prompt. It's very good to funding text that talks about the same thing as across here.
+When the similarity is not the fact, what effect is it and where it comes from? We cannot kill from delta-weight.
+So, full questions, but vector index cannot answer. The first is, I think this is the most important. This still there. So,
+Often the newer decision replaces it and both text looks relevant, but who can we tell it's a right answer?
+And also, as it comes away, there are a lot of conflicts. Two memory looks like, but to make different claims, both have high score. What can we do with this?
+Does it apply here? Some fact from another project, team or user, but if we do not distinguish the different zero or different project, it's
+will be to confuse the agent. And also where did it come from? Without a link to the source, you cannot audit it or fix it.
+I think for the larger language model or agent, similarities are not the truth. A vector index tells you what it looks related, but a memory system also tells you what it is.
+still true, what is from boom and why. For context graph, for one question, like we usually do in your customer.
+like firstly let's use an example at the first slide. There's a question naturally of in APEC last month.
+on tool call, like a reservoir circle and the query that's what's in the dimensionally divided the vector. So we'll get some such...
+There are some things like the real new EQs, some of the United EQs, but it leads to the wrong answer. When?
+Maybe the first word with the agent system, it will do something like that. But if we reveal the question, but we will find that there is something missing.
+we do not exclude the reforms. So if we dig it further, we will find the narrative and national review about that.
+If we practice, we need to close our thoughts. And also, we will have some technology to know that they didn't know.
+or that all the memory is overrided by the new review. So, for Kim's knowledge,
+eight to a graph to the eight hours that we can use. For most teams, we are using some team chart like Slack, like Discord, a lot of different things like that. And mostly...
+a lot of knowledge from the whole team. It will appear on some Slack channel or some talks or does a delete chat in a lot of different Slack channels.
+We try to use Slack channel directly, like every time we have a question, we use Slack's search with Slack channel. But this will be...
+very, very slow. So we're using something like a click house and put out the team chat and select channel message and collect them and put it in a database.
+in people like the chat messages. And also for a lot of people, they're using something like Google Drive or Notion to keep their documents.
+And also some documents will be referring to QChat. So we will keep the documents manifest in our database and also give it metadata.
+short introduction of every document and also there's a lot of different data platform like you are using some data based like maybe like click house maybe something like
+like it. So Blake, a lot of something like BI running a lot of pipeline or sort of query on that and there's a lot of query log and also.
+We need to have a metadata catalog. What data we have, which demo is describing, what kind of things. This is also very important also.
+We need to keep track of the agency, agency, agency, something like it. We must know what is going on for the agent. Maybe user just questioning the answer.
+with agent. This is also very important feedback. Then, from the raw data, the cleanhouse is something like we keep all kind of raw data in the cleanhouse.
+compressed is very cheap and we can do vectors or inside Clickhouse. And then we need to have some agents who extract knowledge from the raw data.
+read only the new roles and check what he's going on, what is the new knowledge and how we can track out the knowledge and maybe some correction or something like that.
+the words or the image of this one that tables from the packed by events. And also some incidents like maybe customer do not like our agent, maybe some customer.
+raising their usage and maybe some customer adjustments or message the Alexa agent and the Alexa answer. So I'm also very important feedback.
+some agent to extract all kind of things like we kept a context from Neo4j like like every kind of message like what we talked in the first slide.
+Maybe the financial team does correct how to calculate his role around you. How to calculate is the revenue, like we need to manage the reforms.
+What's the documents? I know. What's the documents referring to Slack chat? Where's the document? And how many words do the document? And also some incident people.
+seem like table worth and a tool call, an answer, and a memory, and we can keep it in the Neo4j. I think it's a perfect place to keep cracking all kinds of record.
+and the memory and the worrying and the lineage. And then we are running something like a data agent. The data agent is something like answering the question, doing the heavy lifting job.
+And also, I was a question from customer on maybe you said the team, maybe all said the team. And the way I use it is something like the CTV.
+CCDB is a embedded world of click house and we can use that to just a priority to upload it to fail. Like maybe user wants to upload some CSV, maybe some access.
+SRS fails and I want to our agent answer request and based on the data fail uploaded. So if we, when I run an entire time, we upload.
+this kind of data like a CFQM packet file into a database and then to try to present it. It's where we're very slow and the database will be overloaded. So we are
+the computer field system, like running along the function and the tip part of your temporary system. And that's the running query.
+the cycle running the cycle of the data failed directly, which is often just in the data. And maybe we have also joined the data from different fields and from different data warehouse.
+from something like i3. And also follow-ups like the new query or maybe the query logs and the tool calling logs on the data agent.
+with the all-in local embedded database like HTTP hasn't here comes a like language model and then trying to figure out what's going on and trying to recall something.
+from Neo4j and got something like what is the newest knowledge to answer in this question, what is the newest data, what is the...
+is going on for the old table. And there are some parts like running some prairies on the graph based on running some simple part of the warehouse and the work time.
+So people can get the answer. And for the inside the agent, I think it's perfect for C3.
+doing that. Because we still should be able to do something like that, you can select from a local item where we are more like a state of rhythm and also drawing some data.
+upload by the user for temporary usage and also join some public data like something like a web server like a package and
+you know, one cycle. We do not need even to adjust it to a rooted base. So our chip and run were fast. Because this should be something that you might need.
+clickhowsing, all the function, all the speed that we have in clickhowsing, you can use it. And also, nothing becomes...
+memory by accident. This is very important for an agent system. We're also experiencing somewhere where the ease you're like. Maybe today I'm talking to my
+agent. I don't want to eat meat today. I want to eat some vegetables for today. But maybe some agents just run or put
+like a user do not want to eat meat. So maybe after several weeks, you feel want to want your agent to recommend some dish.
+for you. He will recall that you do not want to meet. You are very caring. But this is not correct. This is only something like we decided just someday and this is very temporal. So...
+The missing memory is even worse than the missing memory. So we try a lot of it to avoid that.
+like maybe like the agent to me, it's like a congruent to decide which is the worst sleeping one.
+which is a worst-keeping memory. And also maybe some personal info like a user are talking with you. Please remember that this is a fact and I need to remember. This is also.
+from the user. I think also this is very important, but we must keep an eye on that. Mostly, users are telling the agency
+something it's a lot of most cases it's a scope message so you can now put the user's raw input into a memory directly so
+Well, some mechanics like people are using something like a blooming, like agent blooming, and process the data after some add-on.
+and processing what is going on, what is the tools, and what kind of memory. What's the memory scope, and this is also some backend or backend state.
+agent working. And we need to keep, we need to ensure that everything went into the memory. Need the evidence.
+lineage. We need to keep the memory and know how the count memory comes out and be ready to recall or just correct memory later.
+and then we catch the contradictions at a red pad. So, like this is a very simple
+like we are detecting what is going on. Is it conflict with another memory? Is it we need to merge all just to history.
+is also very important for the memory keeping. And for the great past, I think, for
+simply speaking, the wetter just proposed and the graft decides. So we did some wetter search and we get the top 15 candidates by meaning.
+And then we use graph and to build a filtering like we talked to supersetted memory and we get rejected memory and we talk to...
+scope of memory as they expand, put the source and the link effects and make it organize and then keep all the things that trace.
+and then put in all the organizer data to the agent context. And like I'm talking how to recall
+going from, like, if you are doing something like using Neo4j, I think this is a code snippet. We need to recall from agent memory.
+the new footage like it. We just call vector search and get the top 50 and do some filtering like it's active and the data service or supersize this.
+or something like that. And also let me check before answering. For every table, the circle will read and the text is cut.
+and work up to three cups of shrimp and look for a word with no initiative. If something is found out, if something is found out, if something is found out,
+found the agency answered on the same side. So the answer says in the answer instead of presenting the member as a final.
+And when we are talking about tracing, we keep all the memory in the database. And with the database, we need
+to have the same reality search and also scope and status and also the results. Most of the similar memories were both run for this.
+question, the filter fix answer, not the ranking. So for this, only the second memory will be the effective memory.
+And what is the agency that we need to have some mechanism to debug or tracing the memory? What is going on?
+for a bad answer. So how to de-doubt the agent? I think this is also important to hire something like...
+like a graphic device. Like from the answer to this protocol and what is going on and what is the answer and what is the answer, where is it coming from?
+has come from which tool call. This is also important for debugging. Which memory is recorded and which memory?
+filter and which memory is modified supersizing. And also we need to try to keep all the memory comes from where like something like.
+like if some memory comes, some slack checking, some memory is using some company channel, some memory comes from a document.
+Also, we need to keep the word in our different documents. Maybe something we need to really organize a memory, keeping the newest memory.
+lineage with boy in the first database. So the family, the cloud now nice is one query under the
+or you'll suspect, 
+Like when I'm talking about the memory of the growth of the relationship, I think it's also very important to keep a lineage of it.
+database, like for some layer data model. We're using something like a source, a data source, maybe something like a postgres or staging area.
+and the determines also something like the consumer. We need to keep a limit. I think it's also very important for the agent to keep moving and also for the...
+very important for agent to answer in the processing correctly. Like the example I read in the first slide.
+Maybe we just don't know the next round you should manage the reflux but maybe...
+Maybe some data team doesn't find that the refund table is not correct. There's some data missing, like some online source outage.
+in October and they need to fix the data and they just match it to their Slack channel and proposing the new table and then we just need to
+extract the text that's kind of memory like there's a row you found people were in 14 one and then October to six there's another word in 14
+two table reflux. So you need to use that new refund table to answer in the process quite a bit. These are very important for the agent.
+And also like typically this kind of data and memory or data lineage is kept by agents.
+And he's maintained by agent. I kept him in a rough database. Like Lex, what am I showing on the slides?
+And also, this is an example query of what is a bad data touch. We need to write some queries like that.
+that and we've got some answers like that and first we know that some regional finance
+asking some questions like the APAC background view, week to date, and the first answer, there's a no memory then from age.
+maybe after that they found some you there's some member to not match and some operation team just
+to us to fund the refund rate bank. They asked some question about the refund rate, how it kept going, and asking the agent to remember that.
+the outdoor refund rate is about 2.6%. I maybe this is a baseline and then after that the top some
+some more tenderizing team asking about the top protect of all the revenue. And this also may be something like just how fast.
+in some portion to get the answer, the note feedback there is nothing to be remembered. So let's close the loop for where the people are.
+like maybe the first day there's an operating team asking what's a foundry category like the last seven days and the data agent does answer.
+some questions, then there's a feedback to remember the author of member, the author of member as a baseline, so the agent also remembers that.
+There is something like outdoor refund rate, it's about 22.6%. And then...
+Maybe after some data, the data team found there are some data missing in the refund table.
+So after that, it fixed the table and then we found that the table is updated. And after we filled the other, we found that it's three responses.
+So this baseline need to be checked by a background draw running by the data agent. So for this we need to correct the memory.
+and retrieve the same-the-best base line. This is also very important for data to correct the fact and correct the base line.
+backstage and this is also triggered by some message from the data team. We fix that data with a new table and also we need to
+checks. Did they really like is a memory helping or working and this is an example very click house like we are.
+covering the results, covering the number, like we did some AD test, like with auto memory, always with auto memory. Is it...
+This is the way I call cutting a pet hunter or something like that and this will help us to evolve the Egypt.
+And also something like a tool called and a circle under results. This is something very large and creating a lot of data.
+This is something like we will keep him given to log and link it and there's some link from the graph database and which memory from the which given to log.
+and also some crack in feedback, we give it an email even to log and then maybe promote it into memory. And the memory needs to be vector indexed.
+in the index to be searched efficiently. And also, some decisions, yes, when made, when needed to keep in the event log and also keep it in a compact graph.
+in the graph database and also keep a vector. For some people in nature, the data incidence, this kind of data we need to keep in the world until we do not need to.
+keypad, webcring, index, and for some real-time transcript, keypad is a coded code storage. Like maybe keypad can deny S3, and this is the last.
+We need to keep a tool to allow the agent to have the ability to record all the transcripts. This is a great short award.
+the whole system. Like we open source it as a name of clicking memory. Clicking map, you can check it on the last.
+slides. So there's three kinds of data, three kinds of data, and it's like we need to
+we need a column store KEEP to draw data. We need a graph database to keep the relation. And we need a vector index to keep the KEEP to recall. And also, yeah.
+I'd like to share four things you can take home. Like, when you're just on the candidates, you do not decide what is true. And given memory ages, like, so exciting.
+and conflicts with our GWR from OSCOBE tool, and collect them to a data lineage. And unlock areas, promote links to memory and purpose.
+not a narrow bag, see that. And also make a way to see that and make it a debacle. And I think that our...
+Our sharing is like, I want to share very much like some models make it easy to build. Almost everyone can get an agent like our 18 score.
+But an agent business can rely on at least 19 out of 100. The gap is reliable.
+data condition and not a bigger model. Yeah, thank you. That's all from me. Thank you everyone for joining us.

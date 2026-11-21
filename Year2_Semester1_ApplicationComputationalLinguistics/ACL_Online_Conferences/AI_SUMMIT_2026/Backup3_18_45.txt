@@ -1,0 +1,62 @@
+[18:30:49] some reps in the chat. Thank you. That's so helpful. I'm glad to see that this could be helpful for you. So whenever we talk about AI and education, there is a fair and an
+[18:31:01] important question that is often asked, and that is, what role is AI actually playing? So in classroom reps, the AI has two specific jobs. It plays with student.
+[18:31:13] and it offers reflection afterwards. That is all. It does not decide what a good teacher looks like or sounds like. It does not replace a mentor, a coach, and then
+[18:31:25] definitely not a principle. And it certainly does not replace the relationship between a teacher and their students. There's no way to replace that type of thing. So the teacher's judgment.
+[18:31:37] their voice and their relationships remain the point. They remain the focus. And the simulation is simply a practice space where that judgment can be strengthened before it is
+[18:31:49] actually needed in the classroom. And that design principle is also guiding who we are serving first with classroom reps. So any teacher, just a.
+[18:32:01] disclaimer, any teacher wanting more support with are welcome to use Classroom reps, any teacher at any level of your career. But the early use cases for it are teacher.
+[18:32:13] education programs where candidates can actually build these skills before student teaching and then early career teacher support where newer teachers are maybe meeting these moments every single day.
+[18:32:26] often without room or practice to actually debrief. So as you saw in that brief demo, the current classroom reps is more text based, but looking at
+[18:32:38] ahead, the roadmap is going to be adding spoken conversations, as well as animated student characters and connections to experienced mentors. And that's all with the focus of moving towards.
+[18:32:50] more realistic practice so that there's more human support around it. So let's come back to that student in the back of the classroom with their head down.
+[18:33:02] saying leave me alone. The teacher in that moment doesn't need another lecture. They don't need another article either. What they need is actually to have
+[18:33:14] in there before, in a place where it was safe to actually get it wrong, understand why, and try it again. So if you take one idea with you today, I'm hoping that it is this.
+[18:33:26] And that is effective practice for these moments has three specific parts. First, it introduces a real classroom moment. Second, it lets the t.
+[18:33:38] respond in their own words. And then third, it offers research informed feedback so that they can try it again. So you can apply this idea whether you
+[18:33:50] use classroom reps or not. And it could actually shape a mentor conversation or even a new teacher PD. And so to actually help you with that, I have put
+[18:34:02] together a short guide for you called practice before the moment on how teachers, schools and programs can actually thoughtfully use AI simulation to support teacher practice.
+[18:34:14] It's yours free by scanning the QR code on the left hand side of your screen. It has a practice prompt as well as a rehearsal card and some reflection questions and also.
+[18:34:26] a 30 day plan on how you could prepare like PD for this. So I also want to extend an invitation. So I am opening a small early pilot for classroom.
+[18:34:38] reps with free access to tested for teacher prep faculty, teachers, school leaders, and mentors of early career teachers. So if it's something that you would like to explore, you know, how.
+[18:34:50] can fit in your program or your school. The confirmation screen and the actual email that you're going to receive if you receive the guide is going to share that short interest form. But if you just know you want to go ahead and
+[18:35:02] you can scan the QR code that's on the right hand side of your screen. So I would be absolutely delighted to connect with you and hear what your teachers are facing and to learn alongside.
+[18:35:14] So thank you that concludes my presentation and I look forward to continuing this conversation on how AI simulation can actually support teachers.
+[18:35:26] joy. I am just blown away by the creativity that you brought to this tool and the thing about it is you named it accurately
+[18:35:38] Right? Because with AI, with training your AI, with learning AI, anything that's related to supporting yourself and the impact that you're going to make.
+[18:35:50] requires those reps and as an educator you need to put in the reps for something as important as this like when you talk about having emotional intelligence with children
+[18:36:02] Especially teenagers. Yes. I'm a mercy. I'm a mother. I know how helpful these reps are. I'm like, I need to get the reps just so I can handle my kids. I need to get the reps.
+[18:36:14] right? So scan the QR code for this wonderful share that Dr. Joy has provided. And of course, you know that we are also going to be giving Dr. Joy our feedback.
+[18:36:27] support. I'm looking for my feedback. Okay, there we go. In the chat, you can see the feedback link to give Dr. Joy some feedback for the amazing presentation and the
+[18:36:39] demo of the simulation was chef's kiss. I loved it. So thank you so much, Dr. Joy. Here is the feedback QR code feedback link is in the chat. Amazing. Thank you.
+[18:36:51] keep giving those flowers and keep that energy going guys as we move to our next speaker. I see another comment there all the more for parents because we are our children.
+[18:37:03] first teacher. Absolutely. Absolutely. Thank you. Up next, we have speaker and artificial intelligence. This speaker will
+[18:37:15] talk about AI for transformation, bridging the gap between education and opportunity. She is the founder of Don Love AI and the Don Love AI Institute, a dynamic
+[18:37:27] educator, certified AI consultant, certified AI authority leader with honors, and certified AI agent builder with over 30 years of corporate experience. She is
+[18:37:39] also a published author known for her signature tagline, I Make AI Makes Sense. Please welcome Don Love. So join me in the comments as we welcome our next piece.
+[18:38:03] Hi. Hi everyone. How are you doing today? Let me go ahead and share my screen so we can get into it. It is a wonderful third day at the A.
+[18:38:15] I sum it so excited. Thank you all for all the welcomes. Thank you, thank you, thank you so much.
+[18:38:27] First and foremost, happy Saturday and welcome to day three of the AI Education Summit. I am so glad you stuck around and I know the first two
+[18:38:39] days are amazing but sometimes that third day you get a little you know a little tired but I'm so glad that you all decided to stick around. First and foremost I want to thank you to the little sisters.
+[18:38:51] and Lorett for the opportunity to speak today. And just a quick disclaimer that basically says the views and tools shared in
+[18:39:03] this presentation are my own and are not endorsed by the AI Education Summit. I am an independent third-party presenter and a consultant in the AI
+[18:39:15] certified consultant program. My presentation is based on my expertise and experience. So let's get into it. Who am I?
+[18:39:27] I'm Dawn Love, CEO and founder of Dawn Love AI. And we do four things, organizational training and workshops, community and workforce development. I have the Dawn Love
+[18:39:39] A.I. Institute, which is a structured A.I. course with C.P.D. certification in progress, and we also have in the lab with Dawn Love A.I., which is a six-week
+[18:39:51] accelerator where entrepreneurs come and learn and I teach them how to build their business presence. Here are our clients that we serve, we do workforce, working professionals.
+[18:40:03] across industry. We also do workforce development and job readiness programs. I love doing adult education and continuing education programs.
+[18:40:15] We also work with small business owners and solo professionals. Today, my presentation is entitled AI for Transformation Bridging
+[18:40:28] the gap between education and opportunity. I'll say that one more time for you. AI for transformation bridging the gap between education and
+[18:40:40] opportunity. So tell me about yourself, forwards, and suddenly everything you know about your
+[18:40:52] self has left the building. Now, before we kind of get into this, I want you to kind of take take a quick poll. Have you ever finished an interview and come up with the best answer afterwards?
+[18:41:04] can you type yes or no in the chat if you've ever done that if you've ever finished an interview and then you've come up with the best answer
+[18:41:16] like right when you get back in the car. I see some nose. I see quite a few yeses. And guess what? To me, that's really not surprising. Because if you think about it, the
+[18:41:28] The car got the brilliant answer. But when you get in front of the hiring manager, you're like, uh, and then you think about it right when you leave. And the thing about it is we laugh.
+[18:41:40] because we recognize it. But here's why it matters in this room. Every one of us in here teaches somebody. Some of you teach children, some of you teach teenagers.
+[18:41:52] I myself, I have a passion for teaching adults. Adults with jobs, with kids, with a full day already behind them, and somewhere in your room is a grown person.
+[18:42:04] person about to hear those four words. So today is about the AI and the adult learner. It's really about how grown people actually learn this thing.
+[18:42:16] and what this looked like one evening in a class not too long ago. A few weeks ago I was at the Nicholas house right here in Atlanta where I live and the
+[18:42:28] Nicholas House is actually a program for families moving out of homelessness. And so I was there to teach AI with resumes and AI for interview preparation. It was an interview.
+[18:42:40] evening class, parent after a full day, still dealing with a lot of
+
+[ERROR] Audio capture error: [Errno -9999] Unanticipated host error
+

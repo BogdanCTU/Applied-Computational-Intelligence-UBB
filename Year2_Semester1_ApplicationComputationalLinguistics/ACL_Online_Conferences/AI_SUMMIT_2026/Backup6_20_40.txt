@@ -1,0 +1,92 @@
+[20:22:41] I love it. I love it this entire time.
+[20:22:54] Higher Summit is about change and transformation. And it absolutely begins with the woman or the man in the mirror. That's one of my favorite songs.
+[20:23:06] because the only thing that's constant, hey, hey, queen, how are you doing? You mean to stop? You mean sentence can continue, I'm listening. Yeah, just to say that, you know.
+[20:23:18] that ultimately any transformation begins with us. The person that we are looking at, we are the ones that have to start the transformation and we take that first step.
+[20:23:30] and it is through taking that first step that we empower those that we are educating to take the step along with us. So, well, let me pause here and just
+[20:23:42] welcome the queen. Yeah, I'm so glad to have you join us. Thank you, Stacey. I'll only be here for a minute as you introduce the next speaker and then I'll I'm coming back up at the end of the day.
+[20:23:54] twice, I think, or three times, you know, but I just wanted to shout out everybody for being here today. This is such a critical time to be learning artificial intelligence and education and how the two
+[20:24:06] intertwined and I just am so excited. We've had phenomenal speakers like the best in the world and that is such a great it's like such a great time.
+[20:24:18] for us all to be in the right place. Would you guys agree like we're in the right place at the right time? And I want you to, I know we have teachers here and educators here and consultants here and future consultants here.
+[20:24:30] And I just want you to remember that teaching artificial intelligence, and I'm going to talk about this later, but in the education system is crucial. So of course it starts with.
+[20:24:42] the teachers that starts with the parents, it's the kids, but seeing it all come together is amazing. And speaking about seeing it all come together, my two beautiful nieces will be presenting at the end of the session.
+[20:24:54] So we're going to have a great session ending like they're going to present. I'm going to do a little presentation, but I'm excited to see what the kids are doing with AI. So we're going to.
+[20:25:06] to bring the kids up and say, come on now, show us what you're doing with AI. Anyway, I'm going to turn it back over to the one and only Stacy. I have known this amazing woman for a very long time.
+[20:25:18] And I will say that she is representing the AI education summit so well. So thank you for your commitment and dedication to everyone here in learning and leveling up. And I just want to say.
+[20:25:30] everyone here like if you know somebody that should be here. I saw we hate we gained a few people during the lunch break. So if you know somebody who should be here is not call him right now. Let them know. Hey, it's.
+[20:25:42] almost the end of the summer. You're you have an opportunity to catch a few more speakers and two amazing kids at the end talking about AI and education. So, Stacy turning it back over to you and thank you all for being here.
+[20:25:54] here today. Are you ready for the next speaker? Are you ready for the second half of our day? If you are, say ready, ready in the chat. You know, I had to do that one, right? Ready, ready.
+[20:26:06] I'm turning it back over to you.
+[20:26:18] going to move right in to our next amazing speaker so we can get this afternoon's showcase on the road. I know you guys are as excited as I am.
+[20:26:30] Up next, we have another amazing speaker in artificial intelligence. This speaker will talk about, from prompting to process transformation, a strategic roadmap for AI ready operations.
+[20:26:42] She is a senior business analyst, AI strategist, entrepreneur and speaker with over 10 years of experience in business process improvement, digital transformation and organization.
+[20:26:55] She is also committed to demystifying AI and giving businesses the clarity, tools, and strategies to thrive in an AI-powered world, and writes children's novels
+[20:27:06] gardens on the side. Please welcome Toes and Pickett. So join me in the comments as we welcome our next speaker.
+[20:27:18] Hello, hello everyone. Welcome everyone. I trust you had a wonderful break.
+[20:27:31] It's been wonderful being a speaker at this AI education summit. So we've had so many interesting topics and could also all the
+[20:27:43] because before me, we started this on Thursday and there's been so many interesting topics on AI and the innovations happening. But first of all, I'd like to
+[20:27:55] thank Alicia Lawrence and the entire AI innovation team for this opportunity. Today, I would like us to look beyond the tool and focus on something.
+[20:28:07] Equally important and that is our work actually gets done. So who is tossing? I'm an AI strategist, a business process transformation
+[20:28:19] professional, and much of my work has involved helping organizations understand their processes and also their operations. I've been involved in so many processing
+[20:28:31] projects and also in managing change. And there's a question that keeps coming up every time in all these projects. The fact that we have to
+[20:28:43] understand what's what we're accessing these powerful technologies to perform. So this brings me to my topic today.
+[20:28:55] From prompting to process transformation, a strategic roadmap for AI-ready operation. I want to ask us a question. If AI could make your organization work 10...
+[20:29:07] times faster. Will that really make your organization better? Can you say, tell me type in the chat. If you think it's going to make your organization better type.
+[20:29:19] Yes, if you think, no, not really, type no.
+[20:29:31] Yes, exactly. All will it simply allow you to make the same mistake 10 times faster?
+[20:29:43] That is the question we want to explore today. But first, a disclaimer. The tools and the views here today in this presentation are my
+[20:29:55] are not endorsed by the AI education summit. I'm an independent third-party presenter and a consultant in the AI-certified consultancy program. My presenter
+[20:30:07] decision is based on my expertise and my experience. There are three decisions are like every leader, every educator, every superintendent, an administrator to work.
+[20:30:19] Can we ready to make today? The first is that we have to diagnose before buying. When a process is slow, I know the first instance is okay, I'm going to buy another tool.
+[20:30:31] But what if the sluggish process is due to unclear ownership, duplicated work or waiting for approval? Software alone might not fix that.
+[20:30:43] Second, we need to redesign before we automate. We have to remove steps that add no value. Simplify the end-offs and decide who is responsible for exceptions.
+[20:30:55] and thought we have to scale with accountability. Of course, as been said by the previous presenters, there's some work that belongs to people, some to predictable automation and
+[20:31:07] And some AI can assist with that. And here's the danger. If a business has messy processes and you automate, what do you think is going to happen?
+[20:31:19] Any response in the chat? We will definitely are exactly crushed. We will definitely mess the output exactly.
+[20:31:31] will definitely have a very effective mess. The executive opportunity is not just more prancing, it is building a better operating model.
+[20:31:43] So let's look at this progression. Of course, prompting can help somebody draft an email, a task can categorize a request, a workflow can connect several activities.
+[20:31:56] And this is where we are the AI agents. A process brings about something more. It defines client ownership, business rules, controls, exceptions, and measurable outcomes.
+[20:32:08] Transformation changes our value flows across the organization and this is what we're trying to achieve. So think of AI drafting a polished welcome.
+[20:32:20] email in second, but a customer that you want to onboard or the staff you want to onboard is still waiting three days for somebody to approve their account. The email got faster for the business.
+[20:32:32] So the leadership question has to change. Not simply, where can we use AI? But rather, how can work upon in an AI enabled organization?
+[20:32:44] And there is statistics to back this up. We found that Mackenzie carried out 25 practices, the Examine 25 practices, and they...
+[20:32:56] they were able to arrive at the fact that the workflow redesign was the strongest link to the bottom line of these organizations. So redesigning
+[20:33:08] actually drives value. There's a roadmap I recommend. There are five action steps required. We assess, we clarify, we redesign.
+[20:33:20] and then governance. So assessing what does that entail? We have to assess the real process, not just the process written down in a policy document some way, but.
+[20:33:32] What are the staff and customers experiencing? What are your teachers? What are the experiencing? Then we follow a case from beginning to the end. We find
+[20:33:44] where people are waiting, where we have information, same information being copied from one application to the other, where we have approvals waiting for approvals, where we have duplicated
+[20:33:56] employee information or staff information in various applications, then we clarify. At what happens at each of the steps, we need to know who...
+[20:34:08] on seats, what information is required, what decision is made, what happens when something goes wrong. We have to challenge every unnecessary step, every legacy business.
+[20:34:20] Rules has to be challenged and every outdated assumptions. And then we can say we want to automate a predictable notification probably needs an ordinary rule based automation.
+[20:34:32] not an elaborate AI agent. If we have a messy unstructured document, then AI can assist with that. Also, if we are, but I risk.
+[20:34:44] structured exception that we do need an experienced person underneath all these four steps is governance and governance and
+[20:34:56] sales, approved tools, permission to use data, account table owners, audit trails and the route for escalation. Governance must be introduced from day to day.
+[20:35:08] It should be part of the design. It's not something we put in a paper somewhere, in a file somewhere, on the shelf somewhere. It needs to be implemented and understood from day one. So before we...
+[20:35:20] form the next AI initiative. We need to understand what problem we're trying to solve and the evidence that we prove that it actually works. Let's exit.
+[20:35:32] I mean a simple use case, very familiar onboarding. It could be onboarding a customer, it could be onboarding a staff, it could be any use case.
+[20:35:44] But everything will look neat and tidy. If it's a customer you're onboarding, of course the customer will sign up, sense in the documentations, it's review that proved you set up their account.
+[20:35:56] and you schedule a kickoff. But in real life, is that what really happens? We have to notice the friction. In this example I gave, we see there's a friction between sales review, operation,
+[20:36:08] dating compliance review they go back and forth back and forth and then we now have you know maybe the customer or the staff waiting to air back from the business somebody
+[20:36:20] entering information in HR, including same information in admin application. And then we wait a problem. What happens at the end of the day the customer is frustrated.
+[20:36:32] something that normally should take two hours is taking five days because the work is sitting between the people and the system. Now imagine applying
+[20:36:44] or adding AI to this kind of mess. What happens? The email is faster, but the duplicate data entries, the unnecessary approvals, the legacy checks.
+[20:36:56] are not changed because the business has not changed so we have a polished email system still within a broken journey so before automating a leader needs to
+[20:37:09] see the entire board eye view of the organization, not just the task that is easy to automate, lead us to understand the current process before committing to automation.
+[20:37:21] what aligns the AI capabilities to influence the design of the future process. And this brings us to an AI enabled...
+[20:37:33] process now. It is simplified, it is seamless, the standard case flows from the beginning to the end which unnecessary human
+[20:37:45] intervention, except of course, if we have things like unusual terms, missing evidence or risk sensitive decision, then an accountable person must be involved.
+[20:37:57] So the point I'm trying to raise today is that before we say we want to choose a technology, we have to remove every friction. Process first, then an
+[20:38:09] AI informed redesign. AI, again, can help with reading, document, flagging, missing information. A rule-based automation can send notices and create
+[20:38:21] records. A human professional makes judgment calls when an exception needs context and accountability. That is an operating
+[20:38:33] model decision and it's not a technology purchase and again the price is much higher than speed because why we are fewer and so we are
+[20:38:45] have cleaner information, we have a more consistent client experience, and the staff time is freedom for work that actually needs people. The bottom line is we have up here cost.
+[20:38:57] customers stronger business that is built for tomorrow. There's a question we have to also examine what and what should do.
+[20:39:09] each piece of the work. I've broken this down into three categories, the human, the rule based, and the AI assisted work. So first for the human, the human judgments we think of things like
+[20:39:21] negotiation, building trust, sensitive exception and accountable decision. Sometimes having a person is the exact control of business needs. We need to know that.
+[20:39:33] And second, the rule-based automation, these are things like if this were under predictable triggers, like copying validated information, sending notifications.
+[20:39:45] creating records, moving work faster, you know, when clear conditions have been made. Then we have the AI assisted work. AI as I've said earlier.
+[20:39:57] can actually interpret unstructured document classifier requests, summarizing information and drafts messages. So now when we are delegating walk-to AI, what is the level of
+[20:40:09] of autonomy. Are we just going to allow the AI to assist or to recommend an action or act after an approval or act and report back?
+[20:40:21] For each of these steps in the lab, there is an increase in control as we go from the assist to recommend to after approval.
+[20:40:33] or acts and reports, we know that the level of control increases. So a question, imagine a situation where you have an audience clients issue involving contractual risk.
+[20:40:45] things should undo that. If you know who should undo that, can you please say something? Can you type in the in the chat? If there's an audience
+

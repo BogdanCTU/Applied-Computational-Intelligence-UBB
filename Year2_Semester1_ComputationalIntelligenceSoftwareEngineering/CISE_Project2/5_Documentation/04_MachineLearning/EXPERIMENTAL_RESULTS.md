@@ -1,162 +1,112 @@
-# Empirical Experimental Results
+# Experimental Results & Comparative Analysis (`v3.0.0`)
 
-**Project:** Machine Learning-Based Software Defect Prediction for C# Source Code  
-**Institution:** Faculty of Mathematics and Computer Science, Babeș-Bolyai University  
-**Course:** Computational Intelligence in Software Engineering (CISE) — Project 2  
-**Authoritative Artifacts:**  
-- Baseline Cross-Validation: `3_TestResults/CrossValidation/experiment_results.json`, `3_TestResults/CrossValidation/experiment_results.csv`  
-- Historical Holdout: `3_TestResults/HoldoutEvaluation/newtonsoft_holdout_results.json`  
-- Nested Optimization: `3_TestResults/ModelOptimization/nested_cv_summary.json`, `3_TestResults/ModelOptimization/nested_cv_results.csv`, `3_TestResults/ModelOptimization/model_comparison.csv`, `3_TestResults/ModelOptimization/per_repository_results.csv`, `3_TestResults/ModelOptimization/threshold_analysis.csv`  
-- Model Bundles: `4_AppBuild/Assets/Models/` (`et_nested_opt_v3_depth6_leaf6_log2.joblib`, `rf_nested_opt_v3_depth6_leaf8_log2.joblib`, `exp_final_5fold_v2_best_rf_compact_regularized.joblib`, `rf_csharp_empirical_model.joblib`)  
+**Experiment Runner:** `2_SourceCode/Scripts/run_class_model_optimization.py`  
+**Primary Dataset:** Dataset #3 (`csharp_class_empirical_v3` v3.0.0 — `5,711` classes across `106` public C# repositories)  
+**Artifact Directory:** `3_TestResults/ClassModelOptimization/`
 
 ---
 
-## 1. Dataset Composition
+## 1. Corpus Summary & Feature Distributional Separation
 
-| Dataset | Version | Observations | Repositories | Defect-Prone (1) | Candidate-Clean (0) | Purpose |
-| :--- | :---: | ---: | ---: | ---: | ---: | :--- |
-| `csharp_empirical_v1` | `1.0.0` | 483 | 3 | 226 (46.79%) | 257 (53.21%) | Exploratory corpus |
-| `csharp_empirical_v2` | `2.0.0` | 578 | 5 | 279 (48.27%) | 299 (51.73%) | 5-fold `GroupKFold` and $5 \times 4$ nested CV benchmark |
-| `newtonsoft_holdout` | — | 159 | 1 | 79 (49.69%) | 80 (50.31%) | Historical baseline holdout (excluded from optimization) |
+Across `106` successfully mined C# repositories (`4,730` Development classes across `84` repos; `981` Untouched Holdout classes across `22` repos), defect-prone classes exhibit substantially higher size, cyclomatic mass, nesting depth, and interaction density than candidate-clean classes:
 
-### Dataset #2 Repository Distribution
-
-| Repository ID | Full Name | Defect-Prone (1) | Candidate-Clean (0) | Total | Share |
-| :---: | :--- | ---: | ---: | ---: | ---: |
-| 4 | `Humanizr/Humanizer` | 139 | 152 | 291 | 50.35% |
-| 15 | `serilog/serilog` | 66 | 68 | 134 | 23.18% |
-| 3 | `LuckyPennySoftware/MediatR` | 43 | 48 | 91 | 15.74% |
-| 16 | `App-vNext/Polly` | 17 | 17 | 34 | 5.88% |
-| 14 | `FluentValidation/FluentValidation` | 14 | 14 | 28 | 4.84% |
-| **Total** | **5 Repositories** | **279** | **299** | **578** | **100.00%** |
-
-All 578 observations contain 26 numeric Roslyn metrics with 0 missing values and 0 test files.
+| Roslyn Feature (`v3.0.0`) | Defect-Prone Median (Mean) | Candidate-Clean Median (Mean) |
+|---|---:|---:|
+| `class_loc` | **176.00** (342.21) | 29.00 (64.53) |
+| `class_logical_loc` | **75.00** (155.53) | 7.00 (24.94) |
+| `method_count` | **7.00** (13.69) | 2.00 (3.25) |
+| `total_cyclomatic_complexity` | **29.00** (60.98) | 4.00 (11.60) |
+| `max_method_complexity` | **8.00** (13.64) | 2.00 (4.27) |
+| `max_nesting_depth` | **3.00** (3.01) | 0.00 (0.99) |
+| `total_method_call_count` | **35.00** (76.45) | 4.00 (13.19) |
+| `total_if_count` | **10.00** (22.14) | 0.00 (3.10) |
+| `large_method_count` | **1.00** (1.91) | 0.00 (0.23) |
+| `structural_density` | **0.42** (0.40) | 0.23 (0.25) |
+| `complexity_concentration` | 0.30 (0.38) | 0.50 (0.61) |
 
 ---
 
-## 2. Validation Partitioning
+## 2. 5x4 Nested GroupKFold Benchmark Across All 7 Model Families (`84` Dev Repos, `4,730` Classes)
 
-Five-fold `GroupKFold` was used for outer validation. In the nested optimization experiment, four-fold `GroupKFold` was used within each outer training partition for inner model and threshold selection:
+All thresholds ($\tau$) were selected exclusively within inner folds and evaluated out-of-fold on unseen outer repositories (`class_model_comparison.csv`):
 
-| Outer Fold | Validation Repository | Validation Methods | Outer Training Repositories (Used for 4-Fold Inner CV) | Training Methods |
-| :---: | :--- | ---: | :--- | ---: |
-| 1 | `Humanizr/Humanizer` | 291 | Serilog, MediatR, Polly, FluentValidation | 287 |
-| 2 | `serilog/serilog` | 134 | Humanizer, MediatR, Polly, FluentValidation | 444 |
-| 3 | `LuckyPennySoftware/MediatR` | 91 | Humanizer, Serilog, Polly, FluentValidation | 487 |
-| 4 | `App-vNext/Polly` | 34 | Humanizer, Serilog, MediatR, FluentValidation | 544 |
-| 5 | `FluentValidation/FluentValidation` | 28 | Humanizer, Serilog, MediatR, Polly | 550 |
+| Config ID | Model Family | Inner-CV $\tau$ | Outer Mean Prec (+/- std) | Outer Mean Rec (+/- std) | OOF Prec | OOF Rec | OOF F1 | OOF ROC-AUC | OOF PR-AUC | OOF Brier |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| **`rf_opt_depth12_leaf4_log2`** | **Random Forest (Champ)** | **`0.60`** | **82.45% +/- 2.70%** | **61.59% +/- 4.01%** | **82.30%** | **61.71%** | **70.53%** | **0.8260** | **0.8280** | **0.1697** |
+| `rf_opt_depth10_leaf6_unweighted` | Random Forest | `0.60` | 81.94% +/- 3.15% | 61.71% +/- 4.38% | 81.69% | 61.83% | 70.39% | 0.8263 | 0.8290 | 0.1694 |
+| `calibrated_rf_sigmoid` | Calibrated Ensemble | `0.64` | 81.90% +/- 3.26% | 61.57% +/- 5.07% | 81.56% | 61.71% | 70.26% | 0.8261 | 0.8298 | 0.1694 |
+| `et_opt_depth10_leaf4_log2_bal` | Extra Trees | `0.60` | 82.84% +/- 3.00% | 60.92% +/- 7.23% | 82.63% | 61.12% | 70.26% | 0.8254 | 0.8282 | 0.1709 |
+| `calibrated_et_isotonic` | Calibrated Ensemble | `0.64` | 82.36% +/- 3.14% | 60.62% +/- 4.04% | 82.11% | 60.74% | 69.83% | 0.8250 | 0.8276 | 0.1700 |
+| `rf_baseline_compact` | Random Forest (Base) | `0.62` | 82.81% +/- 3.66% | 60.20% +/- 7.08% | 82.27% | 60.40% | 69.66% | 0.8262 | 0.8275 | 0.1694 |
+| `hgb_depth4_leaf25_unweighted` | HistGradientBoosting | `0.64` | 81.83% +/- 3.97% | 60.77% +/- 4.16% | 81.40% | 60.86% | 69.65% | 0.8211 | 0.8227 | 0.1721 |
+| `et_opt_depth12_leaf5_sqrt` | Extra Trees | `0.60` | 82.80% +/- 2.55% | 59.73% +/- 4.47% | 82.66% | 59.85% | 69.43% | 0.8267 | 0.8298 | 0.1696 |
+| `lr_std_l2_c01_bal` | Logistic Regression | `0.58` | 81.11% +/- 3.04% | 60.47% +/- 3.86% | 80.82% | 60.57% | 69.24% | 0.8138 | 0.8174 | 0.1761 |
+| `lr_robust_l2_c01` | Logistic Regression | `0.58` | 81.22% +/- 3.53% | 59.97% +/- 4.24% | 80.83% | 60.06% | 68.91% | 0.8137 | 0.8172 | 0.1765 |
+| `hgb_depth5_leaf20_l2_2` | HistGradientBoosting | `0.66` | 82.04% +/- 2.33% | 58.16% +/- 2.29% | 82.01% | 58.20% | 68.08% | 0.8147 | 0.8168 | 0.1759 |
+| `dt_depth5_leaf15` | Decision Tree | `0.70` | 82.20% +/- 3.43% | 53.85% +/- 3.14% | 82.01% | 53.93% | 65.07% | 0.8010 | 0.7958 | 0.1850 |
+| `dt_depth6_leaf10_bal` | Decision Tree | `0.70` | 82.08% +/- 3.78% | 53.16% +/- 4.64% | 81.61% | 53.25% | 64.45% | 0.7905 | 0.7910 | 0.1906 |
+| `dummy_stratified` | DummyClassifier | `0.30` | 49.44% +/- 1.65% | 49.52% +/- 1.53% | 49.43% | 49.49% | 49.46% | 0.4941 | 0.4973 | 0.5059 |
 
----
+### Champion Outer Fold Consistency (`champion_outer_folds.csv`)
 
-## 3. Historical Baseline Results (5-Fold `GroupKFold`, Pre-Optimization)
-
-In the initial baseline experiment (`experiment_results.json`, `scikit-learn 1.6.1`), nine configurations across Random Forest, Decision Tree, and Logistic Regression were evaluated on Dataset #2 at $\tau = 0.50$:
-
-| Rank | Configuration ID | Algorithm | F1 (Mean ± Std) | Recall (Mean ± Std) | Precision (Mean ± Std) | Accuracy (Mean ± Std) | ROC-AUC | PR-AUC | Brier Score |
-| :---: | :--- | :--- | :---: | :---: | :---: | :---: | ---: | ---: | :---: |
-| 1 | `rf_compact_regularized` | Random Forest | 0.6859 ± 0.0247 | 0.7403 ± 0.1557 | 0.6824 ± 0.1202 | 0.6734 ± 0.0491 | 0.7025 | 0.6401 | 0.2144 ± 0.0396 |
-| 2 | `rf_feature_constrained_log2` | Random Forest | 0.6385 ± 0.0641 | 0.6831 ± 0.1706 | 0.6384 ± 0.1197 | 0.6369 ± 0.0673 | 0.6974 | 0.6309 | 0.2209 ± 0.0375 |
-| 3 | `rf_heavy_bagging_300` | Random Forest | 0.6262 ± 0.0633 | 0.6788 ± 0.1738 | 0.6117 ± 0.0984 | 0.6212 ± 0.0617 | 0.6874 | 0.6277 | 0.2265 ± 0.0376 |
-| 4 | `rf_baseline_balanced` | Random Forest | 0.6108 ± 0.1176 | 0.6678 ± 0.1982 | 0.6046 ± 0.1157 | 0.6074 ± 0.0827 | 0.6792 | 0.6200 | 0.2249 ± 0.0410 |
-| 5 | `dt_shallow_depth4` | Decision Tree | 0.5734 ± 0.2172 | 0.6166 ± 0.2646 | 0.5573 ± 0.1884 | 0.5721 ± 0.1345 | 0.5849 | 0.5630 | 0.2807 ± 0.0699 |
-| 6 | `rf_deep_capacity` | Random Forest | 0.5577 ± 0.0739 | 0.5794 ± 0.1737 | 0.5811 ± 0.1147 | 0.5815 ± 0.0647 | 0.6552 | 0.5982 | 0.2429 ± 0.0435 |
-| 7 | `lr_balanced_c1` | Logistic Regression | 0.4989 ± 0.1252 | 0.4538 ± 0.1469 | 0.5994 ± 0.1557 | 0.5709 ± 0.0894 | 0.6225 | 0.5694 | 0.2620 ± 0.0368 |
-| 8 | `lr_standard_c1` | Logistic Regression | 0.4890 ± 0.1409 | 0.4360 ± 0.1651 | 0.6095 ± 0.1593 | 0.5744 ± 0.0877 | 0.6231 | 0.5699 | 0.2643 ± 0.0366 |
-| 9 | `dt_depth8` | Decision Tree | 0.4695 ± 0.2194 | 0.4907 ± 0.2529 | 0.4844 ± 0.1983 | 0.5050 ± 0.1425 | 0.5097 | 0.5033 | 0.3993 ± 0.1017 |
-
-### Historical Baseline Accuracy and Holdout Summary (`rf_compact_regularized`)
-
-| Evaluation | Threshold | Accuracy | Precision | Recall | F1 | ROC-AUC | PR-AUC | Brier | Confusion Matrix [TN, FP, FN, TP] |
-| :--- | :---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | :---: |
-| 5-Fold CV Fold Mean | 0.50 | 67.34% ± 4.91% | 68.24% ± 12.02% | 74.03% ± 15.57% | 0.6859 ± 0.0247 | 0.7025 | 0.6401 | 0.2144 | — |
-| Pooled OOF (Nominal) | 0.50 | 67.13% | 63.86% | 73.48% | 0.6833 | 0.7025 | 0.6401 | 0.2144 | `[183, 116, 74, 205]` |
-| Pooled OOF (Unnested $\tau^*$) | 0.40 | 70.42% | 64.21% | 87.46% | 0.7405 | 0.7025 | 0.6401 | 0.2144 | `[163, 136, 35, 244]` |
-| `Newtonsoft.Json` Holdout ($N=159$) | 0.50 | 74.21% | 69.79% | 84.81% | 0.7657 | 0.8209 | 0.7917 | 0.1713 | `[51, 29, 12, 67]` |
-| `Newtonsoft.Json` Holdout ($N=159$) | 0.40 | 75.47% | 69.61% | 89.87% | 0.7845 | 0.8209 | 0.7917 | 0.1713 | `[49, 31, 8, 71]` |
-
-These `Newtonsoft.Json` results apply exclusively to the historical baseline model (`rf_compact_regularized`). `Newtonsoft.Json` was not used during the subsequent nested optimization study.
+| Outer Fold | Val Repos | Val Classes | Inner $\tau$ | Selection Criterion | Prec ($\tau=0.50$) | Opt Prec ($\tau$) | Opt Rec ($\tau$) | Opt F1 | ROC-AUC |
+|---:|---:|---:|---:|---|---:|---:|---:|---:|---:|
+| 1 | 16 | 942 | `0.60` | `tier1_precision>=0.80_recall>=0.50_max_f05` | 75.00% | 80.35% | 60.17% | 68.81% | 0.8241 |
+| 2 | 17 | 946 | `0.62` | `tier1_precision>=0.80_recall>=0.50_max_f05` | 77.09% | 83.60% | 57.36% | 68.04% | 0.8255 |
+| 3 | 17 | 946 | `0.62` | `tier1_precision>=0.80_recall>=0.50_max_f05` | 72.64% | 78.27% | 64.96% | 71.00% | 0.7929 |
+| 4 | 17 | 946 | `0.60` | `tier1_precision>=0.80_recall>=0.50_max_f05` | 79.59% | 85.30% | 57.92% | 68.99% | 0.8466 |
+| 5 | 17 | 950 | `0.60` | `tier1_precision>=0.80_recall>=0.50_max_f05` | 76.80% | 84.73% | 67.55% | 75.17% | 0.8464 |
 
 ---
 
-## 4. Nested Repository-Level Model Optimization Results ($5 \times 4$ `GroupKFold`)
+## 3. Untouched Independent Repository Holdout (`22` Unseen Repos, `981` Classes)
 
-To eliminate unnested threshold- and model-selection optimism, 20 configurations across six classifier families (Random Forest, Extra Trees, HistGradientBoosting, Gradient Boosting, Logistic Regression, and sigmoid-calibrated Random Forest via `CalibratedClassifierCV`) and four in-fold feature sets (`all_26`, `corr_pruned_085`, `inner_perm_top12`, `theoretical_core10`) were evaluated on Dataset #2 (`3_TestResults/ModelOptimization/nested_cv_results.csv`, `scikit-learn 1.9.1`).
+Single-shot evaluation on `22` held-out repositories (`463` buggy, `518` clean) after full Development fit (`class_holdout_results.csv`):
 
-### 4.1 Baseline vs. Optimized Model Configurations
+| Config ID | Inner-CV $\tau$ | Holdout Prec ($\tau$) | Holdout Rec ($\tau$) | Holdout F1 | Holdout Acc | Holdout ROC-AUC | Holdout PR-AUC | Holdout FPR | Nom ($\tau=0.50$) Prec / Rec |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| **`rf_opt_depth12_leaf4_log2`** | **`0.60`** | **83.43%** | **61.99%** | **71.13%** | **76.25%** | **0.8449** | **0.8327** | **11.00%** | 78.47% / 73.22% |
+| `rf_opt_depth10_leaf6_unweighted` | `0.60` | 82.66% | 61.77% | 70.70% | 75.84% | 0.8460 | 0.8338 | 11.58% | 78.14% / 72.57% |
+| `calibrated_rf_sigmoid` | `0.64` | 83.09% | 61.56% | 70.72% | 75.94% | **0.8478** | **0.8350** | 11.20% | 77.55% / 73.87% |
+| `et_opt_depth10_leaf4_log2_bal` | `0.60` | 83.33% | 58.32% | 68.61% | 74.82% | 0.8368 | 0.8299 | 10.42% | 77.45% / 68.25% |
+| `calibrated_et_isotonic` | `0.64` | 83.28% | 58.10% | 68.45% | 74.72% | 0.8365 | 0.8296 | 10.42% | 77.37% / 68.68% |
+| `rf_baseline_compact` | `0.62` | 82.88% | 59.61% | 69.35% | 75.13% | 0.8428 | 0.8288 | 11.00% | 77.55% / 72.35% |
+| `hgb_depth4_leaf25_unweighted` | `0.64` | 81.85% | 57.45% | 67.51% | 73.90% | **0.8502** | 0.8324 | 11.39% | 78.37% / 72.79% |
+| `hgb_depth5_leaf20_l2_2` | `0.66` | 83.06% | 54.00% | 65.45% | 73.09% | 0.8433 | 0.8261 | 9.85% | 78.27% / 72.35% |
+| `lr_std_l2_c01_bal` | `0.58` | 80.18% | 56.80% | 66.50% | 72.99% | 0.8184 | 0.8100 | 12.55% | 76.06% / 65.87% |
+| `lr_robust_l2_c01` | `0.58` | 80.31% | 56.37% | 66.24% | 72.88% | 0.8116 | 0.8031 | 12.36% | 76.01% / 65.01% |
+| `dt_depth6_leaf10_bal` | `0.70` | **84.23%** | 50.76% | 63.34% | 72.27% | 0.7953 | 0.7896 | **8.49%** | 74.00% / 68.25% |
+| `dt_depth5_leaf15` | `0.70` | 81.95% | 47.08% | 59.81% | 70.13% | 0.8104 | 0.7790 | 9.27% | 72.59% / 71.49% |
+| `dummy_stratified` | `0.30` | 44.83% | 47.73% | 46.23% | 47.60% | 0.4761 | 0.4607 | 52.51% | 44.83% / 47.73% |
 
-| Parameter | Baseline RF (`rf_compact_regularized`) | Optimized RF (`rf_nested_opt_v3_depth6_leaf8_log2`) | Optimized Extra Trees (`et_nested_opt_v3_depth6_leaf6_log2`) |
-| :--- | ---: | ---: | ---: |
-| Estimator | `RandomForestClassifier` | `RandomForestClassifier` | `ExtraTreesClassifier` |
-| Feature Set | `all_26` | `all_26` | `all_26` |
-| `n_estimators` | 100 | 200 | 200 |
-| `max_depth` | 8 | 6 | 6 |
-| `min_samples_split` | 5 | 10 | 8 |
-| `min_samples_leaf` | 4 | 8 | 6 |
-| `max_features` | `sqrt` | `log2` | `log2` |
-| `class_weight` | `balanced` | `balanced` | `balanced` |
-| `random_state` | 42 | 42 | 42 |
-
-### 4.2 Nested Cross-Validation Comparison (`model_comparison.csv`)
-
-| Configuration ID | Family | Outer ROC-AUC (Mean ± Std) | Outer PR-AUC (Mean ± Std) | Outer Brier (Mean ± Std) | Outer F1 $\tau=0.50$ (Mean ± Std) | Nested $\tau_{\text{inner}}^*$ F1 (Mean ± Std) | Pooled OOF ROC-AUC | Pooled OOF F1 ($\tau_{\text{inner}}^*$) | Pooled OOF Recall ($\tau_{\text{inner}}^*$) | Pooled OOF Precision ($\tau_{\text{inner}}^*$) | Pooled OOF Accuracy ($\tau_{\text{inner}}^*$) |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: | ---: | ---: | ---: | ---: | ---: |
-| `et_depth6_leaf6_log2_bal` | Extra Trees | 0.7349 ± 0.0703 | 0.6443 ± 0.0496 | 0.2062 ± 0.0213 | 0.6867 ± 0.1394 | 0.7667 ± 0.0723 | 0.7470 | 0.7653 | 91.76% | 65.64% | 72.84% |
-| `et_depth8_leaf4_sqrt_bal` | Extra Trees | 0.7349 ± 0.0801 | 0.6557 ± 0.0557 | 0.2056 ± 0.0260 | 0.6622 ± 0.1326 | 0.7324 ± 0.0492 | 0.7322 | 0.7492 | 88.89% | 64.75% | 71.28% |
-| `rf_compact_corr_pruned` | Random Forest (FS) | 0.7315 ± 0.1142 | 0.6595 ± 0.1103 | 0.2096 ± 0.0280 | 0.6977 ± 0.0241 | 0.7302 ± 0.0533 | 0.7219 | 0.7262 | 90.32% | 60.72% | 67.13% |
-| `rf_depth6_leaf8_log2_bal` | Random Forest | 0.7216 ± 0.1156 | 0.6465 ± 0.1026 | 0.2055 ± 0.0374 | 0.7517 ± 0.0709 | 0.7539 ± 0.0706 | 0.7119 | 0.7406 | 88.53% | 63.66% | 70.07% |
-| `lr_c01_robust_bal` | Logistic Regression | 0.7146 ± 0.0973 | 0.6495 ± 0.0828 | 0.2345 ± 0.0334 | 0.5722 ± 0.1064 | 0.7316 ± 0.0677 | 0.7350 | 0.7304 | 91.76% | 60.66% | 67.30% |
-| `rf_compact_calibrated_sigmoid` | Calibrated RF | 0.7060 ± 0.1219 | 0.6215 ± 0.1056 | 0.2180 ± 0.0334 | 0.6832 ± 0.0630 | 0.7363 ± 0.0679 | 0.6916 | 0.7347 | 90.32% | 61.92% | 68.51% |
-| `rf_compact_regularized_baseline` | Baseline RF | 0.7037 ± 0.1292 | 0.6405 ± 0.1135 | 0.2146 ± 0.0398 | 0.6879 ± 0.0243 | 0.7408 ± 0.0760 | 0.7034 | 0.7294 | 88.89% | 61.85% | 68.17% |
-| `hgb_lr003_depth3_leaf25_l2_5` | HistGradientBoosting | 0.6937 ± 0.1532 | 0.6363 ± 0.1143 | 0.2177 ± 0.0477 | 0.6862 ± 0.0676 | 0.7383 ± 0.0800 | 0.6883 | 0.7158 | 87.10% | 60.75% | 66.61% |
-| `gb_lr003_depth2_leaf12_sub08` | Gradient Boosting | 0.6899 ± 0.1503 | 0.6398 ± 0.1149 | 0.2159 ± 0.0377 | 0.7102 ± 0.0605 | 0.7439 ± 0.0844 | 0.6925 | 0.7398 | 90.68% | 62.47% | 69.20% |
-
-### 4.3 Per-Repository Outer-Fold Results (`per_repository_results.csv`)
-
-| Held-Out Repository ($N$) | Metric | Baseline RF (`rf_compact_regularized`) | Optimized RF (`rf_depth6_leaf8_log2_bal`) | Optimized Extra Trees (`et_depth6_leaf6_log2_bal`) |
-| :--- | :--- | ---: | ---: | ---: |
-| `Humanizr/Humanizer` ($N=291$) | ROC-AUC / Brier | 0.7981 / 0.1839 | 0.7869 / 0.1819 | 0.7983 / 0.1803 |
-| | F1 ($\tau = 0.50$) | 0.6866 | 0.7402 | 0.7724 |
-| | F1 (Nested $\tau_{\text{inner}}^*$) | 0.7703 ($\tau=0.40$) | 0.7744 ($\tau=0.40$) | 0.8113 ($\tau=0.40$) |
-| `serilog/serilog` ($N=134$) | ROC-AUC / Brier | 0.5865 / 0.2702 | 0.6377 / 0.2503 | 0.7146 / 0.2231 |
-| | F1 ($\tau = 0.50$) | 0.6995 | 0.7191 | 0.7891 |
-| | F1 (Nested $\tau_{\text{inner}}^*$) | 0.6842 ($\tau=0.40$) | 0.6878 ($\tau=0.35$) | 0.7251 ($\tau=0.40$) |
-| `LuckyPennySoftware/MediatR` ($N=91$) | ROC-AUC / Brier | 0.6781 / 0.2210 | 0.6783 / 0.2238 | 0.6306 / 0.2381 |
-| | F1 ($\tau = 0.50$) | 0.6593 | 0.6593 | 0.5870 |
-| | F1 (Nested $\tau_{\text{inner}}^*$) | 0.6555 ($\tau=0.25$) | 0.7027 ($\tau=0.30$) | 0.6542 ($\tau=0.40$) |
-| `App-vNext/Polly` ($N=34$) | ROC-AUC / Brier | 0.8997 / 0.1580 | 0.9135 / 0.1449 | 0.8270 / 0.1908 |
-| | F1 ($\tau = 0.50$) | 0.6667 | 0.8750 | 0.4615 |
-| | F1 (Nested $\tau_{\text{inner}}^*$) | 0.8718 ($\tau=0.30$) | 0.8824 ($\tau=0.35$) | 0.8649 ($\tau=0.35$) |
-| `FluentValidation` ($N=28$) | ROC-AUC / Brier | 0.5561 / 0.2399 | 0.5918 / 0.2264 | 0.7041 / 0.1985 |
-| | F1 ($\tau = 0.50$) | 0.7273 | 0.7647 | 0.8235 |
-| | F1 (Nested $\tau_{\text{inner}}^*$) | 0.7222 ($\tau=0.35$) | 0.7222 ($\tau=0.40$) | 0.7778 ($\tau=0.40$) |
+**Champion Confusion Matrix (Untouched 22-Repo Holdout, $\tau=0.600$):** `TN = 461`, `FP = 57`, `FN = 176`, `TP = 287` (`287 / 463` defects detected; `F0.5 = 78.03%`, `Brier = 0.1599`). Both `>= 75%` and `>= 80%` precision targets plus `>= 50%` recall floor are met simultaneously on OOF and untouched holdout.
 
 ---
 
-## 5. Threshold Analysis, Probability Calibration, and Deployment Configuration
+## 4. Method-Level (v2) vs. Class-Level (v3) Empirical Comparison
 
-### 5.1 Threshold Sweep vs. Nested Threshold Selection (`threshold_analysis.csv`)
+| Evaluation Axis | Method-Level v2 (`csharp_empirical_v2` / `JamesNK/Newtonsoft.Json`) | Class-Level v3 (`csharp_class_empirical_v3`) | Observed Gain |
+|---|---|---|---|
+| Repository Scale | `5` train + `1` holdout (`6` total) | **`84` dev + `22` holdout (`106` total)** | **17.7x repos** |
+| Observations & Features | `578` methods + `159` holdout (`26` features) | **`5,711` classes (`40` features)** | **9.9x samples** |
+| Nested CV OOF Precision | `65.64%` (`et_nested_opt_v3`, $\tau \in [0.35, 0.40]$) | **`82.30%`** (`rf_opt_depth12_leaf4_log2`, $\tau=0.600$) | **+16.66 pp** |
+| Nested CV ROC-AUC | `0.7470` (`et_nested_opt_v3`) | **`0.8260`** (Champion RF) | **+0.0790** |
+| Untouched Holdout Precision | `69.61%` ($\tau=0.40$) / `69.79%` ($\tau=0.50$) | **`83.43%`** (`22` repos, $\tau=0.600$) | **+13.82 pp** |
+| Untouched Holdout ROC-AUC | `0.8209` (`1` repo) | **`0.8449`** (`22` unseen repos) | **+0.0240** |
 
-ROC-AUC, PR-AUC, and Brier score measure probability ranking and probabilistic prediction error and remain unchanged across decision thresholds $\tau$. Threshold changes modify only classification metrics:
+Aggregating structural signals to the isolated C# class/struct/record eliminates tiny single-method noise (getters, one-line lambdas) while amplifying multi-method complexity, nesting, and coupling differences across heterogeneous codebases.
 
-| Configuration | Threshold Mode | Threshold | Accuracy | Precision | Recall | F1 | F2 | Confusion Matrix [TN, FP, FN, TP] |
-| :--- | :--- | :--- | ---: | ---: | ---: | ---: | ---: | :---: |
-| `rf_compact_regularized_baseline` | Nominal Fixed | 0.50 | 67.47% | 64.09% | 74.19% | 0.6877 | 0.7192 | `[183, 116, 72, 207]` |
-| `rf_compact_regularized_baseline` | Nested Per-Fold $\tau_{\text{inner}}^*$ | `[0.4, 0.4, 0.25, 0.3, 0.35]` | 68.17% | 61.85% | 88.89% | 0.7294 | 0.8174 | `[146, 153, 31, 248]` |
-| `rf_depth6_leaf8_log2_bal` | Nominal Fixed | 0.50 | 71.28% | 66.77% | 80.65% | 0.7305 | 0.7743 | `[187, 112, 54, 225]` |
-| `rf_depth6_leaf8_log2_bal` | Nested Per-Fold $\tau_{\text{inner}}^*$ | `[0.4, 0.35, 0.3, 0.35, 0.4]` | 70.07% | 63.66% | 88.53% | 0.7406 | 0.8211 | `[158, 141, 32, 247]` |
-| `et_depth6_leaf6_log2_bal` | Nominal Fixed | 0.50 | 73.18% | 70.00% | 77.78% | 0.7368 | 0.7609 | `[206, 93, 62, 217]` |
-| `et_depth6_leaf6_log2_bal` | Fixed Modal Threshold | 0.40 | 73.01% | 65.81% | 91.76% | 0.7665 | 0.8505 | `[166, 133, 23, 256]` |
-| `et_depth6_leaf6_log2_bal` | Nested Per-Fold $\tau_{\text{inner}}^*$ | `[0.4, 0.4, 0.4, 0.35, 0.4]` | 72.84% | 65.64% | 91.76% | 0.7653 | 0.8499 | `[165, 134, 23, 256]` |
+---
 
-### 5.2 Probability Calibration vs. Brier Score
-- Brier score measures mean squared probabilistic prediction error; reporting a Brier score does not establish that a classifier is calibrated.
-- Post-hoc sigmoid calibration via `CalibratedClassifierCV` (`rf_compact_calibrated_sigmoid`) increased outer Brier error to `0.2180 ± 0.0334` compared to uncalibrated `rf_compact_regularized` (`0.2146 ± 0.0398`). Stronger structural regularization (`rf_depth6_leaf8_log2_bal`: `0.2055 ± 0.0374`; `et_depth6_leaf6_log2_bal`: `0.2062 ± 0.0213`) lowered Brier error without post-hoc calibration.
+## 5. Feature Importances & Holdout Error Analysis
 
-### 5.3 Deployed Model Artifacts and Inference Thresholds
+### Top Global Feature Drivers (`class_precision_champion_v3`)
+- **By Holdout Permutation Importance:** `class_loc` (`0.0118`), `total_property_access_count` (`0.0102`), `wmc_density` (`0.0102`), `total_method_call_count` (`0.0077`), `structural_density` (`0.0071`), `class_logical_loc` (`0.0069`), `total_parameter_count` (`0.0061`), `mean_method_complexity` (`0.0057`), `constructor_count` (`0.0057`), `field_count` (`0.0049`).
+- **By Training MDI Importance:** `class_loc` (`0.1027`), `total_method_call_count` (`0.0713`), `total_statement_count` (`0.0698`), `class_logical_loc` (`0.0651`), `total_property_access_count` (`0.0628`), `total_if_count` (`0.0479`), `total_cyclomatic_complexity` (`0.0450`).
 
-| Artifact File (`4_AppBuild/Assets/Models/`) | Estimator | Training Observations | UI Selector Order | Live `predicted_label` Threshold (`BugPredictor`) | Live `risk_category` Ceilings (`PredictionSettings`) |
-| :--- | :--- | :---: | :---: | :---: | :--- |
-| `et_nested_opt_v3_depth6_leaf6_log2.joblib` | `ExtraTreesClassifier` | Dataset #2 ($N=578$) | 1 (Default) | $\tau = 0.50$ (`model.predict()`) | Low $\le 0.30$, Medium $0.31\text{--}0.60$, High $> 0.60$ |
-| `rf_nested_opt_v3_depth6_leaf8_log2.joblib` | `RandomForestClassifier` | Dataset #2 ($N=578$) | 2 | $\tau = 0.50$ (`model.predict()`) | Low $\le 0.30$, Medium $0.31\text{--}0.60$, High $> 0.60$ |
-| `exp_final_5fold_v2_best_rf_compact_regularized.joblib` | `RandomForestClassifier` | Dataset #2 ($N=578$) | 3 (Preserved Baseline) | $\tau = 0.50$ (`model.predict()`) | Low $\le 0.30$, Medium $0.31\text{--}0.60$, High $> 0.60$ |
-| `rf_csharp_empirical_model.joblib` | `RandomForestClassifier` | Dataset #1 ($N=382$ train) | 4 (Preserved v1) | $\tau = 0.50$ (`model.predict()`) | Low $\le 0.30$, Medium $0.31\text{--}0.60$, High $> 0.60$ |
+### Error Breakdown & Base-Rate PPV Sensitivity (`holdout_error_analysis.csv`)
+- **True Positives (`n=287`):** `median_loc=351.0`, `median_methods=12.0`, `median_wmc=57.0`, `median_nest=4.0`, `mean_prob=0.8186`.
+- **False Positives (`n=57`):** Large, complex candidate-clean classes (e.g., `StableSwarmUI/BackendHandler` [`class_loc=894, WMC=118, prob=0.9753`], `slskd/Application` [`1691 LOC, WMC=209, prob=0.9527`], `EFCore.BulkExtensions/BatchUtil` [`955 LOC, WMC=168, prob=0.9499`]) whose structural complexity closely mirrors defect-prone classes or may mask dormant unreported bugs under Open-World labeling (`median_loc=186.0`, `median_wmc=36.0`).
+- **False Negatives (`n=176`):** Concise classes carrying semantic, API-contract, serialization, or domain-logic bugs that do not inflate AST volume (`median_loc=48.0`, `median_wmc=7.0`, `mean_prob=0.3761`; e.g., `coverlet/ConfigurationExtensions` [`7 LOC, WMC=1, prob=0.0924`], `YamlDotNet/YamlSerializableAttribute` [`21 LOC, WMC=2, prob=0.1011`]).
+- **Per-Repository Holdout Variance:** Strongest precision on dense stateful systems (`MessagePack-CSharp` `100.0%`, `testcontainers-dotnet` `100.0%`, `microsoft/FASTER` `98.36%`, `modelcontextprotocol/csharp-sdk` `94.29%`); lower precision on small repositories with very few positive classes (`slskd` `33.33%` [`1` pos], `RetroBar` `38.46%` [`6` pos], `Electron.NET` `40.00%` [`6` pos]).
+- **Bayesian Prevalence Adjustment (`class_optimization_summary.json`):** At empirical study prevalence ($\pi = 0.4954$), Bayes PPV $= 84.69\%$; at real-world defect prevalences ($\pi \in \{0.20, 0.10, 0.05, 0.02\}$), expected PPV shifts to **`58.48%`**, **`38.50%`**, **`22.87%`**, and **`10.31%`** respectively.

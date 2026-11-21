@@ -1,8 +1,10 @@
 """Repository Manager for cloning, updating, and maintaining local Git repositories."""
 from __future__ import annotations
 
+import os
 import re
 import shutil
+import subprocess
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional
 import git
@@ -48,11 +50,23 @@ class RepositoryManager:
             return False
         try:
             repo = git.Repo(path)
-            # Verify git repo has at least one commit
             _ = repo.head.commit
             return True
         except (InvalidGitRepositoryError, ValueError):
             return False
+
+    @staticmethod
+    def _cleanup_incomplete_dir(target_dir: Path) -> None:
+        if not target_dir.exists():
+            return
+        try:
+            shutil.rmtree(target_dir, ignore_errors=False)
+        except Exception:
+            def _handle_remove_readonly(func, path, exc):
+                import stat
+                os.chmod(path, stat.S_IWRITE)
+                func(path)
+            shutil.rmtree(target_dir, onerror=_handle_remove_readonly)
 
     def clone_or_update(
         self,
@@ -61,26 +75,37 @@ class RepositoryManager:
         name: str,
         default_branch: str = "main",
         progress_callback: Optional[Callable[[str, float], None]] = None,
+        skip_update_if_valid: bool = False,
+        timeout_seconds: Optional[int] = None,
     ) -> Dict[str, Any]:
         """Clone repository with complete history or update if already present. Idempotent."""
         target_dir = self.get_local_path(owner, name)
         full_name = f"{owner}/{name}"
 
-        # Clean corrupted directory if previous clone failed midway
         if target_dir.exists() and not self.is_valid_cloned_repo(target_dir):
             logger.warning(f"Found incomplete clone at {target_dir}. Cleaning up...")
-            try:
-                shutil.rmtree(target_dir, ignore_errors=False)
-            except Exception as e:
-                # On Windows, readonly files inside .git/objects can fail rmtree
-                def _handle_remove_readonly(func, path, exc):
-                    import stat
-                    import os
-                    os.chmod(path, stat.S_IWRITE)
-                    func(path)
-                shutil.rmtree(target_dir, onerror=_handle_remove_readonly)
+            self._cleanup_incomplete_dir(target_dir)
 
         if self.is_valid_cloned_repo(target_dir):
+            if skip_update_if_valid:
+                repo = git.Repo(target_dir)
+                head_commit = repo.head.commit.hexsha
+                if self.db:
+                    repo_record = self.db.get_repository_by_full_name(full_name)
+                    if repo_record:
+                        self.db.update_repository_status(
+                            repo_id=repo_record["id"],
+                            status="cloned",
+                            is_cloned=True,
+                            local_path=str(target_dir),
+                        )
+                return {
+                    "status": "cached",
+                    "local_path": str(target_dir),
+                    "head_commit": head_commit,
+                    "is_cloned": True,
+                }
+
             logger.info(f"Repository {full_name} already exists locally. Updating...")
             if progress_callback:
                 progress_callback("Updating existing repository...", 0.3)
@@ -103,11 +128,27 @@ class RepositoryManager:
         target_dir.parent.mkdir(parents=True, exist_ok=True)
 
         try:
-            # Full clone: never pass depth (depth=None default in GitPython)
-            repo = git.Repo.clone_from(
-                url=url,
-                to_path=target_dir,
-            )
+            if timeout_seconds is not None and str(url).startswith(("http://", "https://", "git://")):
+                env = dict(os.environ)
+                env["GIT_TERMINAL_PROMPT"] = "0"
+                proc = subprocess.run(
+                    ["git", "clone", "--no-tags", url, str(target_dir)],
+                    capture_output=True,
+                    text=True,
+                    timeout=timeout_seconds,
+                    env=env,
+                )
+                if proc.returncode != 0:
+                    raise GitCommandError(["git", "clone", url], proc.returncode, proc.stderr)
+                repo = git.Repo(target_dir)
+            else:
+                # Full clone: never pass depth (depth=None default in GitPython)
+                repo = git.Repo.clone_from(
+                    url=url,
+                    to_path=target_dir,
+                    env={"GIT_TERMINAL_PROMPT": "0"},
+                )
+
             head_commit = repo.head.commit.hexsha
             logger.info(f"Successfully cloned {full_name} (HEAD: {head_commit[:8]})")
 
@@ -133,12 +174,17 @@ class RepositoryManager:
 
             return result
 
-        except GitCommandError as e:
+        except (GitCommandError, subprocess.TimeoutExpired, Exception) as e:
             logger.error(f"Git clone error for {full_name}: {e}")
+            self._cleanup_incomplete_dir(target_dir)
             if self.db:
                 repo_record = self.db.get_repository_by_full_name(full_name)
                 if repo_record:
-                    self.db.update_repository_status(repo_record["id"], status="failed")
+                    self.db.update_repository_status(
+                        repo_record["id"],
+                        status="failed",
+                        processing_error=str(e)[:500],
+                    )
             raise RepositoryManagerError(f"Git clone failed: {e}") from e
 
     def update_repository(
@@ -159,7 +205,6 @@ class RepositoryManager:
             logger.info(f"Fetching from origin for {local_path}...")
             origin.fetch()
 
-            # Ensure we are on the default branch or checkout
             current_branch = repo.active_branch.name if not repo.head.is_detached else None
             target_branch = default_branch if default_branch in repo.heads else (current_branch or "main")
 
@@ -183,4 +228,3 @@ class RepositoryManager:
         except GitCommandError as e:
             logger.error(f"Git update failed for {local_path}: {e}")
             raise RepositoryManagerError(f"Git update failed: {e}") from e
-

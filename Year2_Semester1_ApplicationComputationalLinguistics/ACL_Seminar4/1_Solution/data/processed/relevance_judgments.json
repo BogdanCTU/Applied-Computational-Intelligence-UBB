@@ -1,0 +1,44 @@
+{
+  "database": {
+    "query": "database",
+    "description": "Articles discussing database systems, models, consistency, and storage.",
+    "relevant_docs": [
+      "CACM-2876",
+      "CACM-2816",
+      "CACM-2817",
+      "CACM-2882",
+      "CACM-2957",
+      "CACM-3087",
+      "CACM-3164"
+    ],
+    "benchmark_query_mapping": "CACM Query 60 (Database management systems)"
+  },
+  "compiler": {
+    "query": "compiler",
+    "description": "Articles on compiler design, implementation, and code generation.",
+    "relevant_docs": [
+      "CACM-1647",
+      "CACM-2534",
+      "CACM-1215",
+      "CACM-1496",
+      "CACM-2897",
+      "CACM-637",
+      "CACM-799"
+    ],
+    "benchmark_query_mapping": "CACM Query 3 & 18 (Compilers & parallel code generation)"
+  },
+  "algorithm": {
+    "query": "algorithm",
+    "description": "Articles presenting, proving, and evaluating specific algorithms.",
+    "relevant_docs": [
+      "CACM-2916",
+      "CACM-2030",
+      "CACM-2031",
+      "CACM-2657",
+      "CACM-2701",
+      "CACM-3069",
+      "CACM-1350"
+    ],
+    "benchmark_query_mapping": "CACM Query 19 & 63 (Parallel and computational algorithms)"
+  }
+}
