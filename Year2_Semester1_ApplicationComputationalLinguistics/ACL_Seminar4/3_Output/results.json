@@ -1,0 +1,128 @@
+[
+  {
+    "query_word": "database",
+    "matching_documents": 14,
+    "top_3": [
+      "CACM-2876",
+      "CACM-2816",
+      "CACM-2817"
+    ],
+    "top_7": [
+      "CACM-2876",
+      "CACM-2816",
+      "CACM-2817",
+      "CACM-2882",
+      "CACM-2957",
+      "CACM-3087",
+      "CACM-3164"
+    ],
+    "precision_at_3": 1.0,
+    "precision_at_7": 1.0,
+    "retrieval_time_ms": 0.00300894,
+    "median_retrieval_time_ms": 0.003,
+    "relevant_retrieved_at_3": 3,
+    "relevant_retrieved_at_7": 7,
+    "top_7_tfs": {
+      "CACM-2876": 7,
+      "CACM-2816": 4,
+      "CACM-2817": 3,
+      "CACM-2882": 3,
+      "CACM-2957": 3,
+      "CACM-3087": 3,
+      "CACM-3164": 2
+    },
+    "top_7_relevance_details": {
+      "CACM-2876": true,
+      "CACM-2816": true,
+      "CACM-2817": true,
+      "CACM-2882": true,
+      "CACM-2957": true,
+      "CACM-3087": true,
+      "CACM-3164": true
+    }
+  },
+  {
+    "query_word": "compiler",
+    "matching_documents": 84,
+    "top_3": [
+      "CACM-1647",
+      "CACM-2534",
+      "CACM-1215"
+    ],
+    "top_7": [
+      "CACM-1647",
+      "CACM-2534",
+      "CACM-1215",
+      "CACM-1496",
+      "CACM-2897",
+      "CACM-637",
+      "CACM-799"
+    ],
+    "precision_at_3": 1.0,
+    "precision_at_7": 1.0,
+    "retrieval_time_ms": 0.016849748,
+    "median_retrieval_time_ms": 0.014458,
+    "relevant_retrieved_at_3": 3,
+    "relevant_retrieved_at_7": 7,
+    "top_7_tfs": {
+      "CACM-1647": 5,
+      "CACM-2534": 5,
+      "CACM-1215": 4,
+      "CACM-1496": 4,
+      "CACM-2897": 4,
+      "CACM-637": 4,
+      "CACM-799": 4
+    },
+    "top_7_relevance_details": {
+      "CACM-1647": true,
+      "CACM-2534": true,
+      "CACM-1215": true,
+      "CACM-1496": true,
+      "CACM-2897": true,
+      "CACM-637": true,
+      "CACM-799": true
+    }
+  },
+  {
+    "query_word": "algorithm",
+    "matching_documents": 1194,
+    "top_3": [
+      "CACM-2916",
+      "CACM-2030",
+      "CACM-2031"
+    ],
+    "top_7": [
+      "CACM-2916",
+      "CACM-2030",
+      "CACM-2031",
+      "CACM-2657",
+      "CACM-2701",
+      "CACM-3069",
+      "CACM-1350"
+    ],
+    "precision_at_3": 1.0,
+    "precision_at_7": 1.0,
+    "retrieval_time_ms": 0.240367384,
+    "median_retrieval_time_ms": 0.195479,
+    "relevant_retrieved_at_3": 3,
+    "relevant_retrieved_at_7": 7,
+    "top_7_tfs": {
+      "CACM-2916": 8,
+      "CACM-2030": 6,
+      "CACM-2031": 6,
+      "CACM-2657": 6,
+      "CACM-2701": 6,
+      "CACM-3069": 6,
+      "CACM-1350": 5
+    },
+    "top_7_relevance_details": {
+      "CACM-2916": true,
+      "CACM-2030": true,
+      "CACM-2031": true,
+      "CACM-2657": true,
+      "CACM-2701": true,
+      "CACM-3069": true,
+      "CACM-1350": true
+    }
+  }
+]

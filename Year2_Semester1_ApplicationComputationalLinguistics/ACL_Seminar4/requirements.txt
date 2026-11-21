@@ -1,0 +1,6 @@
+# Requirements for Seminar 4 - Information Retrieval System (Part 1)
+# Core solution relies primarily on the Python 3.13 standard library.
+# The libraries below provide enhanced PDF generation and automated test execution.
+
+reportlab>=4.0.0
+pytest>=8.0.0
