@@ -1,16 +1,113 @@
-# Byte-compiled / optimized / DLL files
+# ==============================================================================
+# MASTER .GITIGNORE FOR UNIVERSITY REPOSITORY
+# Applied Computational Intelligence - UBB
+#
+# This file marks and excludes all unnecessary files, temporary build artifacts,
+# local virtual environments, machine learning model weights, cache directories,
+# local databases, IDE configurations, and operating system metadata.
+# ==============================================================================
+
+# ==============================================================================
+# 1. OPERATING SYSTEM METADATA (Unnecessary OS-specific files)
+# ==============================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# ==============================================================================
+# 2. LOCAL VIRTUAL ENVIRONMENTS & RUNTIMES (~3.6 GB unnecessary bloat)
+# Recreatable via requirements.txt, pyproject.toml, or environment.yml
+# ==============================================================================
+.venv/
+.venv*/
+venv/
+venv*/
+env/
+env*/
+ENV/
+env.bak/
+venv.bak/
+.venv_upstream/
+.envrc
+.pdm-python
+.pdm-build/
+.pixi/
+__pypackages__/
+.Python
+
+# Local environment configuration & secrets
+.env
+.env.local
+.env.*.local
+*.env
+!*.env.example
+
+# ==============================================================================
+# 3. PYTHON BYTECODE & COMPILATION CACHES (~600 MB)
+# Temporary bytecode generated during Python execution
+# ==============================================================================
 __pycache__/
 *.py[codz]
 *$py.class
-
-# C extensions
 *.so
+.cache
+.hypothesis/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.pytype/
+cython_debug/
 
-# Distribution / packaging
-.Python
+# Unit test & coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+*.py.cover
+cover/
+
+# Jupyter Notebook & IPython caches
+.ipynb_checkpoints
+profile_default/
+ipython_config.py
+
+# Marimo caches
+marimo/_static/
+marimo/_lsp/
+__marimo__/
+
+# Streamlit local configuration
+.streamlit/secrets.toml
+
+# ==============================================================================
+# 4. APPLICATION BUILD OUTPUTS & PYINSTALLER ARTIFACTS (~1.7 GB)
+# Compiled binaries, bundles, and distribution directories
+# ==============================================================================
 build/
-develop-eggs/
 dist/
+6_Builds/
+build_tmp/
+.pyinstaller_cache/
+*.manifest
+*.spec
+*.app/
+*.pkg
+*.dmg
+
+# Python packaging distribution
+develop-eggs/
 downloads/
 eggs/
 .eggs/
@@ -25,282 +122,171 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-
-# PyInstaller
-#   Usually these files are written by a python script from a template
-#   before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py.cover
-.hypothesis/
-.pytest_cache/
-cover/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
 .pybuilder/
 target/
 
-# Jupyter Notebook
-.ipynb_checkpoints
+# ==============================================================================
+# 5. .NET / C# COMPILATION ARTIFACTS & BINARIES (~16 MB + avoids commit bloat)
+# Roslyn analyzer and C# project build directories
+# ==============================================================================
+[Bb]in/
+[Oo]bj/
+*.dll
+*.exe
+*.pdb
+*.runtimeconfig.json
+*.deps.json
 
-# IPython
-profile_default/
-ipython_config.py
+# ==============================================================================
+# 6. MACHINE LEARNING MODELS, WEIGHTS & CHECKPOINTS (~6.1 GB major bloat)
+# Pre-trained models, fine-tuned weights, checkpoints, and LoRA adapters
+# ==============================================================================
+*.safetensors
+*.pth
+*.pt
+*.ckpt
+*.onnx
+*.metallib
+*.bin
+*.h5
+*.hdf5
+checkpoints/
+checkpoint-*/
+outputs/
+output/
+wandb/
 
-# pyenv
-#   For a library or package, you might want to ignore these files since the code is
-#   intended to run in multiple environments; otherwise, check them in:
-# .python-version
+# ==============================================================================
+# 7. SERIALIZED DATASETS & PICKLES (~100+ MB)
+# Preprocessed datasets that can be recomputed from raw data scripts
+# ==============================================================================
+*.pkl
+*.pickle
+*.joblib
+preprocessed_*.pkl
 
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-# Pipfile.lock
-
-# UV
-#   Similar to Pipfile.lock, it is generally recommended to include uv.lock in version control.
-#   This is especially recommended for binary packages to ensure reproducibility, and is more
-#   commonly ignored for libraries.
-# uv.lock
-
-# poetry
-#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
-#   This is especially recommended for binary packages to ensure reproducibility, and is more
-#   commonly ignored for libraries.
-#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
-# poetry.lock
-# poetry.toml
-
-# pdm
-#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
-#   pdm recommends including project-wide configuration in pdm.toml, but excluding .pdm-python.
-#   https://pdm-project.org/en/latest/usage/project/#working-with-version-control
-# pdm.lock
-# pdm.toml
-.pdm-python
-.pdm-build/
-
-# pixi
-#   Similar to Pipfile.lock, it is generally recommended to include pixi.lock in version control.
-# pixi.lock
-#   Pixi creates a virtual environment in the .pixi directory, just like venv module creates one
-#   in the .venv directory. It is recommended not to include this directory in version control.
-.pixi
-
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# Redis
+# ==============================================================================
+# 8. LOCAL DATABASES & STORAGE ENGINES (~287 MB)
+# Local runtime databases, sqlite instances, journals, and local DB clusters
+# ==============================================================================
+*.db
+*.sqlite
+*.sqlite3
+*.db3
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite-wal
+*.sqlite-shm
 *.rdb
 *.aof
-*.pid
-
-# RabbitMQ
 mnesia/
 rabbitmq/
 rabbitmq-data/
-
-# ActiveMQ
 activemq-data/
 
-# SageMath parsed files
-*.sage.py
+# Local PostgreSQL database clusters
+.pg/
+.pgdata/
+.pgdata_local/
 
-# Environments
-.env
-.envrc
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+# ==============================================================================
+# 9. EXTERNAL CLONED REPOSITORIES (~2.0 GB / 76,800+ files)
+# Cloned external GitHub repositories used for research / bug datasets
+# ==============================================================================
+**/1_Database/Repositories/
+Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project2/1_Database/Repositories/
 
-# Spyder project settings
+# ==============================================================================
+# 10. COMPRESSED ARCHIVES & DATA DUMPS (~60 MB)
+# Compressed project backups, test zip archives, and large dumps
+# ==============================================================================
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+*.gz
+
+# ==============================================================================
+# 11. IDE, EDITOR & AI AGENT CONFIGURATIONS (Local workspace settings)
+# ==============================================================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
 .spyderproject
 .spyproject
-
-# Rope project settings
 .ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype static type analyzer
-.pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# PyCharm
-#   JetBrains specific template is maintained in a separate JetBrains.gitignore that can
-#   be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#   and can be added to the global gitignore or merged into this file.  For a more nuclear
-#   option (not recommended) you can uncomment the following to ignore the entire idea folder.
-# .idea/
-
-# Abstra
-#   Abstra is an AI-powered process automation framework.
-#   Ignore directories containing user credentials, local state, and settings.
-#   Learn more at https://abstra.io/docs
 .abstra/
 
-# Visual Studio Code
-#   Visual Studio Code specific template is maintained in a separate VisualStudioCode.gitignore 
-#   that can be found at https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
-#   and can be added to the global gitignore or merged into this file. However, if you prefer, 
-#   you could uncomment the following to ignore the entire vscode folder
-# .vscode/
+# AI Coding Assistants & Agents
+.agents/
+.claude/
+.cursor/
+.windsurf/
 
-# Ruff stuff:
-.ruff_cache/
+# ==============================================================================
+# 12. LOGS & TEMPORARY DIRECTORIES
+# ==============================================================================
+*.log
+pip-log.txt
+pip-delete-this-directory.txt
+celerybeat-schedule
+celerybeat.pid
+tmp/
+temp/
+4_Temporary/
 
-# PyPI configuration file
+# Microsoft Office temporary / lock files
+~$*
+
+# PyPI / Translations / Documentation
 .pypirc
+*.mo
+*.pot
+/site
+docs/_build/
+*.sage.py
 
-# Marimo
-marimo/_static/
-marimo/_lsp/
-__marimo__/
+# ==============================================================================
+# 13. PRESERVE ESSENTIAL DIRECTORY PLACEHOLDERS & SCHEMAS
+# ==============================================================================
+!**/.gitkeep
+!**/.env.example
 
-# Streamlit
-.streamlit/secrets.toml
+# ==============================================================================
+# 14. COURSE-SPECIFIC & HISTORICAL IGNORES (PRESERVED)
+# ==============================================================================
+
+# Year 1 Semester 2 - Multiagent Systems
 Year1_Semester2_MultiagentSystems/MAS_LabProject1/Backend/__pycache__/
 Year1_Semester2_MultiagentSystems/MAS_ResearchPaper_RelatedWork/MAS_MinimumEffortGame/*.txt
-*.safetensors
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/nlp_transformer_classification/1_BERT_IMDB/outputs/bert_imdb/checkpoints/checkpoint-2188/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/nlp_transformer_classification/1_BERT_IMDB/outputs/bert_imdb/checkpoints/checkpoint-4376/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/nlp_transformer_classification/1_BERT_IMDB/IMDB_Dataset.csv
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/nlp_transformer_classification/2_SENTENCEBERT_FAKE/WELFake_Dataset.csv
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/2_SENTENCEBERT_FAKE/WELFake_Dataset.csv
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/IMDB_Dataset.csv
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/outputs/bert_imdb/checkpoints/checkpoint-4376/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/outputs/bert_imdb/checkpoints/checkpoint-2188/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/data/WELFake_Dataset.csv
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/results_fold_1/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/results_fold_1/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/results_fold_1/checkpoint-5000/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/results_fold_2/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/results_fold_2/checkpoint-5000/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/results_fold_3/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/results_fold_3/checkpoint-5000/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/results_fold_4/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/results_fold_4/checkpoint-5000/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/results_fold_5/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/results_fold_5/checkpoint-5000/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB_V2/IMDB_Dataset.csv
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB_V2/outputs/results_fold_5/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB_V2/outputs/results_fold_5/checkpoint-1250/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB_V2/outputs/results_fold_4/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB_V2/outputs/results_fold_4/checkpoint-1250/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB_V2/outputs/results_fold_3/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB_V2/outputs/results_fold_3/checkpoint-1250/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB_V2/outputs/results_fold_2/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB_V2/outputs/results_fold_2/checkpoint-1250/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB_V2/outputs/results_fold_1/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB_V2/outputs/results_fold_1/checkpoint-1250/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/outputs/results_fold_1/checkpoint-1250/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/outputs/results_fold_1/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/outputs/results_fold_2/checkpoint-1250/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/outputs/results_fold_2/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/outputs/results_fold_3/checkpoint-1250/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/outputs/results_fold_3/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/outputs/results_fold_4/checkpoint-1250/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/outputs/results_fold_4/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/outputs/results_fold_5/checkpoint-1250/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/outputs/results_fold_5/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/2_SentenceBERT_IMDB/outputs/results_fold_1/checkpoint-1250/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/2_SentenceBERT_IMDB/outputs/results_fold_1/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/2_SentenceBERT_IMDB/outputs/results_fold_2/checkpoint-1250/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/2_SentenceBERT_IMDB/outputs/results_fold_2/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/2_SentenceBERT_IMDB/outputs/results_fold_3/checkpoint-1250/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/2_SentenceBERT_IMDB/outputs/results_fold_3/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/2_SentenceBERT_IMDB/outputs/results_fold_4/checkpoint-1250/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/2_SentenceBERT_IMDB/outputs/results_fold_4/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/2_SentenceBERT_IMDB/outputs/results_fold_5/checkpoint-1250/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/2_SentenceBERT_IMDB/outputs/results_fold_5/checkpoint-2500/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/2_SentenceBERT_IMDB/IMDB_Dataset.csv
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/3_DistilBERT_IMDB/IMDB_Dataset.csv
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/3_DistilBERT_IMDB/outputs/distilbert_training_results/checkpoint-1094/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/3_DistilBERT_IMDB/outputs/distilbert_training_results/checkpoint-2188/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/3_UmBERTo_SA_FEEL-IT/output_umberto/umberto_training_results/checkpoint-90/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/3_UmBERTo_SA_FEEL-IT/output_umberto/umberto_training_results/checkpoint-180/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/3_UmBERTo_SA_FEEL-IT/output_umberto/umberto_training_results/
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/4_ITA_BERT_SA_FEEL-IT/output_ita_bert/ita_bert_training_results/
+Year1_Semester2_MultiagentSystems/MAS_LabProject2/.idea/
+
+# Year 1 Semester 2 - Autonomous Driving
 Year1_Semester2_AutonomousDriving/AD_Project/FCN_VAT_LOCAL_V3/.idea/
 Year1_Semester2_AutonomousDriving/AD_Project/FCN_VAT_LOCAL_V3/data/
 Year1_Semester2_AutonomousDriving/AD_Project/TeamProject/.idea/
-Year1_Semester2_MultiagentSystems/MAS_LabProject2/.idea/
+
+# Year 1 Semester 2 - Natural Language Processing (NLP)
 Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/.idea/
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/3_ITA_BERT_SA_FEEL-IT/output_ita_bert/ita_bert_training_results/checkpoint-90/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/3_ITA_BERT_SA_FEEL-IT/output_ita_bert/ita_bert_training_results/checkpoint-180/optimizer.pt
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/3_ITA_BERT_SA_FEEL-IT/output_ita_bert/ita_bert_training_results/checkpoint-90/
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/3_ITA_BERT_SA_FEEL-IT/output_ita_bert/ita_bert_training_results/checkpoint-180/
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/3_Italian/1_ITA_BERT_SA_FEEL-IT/output_ita_bert/ita_bert_training_results/checkpoint-90/
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/3_Italian/1_ITA_BERT_SA_FEEL-IT/output_ita_bert/ita_bert_training_results/checkpoint-180/
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/3_Italian/2_UmBERTo_SA_FEEL-IT/output_umberto/umberto_training_results/checkpoint-90/
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/3_Italian/2_UmBERTo_SA_FEEL-IT/output_umberto/umberto_training_results/checkpoint-180/
 Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/Datasets/IMDB_Dataset.csv
 Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/Datasets/PreProcessed_IMDB_Dataset.csv
 Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/Datasets/WELFake_Dataset.csv
 Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/Datasets/PreProcessed_WELFake_Dataset.csv
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_English/3_DistilBERT_NEWS/output_WELFake/distilbert_training_results/checkpoint-219/
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_English/3_DistilBERT_NEWS/output_WELFake/distilbert_training_results/checkpoint-438/
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_English/3_DistilBERT_NEWS/output_WELFake/distilbert_training_results/checkpoint-1094/
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_English/3_DistilBERT_NEWS/output_WELFake/distilbert_training_results/checkpoint-2188/
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_English/4_DistilBERT_NEWS/output_WELFake/distilbert_training_results/checkpoint-1094/
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_English/4_DistilBERT_NEWS/output_WELFake/distilbert_training_results/checkpoint-2188/
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_English/3_BERT_WELFake/output_WELFake/bert_training_results/checkpoint-1094/
-Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_English/3_BERT_WELFake/output_WELFake/bert_training_results/checkpoint-2188/
+Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/nlp_transformer_classification/1_BERT_IMDB/IMDB_Dataset.csv
+Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/nlp_transformer_classification/2_SENTENCEBERT_FAKE/WELFake_Dataset.csv
+Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/2_SENTENCEBERT_FAKE/WELFake_Dataset.csv
+Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB/IMDB_Dataset.csv
+Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/data/WELFake_Dataset.csv
+Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/1_BERT_IMDB_V2/IMDB_Dataset.csv
+Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/2_SentenceBERT_IMDB/IMDB_Dataset.csv
+Year1_Semester2_NaturalLanguageProcessing_NLP/NLP_Project/3_DistilBERT_IMDB/IMDB_Dataset.csv
+
+# Year 1 Semester 2 - Knowledge Discovery (KD)
 Year1_Semester2_KnowledgeDiscovery/FinalProject/FinalProjectAssignment.pdf
 Year1_Semester2_KnowledgeDiscovery/FinalProject/ToscanaJ-1.7/
 Year1_Semester2_KnowledgeDiscovery_V2/FinalProject/ToscanaJ-1.7/
@@ -314,15 +300,11 @@ Year1_Semester2_KnowledgeDiscovery/FinalProject/unsupervised_results/water_consu
 Year1_Semester2_KnowledgeDiscovery/FinalProject/.idea/
 Year1_Semester2_KnowledgeDiscovery/FinalProject/DataAnalysisScripts/outputsGPT/
 Year1_Semester2_KnowledgeDiscovery/FinalProject/DataAnalysisScripts/plotsChat/
-Year1_Semester2_KnowledgeDiscovery/FinalProject/DataAnalysisScripts/plotsChat/
 Year1_Semester2_KnowledgeDiscovery/FinalProject/DataAnalysisScripts/Unsupervised_OutputsGEM/
-Year1_Semester2_KnowledgeDiscovery/FinalProject/DataAnalysisScripts/plotsChat/
-Year1_Semester2_KnowledgeDiscovery/FinalProject/DataAnalysisScripts/Analysis1_Outputs_Claude_V4/
 Year1_Semester2_KnowledgeDiscovery/FinalProject/DataAnalysisScripts/Analysis1_Outputs_Claude_V4/
 Year1_Semester2_KnowledgeDiscovery/FinalProject/DataAnalysisScripts/Analysis1_Outputs_Claude_V5/
 Year1_Semester2_KnowledgeDiscovery/FinalProject/DataAnalysisScripts/Analysis1_Outputs_Gemini_V5/
 Year1_Semester2_KnowledgeDiscovery/FinalProject/DataAnalysisScripts/Analysis1_Outputs_Claude_V6/
-Year1_Semester2_KnowledgeDiscovery/FinalProject/DataAnalysisScripts/Analysis1_Outputs_Claude_V4/
 Year1_Semester2_KnowledgeDiscovery/FinalProject/DataAnalysisScripts/Analysis_Outputs_Claude_V7/
 Year1_Semester2_KnowledgeDiscovery/FinalProject/DataAnalysisScripts/Analysis_Outputs_Claude_V8/
 Year1_Semester2_KnowledgeDiscovery/FinalProject/DataAnalysisScripts/Analysis_Outputs_Claude_V9/
@@ -333,111 +315,59 @@ Year1_Semester2_KnowledgeDiscovery/FinalProject/3_TriadicConceptAnalysis/Concept
 Year1_Semester2_KnowledgeDiscovery/FinalProject/1_Scales/ToscanaJ-1.7/
 Year1_Semester2_KnowledgeDiscovery/FinalProject/2_AttributeExploration/conexp-1.3/
 Year1_Semester2_KnowledgeDiscovery/FinalProjectRetake/
+
+# Year 2 Semester 1 - Computational Intelligence in Software Engineering (CISE)
 Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project1/.idea/
 Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project1/1_Dataset/bank-full.csv
 Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project1/1_Dataset/bank-names.txt
 Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project1/1_Dataset/bank.csv
+Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project1/.pyinstaller_cache/
+Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Conferences/*.txt
+Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_PROJECT_2/.agents/
+Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project2/.agents/
+
+# Year 2 Semester 1 - Application of Computational Linguistics (ACL)
 Year2_Semester1_ApplicationComputationalLinguistics/Project/Protege-5.6.9/
 Year2_Semester1_ApplicationComputationalLinguistics/ResearchPaper/AgentOMLeveragingLLMAgentsforOntologyMatching.pdf
 Year2_Semester1_ApplicationComputationalLinguistics/ResearchPaper/KROMAOntologyMatchingwithKnowledge.pdf
-Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project1/.pyinstaller_cache/
 Year2_Semester1_ApplicationComputationalLinguistics/Paper1.pdf
 Year2_Semester1_ApplicationComputationalLinguistics/Paper2.pdf
 Year2_Semester1_ApplicationComputationalLinguistics/RR1_Presentation_Week2/Paper1.pdf
 Year2_Semester1_ApplicationComputationalLinguistics/RR1_Presentation_Week2/Paper2.pdf
-Year2_Semester1_ApplicationComputationalLinguistics/RR1_Presentation_Week2/~$Todoran_RR1.pptx
-Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Conferences/Backup1.txt
-Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Conferences/Backup2.txt
-Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Conferences/Backup3.txt
-Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Conferences/Backup1_17_45.txt
-Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Conferences/Backup2_18_30.txt
-Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Conferences/Backup3_18_45.txt
-Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Conferences/*.txt
 Year2_Semester1_ApplicationComputationalLinguistics/ACL_Online_Conferences/*.txt
 Year2_Semester1_ApplicationComputationalLinguistics/ACL_Online_Conferences.zip
+Year2_Semester1_ApplicationComputationalLinguistics/ACL_Seminar3/data/pdf/Licenta_Todoran_UMF.pdf
+Year2_Semester1_ApplicationComputationalLinguistics/ACL_Seminar3/data/raw/licenta_todoran.txt
+Year2_Semester1_ApplicationComputationalLinguistics/ACL_Seminar3/data/raw/Licenta_Todoran_UMF.pdf
+
+# ACL RR2_Project Specific Rules
 Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/original_repo/
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/.agents/
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/.pytest_cache/
 Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/everything-claude-code/
 Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/agent_om_local/.venv/
 Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/agent_om_local/.pg/
 Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/agent_om_local/.pgdata/
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/agent_om_local/.pgdata/
 Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/agent_om_local/.pytest_cache/
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/pytest.ini
 Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/agent_om_local/.venv_upstream/
 Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project_Manual/
-.DS_Store
-Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/.agents/
-Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/logs_pip.txt
-Year2_Semester1_ApplicationComputationalLinguistics/ACL_Seminar3/data/pdf/Licenta_Todoran_UMF.pdf
-Year2_Semester1_ApplicationComputationalLinguistics/ACL_Seminar3/data/raw/licenta_todoran.txt
-Year2_Semester1_ApplicationComputationalLinguistics/ACL_Seminar3/data/raw/Licenta_Todoran_UMF.pdf
-Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_PROJECT_2/.agents/
-Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project2/.agents/
-.agents/
-.claude/
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/6_Models/base/Qwen2.5-Coder-3B-Instruct-4bit/
-
-# DPML COURSE
-# Python bytecode and virtual environment
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/__pycache__/
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/*.py[cod]
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/*$py.class
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/.venv/
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/env/
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/venv/
-# Large Model Weights, Adapters & Checkpoints (store locally, ignore VCS)
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/6_Models/base/*
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/!6_Models/base/.gitkeep
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/6_Models/adapters/*
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/!6_Models/adapters/.gitkeep
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/6_Models/checkpoints/*
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/!6_Models/checkpoints/.gitkeep
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/6_Models/exported/*
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/!6_Models/exported/.gitkeep
-# Large Databases and Raw Datasets
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/2_Database/raw/*
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/!2_Database/raw/.gitkeep
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/2_Database/processed/*
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/!2_Database/processed/.gitkeep
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/2_Database/synthetic/*
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/!2_Database/synthetic/.gitkeep
-# Logs and Run Artifacts
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/8_Logs/*
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/!8_Logs/.gitkeep
-Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/*.log
-
 Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/1_Documents/1_Paper/AgentOmPaper.pdf
 
-# ACL RR2_Project
-# Virtual Environments
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/.venv/
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/.venv_upstream/
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/venv/
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/ENV/
-
-# Python Bytecode & Caches
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/__pycache__/
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/*.py[cod]
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/*$py.class
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/.pytest_cache/
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/.mypy_cache/
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/.ruff_cache/
-
-# PyInstaller & Packaging Build Artifacts
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/build/
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/dist/
-
-# Local Database Clusters & Binaries
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/.pg/
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/.pgdata/
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/.pgdata_local/
-
-# Temporary Intermediate & Cache Files
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/*.log
-
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/.DS_Store
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/Thumbs.db
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/.env
-Year2_Semester1_ApplicationComputationalLinguistics/RR2_Project/4_Temporary/
+# Year 2 Semester 1 - Declarative Programming & Machine Learning (DPML)
+Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/.agents/
+Year2_Semester1_DeclarativeProgrammingMachineLearning/FinalProject_SQLAgent/logs_pip.txt
+Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/6_Models/base/Qwen2.5-Coder-3B-Instruct-4bit/
+Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/6_Models/base/*
+!Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/6_Models/base/.gitkeep
+Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/6_Models/adapters/*
+!Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/6_Models/adapters/.gitkeep
+Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/6_Models/checkpoints/*
+!Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/6_Models/checkpoints/.gitkeep
+Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/6_Models/exported/*
+!Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/6_Models/exported/.gitkeep
+Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/2_Database/raw/*
+!Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/2_Database/raw/.gitkeep
+Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/2_Database/processed/*
+!Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/2_Database/processed/.gitkeep
+Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/2_Database/synthetic/*
+!Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/2_Database/synthetic/.gitkeep
+Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/8_Logs/*
+!Year2_Semester1_DeclarativeProgrammingMachineLearning/SQLReportAgentFineTune/8_Logs/.gitkeep
