@@ -1,0 +1,11 @@
+{
+  "train_count": 727,
+  "valid_count": 181,
+  "held_out_test_count": 300,
+  "train_adversarial": 638,
+  "train_benign": 89,
+  "valid_adversarial": 145,
+  "valid_benign": 36,
+  "template_family_overlap_with_held_out": 0,
+  "processed_dir": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/2_FineTune/03_Processed_Datasets"
+}

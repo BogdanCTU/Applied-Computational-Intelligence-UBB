@@ -1,0 +1,10 @@
+% =================================================================
+\newpage
+
+\begin{abstract}
+
+\hspace{0.6em} Software defects can cause failures, security problems and costly maintenance, which motivates techniques for identifying defects before software is executed. Static Code Analysis (\gls{sca}) examines program representations without running the program and can identify suspicious patterns such as null dereferences, incorrect Application Programming Interface (API) usage and inconsistent program states \cite{paper2_hegedHus2022static}. However, practical static analyzers must balance defect coverage against the number of false positive warnings and excessive false positives can reduce developer trust and increase manual inspection effort \cite{paperreference2_bessey2010few,paper2_hegedHus2022static}. 
+
+\hspace{0.6em} \gls{ml} offers a complementary approach by learning patterns from code and previously classified analysis results. This report examines the traditional FindBugs approach of Ayewah et al., the Transformer-based false-positive reduction method of Kharkar et al., and the comparative warning-triage study of Yerramreddy et al. \cite{paperreference1_ayewah2008using,paper1_kharkarlearning2022,paper3_yerramreddy2023empirical}. The investigated evidence indicates that \gls{ml} is especially useful as a post processing layer that classifies or prioritizes warnings already produced by static analysis, although its effectiveness depends on suitable program representations, reliable training data, generalization and the cost of incorrectly suppressing genuine defects.
+
+\end{abstract}

@@ -1,0 +1,19 @@
+fine_tune_type: lora
+optimizer: adamw
+mask_prompt: true
+num_layers: 4
+batch_size: 1
+iters: 60
+val_batches: 10
+learning_rate: 0.0001
+steps_per_report: 10
+steps_per_eval: 20
+save_every: 40
+max_seq_length: 384
+grad_checkpoint: true
+seed: 42
+lora_parameters:
+  rank: 8
+  alpha: 16.0
+  dropout: 0.0
+  scale: 2.0
