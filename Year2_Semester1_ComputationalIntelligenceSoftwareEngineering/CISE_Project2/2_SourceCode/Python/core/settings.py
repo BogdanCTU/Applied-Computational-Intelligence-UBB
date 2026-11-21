@@ -1,6 +1,6 @@
 """Application configuration module.
 Loads settings from environment variables and provides centralized paths and parameters.
-Updated for CISE Project 2 sequential structure (1_Database, 2_SourceCode, etc.).
+Updated for CISE Project 2 class/file-level bug detection across 100+ repositories.
 """
 from __future__ import annotations
 
@@ -135,15 +135,34 @@ class RoslynSettings(BaseModel):
     timeout_seconds: int = 60
 
 
+class CollectionSettings(BaseModel):
+    """Resumable multi-repository mining and SZZ execution constraints."""
+    target_repositories: int = 105
+    max_concurrent_repos: int = 2
+    clone_strategy: str = "full_history"  # Full history required for accurate SZZ blame
+    clone_timeout_seconds: int = 180
+    commit_mining_limit: int = 250
+    max_bug_fixes_per_repo: int = 40
+    max_szz_files_per_fix: int = 8
+    max_deleted_lines_per_file: int = 25
+    checkpoint_interval: int = 5
+    max_repo_size_kb: int = 60000
+    min_repo_size_kb: int = 100
+    min_stars: int = 50
+
+
 class MLSettings(BaseModel):
-    """Machine learning hyperparameters and validation defaults."""
+    """Machine learning hyperparameters, validation defaults, and precision targets."""
     default_n_estimators: int = 100
     default_max_depth: int | None = 15
     default_min_samples_split: int = 5
     default_min_samples_leaf: int = 2
     default_random_state: int = 42
-    default_test_size: float = 0.25
+    default_test_size: float = 0.20
     group_by: str = "repository"
+    preferred_precision_target: float = 0.80
+    min_precision_target: float = 0.75
+    min_recall_floor: float = 0.50
 
 
 class PredictionSettings(BaseModel):
@@ -158,12 +177,14 @@ class PredictionSettings(BaseModel):
 class AppSettings(BaseModel):
     """Overall application configuration."""
     app_name: str = "C# Defect Predictor"
-    app_version: str = "1.0.0"
+    app_title: str = "Machine Learning-Based Bug Detection in C# Source Code"
+    app_version: str = "3.0.0"
     debug: bool = False
     log_level: str = "INFO"
     storage: StorageSettings = Field(default_factory=StorageSettings)
     github: GitHubSettings = Field(default_factory=GitHubSettings)
     roslyn: RoslynSettings = Field(default_factory=RoslynSettings)
+    collection: CollectionSettings = Field(default_factory=CollectionSettings)
     ml: MLSettings = Field(default_factory=MLSettings)
     prediction: PredictionSettings = Field(default_factory=PredictionSettings)
 
@@ -203,7 +224,15 @@ def get_settings() -> AppSettings:
     )
 
     roslyn = RoslynSettings(
-        project_path=Path(os.getenv("ROSLYN_ANALYZER_PROJECT_PATH", str(RoslynSettings().project_path)))
+        project_path=Path(os.getenv("ROSLYN_ANALYZER_PROJECT_PATH", str(RoslynSettings().project_path))),
+        timeout_seconds=int(os.getenv("ROSLYN_TIMEOUT_SECONDS", "60")),
+    )
+
+    collection = CollectionSettings(
+        target_repositories=int(os.getenv("COLLECTION_TARGET_REPOS", "105")),
+        max_concurrent_repos=int(os.getenv("COLLECTION_MAX_CONCURRENT", "2")),
+        commit_mining_limit=int(os.getenv("COLLECTION_COMMIT_LIMIT", "250")),
+        checkpoint_interval=int(os.getenv("COLLECTION_CHECKPOINT_INTERVAL", "5")),
     )
 
     prediction = PredictionSettings(
@@ -219,6 +248,7 @@ def get_settings() -> AppSettings:
         storage=storage,
         github=github,
         roslyn=roslyn,
+        collection=collection,
         prediction=prediction,
     )
     app.ensure_directories()

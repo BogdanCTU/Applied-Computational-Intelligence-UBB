@@ -17,7 +17,13 @@ import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import (
+    ExtraTreesClassifier,
+    HistGradientBoostingClassifier,
+    RandomForestClassifier,
+)
+from sklearn.calibration import CalibratedClassifierCV
+from sklearn.dummy import DummyClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import (
@@ -49,9 +55,10 @@ def build_estimator(
     algorithm: str,
     params: Dict[str, Any],
     random_state: int = 42,
+    allow_extended: bool = False,
 ) -> Tuple[Any, bool]:
     """Instantiate model estimator and determine whether in-fold feature scaling is required.
-    
+
     Returns:
         (estimator, needs_scaling)
     """
@@ -93,6 +100,56 @@ def build_estimator(
             "n_jobs": p.get("n_jobs", -1),
         }
         return RandomForestClassifier(**kwargs), False
+
+    elif allow_extended and algo in ("extra_trees", "et", "extra_trees_classifier"):
+        kwargs = {
+            "n_estimators": p.get("n_estimators", 200),
+            "max_depth": p.get("max_depth", None),
+            "min_samples_split": p.get("min_samples_split", 2),
+            "min_samples_leaf": p.get("min_samples_leaf", 1),
+            "max_features": p.get("max_features", "sqrt"),
+            "class_weight": p.get("class_weight", None),
+            "random_state": p.get("random_state", random_state),
+            "n_jobs": p.get("n_jobs", -1),
+        }
+        return ExtraTreesClassifier(**kwargs), False
+
+    elif allow_extended and algo in ("hist_gb", "hist_gradient_boosting", "hgb"):
+        kwargs = {
+            "learning_rate": p.get("learning_rate", 0.05),
+            "max_iter": p.get("max_iter", 150),
+            "max_depth": p.get("max_depth", 5),
+            "max_leaf_nodes": p.get("max_leaf_nodes", 15),
+            "min_samples_leaf": p.get("min_samples_leaf", 20),
+            "l2_regularization": p.get("l2_regularization", 1.0),
+            "class_weight": p.get("class_weight", "balanced"),
+            "random_state": p.get("random_state", random_state),
+        }
+        return HistGradientBoostingClassifier(**kwargs), False
+
+    elif allow_extended and algo in ("calibrated_rf", "calibrated_et", "calibrated_ensemble"):
+        base_cls = ExtraTreesClassifier if algo == "calibrated_et" else RandomForestClassifier
+        base_est = base_cls(
+            n_estimators=p.get("n_estimators", 200),
+            max_depth=p.get("max_depth", 8),
+            min_samples_split=p.get("min_samples_split", 6),
+            min_samples_leaf=p.get("min_samples_leaf", 4),
+            max_features=p.get("max_features", "log2"),
+            class_weight=p.get("class_weight", "balanced"),
+            random_state=p.get("random_state", random_state),
+            n_jobs=p.get("n_jobs", -1),
+        )
+        return CalibratedClassifierCV(
+            estimator=base_est,
+            method=p.get("calibration_method", "sigmoid"),
+            cv=p.get("calibration_cv", 3),
+        ), False
+
+    elif allow_extended and algo in ("dummy", "dummy_classifier"):
+        return DummyClassifier(
+            strategy=p.get("strategy", "stratified"),
+            random_state=p.get("random_state", random_state),
+        ), False
 
     else:
         raise ValueError(

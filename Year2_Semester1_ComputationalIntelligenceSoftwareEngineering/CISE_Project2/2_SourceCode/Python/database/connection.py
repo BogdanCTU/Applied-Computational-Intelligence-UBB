@@ -45,6 +45,7 @@ class Database:
     def initialize_schema(self) -> None:
         """Execute schema creation statements and apply non-destructive column additions."""
         with self.session() as conn:
+            self._apply_migrations(conn)
             conn.executescript(CREATE_TABLES_SQL)
             self._apply_migrations(conn)
 
@@ -52,9 +53,33 @@ class Database:
         """Safely add new columns to existing tables if missing."""
         migrations = [
             ("repositories", "description", "TEXT"),
+            ("repositories", "license", "TEXT"),
+            ("repositories", "default_branch", "TEXT DEFAULT 'main'"),
+            ("repositories", "stars", "INTEGER DEFAULT 0"),
+            ("repositories", "forks", "INTEGER DEFAULT 0"),
             ("repositories", "size_kb", "INTEGER DEFAULT 0"),
+            ("repositories", "is_cloned", "INTEGER DEFAULT 0"),
+            ("repositories", "local_path", "TEXT"),
             ("repositories", "status", "TEXT DEFAULT 'registered'"),
             ("repositories", "last_sync_at", "TIMESTAMP"),
+            ("repositories", "collected_at", "TIMESTAMP"),
+            ("repositories", "updated_at", "TIMESTAMP"),
+            ("repositories", "selection_score", "REAL DEFAULT 0.0"),
+            ("repositories", "selection_rank", "INTEGER"),
+            ("repositories", "selection_reason", "TEXT"),
+            ("repositories", "exclusion_reason", "TEXT"),
+            ("repositories", "is_selected", "INTEGER DEFAULT 1"),
+            ("repositories", "is_fork", "INTEGER DEFAULT 0"),
+            ("repositories", "is_archived", "INTEGER DEFAULT 0"),
+            ("repositories", "pushed_at", "TEXT"),
+            ("repositories", "created_at_gh", "TEXT"),
+            ("repositories", "production_cs_files_count", "INTEGER DEFAULT 0"),
+            ("repositories", "commits_mined_count", "INTEGER DEFAULT 0"),
+            ("repositories", "bug_fixes_count", "INTEGER DEFAULT 0"),
+            ("repositories", "szz_traces_count", "INTEGER DEFAULT 0"),
+            ("repositories", "class_observations_count", "INTEGER DEFAULT 0"),
+            ("repositories", "processing_error", "TEXT"),
+            ("repositories", "collection_run_id", "TEXT"),
             ("commits", "parent_shas", "TEXT"),
             ("commits", "committer_date", "TIMESTAMP"),
             ("commits", "files_changed_count", "INTEGER DEFAULT 0"),
@@ -85,13 +110,36 @@ class Database:
             ("features", "status", "TEXT DEFAULT 'success'"),
             ("features", "error_message", "TEXT"),
             ("features", "analyzer_version", "TEXT DEFAULT '1.0.0'"),
+            ("datasets", "granularity", "TEXT DEFAULT 'method'"),
+            ("datasets", "repository_count", "INTEGER DEFAULT 0"),
+            ("datasets", "feature_schema_version", "TEXT DEFAULT '1.0.0'"),
+            ("datasets", "manifest_path", "TEXT"),
+            ("datasets", "sha256_checksum", "TEXT"),
+            ("models", "version", "TEXT DEFAULT '1.0.0'"),
+            ("models", "granularity", "TEXT DEFAULT 'method'"),
+            ("models", "decision_threshold", "REAL DEFAULT 0.50"),
+            ("models", "dataset_version", "TEXT"),
+            ("models", "threshold_selection_criterion", "TEXT"),
+            ("predictions", "model_id", "INTEGER"),
+            ("predictions", "created_at", "TIMESTAMP"),
+            ("predictions", "granularity", "TEXT DEFAULT 'method'"),
+            ("predictions", "dataset_version", "TEXT"),
+            ("predictions", "decision_threshold", "REAL DEFAULT 0.50"),
+            ("predictions", "namespace_name", "TEXT"),
+            ("predictions", "start_line", "INTEGER"),
+            ("predictions", "end_line", "INTEGER"),
+            ("predictions", "method_count", "INTEGER"),
+            ("predictions", "loc", "INTEGER"),
+            ("predictions", "cyclomatic_complexity", "INTEGER"),
+            ("predictions", "file_summary_json", "TEXT"),
         ]
         for table, col, col_type in migrations:
             try:
-                # Check if column exists
-                cols = [row["name"] for row in conn.execute(f"PRAGMA table_info({table});").fetchall()]
+                rows = conn.execute(f"PRAGMA table_info({table});").fetchall()
+                if not rows:
+                    continue
+                cols = [row["name"] for row in rows]
                 if col not in cols:
                     conn.execute(f"ALTER TABLE {table} ADD COLUMN {col} {col_type};")
             except Exception:
-                # Table might not exist yet or already altered
                 pass

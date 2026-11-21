@@ -1,7 +1,6 @@
 """Model Manager module for persisting, versioning, and reloading trained ML models with joblib."""
 from __future__ import annotations
 
-import json
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -23,12 +22,18 @@ class ModelManagerError(Exception):
 
 
 class ModelManager:
-    """Handles serialization, versioning, and validation of trained models and preprocessors."""
+    """Handles serialization, versioning, threshold provenance, and validation of trained models."""
 
     def __init__(self, models_dir: Path | str, db: Optional[RepositoryDB] = None) -> None:
         self.models_dir = Path(models_dir)
         self.models_dir.mkdir(parents=True, exist_ok=True)
         self.db = db
+
+    @staticmethod
+    def _resolve_algorithm_name(model: Any) -> str:
+        if hasattr(model, "named_steps") and "classifier" in getattr(model, "named_steps", {}):
+            return type(model.named_steps["classifier"]).__name__
+        return type(model).__name__
 
     def save_model(
         self,
@@ -41,8 +46,13 @@ class ModelManager:
         dataset_id: Optional[int] = None,
         split_summary: Optional[Dict[str, Any]] = None,
         overwrite: bool = False,
+        granularity: str = "method",
+        version: str = "1.0.0",
+        dataset_version: Optional[str] = None,
+        decision_threshold: float = 0.50,
+        threshold_selection_criterion: Optional[str] = None,
     ) -> Path:
-        """Serialize model, fitted preprocessor, and metadata bundle to disk and database."""
+        """Serialize model, fitted preprocessor, decision threshold, and metadata bundle to disk and database."""
         safe_name = "".join(c for c in model_name if c.isalnum() or c in ("-", "_")).strip()
         if not safe_name:
             raise ModelManagerError(f"Invalid model name: '{model_name}'")
@@ -51,8 +61,15 @@ class ModelManager:
         if file_path.exists() and not overwrite:
             raise ModelManagerError(f"Model file '{file_path}' already exists. Specify a unique name or overwrite=True.")
 
+        algo_name = self._resolve_algorithm_name(model)
         payload = {
             "model_name": safe_name,
+            "algorithm": algo_name,
+            "version": version,
+            "granularity": granularity,
+            "dataset_version": dataset_version,
+            "decision_threshold": float(decision_threshold),
+            "threshold_selection_criterion": threshold_selection_criterion,
             "model": model,
             "preprocessor": preprocessor,
             "feature_names": feature_names,
@@ -65,19 +82,23 @@ class ModelManager:
         }
 
         joblib.dump(payload, file_path, compress=3)
-        logger.info(f"Model artifact saved successfully to {file_path}")
+        logger.info(f"Model artifact saved successfully to {file_path} (granularity={granularity}, threshold={decision_threshold:.3f})")
 
-        # Record in SQLite database if db is available
         if self.db:
             try:
                 self.db.save_model_record(
                     name=safe_name,
-                    algorithm="RandomForestClassifier",
+                    algorithm=algo_name,
                     dataset_id=dataset_id,
                     parameters=parameters,
                     metrics=metrics,
                     feature_names=feature_names,
                     model_file_path=str(file_path),
+                    version=version,
+                    granularity=granularity,
+                    dataset_version=dataset_version,
+                    decision_threshold=float(decision_threshold),
+                    threshold_selection_criterion=threshold_selection_criterion,
                 )
             except Exception as e:
                 logger.warning(f"Could not write model metadata to database: {e}")
@@ -107,23 +128,33 @@ class ModelManager:
         except Exception as e:
             raise ModelManagerError(f"Failed to deserialized model bundle: {e}") from e
 
-        # Validate structure
         required_keys = ["model", "preprocessor", "feature_names", "parameters", "metrics"]
         for k in required_keys:
             if k not in bundle:
                 raise ModelManagerError(f"Corrupted model bundle: missing key '{k}'")
 
+        bundle.setdefault("granularity", "method")
+        bundle.setdefault("decision_threshold", 0.50)
+        bundle.setdefault("version", "1.0.0")
+
         logger.info(f"Loaded model '{bundle.get('model_name')}' from {path}")
         return bundle
 
-    def list_saved_models(self) -> List[Dict[str, Any]]:
-        """List all valid models available in directory and database."""
+    def list_saved_models(self, granularity: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Authoritative single-source model registry across disk bundles and SQLite records."""
         register_unpickle_aliases()
         models: List[Dict[str, Any]] = []
         seen_names: set[str] = set()
 
-        # Scan models directory for serialized bundles
         preferred_order = [
+            "class_precision_champion_v3",
+            "rf_class_opt_v3",
+            "et_class_opt_v3",
+            "hgb_class_opt_v3",
+            "calibrated_class_v3",
+            "rf_class_baseline_v3",
+            "lr_class_v3",
+            "dt_class_v3",
             "et_nested_opt_v3_depth6_leaf6_log2",
             "rf_nested_opt_v3_depth6_leaf8_log2",
             "exp_final_5fold_v2_best_rf_compact_regularized",
@@ -144,16 +175,25 @@ class ModelManager:
                 bundle = joblib.load(p)
                 m_name = str(bundle.get("model_name", p.stem))
                 est = bundle.get("model")
-                algo_name = type(est).__name__ if est is not None else "RandomForestClassifier"
+                algo_name = bundle.get("algorithm") or self._resolve_algorithm_name(est)
+                m_gran = bundle.get("granularity", "method")
+                if granularity and m_gran != granularity:
+                    continue
                 db_rec = db_by_name.get(m_name) or db_by_name.get(p.stem)
                 models.append({
                     "id": db_rec["id"] if db_rec else None,
                     "name": m_name,
                     "algorithm": algo_name,
+                    "version": bundle.get("version", db_rec.get("version") if db_rec else "1.0.0"),
+                    "granularity": m_gran,
                     "dataset_id": bundle.get("dataset_id", db_rec.get("dataset_id") if db_rec else None),
+                    "dataset_version": bundle.get("dataset_version", db_rec.get("dataset_version") if db_rec else None),
+                    "decision_threshold": float(bundle.get("decision_threshold", db_rec.get("decision_threshold", 0.50) if db_rec else 0.50)),
+                    "threshold_selection_criterion": bundle.get("threshold_selection_criterion"),
                     "model_file_path": str(p),
                     "metrics": bundle.get("metrics", {}),
                     "parameters": bundle.get("parameters", {}),
+                    "feature_names": bundle.get("feature_names", []),
                     "created_at": db_rec.get("created_at", "bundled") if db_rec else "bundled",
                 })
                 seen_names.add(m_name)
@@ -165,7 +205,9 @@ class ModelManager:
             for m in self.db.list_models():
                 m_name = str(m.get("name", ""))
                 if m_name not in seen_names:
+                    m_gran = m.get("granularity", "method")
+                    if granularity and m_gran != granularity:
+                        continue
                     models.append(m)
 
         return models
-

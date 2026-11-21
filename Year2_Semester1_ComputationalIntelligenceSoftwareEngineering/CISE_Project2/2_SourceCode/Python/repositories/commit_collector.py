@@ -3,7 +3,8 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Set
+import subprocess
+from typing import Any, Callable, Dict, List, Optional, Tuple
 import git
 from git.exc import GitCommandError, InvalidGitRepositoryError
 
@@ -20,6 +21,8 @@ class CommitCollectorError(Exception):
 
 class CommitCollector:
     """Extracts commit metadata and file changes from a local Git repository."""
+
+    COMMIT_HEADER_PREFIX = "__CISE_COMMIT__|"
 
     def __init__(self, db: RepositoryDB) -> None:
         self.db = db
@@ -42,13 +45,10 @@ class CommitCollector:
         except (InvalidGitRepositoryError, Exception) as e:
             raise CommitCollectorError(f"Invalid Git repository at {path}: {e}") from e
 
-        # Incremental check: fetch already recorded SHAs
         existing_shas = self.db.get_commit_shas_for_repository(repository_id)
         logger.info(f"Repository #{repository_id} has {len(existing_shas)} existing commits in database.")
 
-        # Traverse commits in topological/reverse-chronological order
         try:
-            # Iterating all commits reachable from HEAD
             all_commits = list(repo.iter_commits())
         except GitCommandError as e:
             raise CommitCollectorError(f"Failed to read commit log: {e}") from e
@@ -73,25 +73,15 @@ class CommitCollector:
             }
 
         extracted_count = 0
-        batch_commits: List[Dict[str, Any]] = []
-        batch_files: List[tuple[int, List[Dict[str, Any]]]] = []
+        batch_items: List[Tuple[Dict[str, Any], List[Dict[str, Any]]]] = []
 
         for idx, commit in enumerate(commits_to_process):
             commit_data, file_changes = self._parse_commit(repository_id, commit)
-            batch_commits.append(commit_data)
-            batch_files.append((0, file_changes)) # placeholder for commit_id
+            batch_items.append((commit_data, file_changes))
 
-            if len(batch_commits) >= batch_size or idx == total_to_process - 1:
-                # Persist batch
-                for i, c_data in enumerate(batch_commits):
-                    cid = self.db.upsert_commit(c_data)
-                    files = batch_files[i][1]
-                    if files:
-                        self.db.insert_commit_files(cid, files)
-                    extracted_count += 1
-
-                batch_commits.clear()
-                batch_files.clear()
+            if len(batch_items) >= batch_size or idx == total_to_process - 1:
+                extracted_count += self.db.batch_insert_commits_with_files(batch_items)
+                batch_items.clear()
 
                 progress = (idx + 1) / total_to_process
                 msg = f"Extracted {idx + 1}/{total_to_process} commits ({progress * 100:.1f}%)"
@@ -99,7 +89,6 @@ class CommitCollector:
                 if progress_callback:
                     progress_callback(msg, progress)
 
-        # Update repository sync time
         now_iso = datetime.now(timezone.utc).isoformat()
         self.db.update_repository_status(repository_id, status="synced", is_cloned=True, last_sync_at=now_iso)
 
@@ -110,12 +99,122 @@ class CommitCollector:
             "new_extracted": extracted_count,
         }
 
+    def extract_and_persist_fast(
+        self,
+        repository_id: int,
+        local_path: Path | str,
+        max_commits: int = 250,
+    ) -> Dict[str, Any]:
+        """High-throughput commit mining using a single `git log --numstat` subprocess and batch SQLite commit."""
+        path = Path(local_path)
+        if not path.exists():
+            raise CommitCollectorError(f"Local repository path does not exist: {path}")
+
+        existing_shas = self.db.get_commit_shas_for_repository(repository_id)
+
+        fmt = f"{self.COMMIT_HEADER_PREFIX}%H%x1f%P%x1f%an%x1f%ae%x1f%aI%x1f%cI%x1f%B%x1e"
+        cmd = ["git", "-C", str(path), "log", f"-n{max_commits}", "--numstat", f"--format={fmt}"]
+        try:
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=60, encoding="utf-8", errors="replace")
+            if proc.returncode != 0:
+                raise CommitCollectorError(f"git log failed: {proc.stderr}")
+        except subprocess.TimeoutExpired as e:
+            raise CommitCollectorError(f"git log timed out: {e}") from e
+
+        parsed_items: List[Tuple[Dict[str, Any], List[Dict[str, Any]]]] = []
+        blocks = proc.stdout.split(self.COMMIT_HEADER_PREFIX)
+        total_seen = 0
+
+        for block in blocks:
+            if not block.strip() or "\x1e" not in block:
+                continue
+            header_part, stats_part = block.split("\x1e", 1)
+            fields = header_part.split("\x1f")
+            if len(fields) < 7:
+                continue
+
+            total_seen += 1
+            sha, parents_raw, author_name, author_email, a_date, c_date, msg = fields[:7]
+            sha = sha.strip()
+            if not sha or sha in existing_shas:
+                continue
+
+            parent_list = [p for p in parents_raw.strip().split() if p]
+            primary_parent = parent_list[0] if parent_list else None
+
+            files_data: List[Dict[str, Any]] = []
+            total_ins = 0
+            total_del = 0
+            modifies_csharp = False
+
+            for stat_line in stats_part.splitlines():
+                stat_line = stat_line.strip()
+                if not stat_line:
+                    continue
+                parts = stat_line.split("\t")
+                if len(parts) < 3:
+                    continue
+                ins_str, del_str, fpath = parts[0], parts[1], parts[-1]
+                # Handle rename notation like 'src/{Old.cs => New.cs}'
+                if "=>" in fpath and "{" in fpath and "}" in fpath:
+                    prefix, rest = fpath.split("{", 1)
+                    inside, suffix = rest.split("}", 1)
+                    new_part = inside.split("=>", 1)[-1].strip()
+                    fpath = f"{prefix}{new_part}{suffix}".replace("//", "/")
+                elif " => " in fpath:
+                    fpath = fpath.split(" => ", 1)[-1].strip()
+
+                ins = int(ins_str) if ins_str.isdigit() else 0
+                dels = int(del_str) if del_str.isdigit() else 0
+                total_ins += ins
+                total_del += dels
+                is_cs = fpath.lower().endswith(".cs")
+                if is_cs:
+                    modifies_csharp = True
+                files_data.append({
+                    "file_path": fpath,
+                    "change_type": "M",
+                    "insertions": ins,
+                    "deletions": dels,
+                    "is_csharp": is_cs,
+                })
+
+            commit_record = {
+                "repository_id": repository_id,
+                "commit_sha": sha,
+                "parent_sha": primary_parent,
+                "parent_shas": ",".join(parent_list),
+                "author_name": author_name.strip() or "Unknown",
+                "author_email": author_email.strip() or "unknown@example.com",
+                "committed_date": a_date.strip(),
+                "committer_date": c_date.strip(),
+                "message": msg.strip(),
+                "files_changed_count": len(files_data),
+                "insertions": total_ins,
+                "deletions": total_del,
+                "modifies_csharp": 1 if modifies_csharp else 0,
+                "is_bug_fix": 0,
+                "bug_fix_confidence": 0.0,
+                "bug_fix_evidence": None,
+            }
+            parsed_items.append((commit_record, files_data))
+
+        new_extracted = self.db.batch_insert_commits_with_files(parsed_items)
+        now_iso = datetime.now(timezone.utc).isoformat()
+        self.db.update_repository_status(repository_id, status="synced", is_cloned=True, last_sync_at=now_iso)
+        self.db.update_repository_metrics(repository_id, {"commits_mined_count": len(existing_shas) + new_extracted})
+
+        return {
+            "total_in_repo": total_seen,
+            "already_present": len(existing_shas),
+            "new_extracted": new_extracted,
+        }
+
     def _parse_commit(self, repository_id: int, commit: git.Commit) -> tuple[Dict[str, Any], List[Dict[str, Any]]]:
         """Extract metadata and file modifications from a single Git commit."""
         parent_shas = [p.hexsha for p in commit.parents]
         primary_parent = parent_shas[0] if parent_shas else None
 
-        # Author & committer timestamps (handle timezone safely)
         try:
             author_date = commit.authored_datetime.isoformat()
         except Exception:
@@ -126,7 +225,6 @@ class CommitCollector:
         except Exception:
             committer_date = str(commit.committed_date)
 
-        # Extract file stats
         files_data: List[Dict[str, Any]] = []
         modifies_csharp = False
         total_insertions = 0
@@ -138,7 +236,6 @@ class CommitCollector:
             total_deletions = stats.total.get("deletions", 0)
             file_stats = stats.files
 
-            # Map change types via git diff
             change_types: Dict[str, str] = {}
             if commit.parents:
                 diffs = commit.parents[0].diff(commit)
@@ -147,7 +244,6 @@ class CommitCollector:
                     if path:
                         change_types[path] = d.change_type or "M"
             else:
-                # Root commit: all files added
                 for fpath in file_stats.keys():
                     change_types[fpath] = "A"
 
@@ -185,4 +281,3 @@ class CommitCollector:
         }
 
         return commit_record, files_data
-

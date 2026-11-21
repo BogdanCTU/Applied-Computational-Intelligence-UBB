@@ -1,34 +1,20 @@
-# 02 — Problem Definition & Research Objectives
+# Slide 2 — Problem Statement & Transformation Objectives
+
+## Limitations of Legacy Method-Level v2
+
+- **Narrow Empirical Diversity:** Only `5` training repositories (`578` methods) + `1` holdout (`159` methods).
+- **High Structural Noise:** Tiny helper methods (`3–10` LOC) had overlapping metric vectors across buggy and clean methods, capping holdout precision around **`69.61%`** (well below real-world precision needs).
+- **Unrealistic Developer Input:** Practitioners review **complete classes and `.cs` source files** (often containing multiple classes/structs/records), not isolated out-of-context methods.
 
 ---
 
-## 1. Problem Formulation
+## v3.0.0 Transformation Objectives
 
-### Method-Level Granularity
-File-level defect prediction flags entire source files (often hundreds or thousands of lines), requiring manual inspection to locate the defect-prone routine. This project formulates defect prediction at the **method level**, mapping each C# method declaration to a 26-element static metric vector $\mathbf{x} \in \mathbb{R}^{26}$ and a binary defect label $y \in \{0, 1\}$.
-
-### Methodological Controls Against Data Leakage
-Empirical defect prediction faces two primary validity threats:
-1. **Test-Code Contamination:** Unit test methods and auto-generated files have different structural distributions than production methods. The pipeline enforces path-level exclusion via `is_production_csharp_file()`.
-2. **Repository-Level Data Leakage:** Standard random $K$-fold cross-validation places methods from the same project in both training and test partitions. All model evaluations enforce repository-grouped partitioning (`GroupKFold`).
+1. **>= 100 C# Repositories:** Build a resumable, checkpointed collection pipeline (`run_100_repo_class_pipeline.py`) across diverse open-source C# projects -> **Achieved: `106` processed repositories (`5,711` classes)**.
+2. **Class & Multi-Class File Granularity:** Extend `.NET 9.0` Roslyn analyzer to extract **40 isolated class metrics** (`schema v3.0.0`) with zero nested-type bleed-over while aggregating multi-class `.cs` files cleanly.
+3. **High Precision Target:** Achieve **$\ge 80\%$ preferred precision** ($\ge 75\%$ minimum) with recall $\ge 50\%$ using zero-leakage nested `GroupKFold` and untouched repo holdout validation.
+4. **Scientific Epistemology:** Frame predictions strictly as **ML-based static defect indications** under historical SZZ evidence and the Open-World Assumption — never as formal bug proof.
 
 ---
 
-## 2. Research Questions
-
-| Research Question | Objective |
-| :--- | :--- |
-| **RQ1: Feasibility** | Can 26 static Roslyn AST metrics predict method-level defect-proneness across unseen C# repositories? |
-| **RQ2: Model Optimization** | Do shallow-regularized Extra Trees and Random Forest ensembles improve cross-repository generalization under nested `GroupKFold` validation? |
-| **RQ3: Feature Collinearity & Importance** | Which static metrics carry independent predictive signal under out-of-fold permutation importance when accounting for collinearity? |
-| **RQ4: External Holdout Transfer** | How does the baseline model perform on an unseen external repository (`JamesNK/Newtonsoft.Json`), and what constraints govern holdout reuse? |
-
----
-
-## 3. Project Objectives
-
-- **Repository & SZZ Mining:** Mine Git commit histories, classify bug-fixing commits, and trace deleted lines to pre-fix method snapshots via `git blame -w -M -C`.
-- **Production Code Filtering:** Exclude test projects, test fixtures, build directories (`obj/`, `bin/`), and generated C# files (`*.g.cs`, `*.Designer.cs`).
-- **Static Metric Extraction:** Compute 26 method-level metrics using a .NET 9.0 Roslyn syntax analyzer.
-- **Leakage-Free Model Optimization:** Evaluate 9 baseline configurations (5-fold `GroupKFold`) and 20 optimization configurations ($5 \times 4$ nested `GroupKFold`) on Dataset #2 ($N = 578$) with all imputation, scaling, feature selection, and threshold tuning confined inside training folds.
-- **Interactive Engineering Interface:** Provide an 8-page Streamlit application for executing and inspecting each pipeline stage.
+*Previous:* [Project Overview](01_ProjectOverview.md) | *Next:* [System Architecture](03_SystemArchitecture.md)

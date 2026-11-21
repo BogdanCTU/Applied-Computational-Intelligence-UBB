@@ -5,11 +5,15 @@ from pathlib import Path
 import streamlit as st
 from core.settings import AppSettings
 from database.repository import RepositoryDB
+from ml.model_manager import ModelManager
 
 
 def render_settings(db: RepositoryDB, settings: AppSettings) -> None:
     st.title("Settings")
-    st.caption("Configure local storage paths, GitHub API authentication, Roslyn analyzer path, and prediction thresholds.")
+    st.caption(
+        "Configure repository collection constraints, Roslyn analyzer path, GitHub API authentication, "
+        "risk presentation tiers, and unified model defaults."
+    )
 
     with st.form("settings_form"):
         st.subheader("GitHub API Authentication")
@@ -22,6 +26,18 @@ def render_settings(db: RepositoryDB, settings: AppSettings) -> None:
             type="password",
             placeholder="ghp_... (leave empty to keep current)",
         )
+
+        st.subheader("Collection & SZZ Pipeline Constraints")
+        col_c1, col_c2, col_c3 = st.columns(3)
+        with col_c1:
+            target_repos = st.number_input("Target repositories", min_value=10, max_value=300, value=settings.collection.target_repositories)
+            commit_limit = st.number_input("Commit mining limit per repo", min_value=50, max_value=2000, value=settings.collection.commit_mining_limit)
+        with col_c2:
+            max_concurrent = st.number_input("Max concurrent repo ops", min_value=1, max_value=8, value=settings.collection.max_concurrent_repos)
+            cp_interval = st.number_input("Checkpoint interval (repos)", min_value=1, max_value=25, value=settings.collection.checkpoint_interval)
+        with col_c3:
+            roslyn_timeout = st.number_input("Roslyn timeout (seconds)", min_value=10, max_value=300, value=settings.roslyn.timeout_seconds)
+            st.caption(f"Clone strategy: `{settings.collection.clone_strategy}` (required for SZZ)")
 
         st.subheader("Local Storage Paths")
         col_s1, col_s2 = st.columns(2)
@@ -37,43 +53,33 @@ def render_settings(db: RepositoryDB, settings: AppSettings) -> None:
         if not Path(roslyn_proj).exists():
             st.warning(f"Roslyn project file not found at `{roslyn_proj}`.")
 
-        st.subheader("Prediction Thresholds and Privacy")
+        st.subheader("Risk Tiers and Privacy")
+        st.caption("Binary predictions apply each model bundle's stored optimized decision threshold; risk tiers organize triage priorities.")
         col_p1, col_p2 = st.columns(2)
         with col_p1:
-            low_thresh = st.slider(
-                "Low risk ceiling",
-                0.10,
-                0.45,
-                float(settings.prediction.low_risk_threshold),
-                0.05,
-            )
-            med_thresh = st.slider(
-                "Medium risk ceiling",
-                0.50,
-                0.85,
-                float(settings.prediction.medium_risk_threshold),
-                0.05,
-            )
-
+            low_thresh = st.slider("Low risk ceiling", 0.10, 0.45, float(settings.prediction.low_risk_threshold), 0.05)
+            med_thresh = st.slider("Medium risk ceiling", 0.50, 0.85, float(settings.prediction.medium_risk_threshold), 0.05)
         with col_p2:
-            persist_hist = st.checkbox(
-                "Persist prediction history in SQLite",
-                value=settings.prediction.persist_history,
-            )
-            persist_src = st.checkbox(
-                "Store raw C# method source in prediction records",
-                value=settings.prediction.persist_source_code,
-            )
+            persist_hist = st.checkbox("Persist prediction history in SQLite", value=settings.prediction.persist_history)
+            persist_src = st.checkbox("Store analyzed C# source code in prediction logs", value=settings.prediction.persist_source_code)
 
-        models = db.list_models()
+        models = ModelManager(settings.storage.models_dir, db=db).list_saved_models()
         if models:
-            model_opts = {f"#{m['id']}: {m['name']} ({m['algorithm']})": m["id"] for m in models}
-            st.selectbox("Default model", list(model_opts.keys()), index=0)
+            model_opts = {
+                f"{m.get('name')} ({m.get('granularity', 'method')} | {m.get('algorithm')} | tau={float(m.get('decision_threshold', 0.50)):.2f})": m.get("id")
+                for m in models
+            }
+            st.selectbox("Default model (Unified Registry)", list(model_opts.keys()), index=0)
 
         submitted = st.form_submit_button("Save Session Configuration", width="stretch")
         if submitted:
             if token.strip():
                 settings.github.token = token.strip()
+            settings.collection.target_repositories = int(target_repos)
+            settings.collection.commit_mining_limit = int(commit_limit)
+            settings.collection.max_concurrent_repos = int(max_concurrent)
+            settings.collection.checkpoint_interval = int(cp_interval)
+            settings.roslyn.timeout_seconds = int(roslyn_timeout)
             settings.storage.repositories_dir = Path(repo_dir)
             settings.storage.database_path = Path(db_path)
             settings.storage.models_dir = Path(models_dir)

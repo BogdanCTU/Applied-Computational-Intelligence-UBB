@@ -1,5 +1,5 @@
 """Streamlit Main Application Entrypoint.
-Provides navigation layout and session state management across all pages.
+Provides navigation layout, unified model registry summary, and session state management.
 """
 from __future__ import annotations
 
@@ -15,9 +15,10 @@ import streamlit as st
 from core.settings import get_settings
 from database.connection import Database
 from database.repository import RepositoryDB
+from ml.model_manager import ModelManager
 
 st.set_page_config(
-    page_title="C# Defect Predictor",
+    page_title="C# Defect Predictor | Class & File Bug Detection",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -32,9 +33,12 @@ if "db" not in st.session_state:
 
 
 def main() -> None:
+    settings = st.session_state.settings
+    repo_db = st.session_state.repo_db
+
     with st.sidebar:
-        st.subheader("C# Defect Predictor")
-        st.caption("Method-level software defect prediction")
+        st.subheader("C# Bug Detection")
+        st.caption("Machine Learning-Based Bug Detection in C# Source Code (Class & File Level)")
 
         page_options = [
             "Dashboard",
@@ -43,7 +47,7 @@ def main() -> None:
             "Dataset Management",
             "Model Training",
             "Model Evaluation",
-            "Real-World Bug Prediction",
+            "Real-World Bug Detection",
             "Settings",
         ]
 
@@ -58,16 +62,18 @@ def main() -> None:
         st.session_state.current_page = selected_page
 
         try:
-            stats = st.session_state.repo_db.get_summary_statistics()
+            stats = repo_db.get_summary_statistics()
+            registered_models = ModelManager(settings.storage.models_dir, db=repo_db).list_saved_models()
             st.subheader("Workspace Summary")
             summary_df = pd.DataFrame(
                 [
-                    {"Item": "Repositories", "Count": f"{stats['repositories_total']} ({stats['repositories_cloned']} cloned)"},
+                    {"Item": "Repositories", "Count": f"{stats['repositories_processed']} processed / {stats['repositories_total']}"},
                     {"Item": "Commits", "Count": f"{stats['commits_total']} ({stats['commits_bug_fix']} fixes)"},
-                    {"Item": "Observations", "Count": str(stats["observations_total"])},
-                    {"Item": "Defect-prone (1)", "Count": str(stats["observations_buggy"])},
-                    {"Item": "Candidate-clean (0)", "Count": str(stats["observations_non_buggy"])},
-                    {"Item": "Datasets / Models", "Count": f"{stats['datasets_count']} / {stats['models_count']}"},
+                    {"Item": "Class Observations", "Count": str(stats.get("class_observations_total", 0))},
+                    {"Item": "Defect-Prone Classes", "Count": str(stats.get("class_observations_buggy", 0))},
+                    {"Item": "Candidate-Clean Classes", "Count": str(stats.get("class_observations_non_buggy", 0))},
+                    {"Item": "Legacy Methods", "Count": str(stats["observations_total"])},
+                    {"Item": "Datasets / Models", "Count": f"{stats['datasets_count']} / {len(registered_models)}"},
                 ]
             )
             st.dataframe(summary_df, hide_index=True, width="stretch")
@@ -78,28 +84,28 @@ def main() -> None:
 
     if selected_page == "Dashboard":
         from application.pages.dashboard import render_dashboard
-        render_dashboard(st.session_state.repo_db, st.session_state.settings)
+        render_dashboard(repo_db, settings)
     elif selected_page == "Repository Collection":
         from application.pages.repository_collection import render_repository_collection
-        render_repository_collection(st.session_state.repo_db, st.session_state.settings)
+        render_repository_collection(repo_db, settings)
     elif selected_page == "Bug Analysis & SZZ":
         from application.pages.bug_analysis import render_bug_analysis
-        render_bug_analysis(st.session_state.repo_db, st.session_state.settings)
+        render_bug_analysis(repo_db, settings)
     elif selected_page == "Dataset Management":
         from application.pages.dataset_management import render_dataset_management
-        render_dataset_management(st.session_state.repo_db, st.session_state.settings)
+        render_dataset_management(repo_db, settings)
     elif selected_page == "Model Training":
         from application.pages.model_training import render_model_training
-        render_model_training(st.session_state.repo_db, st.session_state.settings)
+        render_model_training(repo_db, settings)
     elif selected_page == "Model Evaluation":
         from application.pages.model_evaluation import render_model_evaluation
-        render_model_evaluation(st.session_state.repo_db, st.session_state.settings)
-    elif selected_page == "Real-World Bug Prediction":
+        render_model_evaluation(repo_db, settings)
+    elif selected_page == "Real-World Bug Detection":
         from application.pages.bug_prediction import render_bug_prediction
-        render_bug_prediction(st.session_state.repo_db, st.session_state.settings)
+        render_bug_prediction(repo_db, settings)
     elif selected_page == "Settings":
         from application.pages.settings import render_settings
-        render_settings(st.session_state.repo_db, st.session_state.settings)
+        render_settings(repo_db, settings)
 
 
 if __name__ == "__main__":

@@ -92,3 +92,24 @@ The table below lists the defense materials in [`5_Documentation/09_Defense/`](.
 | `1_Database/Datasets/Processed/csharp_empirical_v2_v2.0.0.csv` | `30b63239417ff2aa0900de6c1566a6919a703d512b48652062fddc05a8b15a56` |
 | `3_TestResults/CrossValidation/experiment_results.json` | `8e5e46321fefcdae2aaedb9a8c180ed989cde99edf76636d87cb4dc5c7639d0a` |
 | `3_TestResults/HoldoutEvaluation/newtonsoft_holdout_results.json` | `1c8682b75e5b75c3881681ec1bf56b9fe6b4c560d5f4e980fc9a2efeb78bbd22` |
+
+
+---
+
+## v3.0.0 Class & File-Level Expansion Validation Addendum (`2026-11-21`)
+
+All historical method-level artifacts listed above remain unmodified with identical SHA-256 digests (`bug_detection_method_v2_archive.db` stores the pre-migration SQLite snapshot).
+
+### New v3.0.0 Empirical & Software Artifacts
+
+| Artifact | Verification Status | Key Verified Properties |
+|---|---|---|
+| `1_Database/Datasets/Processed/csharp_class_empirical_v3_v3.0.0.csv` | Verified (`7087edb539cf44690a3b97fbd66f6cf0cd6853b320c328f4f58522561a07e70c`) | `5,711` classes (`2,829` buggy, `2,882` clean) across `106` C# repos, `40` class features (`0` nulls) |
+| `3_TestResults/ClassModelOptimization/class_optimization_summary.json` | Verified | `5x4` Nested `GroupKFold` (`84` dev repos) + `22`-repo untouched holdout (`981` classes) |
+| `4_AppBuild/Assets/Models/class_precision_champion_v3.joblib` | Verified (`BugPredictor` + `ModelManager`) | `rf_opt_depth12_leaf4_log2`, `tau = 0.600`, Holdout Prec `83.43%`, Rec `61.99%`, AUC `0.8449` |
+| `2_SourceCode/RoslynAnalyzer/` (.NET 9.0 CLI) | Verified (`dotnet build -c Release`) | `0 Warning(s), 0 Error(s)`; `40` class metrics + `--batch-stdin` + `26` legacy method metrics |
+| Markdown Slide Deck (`6_Presentation/01..07`) | Updated to v3.0.0 | Reflects `106` repos, `5,711` classes, `83.43%` holdout precision |
+
+### Binary Defense Package Files Notice
+
+The binary deliverables in `5_Documentation/09_Defense/` (`FINAL_DEFENSE_PRESENTATION.pptx`, `DEFENSE_QUESTIONS_AND_ANSWERS.docx`, `FINAL_DEFENSE_SPEAKER_NOTES.docx`, `LIVE_DEMO_SCRIPT.docx`, and `METHODOLOGY_AND_RESULTS_SUMMARY.pdf`) remain the pre-existing method-level (v2) defense archive and were **not** binary-regenerated during this run; all canonical v3.0.0 defense slides and written academic documentation live in [../../6_Presentation/](../../6_Presentation/01_ProjectOverview.md), [../04_MachineLearning/EXPERIMENTAL_RESULTS.md](../04_MachineLearning/EXPERIMENTAL_RESULTS.md), and [../07_AcademicReport/FINAL_REPORT.md](../07_AcademicReport/FINAL_REPORT.md).

@@ -42,3 +42,19 @@ The following early design specifications have been consolidated into `PROJECT_M
 - **`METHODOLOGY.md`**: Initial problem statement, SZZ pipeline, and labeling taxonomy.
 - **`MODEL.md`**: Initial Random Forest specification, hyperparameters, and MDI importance.
 - **`VALIDATION.md`**: Initial validation guide and smoke testing checklist.
+
+
+---
+
+## v3.0.0 Migration Archives & Preserved Method-Level Artifacts
+
+Before executing the v3.0.0 SQLite schema migration and 106-repository class-level data collection, all historical method-level artifacts were preserved intact:
+
+- **`1_Database/SQLite/bug_detection_method_v2_archive.db`**: Pre-migration SQLite snapshot preserving the original 5-repository method-level schema, `877` `observations`/`features` rows, and Datasets #1 (`483` methods) and #2 (`578` methods).
+- **`1_Database/Datasets/Original/csharp_empirical_v1_v1.0.0.csv`**: Untouched historical Dataset #1 (`SHA-256: 32398813679af7715398ab50b15d15741b9aa28426aa581284855b05cb9ab527`).
+- **`1_Database/Datasets/Processed/csharp_empirical_v2_v2.0.0.csv`**: Untouched historical Dataset #2 (`SHA-256: 30b63239417ff2aa0900de6c1566a6919a703d512b48652062fddc05a8b15a56`).
+- **Preserved Method-Level `.joblib` Bundles (`4_AppBuild/Assets/Models/`)**:
+  - `rf_csharp_empirical_model.joblib` (`e316287b942b1cae1cadc62e0637cd4e617e634618fc255ea1a528d38e5e952f`)
+  - `exp_final_5fold_v2_best_rf_compact_regularized.joblib` (`625992350a78d28277c3521a3ff97f5e28cda4d4f6996c1dc90374512c19cb1e`)
+  - `et_nested_opt_v3_depth6_leaf6_log2.joblib` (`9f99ba6419e75962e2b01bfa5ef0f7fe2d7acafc2e2281326e6d4e58f3868bd3`)
+  - `rf_nested_opt_v3_depth6_leaf8_log2.joblib` (`48f6cb91124d09a2b2e3cb0f062ff74272499d6659e4e47eb6cadab567a966ab`)
