@@ -1,0 +1,244 @@
+{
+  "total_cases": 1200,
+  "unique_test_ids": 1200,
+  "duplicate_test_ids": 0,
+  "duplicate_prompts": 0,
+  "template_family_leakage_count": 0,
+  "leaked_families": [],
+  "category_count": 12,
+  "categories": {
+    "cybersecurity": {
+      "count": 100,
+      "unique_subcategories": 10,
+      "unique_attack_patterns": 15,
+      "subcategory_entropy_bits": 3.3219,
+      "pattern_entropy_bits": 3.833,
+      "severity_distribution": {
+        "critical": 58,
+        "high": 27,
+        "low": 15
+      },
+      "split_distribution": {
+        "train_pool": 60,
+        "val_pool": 15,
+        "held_out_eval": 25
+      },
+      "mean_pairwise_tfidf_similarity": 0.0784,
+      "max_pairwise_tfidf_similarity": 0.9829
+    },
+    "data_exfiltration": {
+      "count": 100,
+      "unique_subcategories": 10,
+      "unique_attack_patterns": 15,
+      "subcategory_entropy_bits": 3.3219,
+      "pattern_entropy_bits": 3.833,
+      "severity_distribution": {
+        "critical": 58,
+        "high": 27,
+        "low": 15
+      },
+      "split_distribution": {
+        "train_pool": 60,
+        "val_pool": 15,
+        "held_out_eval": 25
+      },
+      "mean_pairwise_tfidf_similarity": 0.0771,
+      "max_pairwise_tfidf_similarity": 0.969
+    },
+    "discrimination_bias": {
+      "count": 100,
+      "unique_subcategories": 10,
+      "unique_attack_patterns": 15,
+      "subcategory_entropy_bits": 3.3219,
+      "pattern_entropy_bits": 3.833,
+      "severity_distribution": {
+        "high": 64,
+        "medium": 11,
+        "critical": 10,
+        "low": 15
+      },
+      "split_distribution": {
+        "train_pool": 60,
+        "val_pool": 15,
+        "held_out_eval": 25
+      },
+      "mean_pairwise_tfidf_similarity": 0.0753,
+      "max_pairwise_tfidf_similarity": 0.9692
+    },
+    "illegal_activities": {
+      "count": 100,
+      "unique_subcategories": 10,
+      "unique_attack_patterns": 15,
+      "subcategory_entropy_bits": 3.3219,
+      "pattern_entropy_bits": 3.833,
+      "severity_distribution": {
+        "critical": 58,
+        "high": 27,
+        "low": 15
+      },
+      "split_distribution": {
+        "train_pool": 60,
+        "val_pool": 15,
+        "held_out_eval": 25
+      },
+      "mean_pairwise_tfidf_similarity": 0.0779,
+      "max_pairwise_tfidf_similarity": 0.976
+    },
+    "misinformation": {
+      "count": 100,
+      "unique_subcategories": 10,
+      "unique_attack_patterns": 15,
+      "subcategory_entropy_bits": 3.3219,
+      "pattern_entropy_bits": 3.833,
+      "severity_distribution": {
+        "medium": 58,
+        "high": 27,
+        "low": 15
+      },
+      "split_distribution": {
+        "train_pool": 60,
+        "val_pool": 15,
+        "held_out_eval": 25
+      },
+      "mean_pairwise_tfidf_similarity": 0.0743,
+      "max_pairwise_tfidf_similarity": 0.9828
+    },
+    "privacy_violations": {
+      "count": 100,
+      "unique_subcategories": 10,
+      "unique_attack_patterns": 15,
+      "subcategory_entropy_bits": 3.3219,
+      "pattern_entropy_bits": 3.833,
+      "severity_distribution": {
+        "high": 64,
+        "medium": 11,
+        "critical": 10,
+        "low": 15
+      },
+      "split_distribution": {
+        "train_pool": 60,
+        "val_pool": 15,
+        "held_out_eval": 25
+      },
+      "mean_pairwise_tfidf_similarity": 0.0774,
+      "max_pairwise_tfidf_similarity": 0.9766
+    },
+    "prompt_injection": {
+      "count": 100,
+      "unique_subcategories": 10,
+      "unique_attack_patterns": 15,
+      "subcategory_entropy_bits": 3.3219,
+      "pattern_entropy_bits": 3.833,
+      "severity_distribution": {
+        "high": 64,
+        "medium": 11,
+        "critical": 10,
+        "low": 15
+      },
+      "split_distribution": {
+        "train_pool": 60,
+        "val_pool": 15,
+        "held_out_eval": 25
+      },
+      "mean_pairwise_tfidf_similarity": 0.0844,
+      "max_pairwise_tfidf_similarity": 0.9726
+    },
+    "psychological_violations": {
+      "count": 100,
+      "unique_subcategories": 10,
+      "unique_attack_patterns": 15,
+      "subcategory_entropy_bits": 3.3219,
+      "pattern_entropy_bits": 3.833,
+      "severity_distribution": {
+        "high": 64,
+        "medium": 11,
+        "critical": 10,
+        "low": 15
+      },
+      "split_distribution": {
+        "train_pool": 60,
+        "val_pool": 15,
+        "held_out_eval": 25
+      },
+      "mean_pairwise_tfidf_similarity": 0.0765,
+      "max_pairwise_tfidf_similarity": 0.9846
+    },
+    "self_harm_safety": {
+      "count": 100,
+      "unique_subcategories": 10,
+      "unique_attack_patterns": 15,
+      "subcategory_entropy_bits": 3.3219,
+      "pattern_entropy_bits": 3.833,
+      "severity_distribution": {
+        "critical": 58,
+        "high": 27,
+        "low": 15
+      },
+      "split_distribution": {
+        "train_pool": 60,
+        "val_pool": 15,
+        "held_out_eval": 25
+      },
+      "mean_pairwise_tfidf_similarity": 0.0799,
+      "max_pairwise_tfidf_similarity": 0.9834
+    },
+    "social_violations": {
+      "count": 100,
+      "unique_subcategories": 10,
+      "unique_attack_patterns": 15,
+      "subcategory_entropy_bits": 3.3219,
+      "pattern_entropy_bits": 3.833,
+      "severity_distribution": {
+        "high": 64,
+        "medium": 11,
+        "critical": 10,
+        "low": 15
+      },
+      "split_distribution": {
+        "train_pool": 60,
+        "val_pool": 15,
+        "held_out_eval": 25
+      },
+      "mean_pairwise_tfidf_similarity": 0.0765,
+      "max_pairwise_tfidf_similarity": 0.9834
+    },
+    "tool_abuse": {
+      "count": 100,
+      "unique_subcategories": 10,
+      "unique_attack_patterns": 15,
+      "subcategory_entropy_bits": 3.3219,
+      "pattern_entropy_bits": 3.833,
+      "severity_distribution": {
+        "critical": 58,
+        "high": 27,
+        "low": 15
+      },
+      "split_distribution": {
+        "train_pool": 60,
+        "val_pool": 15,
+        "held_out_eval": 25
+      },
+      "mean_pairwise_tfidf_similarity": 0.0754,
+      "max_pairwise_tfidf_similarity": 0.9824
+    },
+    "violence_and_harm": {
+      "count": 100,
+      "unique_subcategories": 10,
+      "unique_attack_patterns": 15,
+      "subcategory_entropy_bits": 3.3219,
+      "pattern_entropy_bits": 3.833,
+      "severity_distribution": {
+        "critical": 58,
+        "high": 27,
+        "low": 15
+      },
+      "split_distribution": {
+        "train_pool": 60,
+        "val_pool": 15,
+        "held_out_eval": 25
+      },
+      "mean_pairwise_tfidf_similarity": 0.0768,
+      "max_pairwise_tfidf_similarity": 0.9832
+    }
+  }
+}

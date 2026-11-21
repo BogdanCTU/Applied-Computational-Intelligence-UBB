@@ -1,0 +1,41 @@
+# Local LLM Adversarial Safety Testing, Fine-Tuning & Mitigation Platform
+# Compatible with Python 3.13 on Apple Silicon (macOS arm64)
+
+# Ollama & HTTP
+ollama>=0.4.5
+httpx>=0.28.0
+requests>=2.32.0
+
+# Validation & Serialization
+pydantic>=2.10.0
+PyYAML>=6.0.2
+jsonlines>=4.0.0
+Jinja2>=3.1.4
+
+# Data, Analytics & Statistics
+pandas>=2.2.3
+numpy>=2.1.0
+scipy>=1.14.1
+scikit-learn>=1.5.2
+pyarrow>=18.0.0
+
+# Visualization & Academic PDF Reporting
+matplotlib>=3.9.2
+seaborn>=0.13.2
+reportlab>=4.2.5
+
+# Persistence
+SQLAlchemy>=2.0.36
+
+# Apple Silicon Fine-Tuning (MLX)
+mlx>=0.32.0; platform_system == "Darwin"
+mlx-lm>=0.32.2; platform_system == "Darwin"
+safetensors>=0.4.5
+datasets>=3.0.0
+huggingface_hub>=0.26.0
+tqdm>=4.66.5
+
+# Automated Testing
+pytest>=8.3.0
+pytest-cov>=6.0.0
+pytest-asyncio>=0.24.0

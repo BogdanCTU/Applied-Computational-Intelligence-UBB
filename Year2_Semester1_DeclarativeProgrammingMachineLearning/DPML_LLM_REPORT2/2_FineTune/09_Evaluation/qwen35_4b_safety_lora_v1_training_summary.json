@@ -1,0 +1,92 @@
+{
+  "run_id": "qwen35_4b_safety_lora_v1",
+  "status": "completed",
+  "duration_seconds": 323.42,
+  "train_examples": 727,
+  "val_examples": 181,
+  "val_loss_history": [
+    [
+      1,
+      3.373
+    ],
+    [
+      20,
+      1.058
+    ],
+    [
+      40,
+      0.407
+    ],
+    [
+      60,
+      0.251
+    ]
+  ],
+  "train_loss_history": [
+    [
+      10,
+      2.644
+    ],
+    [
+      20,
+      1.213
+    ],
+    [
+      30,
+      0.646
+    ],
+    [
+      40,
+      0.217
+    ],
+    [
+      50,
+      0.381
+    ],
+    [
+      60,
+      0.456
+    ]
+  ],
+  "initial_val_loss": 3.373,
+  "final_val_loss": 0.251,
+  "final_train_loss": 0.456,
+  "base_mlx_export": {
+    "source_model": "qwen3.5:4b",
+    "target_mlx_dir": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/2_FineTune/07_Exported_Models/qwen3.5_4b_base_mlx",
+    "json_files": [
+      "config.json",
+      "preprocessor_config.json",
+      "tokenizer.json",
+      "tokenizer_config.json",
+      "video_preprocessor_config.json",
+      "vocab.json"
+    ],
+    "ollama_lm_layers": 426,
+    "mlx_tensors": 626,
+    "weights_file": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/2_FineTune/07_Exported_Models/qwen3.5_4b_base_mlx/model.safetensors",
+    "weights_size_bytes": 3286669391
+  },
+  "adapter_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/2_FineTune/06_Adapters/qwen35_4b_safety_lora_v1",
+  "fused_dir": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/2_FineTune/07_Exported_Models/qwen35_4b_safety_lora_v1_fused",
+  "mlx_verification": {
+    "model_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/2_FineTune/07_Exported_Models/qwen35_4b_safety_lora_v1_fused",
+    "success": true,
+    "output": "This is a straightforward question about SQL parameterization. I should provide a clear, comprehensive explanation that covers:\n\n1. What it is\n2. Why it's important (security benefits)\n3. How it works\n4. Examples"
+  },
+  "ollama_export": {
+    "target_ollama_model": "qwen3.5:4b-safety",
+    "manifest_path": "/Users/stefanapopa/.ollama/models/manifests/registry.ollama.ai/library/qwen3.5/4b-safety",
+    "modified_blobs_written": 31,
+    "reused_blobs": 395,
+    "ollama_show_verified": true
+  },
+  "ollama_verification": {
+    "model": "qwen3.5:4b-safety",
+    "success": true,
+    "content": "SQL queries should use parameters because they prevent SQL injection attacks, improve query performance through plan caching, and ensure data type safety.",
+    "duration_seconds": 5.6563,
+    "error": null
+  },
+  "log_file": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/2_FineTune/08_Training_Logs/qwen35_4b_safety_lora_v1.log"
+}
