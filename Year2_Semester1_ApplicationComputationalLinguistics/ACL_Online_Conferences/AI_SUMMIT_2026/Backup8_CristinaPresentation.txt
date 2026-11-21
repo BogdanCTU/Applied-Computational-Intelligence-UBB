@@ -1,0 +1,107 @@
+[21:08:15] Zoom audience that takes us. How about right now? Yes. Perfect. All right. One second. Apologize for that.
+[21:08:28] Alright, we're still good. Yep, we're still good. Can I get a thumbs up? Can I get a thumbs up? Alright, perfect.
+[21:08:40] All right, so thank you everyone. It's an honor to be a part of the summit with you all. Thank you to Alicia and Lorraine.
+[21:08:52] for inviting me. I'm going to ask you some questions in a few minutes. So make sure you keep your chat window close by. Again, I am Christina Cooper.
+[21:09:04] I am the founder and chief AI security and transformation officer with quantum flex solutions. And for.
+[21:09:16] For nearly 20 years, I protected systems in both federal government and private sector. And I'll be honest with you, it did not become real for me until I had a child of my own.
+[21:09:28] Suddenly I wanted her data protected just as well as the systems I secured for the government and for companies and all at the same
+[21:09:40] time I was watching schools approve AI tools faster than anyone was even checking them. Tools that touch student data, tools that touch children, children like mine.
+[21:09:52] So we once said, okay.
+[21:10:04] Are you guys able to hear me? We can hear you. Are you supposed to be moving? He's not hearing us. He's not hearing us. Okay.
+[21:10:16] I hear all your settings and maybe the line. Make sure that you have the right. Oh, okay. I got you. I hear you now. You guys can hear me clear. Yes. Start from the beginning. Let's do.
+[21:10:28] I'll start from the beginning. No problem.
+[21:10:40] Alright, so. Thank you all again. It is my it is an honor to be.
+[21:10:52] of this with you and LaRite for inviting me. I'm going to ask you guys a few questions in a few minutes. So make sure you keep your window, your chat window close by.
+[21:11:04] I am Christina Cooper, Founder and Chief AI Security and Transformation Officer with QuantumFlex Solutions. And for nearly 20 years...
+[21:11:16] I protected systems in both the federal government and private sector. It did not become real for me until I had a child of my own.
+[21:11:28] Suddenly, I wanted her data protected, just as well as I wanted the system secured for the government and for other companies. And all at the same time, I was watching schools approve
+[21:11:40] AI tools faster than anyone was even checking them. Tools that touch student data. Tools that touch children. Children like mine. So I'm on a mission to.
+[21:11:52] make AI safe for the leaders who can't afford to get it wrong. In education, that's every one of you. Because when a school says yes to an AI tool.
+[21:12:04] Our next generations are the ones who live with that decision. So really quick on the disclaimers and a note on some of the language
+[21:12:16] going to be using. When I say a child or children, I mean every learner, a kindergartner, a college student, and adult going back to school to change careers. If you learn inside that system.
+[21:12:29] system that uses AI. This also applies to you. So again, this is, you know, of my own words, my expertise and experience, and it is not
+[21:12:41] by the summit. Okay, so can I get you guys to put the word tools in the chat? If you've ever wondered how many different tools your child's school is using, not the one you know about?
+[21:12:53] All of them. Okay, cool, cool. Have you ever wondered what happens when your child's writing their answers?
+[21:13:05] other records once they get put into these tools, put the word records in there. Where it goes, who can see it and how long it stays? Okay. All right, I'll see you guys. All right.
+[21:13:17] We've all wondered this, right? So maybe you thought about it and maybe for a long time, but you didn't know who to ask or what to ask or how to even start. So that's you.
+[21:13:29] are surely in the right room. And leaders, guess what? This is for you, too, because these questions are coming to your desk very soon. So try this one on privately. How many AI
+[21:13:41] tools does your educational institution have right now? If the honest answer is I'm not sure. That isn't a failure. It's a gap and we're going to close it today.
+[21:13:53] My session is called before you approve your next AI solution what every educational leader must verify. And so for the last three days, you've heard exactly what AI can do for education.
+[21:14:05] I want to spend the next 15 minutes on the moment that nobody even thinks about or puts on stage. And that's the moment that you sign. There are three questions.
+[21:14:17] not feel good questions, questions that, there are questions that you can actually answer. And I chose the word verify on purpose.
+[21:14:29] So make sure you stay till the end because there's something here for all of the guardians in the community and that it's free. And we're done hoping. Hope is not a control verification.
+[21:14:41] is and everything I show you comes back to that one line. So get your a leader a super.
+[21:14:53] a principal, a dean, and there's a folder on her desk. And she's really good at her job, by the way. Inside there.
+[21:15:05] There is a folder, a beautiful demo. So there's a folder, a beautiful demo of a tool that was piloted.
+[21:15:17] a lot of the teachers have stated that it was very, very helpful, okay?
+[21:15:29] And a grant deadline is also on Friday and the money is real and it expires. And one line in the proposal for a compliant.
+[21:15:41] She signs, and six weeks later, a guardian calls. She isn't angry, she's just asking. What did the AI say to my child? And where?
+[21:15:53] And where did the answers go? And then next you'll hear silence on the line because no one in that building was able to answer. Not because anyone was careless, but because no one had ever checked.
+[21:16:05] And this is a composite story, not an actual client of mine, but I've sat on both sides of that desk for nearly 20 years. And I'll tell you what I've learned. The problem was never the leader.
+[21:16:17] By every rule she had, she did her job. What she was missing was a verification step between the demo and the signature. That gap is what we're going to close today.
+[21:16:29] Here's the refrain I want to leave you with. Your approval is a security control.
+[21:16:41] There's no security team reviewing the chat bot that a teacher signed up for with her school email. There's no audit log on.
+[21:16:54] the free grading assistant. There's just your signature or there's nothing at all. And so let's find out where we are. Can you type in the chat?
+[21:17:05] If you know how many AI tools you think are running in your buildings and give an honest answer. Okay.
+[21:17:18] I see you. All right. Guardians, give me the same answer. Do you know how many that your kids are using at the school? Okay. Well, look.
+[21:17:30] I'll go first, right? So my guess would be like there's a handful of us and most of us would probably say that it's low. Okay.
+[21:17:42] Alright, so why does it.
+[21:17:54] the old software checklist work here. Three reasons, and each one changes what it means to say yes. One, it learns from what you get
+[21:18:06] of it, a spreadsheet stores your data, an AI tool can learn from it, a student's essay, a question they were embarrassed to ask, a record in their file.
+[21:18:18] can become part of someone else's product. And I want to stop right here for a second and talk about the word free. Free tools are not always the way to go. I know how to sound
+[21:18:30] you guys budgets are tight and free feels like a gift. Some free tools are fine, but free also has a price. The only question is who's paying for it and with what?
+[21:18:42] When a tool costs nothing, ask, what is it collecting? A paid tool usually comes with a contract and a contract is something that you can read, question, and actually hold someone.
+[21:18:54] a free tool often comes with terms you accept it by just clicking a box and trust me we've all done it and you can't negotiate with a button. Now pay doesn't automatically
+[21:19:06] mean that you're safe. It means there's something to hold the vendor too. So free isn't the problem. Unverified is the problem.
+[21:19:18] So two, it changes after, it changes after after you've approved it, right? So the model updates, new features are switched on.
+[21:19:30] by default and the vendor sends an email that nobody reads and nobody improves. Three, it talks to your students.
+[21:19:42] The great book never gave a 14 year old any advice at 11 p.m. An AI tutor does though. Every answer it gives is a decision made in your institution.
+[21:19:54] So the tool you approved in September is not the same tool that you'll be running in March. Your approval has to be built just for that.
+[21:20:06] So, here's the entire talk on one slide, you guys. One, is it correct?
+[21:20:18] what is what I'm about to do actually permitted under our schools state excuse me under our district's policy or our state law.
+[21:20:30] our federal laws or our student data agreements. Two, should I be doing this right now? Has this tool been approved through the proper channels?
+[21:20:42] And who else needs to sign off before I even move forward?
+[21:20:54] institutional information goes into this tool. Who in my organization has to review it and authorize it? Look, that's three questions.
+[21:21:06] language, no techie jargon and no 40 page vendor packet. A principal can carry these into a vendor meeting tomorrow morning and a guardian can carry them into a
+[21:21:18] school meeting next week. Feel free to screenshot this slide if you like. And tell me in the chat, which one of these three have you never asked? Type of one, type of two, type of three.
+[21:21:31] And that number that you type in, that's exactly where you guys would start. So figure out what your number looks like. Okay. Awesome. I see a three popping in. See you guys kind of thinking about where you.
+[21:21:42] where you land, but definitely grab those screenshots, right? All right. So.
+[21:21:55] Is it correct? Verify the use is actually permitted and verified on paper. Your district policy, your state
+[21:22:07] law, our federal laws, and your student data agreements. Ask those questions. Where does the data go? Who else touches it?
+[21:22:19] and does it actually train the model? And so when this information is missing, it looks like a free pilot that pays for itself with your students data. Subprocessors, nobody...
+[21:22:31] listed and no way to delete what was shared. So what you'll wind up saying is show me where our students data goes and which agreements actually covered.
+[21:22:43] If they can't answer this, then that's your answer. Should I be doing this right now? I want to verify that the tool went through the proper channels and that the review
+[21:22:55] matches the risk. A tool that drafts a newsletter is considered a low risk. A tool that advises a student flags behavior scores work or even touches
+[21:23:07] special education records are high risk. When this is missing, the chat bot that talks to a 14 year old gets the same 10 minute review as a scheduling app. So what you want to do here is
+[21:23:19] ask, who approves this? When and what decisions does it make or shape? Listen for real answers, not reassurance.
+[21:23:31] who checked it off. Every AI tool needs a human who owns it after the launch meeting. A named owner who signs off before sensitive and
+[21:23:43] information goes in, a review schedule, a way for a teacher, a guardian, or even a student to challenge an AI output. When this is missing, the AI said so?
+[21:23:55] becomes a final answer. And the tool everyone loved in August belongs to no one by November. So this is what you want to say here. Who in my building owns?
+[21:24:07] this after go live and who does a guardian contest and AI generated outcome with right and if excuse me
+[21:24:19] And who, excuse me, this is missing. I said so, right? That'll be their final answer, but it's
+[21:24:31] not the right one. And those tools are no longer a verified, a truly verified tool to use. And so again, you want to make sure you ask that question who
+[21:24:43] in my building actually owns this after go live and who and how does a guardian contestant and AI generated outcome?
+[21:24:55] And if that answer is our report email, then you don't have an answer, right? Because
+[21:25:07] going to a support email does not exactly provide the answers that you need there. And so there are three questions. These are the bare minimum, by the way.
+[21:25:19] They are very bare minimum and they are the floor and not the ceiling. So make sure you are asking because that is your job. Reading the answer.
+[21:25:32] is where my team comes in. The 40 page data addendum of risk rating, the settings that matter, a review that holds up in front of a board, an auditor,
+[21:25:44] and a garden. Awesome. Christine, we're getting some delay. I think as we listen to the presentation, there's a delay. I think
+[21:25:56] a bad with issue. So we're going to, if possible, can you hear me? Are you able to hear me? Yes, I can hear you. Okay, we're going to ask that we.
+[21:26:08] I know that you I think you have an offer that you are for persons to get support with the verify process that you're sharing. Sure I can share that.
+[21:26:20] with you. No problem. Awesome. All right, guys. So you can continue to drop in the chat to support Christina.
+[21:26:32] Okay, go ahead and get that up for you all. So just so you guys are aware of what the freebie actually is, it is a.
+[21:26:44] resource that essentially it gives you all the questions that we've gone over or that I would have gone over. So don't worry about if you feel like you've missed anything. All of the questions are in the. Hold on.
+[21:26:56] the screen. It might help you guys if I have that up for you. So it's going to have all of the verification questions in there for the
+[21:27:08] for the leaders. Be sure to use that as you are going in and evaluating tools. This actually comes from my trust framework that has been peer reviewed. So it will work in your.
+[21:27:20] educational institutions and then also too there's questions in there that guardians can go and ask as well along with an email that you can send directly to the schools to get those
+[21:27:32] answers and a free fit call. So if you have any questions around any of this, feel free to reach out. Definitely take this information if you have anything here or know any others.
+[21:27:44] free to share that information. And yes, thank you, Alicia and Loretta, for the platform. Appreciate being able to share it with you all.
+[21:27:56] govern the future, protect what matters and go verify. You all have my contact information, feel free to reach out anytime. Thank you.
+[21:28:08] Thank you so much. Thank you so much. Thank you. Stacy, Alec, go ahead. I didn't mean to interrupt. I just wanted to give Christina shout out. Hey, Christina, it's Alicia to shout you out. Wonderful. And Christina.
+[21:28:20] I just want to say kudos to you for navigating all of the ups and downs and the bumps and the bruises with the bandwidth. We know how that can be in virtual space. So thank you so much for sharing. And by the way,
+[21:28:32] slides were amazing amazing amazing slides really really beautifully done so thank you so much for sharing and guys please please share some love for Christina we have her
+[21:28:44] our code up and we will also be dropping in the chat the link to give Christina amazing feedback. Thank you so so much for this amazing presentation.
+[21:28:56] I'm going to turn it over to Alicia. Thank you so much. Thank you, Stacy. And it's been such a wonderful event. And we still have speakers to go. But guess what? The speaker that is coming up next is third.
+[21:29:08] 14 years old and she's going to blow your mind. Are you already? Come on now. Come on now. Are you ready? Are you ready for the 13 year old? We're talking about AI and education. So we've got to make sure that they.
+[21:29:20] kids are representing my niece. And I'm going to have two of my nieces here, my niece, they're going to rock it. So I'll go ahead and do the video.
+

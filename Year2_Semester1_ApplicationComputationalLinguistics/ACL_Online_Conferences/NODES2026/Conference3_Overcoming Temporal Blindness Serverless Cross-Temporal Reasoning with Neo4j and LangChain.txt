@@ -1,0 +1,123 @@
+[20:14:21] of mutation half life is and we will wire the task into a land graph stateless, stillness gate and run a live split screen bridge investigation. So we will for the sake of time, we will
+[20:14:33] do it locally. And we will also show how we can take that to the serverless in Google Cloud Run by pulling in optimizations that cut up p99 data and sees by more than half. Now, let's
+[20:14:45] start off with the Section 1, that's the Steel Data Crowd. In Section, so we are looking under the hood as to why a standard
+[20:14:57] with the search fields when infrastructures state mutates faster than the embeddings
+[20:15:09] is what actually existed inside the knowledge graph, giving that 1400 rcubc alert. So back in the day on that specific day, DevOps engineer created a temporary two week firewall.
+[20:15:21] State V1 that explicitly read, that explicitly read, allowed TCP on the port 8443 from a billing
+[20:15:33] dv laser for q3 migration troubleshooting. The tool expired on August 15th. So if it's it's a 14 day August it's a 14 day policy that expired on set
+[20:15:45] on August 4th and expired on August 15th. Three days later again on November, imagine that a few months later, the security team rolled out a state V to an emergency zero-trust hardening path.
+[20:15:57] for a CV which stays denial unauthorized non-MTLS ingress on port 8443. So, revoke legacy a service account direct access. Now, look at how a standard HNSW
+[20:16:09] to the
+[20:16:21] state V2 that is the active current patch uses domain level obstruction. So, standard graph right feels right into the steel data truck. It equates lexical and symmetric stimuli.
+[20:16:33] with the current growth. In high velocity state dependent domains like cybersecurity and cloud operations or clinical pathways along the fact, facts have an expiration date. So anything that happens.
+[20:16:45] over a period of time expires. The rules you set are whatever the reasoning you do, everything comes with an expiration date. Now retrieving the most semantically
+[20:16:57] note without the time. So you retrieve what is available with the semantic search but not with the time constraint actually causes false negatives and can give you a wrong reasoning that's actually
+[20:17:09] happened here. So now what we do is we introduce something called as an S-track.
+[20:17:21] Now what is an extract? An extract decouples the temporal reasoning from the persistent
+[20:17:33] Langraf Orchestra. So the orchestration there is Langraf. It's running on a serverless platform for Google. That's a Google Cloud Run. And it pays the temporal, so it pays with every data that's our favorite fact that
+[20:17:45] store there is a time and an expiration data that shows so that's the bi-temporal state change in Neo4j. Now across the production, cybersecurity evaluation workloads that we have seen, the architecture delivered for
+[20:17:57] So, this is statistical data, around 80% reduction, factual hallucinations, 40% gain in temporal accuracy, 53%
+[20:18:09] production in P99 quality latencies and 87% reduction in operational compute costs. Now, how do we basically look at how do we
+[20:18:21] basically look at understanding what are the bi-temporal knowledge graphs is, let us move on to the next section.
+[20:18:33] So what is a bi-temporal knowledge graph? So a bi-temporal knowledge graph can be thought that before as a
+[20:18:46] knowledge graph or a data that has a time to live. So it's valid for a specific instant of time and it dies up and it expires at a certain time. So before an agent can reason across time.
+[20:18:58] we have to stop writing the node properties in place and restructure how the Neo4j stores the data with a timestamp. Let's see how. So we separate the persistent entity from the immutable state.
+[20:19:09] and we assign a time along with it. Now let's look at the architecture for the scene. So every temporary reasoning failure starts with the
+[20:19:22] So mutating the node properties in place or placing a single timestamp on a relationship. You either change the properties or you retrieve something which is old. So if you write the properties on an asset node.
+[20:19:34] when the firewall policy changes, you increase the historical lineage of things. Because if you don't even capture the time for which the change was done. Conversely, if you only attach valid from an invalid
+[20:19:46] to relationship between the static nodes, the distinct vector embeddings cannot be attached or change tickets or the CV metadata cannot be attached to the version of the configuration that we do. So in this track what we do is we enforce
+[20:19:57] then entities state separation. So first we model the persistence resource identity as a light-pit node. So your security asset here becomes a pretty light-pit node.
+[20:20:10] This node holds the static identity metadata plus one critical domain property, whether it's a half-life of the second as in how much was the frequency of the data for which it changes.
+[20:20:22] changes. So half life basically determines the mutation frequency. Second, every time the assets configuration changes, we append a config state that has a node linked via the hash state. And third, we present
+[20:20:34] of the states run logically with a superseded bias, so forward edges and backward edges, deform a direct acylic graph or a direct acylic causal gene. Fourth for every config change, a config state that it has it has
+[20:20:46] by bold timestamps. So something like a valid to and a valid from and the transaction time. So when it was when it happened when it is when that even is valid from and where this it is valid to the store in both the value.
+[20:20:58] time stamps is essential when a CM telemetry arrives out of order. It will allow our agent to answer question. Was this port open at this point of time at 1400 UTC? Did the SOC know that the port was
+[20:21:10] open at ASO, a photodynamic UV. So questions that has a temporal association with it. This helps in answering them. Now moving on to...
+[20:21:22] the cipher execution pattern. So, basically the queries that you will ask the back end. So, how do you solve the gain and starvation with Neo4j filter? That is.
+[20:21:34] what we need to understand. Now, define stage as a nodes, introduces a classic indexing bottleneck that catches many teams of God does the KNN starvation, right? So imagine.
+[20:21:46] in a core violin policy that mutates 150 times over a year, you now have 150 conflict state notes in Neo4j with nearly identical text embeddings. If you use a legacy post filtering calling
+[20:21:58] DB index vector quite notes for the top 20 neighbors and applying a wired clause. After what the HNSW index returns 20 expired historical versions of the single noisy policy.
+[20:22:10] where clause strips of that 19 obsolete versions you left with one note, starving out the others or the other relevant assets in the sub graph. Now in 2026 Neo4j introduced something.
+[20:22:22] with an in-index property filtering. So your Cypher search clause is now supported with an in-index property prefiltering. What does that allow is so at the top of the code block on the site.
+[20:22:34] which we see when we create a config state temporal ID X we declare a filter on so when we create a time config state temporal ID X we create a filter on
+[20:22:46] valid from and valid to in the nacitor which directly inside the index definition along with the vector quantization. So what does that allow us for a point in time queries the search clause.
+[20:22:58] the validity window with the HNSW traversing. And for anomaly detection, where we explicitly want to catch whether the user query of this matches an expired rule, we retrieve the
+[20:23:10] top unfiltered candidates along with this preceded binding age and pass them to the mathematical scoring layer. Something that prepares the score for your task. So we filter it based on the time valid to or valid.
+[20:23:22] from and then pass it on to the next layer for evaluation of the temporal alignment score. So that brings us to the section three. That's how do you evaluate a temporal alignment score. Now that new.
+[20:23:34] the full state lineage with time, we need to understand the mathematical question. How do we blend semantic similarity with chronological validity so that we can
+[20:23:46] around expired high similarity nodes and we are able to zero in on the result that we need that is valid at the specific
+[20:23:58] Moving on to this section, we will do a bit about mathematics, not one of my strongest suits, but we will try understanding how we basically compute the temporal
+[20:24:10] alignment score. So for any candidate config stored, config state node v, the incident query q and the target evaluation timestamp tq the
+[20:24:22] after a computer composite ranking score as a convex combination what's given here now notice that the hat over SM so it's a raw cosine similarity score from the modern embedding model cluster tightly
+[20:24:34] between 0.7 and 0.95. Blending ROCO science course directly with a temporal metric ranging from 0 to 1 will allow the semantic similarity to dominate. We therefore apply the
+[20:24:46] max normalization across the candidate c. Now look at the second term, the temporal
+[20:24:58] is use an indicator function and I'm not going to get into that so there are two distinct regimes the active regime the left the left term where in the state is valid the node received
+[20:25:10] the score nearly 1 and the still regime, the instant the state expires meaning that the end is earlier than TQ minus active props 0. So what does that give us? So that gives us a V.
+[20:25:22] to ensure that the score that we associate with the search result is balanced on time. So it has both an component of the active timestamp as well as an active component of the expiry.
+[20:25:34] Now how do we ground that? How do you ground those decays? So how do you basically calculate how long can the data live? So similar to half.
+[20:25:46] life. So we will come up with a model that basically explains how long the data lives after it has been ingested. So whenever you introduce an exponential decay in a
+[20:25:58] retrieval pipeline, the engineers normally ask how do you choose lambda without turning it into mathematical parameters which are brittle. So in S-strag, normally lambda is not a global
+[20:26:10] hyper parameter. It is derived directly from the operational half-life that's stored on each of those security agents. So each of those nodes has a half-life and it is derived from that. But think of
+[20:26:22] We have life as the characteristic mutation cadets. So at FML, so imagine FML when it's spot network policy that mutates every two hours, the half life can be set to four hours.
+[20:26:34] one superseded the task collapses to near zero with a single shift. Now, another example would be a production database group that we have a security group that mutates on it.
+[20:26:46] deal with Windows, so you can put the half-life as 24 hours. Similarly, if it's an enterprise, I'm policy that mutates monthly, you can set it to 30 days.
+[20:26:58] SIFA query policy has associated that as a tough life alongside every state, the same exact scoring function adapts automatically across a familiar continuous.
+[20:27:10] databases and IAM or the IAM policy. So the way that we have the way that we have modeled enables us to store the half-life irrespective of what type of
+[20:27:22] of state or what type of node that is getting stored on the graph. So now that leads us into section four that's basically the the land graph stillness.
+[20:27:34] how how have we designed it, how have we designed the Langrav dates, gates and some demo for you to take that. So let's now a mathematical.
+[20:27:46] could only prevent the hallucinations if the orchestration layer is forced to respect it. We will wire the task that we are just understood here in the previous section into a deterministic
+[20:27:58] stateless data. So I need to be able to figure out deterministically whether my data is still or not and watch it catch the host fiber which alive will see how.
+[20:28:10] Okay, so if you use an unconstrained react loops on agent is basically a react loops if you use an unconstrained react loop then
+[20:28:22] LLM has a context window containing both a expired match and a low task code. LLM is frequently hallucinated from the stale rule simply because its wording matches the problem.
+[20:28:34] slope closely. Now to achieve a reduction in the factory hallucinations, we replace the free from react prompting with a cyclic Langrav state machine. So it's a cyclic Langrav state machine that has
+[20:28:46] of four sections correct that has four sections node one which is basically retrieve the candidates embeds the incident query executes our vector search on the new
+[20:28:58] the task for every candidate state, the conditional edge. So that's the stillness get. So inspects the top semantic match before the synthesis permitted if the node's task is less than 0.5, 0.35.
+[20:29:10] or it's valid to time stamp precedes the time stamp of requirement, the gate blocks the synthesis and the outside execution to walk lineage. Now what's the walk lineage? So it executes a
+[20:29:22] remeterized by Traversen along with superseded by from the expired note. It retrieves the active replacement governing. So if it has retrieved the expired one, it will try to retrieve what's less.
+[20:29:34] what's latest as of now. So it works or down from there. Hence the term, work limits and promotes the active state to the top of the context window. And finally synthesis is basically generates a ground shop got it, citing both the expos-
+[20:29:46] ticket and the superseding patch. Now let's switch over to our live environment and figure it out.
+[20:29:58] So, we will look at a graph.
+[20:30:10] Okay, if you have a minute, demos are already a bit tricky. So we'll look at the options, share this stuff. I hope it's visible.
+[20:30:22] I will increase it. So what we see is a bi-temporal subgraph for
+[20:30:34] brought DV1. You can see the security asset node connected to two config states out here. It's connected to two config states. One has the the has state. The other has a superseded by and
+[20:30:46] see what those relationships are. So, if you look at the cold out here,
+[20:30:58] So if you are able to see the code out here, so the five lines still in this gate function governing our conditional edge. So when the top semantic hit is from logically still.
+[20:31:10] that is here. So, when the top semantic it is still the LLM prevents it structurally from answering the graph linear.
+[20:31:22] So if the data is scaled, we will not read it until we have navigated to the latest part of things. Now let's switch to the browser to save.
+[20:31:34] to see how it all comes together. Give them a minute.
+[20:31:46] So, now we are at a local implementation of a SOC running locally to see how we figure it.
+[20:31:58] out. Now look at the split-screen shock UI, the comparative UI which is connected to our fast EPA backends. The incident box at the top we have our CM alert.
+[20:32:10] We have our CML earth at 11, 11, 12, 26, 14 and a duty seat. And so it says the service account is a billing broad initiative. This report 8443 connection.
+[20:32:22] to the database ledger is the traffic authorized is the question right now I'll click the execute cross temporal investigation tab let's see so it has come up with.
+[20:32:34] two comparative device that we would take a look into. So look at the left panel. So there are two columns right and left.
+[20:32:47] that has got populated. So we'll look at the left panel first. So that's the standard vector graph rack. Excuse me. So it selects the steel forwarding rule on August.
+[20:32:59] 2026. So that was the example that we were discussing. So it selects a steel rule. The rule exists, but it doesn't have a timestamp. So, and because it lacks the timestamp of the task coding, all the lineage passes.
+[20:33:11] the expired August 2 straight into the LLM and the LLM makes a wrong decision. Now look at the red vertical box at the bottom left. So it sees it's authorized. So authorized traffic matches the temporary maintenance tool.
+[20:33:23] SC for one thousand for two permitting a billing fraud to connect to a laser now this is something that was done at that point of time but it's not valid now it was it has changed in between but we somehow don't cap
+[20:33:35] check that. So how why now if we look at so that is basically how a standard graph rack can still miss read or miss.
+[20:33:46] interpret a result and give you a wrong direction because you just have authorized a maintenance.
+[20:33:59] traffic and classified of live breaches and maintenance traffic. So that's what you've done. So the answer or the reasoning of the static graph was strong because of the fact.
+[20:34:11] that you're speaking of older data. Now let's traverse a bit on the right. So now look at the right panel. So first in the candidate tab, the extract also retrieved the state forwarding v1.
+[20:34:23] August 26 with a semantic score of 90.9312. But the route has expired 88 days ago. So the assets half-line 24 half-life has dropped some.
+[20:34:35] has significantly dropped. Now, look at the second yellow alert banner. That sees that the steelness, okay. So that sees that the steelness.
+[20:34:47] has been, the stainless gate has been triggered. Now, because the task was below 0.35, the graph automatically routed to execution to walk line agent.
+[20:34:59] travels the superseded by Ajahn Neofuji. Now look at the third row, row one of the TVN that we see is the state forwarding, November 22th, superseded.
+[20:35:11] by. So there was a zero trust hardening patch that was in place and that was pulled in context with a TAS of 0.9 and 1.4. So because it
+[20:35:23] temporarily valid so it has higher task code and that with a semantic score gives me a combination of 0.9 so finally we need the given vertex box that's a critical so the ground
+[20:35:35] it's a critical bridge because the Legacy Firewall has actually needed this traffic to stop. Now, moving on.
+[20:35:47] We will try to move into the serverless part of things. Back to the presentation.
+[20:35:59] So we just watched a strike execute vector retrieve in a multi-hop lineage walk in under a few milliseconds on a serverless back end. Now let's look at how GC Google
+[20:36:11] Cloud Run connection pooling engineering behind those numbers. So when the team deploys as Neo4j agents on several platforms like Cloud Run, the H2 engineering bottlenecks during the.
+[20:36:23] P90 and T latency one is the cold handshake and the other one is silent serverless drops so for the cold handshake unlike the yeah sorry
+[20:36:35] So for the cold handshakes and like the stateless HTTP calls, the new force uses a stateful binary bolt protocol over TLS.
+[20:36:47] instantiating the driver request instantiating the driver inside a request handler forces the invocation to pay for a TCP handshake adding some amount of.
+[20:36:59] delay to the query. Now the second bottleneck is this serverless, now drop to avoid cold handshakes, engineers move the driver to a global module so that one continuous use the bolt pool that works.
+[20:37:11] that works under the traffic over this for a few minutes. So during an idle grab, the GCR's serverless NAT gate will sell in drops. Now the fast PPL lifespan configuration on this.
+[20:37:23] slide. So three things specifically delivered are 50% latency reduction. First, initialize one module scope inside the fast API. Second,
+[20:37:35] Yes, first we initialize the one model scope for the Async database drivers, second this is the single most important
+[20:37:47] setting for the Neo4j serverless in the connection live in this check. Third, we deployed to cloud run with a concurrency with a higher concurrency of 8200 and a CPU allocated only during that processing. So up to 100 as in.
+[20:37:59] Langraven investigations share the warm connection pool on a continuousness scaling to overnight zero if not required. So that reduce the operational cost by significantly. So wrapping up.
+[20:38:11] Let's recall the four architectural pillars. So you stop overwriting the node properties separate persistent identity from immutable states and
+[20:38:23] we created a mathematical reranking candidates using the task to ensure that each of those notes or each of those states have a time sample of gift with it the orchestration
+[20:38:35] here. So the gate synthesis behind is a cyclic land graph steel disk gate. And finally, we deployed everything using subless environments in Google Cloud Cloud.
+[20:38:47] that brings me to the end of that presentation. Thank you. And I will be around in case you have any questions on them for.
