@@ -1,5 +1,5 @@
 \newpage
-\section{One Page Outliner}
+\section{One-Page Presentation Outline}
 
 %=========================================================
 
@@ -9,6 +9,63 @@
 
 %=========================================================
 
-\hspace{0.6em} \gls{ai} One Page Outliner
+
+\noindent\textbf{Research Topic}: \gls{ml} Approaches for Static Bug Detection
+
+\vspace{0.5em}
+
+\noindent\textbf{Presentation Goal:} Research and expose how \gls{ml} can improve traditional \gls{sca} by reducing false positives and helping developers focus on real software defects.
+
+\vspace{0.5em}
+
+\begin{enumerate}
+    \item \textbf{Introduction and Motivation}
+    \begin{itemize}
+        \item Why software quality and early bug detection are important;
+        \item The problem of false positives and the time developers spend checking warnings;
+        \item How \gls{ml} could help improve this process.
+    \end{itemize}
+
+    \item \textbf{Theoretical Background}
+    \begin{itemize}
+        \item \gls{sca} detects possible defects without running the program;
+        \item Sample traditional tools such as \textit{FindBugs} and their limitations;
+        \item Using \gls{sl} to classify warnings as real defects or false positives;
+        \item Main evaluation metrics: precision, recall, F1-score and accuracy.
+    \end{itemize}
+
+    \item \textbf{Research Papers and Main Findings}
+    \begin{itemize}
+        \item \textbf{Paper 1 -- Learning to reduce false positives in analytic bug detectors -- Kharkar et al. (2022)}:
+        Uses Transformer based models to filter \textit{Infer} \cite{meta_infer} tool warnings, improving precision from 72,7\% to 85,4\% with \textit{GPT-C} \cite{paper1_kharkarlearning2022}.
+
+        \item \textbf{Paper 2 -- Static code analysis alarms filtering reloaded -- Hegedus and Ferenc (2022)}:
+        Studies over 224.000 \textit{SonarQube} \cite{sonarqube_docs} warnings and uses \gls{ml} classifiers to filter false positives. \gls{rf} achieves approximately 91\% accuracy \cite{paper2_hegedHus2022static}.
+
+        \item \textbf{Paper 3 -- An empirical assessment of machine learning approaches for triaging reports of static analysis tools -- Yerramreddy et al. (2023)}:
+        Compares traditional \gls{ml}, \gls{lstm} and \gls{ggnns}. Shows that code representation and data preparation strongly affect classification results \cite{paper3_yerramreddy2023empirical}.
+    \end{itemize}
+
+    \item \textbf{Comparison and Limitations}
+    \begin{itemize}
+        \item \gls{ml} can reduce false positives and make static analysis more useful;
+        \item Different models have different strengths, depending on the code and datasets;
+        \item Expose found main limitations as incorrectly filtered real defects, training data quality and poor generalization to new projects.
+    \end{itemize}
+
+    \item \textbf{Future Work}
+    \begin{itemize}
+        \item Improve model accuracy and explainability;
+        \item Use larger datasets from different projects and programming languages;
+        \item Explore \gls{llms} to analyze warnings, explain possible defects and suggest code fixes;
+        \item Test these approaches in real software development environments.
+    \end{itemize}
+
+    \item \textbf{Conclusion}
+    \begin{itemize}
+        \item \gls{ml} can support traditional static analysis, but it cannot completely replace it;
+        \item Combining static analyzers with \gls{ml} and \gls{llms} could help developers find and fix defects more efficiently.
+    \end{itemize}
+\end{enumerate}
 
 \newpage
