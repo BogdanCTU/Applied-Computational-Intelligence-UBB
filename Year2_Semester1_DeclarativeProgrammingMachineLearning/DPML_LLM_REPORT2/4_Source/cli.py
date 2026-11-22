@@ -17,6 +17,7 @@ from source.classification.classifier import ResponseClassifier
 from source.config.settings import get_project_root, load_config
 from source.execution.runner import PenetrationRunner
 from source.fine_tuning.dataset_builder import MitigationDatasetBuilder
+from source.fine_tuning.round2_balanced_pipeline import Round2BalancedPipeline
 from source.fine_tuning.trainer import SafetyLoRATrainer
 from source.models.verifier import ModelVerifier
 from source.penetration.taxonomy import CATEGORIES
@@ -376,6 +377,16 @@ def cmd_final_audit(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_run_round2(args: argparse.Namespace) -> int:
+    cfg = load_config(args.config)
+    db = DatabaseManager(cfg.storage.sqlite_path)
+    db.init_db()
+    pipe = Round2BalancedPipeline(cfg, db)
+    res = pipe.run_stage(stage=args.stage)
+    print(json.dumps(res, indent=2, default=str))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="python -m source.cli",
@@ -425,6 +436,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_fa.add_argument("--baseline-experiment", default="exp_baseline_full_v3")
     p_fa.add_argument("--mitigated-experiment", default="exp_mitigated_full_v3")
 
+    p_r2 = sub.add_parser("run-round2", help="Run Phase 4 Round 2 balanced fine-tuning, evaluation, and 3-model report")
+    p_r2.add_argument("--stage", default="all", choices=["prepare", "train", "evaluate", "analyze", "all"])
+
     return parser
 
 
@@ -443,6 +457,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "report": cmd_report,
         "full-package": cmd_full_package,
         "final-audit": cmd_final_audit,
+        "run-round2": cmd_run_round2,
     }
     return dispatch[args.command](args)
 

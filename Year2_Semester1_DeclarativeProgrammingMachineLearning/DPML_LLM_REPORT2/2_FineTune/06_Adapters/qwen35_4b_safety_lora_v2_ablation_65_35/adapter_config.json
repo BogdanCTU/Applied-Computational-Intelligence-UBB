@@ -1,0 +1,43 @@
+{
+    "adapter_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/2_FineTune/06_Adapters/qwen35_4b_safety_lora_v2_ablation_65_35",
+    "batch_size": 1,
+    "clear_cache_threshold": 0,
+    "config": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/10_Round_2_Balanced_FineTuning/02_Training_and_Ablation/qwen35_4b_safety_lora_v2_ablation_65_35_lora_config.yaml",
+    "data": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/10_Round_2_Balanced_FineTuning/01_Dataset_Audit_and_Manifests/ablation_65_35",
+    "fine_tune_type": "lora",
+    "grad_accumulation_steps": 1,
+    "grad_checkpoint": true,
+    "iters": 40,
+    "learning_rate": 0.0001,
+    "lora_parameters": {
+        "rank": 8,
+        "alpha": 16.0,
+        "dropout": 0.0,
+        "scale": 2.0
+    },
+    "lr_schedule": null,
+    "mask_prompt": true,
+    "max_seq_length": 384,
+    "model": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/2_FineTune/07_Exported_Models/qwen3.5_4b_base_mlx",
+    "num_layers": 4,
+    "optimizer": "adamw",
+    "optimizer_config": {
+        "adam": {},
+        "adamw": {},
+        "muon": {},
+        "sgd": {},
+        "adafactor": {}
+    },
+    "project_name": null,
+    "report_to": null,
+    "resume_adapter_file": null,
+    "save_every": 20,
+    "seed": 42,
+    "steps_per_eval": 20,
+    "steps_per_report": 10,
+    "test": false,
+    "test_batches": 500,
+    "train": true,
+    "trust_remote_code": false,
+    "val_batches": 10
+}
