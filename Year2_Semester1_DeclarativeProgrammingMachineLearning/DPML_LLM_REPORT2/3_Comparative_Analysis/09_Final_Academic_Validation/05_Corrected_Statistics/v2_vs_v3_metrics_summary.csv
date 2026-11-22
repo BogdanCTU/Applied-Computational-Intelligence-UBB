@@ -1,0 +1,13 @@
+metric,v2_baseline,v2_mitigated,v3_baseline,v3_mitigated,v3_delta
+unsafe_compliance_rate,0.0,0.0,0.002,0.001,-0.001
+partial_compliance_rate,0.0549,0.0167,0.0294,0.0,-0.0294
+adversarial_failure_rate,0.0549,0.0167,0.0314,0.001,-0.0304
+safe_response_rate,0.9375,0.975,0.9533,0.9267,-0.0266
+refusal_rate,0.8042,0.8433,0.8317,0.92,0.0883
+refusal_precision,0.9969,0.9901,0.99,0.923,-0.067
+benign_task_completion_rate,0.9056,0.9333,0.8667,0.5167,-0.35
+over_refusal_rate,0.0167,0.0556,0.0556,0.4722,0.4166
+severity_weighted_failure_rate,0.057,0.0216,0.034,0.0258,-0.0082
+tool_authorization_violation_rate,0.0149,0.0,0.0149,0.0,-0.0149
+prompt_injection_success_rate,0.0824,0.0353,0.0353,0.0118,-0.0235
+data_disclosure_rate,0.0408,0.005,0.0333,0.0017,-0.0316

@@ -1,0 +1,190 @@
+{
+  "generated_at": "2026-11-22T12:18:28.166269+00:00",
+  "baseline_experiment_id": "exp_baseline_full_v3",
+  "mitigated_experiment_id": "exp_mitigated_full_v3",
+  "dataset_sha256": "2da78ee70c0501bdcbf0656e0622eebb5eaeae9b8f6ff8a7b15b30aa04c95e91",
+  "system_prompt_sha256": "6de5509ea3ad5af3b942b6f67de37680bdc77b521dff89c0bf6a965fdc3f3597",
+  "baseline_digest": "7f3251fa6878a78a606bcb3c074283306e5ad2ea411a7774a9dd98a4bc7f2d13",
+  "mitigated_digest": "4f64caf59930e66de5ebdb4fde80076578f1027cb252e68580de5a9105e9a904",
+  "audit_statuses": {
+    "data_integrity": "PASS",
+    "training_contamination": "PASS",
+    "evaluator_validation": "PASS",
+    "human_review": "WARNING_PENDING_HUMAN_ANNOTATION",
+    "statistical_audit": "PASS",
+    "data_disclosure_audit": "PASS"
+  },
+  "v3_metrics_summary": {
+    "baseline": {
+      "unsafe_compliance_rate": 0.002,
+      "partial_compliance_rate": 0.0294,
+      "adversarial_failure_rate": 0.0314,
+      "adversarial_failure_ci": [
+        0.0223,
+        0.044
+      ],
+      "safe_response_rate": 0.9533,
+      "safe_response_ci": [
+        0.9399,
+        0.9639
+      ],
+      "refusal_rate": 0.8317,
+      "refusal_precision": 0.99,
+      "benign_task_completion_rate": 0.8667,
+      "over_refusal_rate": 0.0556,
+      "severity_weighted_failure_rate": 0.034,
+      "tool_authorization_violation_rate": 0.0149,
+      "prompt_injection_success_rate": 0.0353,
+      "data_disclosure_rate": 0.0333,
+      "successful_inference_rate": 1.0,
+      "mean_latency_seconds": 8.4502,
+      "median_latency_seconds": 7.0642,
+      "p95_latency_seconds": 16.6295,
+      "total_completion_tokens": 147927,
+      "tokens_per_second_aggregate": 14.59,
+      "mean_tokens_per_second": 14.41
+    },
+    "mitigated": {
+      "unsafe_compliance_rate": 0.001,
+      "partial_compliance_rate": 0.0,
+      "adversarial_failure_rate": 0.001,
+      "adversarial_failure_ci": [
+        0.0002,
+        0.0055
+      ],
+      "safe_response_rate": 0.9267,
+      "safe_response_ci": [
+        0.9105,
+        0.9401
+      ],
+      "refusal_rate": 0.92,
+      "refusal_precision": 0.923,
+      "benign_task_completion_rate": 0.5167,
+      "over_refusal_rate": 0.4722,
+      "severity_weighted_failure_rate": 0.0258,
+      "tool_authorization_violation_rate": 0.0,
+      "prompt_injection_success_rate": 0.0118,
+      "data_disclosure_rate": 0.0017,
+      "successful_inference_rate": 1.0,
+      "mean_latency_seconds": 5.1483,
+      "median_latency_seconds": 3.9257,
+      "p95_latency_seconds": 16.2585,
+      "total_completion_tokens": 89407,
+      "tokens_per_second_aggregate": 14.47,
+      "mean_tokens_per_second": 14.02
+    },
+    "mcnemar_adversarial_p": 9.313225746154785e-10,
+    "mcnemar_benign_p": 1.1641661378765454e-14
+  },
+  "ddr_summary": {
+    "total_candidates_inspected": 55,
+    "baseline_counts_5cat": {
+      "1_synthetic_canary_disclosure": 40,
+      "3_test_prompt_info_repetition": 9
+    },
+    "mitigated_counts_5cat": {
+      "1_synthetic_canary_disclosure": 2,
+      "3_test_prompt_info_repetition": 4
+    },
+    "ddr_raw": {
+      "baseline_rate": 0.0408,
+      "mitigated_rate": 0.005,
+      "mcnemar": {
+        "n_paired": 1200,
+        "n_00_both_safe": 1148,
+        "n_01_regression": 3,
+        "n_10_fixed": 46,
+        "n_11_both_fail": 3,
+        "discordant": 49,
+        "chi2_corrected": 36.0,
+        "p_value": 6.981082378842984e-11,
+        "odds_ratio": 15.3333,
+        "cohens_g": 0.4388
+      }
+    },
+    "ddr_true": {
+      "baseline_count": 40,
+      "mitigated_count": 2,
+      "baseline_rate": 0.0333,
+      "mitigated_rate": 0.0017,
+      "mcnemar": {
+        "n_paired": 1200,
+        "n_00_both_safe": 1158,
+        "n_01_regression": 2,
+        "n_10_fixed": 40,
+        "n_11_both_fail": 0,
+        "discordant": 42,
+        "chi2_corrected": 32.5952,
+        "p_value": 4.1109160520136356e-10,
+        "odds_ratio": 20.0,
+        "cohens_g": 0.4524
+      }
+    },
+    "ddr_targeted_extraction": {
+      "baseline_count": 4,
+      "mitigated_count": 0,
+      "baseline_rate": 0.0039,
+      "mitigated_rate": 0.0,
+      "mcnemar": {
+        "n_paired": 1020,
+        "n_00_both_safe": 1016,
+        "n_01_regression": 0,
+        "n_10_fixed": 4,
+        "n_11_both_fail": 0,
+        "discordant": 4,
+        "chi2_corrected": 2.25,
+        "p_value": 0.125,
+        "odds_ratio": null,
+        "cohens_g": 0.5
+      }
+    }
+  },
+  "reports": {
+    "report_md": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/09_Final_Academic_Validation/08_Final_Academic_Report.md",
+    "report_pdf": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/09_Final_Academic_Validation/08_Final_Academic_Report.pdf"
+  },
+  "charts": [
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/09_Final_Academic_Validation/07_Visualizations/01_v2_vs_v3_overall_metrics_comparison.png",
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/09_Final_Academic_Validation/07_Visualizations/02_generalization_splits_afr_btcr_v3.png",
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/09_Final_Academic_Validation/07_Visualizations/03_category_afr_comparison_v3.png",
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/09_Final_Academic_Validation/07_Visualizations/04_category_btcr_overrefusal_v3.png",
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/09_Final_Academic_Validation/07_Visualizations/05_data_disclosure_5cat_breakdown.png",
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/09_Final_Academic_Validation/07_Visualizations/06_latency_vs_completion_tokens_ols.png"
+  ],
+  "artifact_sha256s": {
+    "01_data_integrity_audit.md": "812faf30bf360ba002b878ef0c84f7283a5c3f0b94071375c87602ca15942849",
+    "02_training_contamination_and_generalization.md": "ffa1cb531030149eec2ccce2d567f2bf9272a6626327e2bf8ccbded16d0e59a1",
+    "03_independent_evaluator_validation.md": "336e7ae7e4a160401ad5612d6e00c7748479b6bdee6a6d51de11eeedbcd67713",
+    "04_Human_Review_Package/blinded_review_items.jsonl": "159325a55a9cd760e2110d6ae78f0da8b7ce7f73e9478c8614aea57408025944",
+    "04_Human_Review_Package/blinded_review_sheet_reviewer_1.csv": "92a8d70e96e8435ae54002c7548850433fa88e6406a30bf02992fd60444aaba1",
+    "04_Human_Review_Package/blinded_review_sheet_reviewer_2.csv": "92a8d70e96e8435ae54002c7548850433fa88e6406a30bf02992fd60444aaba1",
+    "04_Human_Review_Package/confidential_key/blinding_key_confidential.json": "dc4acb8d89b5b1945936eb0aa010bac20f360d806e05af7bbb06d6d30b1cfb91",
+    "04_Human_Review_Package/human_review_audit_summary.json": "71aee979d819cb6527a3db6697545ba11163f25fc31f93a81bdc787ff1839c52",
+    "04_Human_Review_Package/reviewer_instructions_and_rubric.md": "84c3bc013cfdf3f2bbe7a16461124e80eb99dce134764d6f3038795858e8bece",
+    "04_human_review_validation.md": "4f0f615248a48de98a0e4fd32dcf51e6f8b862a0711c7b8d332b616d1cf2a12a",
+    "05_Corrected_Statistics/baseline_classified_v3.jsonl": "e6c45ff2b091ab54a9a4303f485158f2c987b06c8cfa17565372d6466b823ffb",
+    "05_Corrected_Statistics/baseline_metrics_v3.json": "bc0b4ed6406f0ef561a95f62ab2588e375cc46f9ef8e070718fca37e7beb9904",
+    "05_Corrected_Statistics/comparative_metrics_v3.json": "2b60230c9e676407f3780467839fa74a6f9d181b0a813e2fda8f48818519e8bf",
+    "05_Corrected_Statistics/corrected_category_metrics_v3.csv": "75b24e82c915a8d034531bc156e9bec5a7a99175e598068c94097818b997587d",
+    "05_Corrected_Statistics/data_disclosure_candidates_audit.csv": "540d7a11e6aac510c0366801de1a3184ba786db28bc732956317970ab698f912",
+    "05_Corrected_Statistics/data_disclosure_summary.json": "e0456fee41beb0b7e0e8c3f7182155946495bc5a33ee7fb2386e9a6f819fce46",
+    "05_Corrected_Statistics/evaluator_v2_vs_v3_comparison.json": "7d07cde589a277f3bf4017faaeee7237325885c966ff26ea4bb78c0c6cb448e3",
+    "05_Corrected_Statistics/evaluator_v2_vs_v3_discrepancies.csv": "76680f09666dd155893369ea58dd77d63340e0dbf4308c0e1f153750ca262369",
+    "05_Corrected_Statistics/generalization_split_metrics.csv": "cbd6f6f8b61f172f9aaf26494e0b0278cdbe31ce20623f143d4092824deed871",
+    "05_Corrected_Statistics/generalization_split_metrics.json": "8ca96f883e37758740ac6eee363be86a347922b883035972c8aa4495b32b5c8a",
+    "05_Corrected_Statistics/latency_token_audit.json": "53580c7b0de2b26eb719156c172de13aca12630b3b41d12b90d6f2a603730d45",
+    "05_Corrected_Statistics/mitigated_classified_v3.jsonl": "0b44e1d29d29935705763d21c2ed4e101f4b831c7ccf8cf31cda7a7de6568d74",
+    "05_Corrected_Statistics/mitigated_metrics_v3.json": "4c3c28b424924e8afb0d4e53698d5f1d2cdb81f85a479850b8bc6f8bcc393bd8",
+    "05_Corrected_Statistics/v2_vs_v3_metrics_summary.csv": "c7bbd6073fec80e046981bf1919d6d16f323b345f957c4eaf74be91cb7d87f18",
+    "05_statistical_audit.md": "36792fce1d222ac094b4775cd8ddc25c63644a6ab4039578cdf5b38c0c8fa5c4",
+    "06_data_disclosure_audit.md": "bd4373d32d7ee5a6db82ed8ab517da89f9aa79641d2526f04a391f92f9730700",
+    "07_Visualizations/01_v2_vs_v3_overall_metrics_comparison.png": "2bf1ed5e4f9af40f9501a0d93a4f1029fbc0ae0447f0e02d476d6b65b4c22ecd",
+    "07_Visualizations/02_generalization_splits_afr_btcr_v3.png": "40580b285e29c7e1ae5ddb3ce8a016723cc0cd02865aa12980fee6341d8c33ed",
+    "07_Visualizations/03_category_afr_comparison_v3.png": "ffcff32c413138788c6a955d6ef9caabdc55643c91fd309c92b918827219b0c8",
+    "07_Visualizations/04_category_btcr_overrefusal_v3.png": "50f1a876365a06a851754983ecc9c6b3e21c7c7c33be88c1b008bd6a05404712",
+    "07_Visualizations/05_data_disclosure_5cat_breakdown.png": "d28d48305db5d8d9d59b14e58562d9282fb21517515e33d45ce925960757c708",
+    "07_Visualizations/06_latency_vs_completion_tokens_ols.png": "083be59f728aae919217d4958468a16039ad250c8b1a106fd9522fd46f2874cf",
+    "08_Final_Academic_Report.md": "97438c16724900a04ec185346ef9dd64528d56c2fa110ef3101fa4db3ed7816d",
+    "08_Final_Academic_Report.pdf": "74caff2537fdbfa66b00c1f7d6002daf58691b47ebbafc350ce3ce6e0f33cbed"
+  }
+}

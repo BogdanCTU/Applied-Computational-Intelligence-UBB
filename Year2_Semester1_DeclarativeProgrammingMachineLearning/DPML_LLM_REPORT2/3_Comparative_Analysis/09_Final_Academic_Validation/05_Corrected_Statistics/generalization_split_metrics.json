@@ -1,0 +1,1102 @@
+{
+  "v2": {
+    "train_pool": {
+      "n_total": 720,
+      "n_adversarial": 636,
+      "n_benign": 84,
+      "baseline": {
+        "unsafe_compliance_rate": 0.0,
+        "partial_compliance_rate": 0.0503,
+        "adversarial_failure_rate": 0.0503,
+        "adversarial_failure_ci": [
+          0.0359,
+          0.0702
+        ],
+        "safe_response_rate": 0.9458,
+        "safe_response_ci": [
+          0.9268,
+          0.9601
+        ],
+        "refusal_rate": 0.8375,
+        "refusal_precision": 1.0,
+        "benign_task_completion_rate": 0.9286,
+        "over_refusal_rate": 0.0,
+        "severity_weighted_failure_rate": 0.0526,
+        "tool_authorization_violation_rate": 0.0165,
+        "prompt_injection_success_rate": 0.0943,
+        "data_disclosure_rate": 0.0361,
+        "successful_inference_rate": 1.0,
+        "mean_latency_seconds": 8.3376,
+        "median_latency_seconds": 7.0191,
+        "p95_latency_seconds": 16.6295,
+        "total_completion_tokens": 86862,
+        "tokens_per_second_aggregate": 14.47,
+        "mean_tokens_per_second": 14.34
+      },
+      "mitigated": {
+        "unsafe_compliance_rate": 0.0,
+        "partial_compliance_rate": 0.0142,
+        "adversarial_failure_rate": 0.0142,
+        "adversarial_failure_ci": [
+          0.0075,
+          0.0267
+        ],
+        "safe_response_rate": 0.9792,
+        "safe_response_ci": [
+          0.9659,
+          0.9873
+        ],
+        "refusal_rate": 0.8778,
+        "refusal_precision": 0.9921,
+        "benign_task_completion_rate": 0.9286,
+        "over_refusal_rate": 0.0595,
+        "severity_weighted_failure_rate": 0.0175,
+        "tool_authorization_violation_rate": 0.0,
+        "prompt_injection_success_rate": 0.0189,
+        "data_disclosure_rate": 0.0042,
+        "successful_inference_rate": 1.0,
+        "mean_latency_seconds": 5.0206,
+        "median_latency_seconds": 3.8964,
+        "p95_latency_seconds": 16.2273,
+        "total_completion_tokens": 52012,
+        "tokens_per_second_aggregate": 14.39,
+        "mean_tokens_per_second": 13.97
+      },
+      "comparison_overall": {
+        "baseline_adversarial_failure_rate": 0.0503,
+        "baseline_adversarial_failure_ci": [
+          0.0359,
+          0.0702
+        ],
+        "mitigated_adversarial_failure_rate": 0.0142,
+        "mitigated_adversarial_failure_ci": [
+          0.0075,
+          0.0267
+        ],
+        "absolute_improvement": 0.0362,
+        "relative_improvement": 0.7188,
+        "mcnemar_adversarial": {
+          "n_paired": 636,
+          "n_00_both_safe": 600,
+          "n_01_regression": 4,
+          "n_10_fixed": 27,
+          "n_11_both_fail": 5,
+          "discordant": 31,
+          "chi2_corrected": 15.6129,
+          "p_value": 3.39532271027565e-05,
+          "odds_ratio": 6.75,
+          "cohens_g": 0.371
+        },
+        "mcnemar_overall_safe": {
+          "n_paired": 720,
+          "n_00_both_safe": 672,
+          "n_01_regression": 9,
+          "n_10_fixed": 33,
+          "n_11_both_fail": 6,
+          "discordant": 42,
+          "chi2_corrected": 12.5952,
+          "p_value": 0.0002715392342906853,
+          "odds_ratio": 3.6667,
+          "cohens_g": 0.2857
+        },
+        "baseline_benign_completion_rate": 0.9286,
+        "baseline_benign_completion_ci": [
+          0.8528,
+          0.9669
+        ],
+        "mitigated_benign_completion_rate": 0.9286,
+        "mitigated_benign_completion_ci": [
+          0.8528,
+          0.9669
+        ],
+        "benign_over_refusal_delta": 0.0,
+        "mcnemar_benign": {
+          "n_paired": 84,
+          "n_00_both_safe": 73,
+          "n_01_regression": 5,
+          "n_10_fixed": 5,
+          "n_11_both_fail": 1,
+          "discordant": 10,
+          "chi2_corrected": 0.0,
+          "p_value": 1.0,
+          "odds_ratio": 1.0,
+          "cohens_g": 0.0
+        },
+        "baseline_mean_latency_s": 8.3376,
+        "baseline_median_latency_s": 7.0191,
+        "baseline_p95_latency_s": 16.6295,
+        "mitigated_mean_latency_s": 5.0206,
+        "mitigated_median_latency_s": 3.8964,
+        "mitigated_p95_latency_s": 16.2273,
+        "latency_wilcoxon": {
+          "statistic": 15603.5,
+          "p_value": 0.0,
+          "paired_t_statistic": 22.2746,
+          "paired_t_p_value": 0.0,
+          "cohens_d": -0.8301
+        }
+      }
+    },
+    "val_pool": {
+      "n_total": 180,
+      "n_adversarial": 144,
+      "n_benign": 36,
+      "baseline": {
+        "unsafe_compliance_rate": 0.0,
+        "partial_compliance_rate": 0.0486,
+        "adversarial_failure_rate": 0.0486,
+        "adversarial_failure_ci": [
+          0.0237,
+          0.0969
+        ],
+        "safe_response_rate": 0.9278,
+        "safe_response_ci": [
+          0.8804,
+          0.9573
+        ],
+        "refusal_rate": 0.7667,
+        "refusal_precision": 0.9855,
+        "benign_task_completion_rate": 0.8611,
+        "over_refusal_rate": 0.0556,
+        "severity_weighted_failure_rate": 0.0643,
+        "tool_authorization_violation_rate": 0.0,
+        "prompt_injection_success_rate": 0.0,
+        "data_disclosure_rate": 0.0389,
+        "successful_inference_rate": 1.0,
+        "mean_latency_seconds": 8.5499,
+        "median_latency_seconds": 7.1181,
+        "p95_latency_seconds": 16.6474,
+        "total_completion_tokens": 22468,
+        "tokens_per_second_aggregate": 14.6,
+        "mean_tokens_per_second": 14.35
+      },
+      "mitigated": {
+        "unsafe_compliance_rate": 0.0,
+        "partial_compliance_rate": 0.0208,
+        "adversarial_failure_rate": 0.0208,
+        "adversarial_failure_ci": [
+          0.0071,
+          0.0595
+        ],
+        "safe_response_rate": 0.9667,
+        "safe_response_ci": [
+          0.9292,
+          0.9846
+        ],
+        "refusal_rate": 0.7889,
+        "refusal_precision": 0.9859,
+        "benign_task_completion_rate": 0.9444,
+        "over_refusal_rate": 0.0556,
+        "severity_weighted_failure_rate": 0.0331,
+        "tool_authorization_violation_rate": 0.0,
+        "prompt_injection_success_rate": 0.0,
+        "data_disclosure_rate": 0.0,
+        "successful_inference_rate": 1.0,
+        "mean_latency_seconds": 5.2984,
+        "median_latency_seconds": 3.9434,
+        "p95_latency_seconds": 16.2232,
+        "total_completion_tokens": 13905,
+        "tokens_per_second_aggregate": 14.58,
+        "mean_tokens_per_second": 14.1
+      },
+      "comparison_overall": {
+        "baseline_adversarial_failure_rate": 0.0486,
+        "baseline_adversarial_failure_ci": [
+          0.0237,
+          0.0969
+        ],
+        "mitigated_adversarial_failure_rate": 0.0208,
+        "mitigated_adversarial_failure_ci": [
+          0.0071,
+          0.0595
+        ],
+        "absolute_improvement": 0.0278,
+        "relative_improvement": 0.5714,
+        "mcnemar_adversarial": {
+          "n_paired": 144,
+          "n_00_both_safe": 135,
+          "n_01_regression": 2,
+          "n_10_fixed": 6,
+          "n_11_both_fail": 1,
+          "discordant": 8,
+          "chi2_corrected": 1.125,
+          "p_value": 0.2890625,
+          "odds_ratio": 3.0,
+          "cohens_g": 0.25
+        },
+        "mcnemar_overall_safe": {
+          "n_paired": 180,
+          "n_00_both_safe": 163,
+          "n_01_regression": 4,
+          "n_10_fixed": 11,
+          "n_11_both_fail": 2,
+          "discordant": 15,
+          "chi2_corrected": 2.4,
+          "p_value": 0.11846923828124999,
+          "odds_ratio": 2.75,
+          "cohens_g": 0.2333
+        },
+        "baseline_benign_completion_rate": 0.8611,
+        "baseline_benign_completion_ci": [
+          0.7134,
+          0.9392
+        ],
+        "mitigated_benign_completion_rate": 0.9444,
+        "mitigated_benign_completion_ci": [
+          0.8186,
+          0.9846
+        ],
+        "benign_over_refusal_delta": -0.0833,
+        "mcnemar_benign": {
+          "n_paired": 36,
+          "n_00_both_safe": 29,
+          "n_01_regression": 2,
+          "n_10_fixed": 5,
+          "n_11_both_fail": 0,
+          "discordant": 7,
+          "chi2_corrected": 0.5714,
+          "p_value": 0.453125,
+          "odds_ratio": 2.5,
+          "cohens_g": 0.2143
+        },
+        "baseline_mean_latency_s": 8.5499,
+        "baseline_median_latency_s": 7.1181,
+        "baseline_p95_latency_s": 16.6474,
+        "mitigated_mean_latency_s": 5.2984,
+        "mitigated_median_latency_s": 3.9434,
+        "mitigated_p95_latency_s": 16.2232,
+        "latency_wilcoxon": {
+          "statistic": 1144.0,
+          "p_value": 0.0,
+          "paired_t_statistic": 10.2562,
+          "paired_t_p_value": 0.0,
+          "cohens_d": -0.7645
+        }
+      }
+    },
+    "held_out_eval": {
+      "n_total": 300,
+      "n_adversarial": 240,
+      "n_benign": 60,
+      "baseline": {
+        "unsafe_compliance_rate": 0.0,
+        "partial_compliance_rate": 0.0708,
+        "adversarial_failure_rate": 0.0708,
+        "adversarial_failure_ci": [
+          0.0447,
+          0.1105
+        ],
+        "safe_response_rate": 0.9233,
+        "safe_response_ci": [
+          0.8876,
+          0.9484
+        ],
+        "refusal_rate": 0.7467,
+        "refusal_precision": 0.9955,
+        "benign_task_completion_rate": 0.9,
+        "over_refusal_rate": 0.0167,
+        "severity_weighted_failure_rate": 0.0639,
+        "tool_authorization_violation_rate": 0.02,
+        "prompt_injection_success_rate": 0.1,
+        "data_disclosure_rate": 0.0533,
+        "successful_inference_rate": 1.0,
+        "mean_latency_seconds": 8.6608,
+        "median_latency_seconds": 7.2342,
+        "p95_latency_seconds": 16.5648,
+        "total_completion_tokens": 38597,
+        "tokens_per_second_aggregate": 14.86,
+        "mean_tokens_per_second": 14.6
+      },
+      "mitigated": {
+        "unsafe_compliance_rate": 0.0,
+        "partial_compliance_rate": 0.0208,
+        "adversarial_failure_rate": 0.0208,
+        "adversarial_failure_ci": [
+          0.0089,
+          0.0478
+        ],
+        "safe_response_rate": 0.97,
+        "safe_response_ci": [
+          0.944,
+          0.9841
+        ],
+        "refusal_rate": 0.7933,
+        "refusal_precision": 0.9874,
+        "benign_task_completion_rate": 0.9333,
+        "over_refusal_rate": 0.05,
+        "severity_weighted_failure_rate": 0.0249,
+        "tool_authorization_violation_rate": 0.0,
+        "prompt_injection_success_rate": 0.1,
+        "data_disclosure_rate": 0.01,
+        "successful_inference_rate": 1.0,
+        "mean_latency_seconds": 5.3649,
+        "median_latency_seconds": 3.9665,
+        "p95_latency_seconds": 16.3254,
+        "total_completion_tokens": 23490,
+        "tokens_per_second_aggregate": 14.59,
+        "mean_tokens_per_second": 14.1
+      },
+      "comparison_overall": {
+        "baseline_adversarial_failure_rate": 0.0708,
+        "baseline_adversarial_failure_ci": [
+          0.0447,
+          0.1105
+        ],
+        "mitigated_adversarial_failure_rate": 0.0208,
+        "mitigated_adversarial_failure_ci": [
+          0.0089,
+          0.0478
+        ],
+        "absolute_improvement": 0.05,
+        "relative_improvement": 0.7059,
+        "mcnemar_adversarial": {
+          "n_paired": 240,
+          "n_00_both_safe": 219,
+          "n_01_regression": 4,
+          "n_10_fixed": 16,
+          "n_11_both_fail": 1,
+          "discordant": 20,
+          "chi2_corrected": 6.05,
+          "p_value": 0.01181793212890625,
+          "odds_ratio": 4.0,
+          "cohens_g": 0.3
+        },
+        "mcnemar_overall_safe": {
+          "n_paired": 300,
+          "n_00_both_safe": 272,
+          "n_01_regression": 5,
+          "n_10_fixed": 19,
+          "n_11_both_fail": 4,
+          "discordant": 24,
+          "chi2_corrected": 7.0417,
+          "p_value": 0.006610751152038574,
+          "odds_ratio": 3.8,
+          "cohens_g": 0.2917
+        },
+        "baseline_benign_completion_rate": 0.9,
+        "baseline_benign_completion_ci": [
+          0.7985,
+          0.9534
+        ],
+        "mitigated_benign_completion_rate": 0.9333,
+        "mitigated_benign_completion_ci": [
+          0.8407,
+          0.9738
+        ],
+        "benign_over_refusal_delta": -0.0333,
+        "mcnemar_benign": {
+          "n_paired": 60,
+          "n_00_both_safe": 53,
+          "n_01_regression": 1,
+          "n_10_fixed": 3,
+          "n_11_both_fail": 3,
+          "discordant": 4,
+          "chi2_corrected": 0.25,
+          "p_value": 0.625,
+          "odds_ratio": 3.0,
+          "cohens_g": 0.25
+        },
+        "baseline_mean_latency_s": 8.6608,
+        "baseline_median_latency_s": 7.2342,
+        "baseline_p95_latency_s": 16.5648,
+        "mitigated_mean_latency_s": 5.3649,
+        "mitigated_median_latency_s": 3.9665,
+        "mitigated_p95_latency_s": 16.3254,
+        "latency_wilcoxon": {
+          "statistic": 2920.5,
+          "p_value": 0.0,
+          "paired_t_statistic": 14.1568,
+          "paired_t_p_value": 0.0,
+          "cohens_d": -0.8173
+        }
+      }
+    },
+    "complete_dataset": {
+      "n_total": 1200,
+      "n_adversarial": 1020,
+      "n_benign": 180,
+      "baseline": {
+        "unsafe_compliance_rate": 0.0,
+        "partial_compliance_rate": 0.0549,
+        "adversarial_failure_rate": 0.0549,
+        "adversarial_failure_ci": [
+          0.0425,
+          0.0706
+        ],
+        "safe_response_rate": 0.9375,
+        "safe_response_ci": [
+          0.9224,
+          0.9498
+        ],
+        "refusal_rate": 0.8042,
+        "refusal_precision": 0.9969,
+        "benign_task_completion_rate": 0.9056,
+        "over_refusal_rate": 0.0167,
+        "severity_weighted_failure_rate": 0.057,
+        "tool_authorization_violation_rate": 0.0149,
+        "prompt_injection_success_rate": 0.0824,
+        "data_disclosure_rate": 0.0408,
+        "successful_inference_rate": 1.0,
+        "mean_latency_seconds": 8.4502,
+        "median_latency_seconds": 7.0642,
+        "p95_latency_seconds": 16.6295,
+        "total_completion_tokens": 147927,
+        "tokens_per_second_aggregate": 14.59,
+        "mean_tokens_per_second": 14.41
+      },
+      "mitigated": {
+        "unsafe_compliance_rate": 0.0,
+        "partial_compliance_rate": 0.0167,
+        "adversarial_failure_rate": 0.0167,
+        "adversarial_failure_ci": [
+          0.0104,
+          0.0265
+        ],
+        "safe_response_rate": 0.975,
+        "safe_response_ci": [
+          0.9645,
+          0.9824
+        ],
+        "refusal_rate": 0.8433,
+        "refusal_precision": 0.9901,
+        "benign_task_completion_rate": 0.9333,
+        "over_refusal_rate": 0.0556,
+        "severity_weighted_failure_rate": 0.0216,
+        "tool_authorization_violation_rate": 0.0,
+        "prompt_injection_success_rate": 0.0353,
+        "data_disclosure_rate": 0.005,
+        "successful_inference_rate": 1.0,
+        "mean_latency_seconds": 5.1483,
+        "median_latency_seconds": 3.9257,
+        "p95_latency_seconds": 16.2585,
+        "total_completion_tokens": 89407,
+        "tokens_per_second_aggregate": 14.47,
+        "mean_tokens_per_second": 14.02
+      },
+      "comparison_overall": {
+        "baseline_adversarial_failure_rate": 0.0549,
+        "baseline_adversarial_failure_ci": [
+          0.0425,
+          0.0706
+        ],
+        "mitigated_adversarial_failure_rate": 0.0167,
+        "mitigated_adversarial_failure_ci": [
+          0.0104,
+          0.0265
+        ],
+        "absolute_improvement": 0.0382,
+        "relative_improvement": 0.6964,
+        "mcnemar_adversarial": {
+          "n_paired": 1020,
+          "n_00_both_safe": 954,
+          "n_01_regression": 10,
+          "n_10_fixed": 49,
+          "n_11_both_fail": 7,
+          "discordant": 59,
+          "chi2_corrected": 24.4746,
+          "p_value": 2.706279703008907e-07,
+          "odds_ratio": 4.9,
+          "cohens_g": 0.3305
+        },
+        "mcnemar_overall_safe": {
+          "n_paired": 1200,
+          "n_00_both_safe": 1107,
+          "n_01_regression": 18,
+          "n_10_fixed": 63,
+          "n_11_both_fail": 12,
+          "discordant": 81,
+          "chi2_corrected": 23.9012,
+          "p_value": 5.204403564731414e-07,
+          "odds_ratio": 3.5,
+          "cohens_g": 0.2778
+        },
+        "baseline_benign_completion_rate": 0.9056,
+        "baseline_benign_completion_ci": [
+          0.854,
+          0.9402
+        ],
+        "mitigated_benign_completion_rate": 0.9333,
+        "mitigated_benign_completion_ci": [
+          0.8871,
+          0.9615
+        ],
+        "benign_over_refusal_delta": -0.0278,
+        "mcnemar_benign": {
+          "n_paired": 180,
+          "n_00_both_safe": 155,
+          "n_01_regression": 8,
+          "n_10_fixed": 13,
+          "n_11_both_fail": 4,
+          "discordant": 21,
+          "chi2_corrected": 0.7619,
+          "p_value": 0.38331031799316406,
+          "odds_ratio": 1.625,
+          "cohens_g": 0.119
+        },
+        "baseline_mean_latency_s": 8.4502,
+        "baseline_median_latency_s": 7.0642,
+        "baseline_p95_latency_s": 16.6295,
+        "mitigated_mean_latency_s": 5.1483,
+        "mitigated_median_latency_s": 3.9257,
+        "mitigated_p95_latency_s": 16.2585,
+        "latency_wilcoxon": {
+          "statistic": 44799.0,
+          "p_value": 0.0,
+          "paired_t_statistic": 28.3042,
+          "paired_t_p_value": 0.0,
+          "cohens_d": -0.8171
+        }
+      }
+    }
+  },
+  "v3": {
+    "train_pool": {
+      "n_total": 720,
+      "n_adversarial": 636,
+      "n_benign": 84,
+      "baseline": {
+        "unsafe_compliance_rate": 0.0016,
+        "partial_compliance_rate": 0.0267,
+        "adversarial_failure_rate": 0.0283,
+        "adversarial_failure_ci": [
+          0.018,
+          0.0443
+        ],
+        "safe_response_rate": 0.9625,
+        "safe_response_ci": [
+          0.946,
+          0.9741
+        ],
+        "refusal_rate": 0.8625,
+        "refusal_precision": 0.9952,
+        "benign_task_completion_rate": 0.8929,
+        "over_refusal_rate": 0.0357,
+        "severity_weighted_failure_rate": 0.0305,
+        "tool_authorization_violation_rate": 0.0165,
+        "prompt_injection_success_rate": 0.0377,
+        "data_disclosure_rate": 0.0278,
+        "successful_inference_rate": 1.0,
+        "mean_latency_seconds": 8.3376,
+        "median_latency_seconds": 7.0191,
+        "p95_latency_seconds": 16.6295,
+        "total_completion_tokens": 86862,
+        "tokens_per_second_aggregate": 14.47,
+        "mean_tokens_per_second": 14.34
+      },
+      "mitigated": {
+        "unsafe_compliance_rate": 0.0,
+        "partial_compliance_rate": 0.0,
+        "adversarial_failure_rate": 0.0,
+        "adversarial_failure_ci": [
+          0.0,
+          0.006
+        ],
+        "safe_response_rate": 0.9472,
+        "safe_response_ci": [
+          0.9284,
+          0.9613
+        ],
+        "refusal_rate": 0.9347,
+        "refusal_precision": 0.945,
+        "benign_task_completion_rate": 0.5476,
+        "over_refusal_rate": 0.4405,
+        "severity_weighted_failure_rate": 0.0175,
+        "tool_authorization_violation_rate": 0.0,
+        "prompt_injection_success_rate": 0.0,
+        "data_disclosure_rate": 0.0014,
+        "successful_inference_rate": 1.0,
+        "mean_latency_seconds": 5.0206,
+        "median_latency_seconds": 3.8964,
+        "p95_latency_seconds": 16.2273,
+        "total_completion_tokens": 52012,
+        "tokens_per_second_aggregate": 14.39,
+        "mean_tokens_per_second": 13.97
+      },
+      "comparison_overall": {
+        "baseline_adversarial_failure_rate": 0.0283,
+        "baseline_adversarial_failure_ci": [
+          0.018,
+          0.0443
+        ],
+        "mitigated_adversarial_failure_rate": 0.0,
+        "mitigated_adversarial_failure_ci": [
+          0.0,
+          0.006
+        ],
+        "absolute_improvement": 0.0283,
+        "relative_improvement": 1.0,
+        "mcnemar_adversarial": {
+          "n_paired": 636,
+          "n_00_both_safe": 618,
+          "n_01_regression": 0,
+          "n_10_fixed": 18,
+          "n_11_both_fail": 0,
+          "discordant": 18,
+          "chi2_corrected": 16.0556,
+          "p_value": 7.62939453125e-06,
+          "odds_ratio": null,
+          "cohens_g": 0.5
+        },
+        "mcnemar_overall_safe": {
+          "n_paired": 720,
+          "n_00_both_safe": 661,
+          "n_01_regression": 32,
+          "n_10_fixed": 21,
+          "n_11_both_fail": 6,
+          "discordant": 53,
+          "chi2_corrected": 1.8868,
+          "p_value": 0.16897782228771874,
+          "odds_ratio": 0.6562,
+          "cohens_g": -0.1038
+        },
+        "baseline_benign_completion_rate": 0.8929,
+        "baseline_benign_completion_ci": [
+          0.8088,
+          0.9426
+        ],
+        "mitigated_benign_completion_rate": 0.5476,
+        "mitigated_benign_completion_ci": [
+          0.4414,
+          0.6496
+        ],
+        "benign_over_refusal_delta": 0.3452,
+        "mcnemar_benign": {
+          "n_paired": 84,
+          "n_00_both_safe": 43,
+          "n_01_regression": 32,
+          "n_10_fixed": 3,
+          "n_11_both_fail": 6,
+          "discordant": 35,
+          "chi2_corrected": 22.4,
+          "p_value": 4.176981747150421e-07,
+          "odds_ratio": 0.0938,
+          "cohens_g": -0.4143
+        },
+        "baseline_mean_latency_s": 8.3376,
+        "baseline_median_latency_s": 7.0191,
+        "baseline_p95_latency_s": 16.6295,
+        "mitigated_mean_latency_s": 5.0206,
+        "mitigated_median_latency_s": 3.8964,
+        "mitigated_p95_latency_s": 16.2273,
+        "latency_wilcoxon": {
+          "statistic": 15603.5,
+          "p_value": 0.0,
+          "paired_t_statistic": 22.2746,
+          "paired_t_p_value": 0.0,
+          "cohens_d": -0.8301
+        }
+      }
+    },
+    "val_pool": {
+      "n_total": 180,
+      "n_adversarial": 144,
+      "n_benign": 36,
+      "baseline": {
+        "unsafe_compliance_rate": 0.0069,
+        "partial_compliance_rate": 0.0278,
+        "adversarial_failure_rate": 0.0347,
+        "adversarial_failure_ci": [
+          0.0149,
+          0.0787
+        ],
+        "safe_response_rate": 0.9167,
+        "safe_response_ci": [
+          0.8671,
+          0.9489
+        ],
+        "refusal_rate": 0.8111,
+        "refusal_precision": 0.9521,
+        "benign_task_completion_rate": 0.7222,
+        "over_refusal_rate": 0.1944,
+        "severity_weighted_failure_rate": 0.0507,
+        "tool_authorization_violation_rate": 0.0,
+        "prompt_injection_success_rate": 0.0833,
+        "data_disclosure_rate": 0.0389,
+        "successful_inference_rate": 1.0,
+        "mean_latency_seconds": 8.5499,
+        "median_latency_seconds": 7.1181,
+        "p95_latency_seconds": 16.6474,
+        "total_completion_tokens": 22468,
+        "tokens_per_second_aggregate": 14.6,
+        "mean_tokens_per_second": 14.35
+      },
+      "mitigated": {
+        "unsafe_compliance_rate": 0.0069,
+        "partial_compliance_rate": 0.0,
+        "adversarial_failure_rate": 0.0069,
+        "adversarial_failure_ci": [
+          0.0012,
+          0.0383
+        ],
+        "safe_response_rate": 0.8778,
+        "safe_response_ci": [
+          0.8219,
+          0.9179
+        ],
+        "refusal_rate": 0.9111,
+        "refusal_precision": 0.872,
+        "benign_task_completion_rate": 0.4167,
+        "over_refusal_rate": 0.5833,
+        "severity_weighted_failure_rate": 0.0487,
+        "tool_authorization_violation_rate": 0.0,
+        "prompt_injection_success_rate": 0.0833,
+        "data_disclosure_rate": 0.0,
+        "successful_inference_rate": 1.0,
+        "mean_latency_seconds": 5.2984,
+        "median_latency_seconds": 3.9434,
+        "p95_latency_seconds": 16.2232,
+        "total_completion_tokens": 13905,
+        "tokens_per_second_aggregate": 14.58,
+        "mean_tokens_per_second": 14.1
+      },
+      "comparison_overall": {
+        "baseline_adversarial_failure_rate": 0.0347,
+        "baseline_adversarial_failure_ci": [
+          0.0149,
+          0.0787
+        ],
+        "mitigated_adversarial_failure_rate": 0.0069,
+        "mitigated_adversarial_failure_ci": [
+          0.0012,
+          0.0383
+        ],
+        "absolute_improvement": 0.0278,
+        "relative_improvement": 0.8,
+        "mcnemar_adversarial": {
+          "n_paired": 144,
+          "n_00_both_safe": 139,
+          "n_01_regression": 0,
+          "n_10_fixed": 4,
+          "n_11_both_fail": 1,
+          "discordant": 4,
+          "chi2_corrected": 2.25,
+          "p_value": 0.125,
+          "odds_ratio": null,
+          "cohens_g": 0.5
+        },
+        "mcnemar_overall_safe": {
+          "n_paired": 180,
+          "n_00_both_safe": 151,
+          "n_01_regression": 14,
+          "n_10_fixed": 7,
+          "n_11_both_fail": 8,
+          "discordant": 21,
+          "chi2_corrected": 1.7143,
+          "p_value": 0.18924713134765625,
+          "odds_ratio": 0.5,
+          "cohens_g": -0.1667
+        },
+        "baseline_benign_completion_rate": 0.7222,
+        "baseline_benign_completion_ci": [
+          0.5601,
+          0.8415
+        ],
+        "mitigated_benign_completion_rate": 0.4167,
+        "mitigated_benign_completion_ci": [
+          0.2714,
+          0.578
+        ],
+        "benign_over_refusal_delta": 0.3056,
+        "mcnemar_benign": {
+          "n_paired": 36,
+          "n_00_both_safe": 12,
+          "n_01_regression": 14,
+          "n_10_fixed": 3,
+          "n_11_both_fail": 7,
+          "discordant": 17,
+          "chi2_corrected": 5.8824,
+          "p_value": 0.012725830078125,
+          "odds_ratio": 0.2143,
+          "cohens_g": -0.3235
+        },
+        "baseline_mean_latency_s": 8.5499,
+        "baseline_median_latency_s": 7.1181,
+        "baseline_p95_latency_s": 16.6474,
+        "mitigated_mean_latency_s": 5.2984,
+        "mitigated_median_latency_s": 3.9434,
+        "mitigated_p95_latency_s": 16.2232,
+        "latency_wilcoxon": {
+          "statistic": 1144.0,
+          "p_value": 0.0,
+          "paired_t_statistic": 10.2562,
+          "paired_t_p_value": 0.0,
+          "cohens_d": -0.7645
+        }
+      }
+    },
+    "held_out_eval": {
+      "n_total": 300,
+      "n_adversarial": 240,
+      "n_benign": 60,
+      "baseline": {
+        "unsafe_compliance_rate": 0.0,
+        "partial_compliance_rate": 0.0375,
+        "adversarial_failure_rate": 0.0375,
+        "adversarial_failure_ci": [
+          0.0199,
+          0.0697
+        ],
+        "safe_response_rate": 0.9533,
+        "safe_response_ci": [
+          0.9232,
+          0.972
+        ],
+        "refusal_rate": 0.77,
+        "refusal_precision": 1.0,
+        "benign_task_completion_rate": 0.9167,
+        "over_refusal_rate": 0.0,
+        "severity_weighted_failure_rate": 0.0331,
+        "tool_authorization_violation_rate": 0.02,
+        "prompt_injection_success_rate": 0.0,
+        "data_disclosure_rate": 0.0433,
+        "successful_inference_rate": 1.0,
+        "mean_latency_seconds": 8.6608,
+        "median_latency_seconds": 7.2342,
+        "p95_latency_seconds": 16.5648,
+        "total_completion_tokens": 38597,
+        "tokens_per_second_aggregate": 14.86,
+        "mean_tokens_per_second": 14.6
+      },
+      "mitigated": {
+        "unsafe_compliance_rate": 0.0,
+        "partial_compliance_rate": 0.0,
+        "adversarial_failure_rate": 0.0,
+        "adversarial_failure_ci": [
+          0.0,
+          0.0158
+        ],
+        "safe_response_rate": 0.9067,
+        "safe_response_ci": [
+          0.8684,
+          0.9346
+        ],
+        "refusal_rate": 0.89,
+        "refusal_precision": 0.8989,
+        "benign_task_completion_rate": 0.5333,
+        "over_refusal_rate": 0.45,
+        "severity_weighted_failure_rate": 0.0331,
+        "tool_authorization_violation_rate": 0.0,
+        "prompt_injection_success_rate": 0.0,
+        "data_disclosure_rate": 0.0033,
+        "successful_inference_rate": 1.0,
+        "mean_latency_seconds": 5.3649,
+        "median_latency_seconds": 3.9665,
+        "p95_latency_seconds": 16.3254,
+        "total_completion_tokens": 23490,
+        "tokens_per_second_aggregate": 14.59,
+        "mean_tokens_per_second": 14.1
+      },
+      "comparison_overall": {
+        "baseline_adversarial_failure_rate": 0.0375,
+        "baseline_adversarial_failure_ci": [
+          0.0199,
+          0.0697
+        ],
+        "mitigated_adversarial_failure_rate": 0.0,
+        "mitigated_adversarial_failure_ci": [
+          0.0,
+          0.0158
+        ],
+        "absolute_improvement": 0.0375,
+        "relative_improvement": 1.0,
+        "mcnemar_adversarial": {
+          "n_paired": 240,
+          "n_00_both_safe": 231,
+          "n_01_regression": 0,
+          "n_10_fixed": 9,
+          "n_11_both_fail": 0,
+          "discordant": 9,
+          "chi2_corrected": 7.1111,
+          "p_value": 0.00390625,
+          "odds_ratio": null,
+          "cohens_g": 0.5
+        },
+        "mcnemar_overall_safe": {
+          "n_paired": 300,
+          "n_00_both_safe": 263,
+          "n_01_regression": 23,
+          "n_10_fixed": 9,
+          "n_11_both_fail": 5,
+          "discordant": 32,
+          "chi2_corrected": 5.2812,
+          "p_value": 0.020061607006937265,
+          "odds_ratio": 0.3913,
+          "cohens_g": -0.2188
+        },
+        "baseline_benign_completion_rate": 0.9167,
+        "baseline_benign_completion_ci": [
+          0.8193,
+          0.9639
+        ],
+        "mitigated_benign_completion_rate": 0.5333,
+        "mitigated_benign_completion_ci": [
+          0.4089,
+          0.6537
+        ],
+        "benign_over_refusal_delta": 0.3833,
+        "mcnemar_benign": {
+          "n_paired": 60,
+          "n_00_both_safe": 32,
+          "n_01_regression": 23,
+          "n_10_fixed": 0,
+          "n_11_both_fail": 5,
+          "discordant": 23,
+          "chi2_corrected": 21.0435,
+          "p_value": 2.384185791015625e-07,
+          "odds_ratio": 0.0,
+          "cohens_g": -0.5
+        },
+        "baseline_mean_latency_s": 8.6608,
+        "baseline_median_latency_s": 7.2342,
+        "baseline_p95_latency_s": 16.5648,
+        "mitigated_mean_latency_s": 5.3649,
+        "mitigated_median_latency_s": 3.9665,
+        "mitigated_p95_latency_s": 16.3254,
+        "latency_wilcoxon": {
+          "statistic": 2920.5,
+          "p_value": 0.0,
+          "paired_t_statistic": 14.1568,
+          "paired_t_p_value": 0.0,
+          "cohens_d": -0.8173
+        }
+      }
+    },
+    "complete_dataset": {
+      "n_total": 1200,
+      "n_adversarial": 1020,
+      "n_benign": 180,
+      "baseline": {
+        "unsafe_compliance_rate": 0.002,
+        "partial_compliance_rate": 0.0294,
+        "adversarial_failure_rate": 0.0314,
+        "adversarial_failure_ci": [
+          0.0223,
+          0.044
+        ],
+        "safe_response_rate": 0.9533,
+        "safe_response_ci": [
+          0.9399,
+          0.9639
+        ],
+        "refusal_rate": 0.8317,
+        "refusal_precision": 0.99,
+        "benign_task_completion_rate": 0.8667,
+        "over_refusal_rate": 0.0556,
+        "severity_weighted_failure_rate": 0.034,
+        "tool_authorization_violation_rate": 0.0149,
+        "prompt_injection_success_rate": 0.0353,
+        "data_disclosure_rate": 0.0333,
+        "successful_inference_rate": 1.0,
+        "mean_latency_seconds": 8.4502,
+        "median_latency_seconds": 7.0642,
+        "p95_latency_seconds": 16.6295,
+        "total_completion_tokens": 147927,
+        "tokens_per_second_aggregate": 14.59,
+        "mean_tokens_per_second": 14.41
+      },
+      "mitigated": {
+        "unsafe_compliance_rate": 0.001,
+        "partial_compliance_rate": 0.0,
+        "adversarial_failure_rate": 0.001,
+        "adversarial_failure_ci": [
+          0.0002,
+          0.0055
+        ],
+        "safe_response_rate": 0.9267,
+        "safe_response_ci": [
+          0.9105,
+          0.9401
+        ],
+        "refusal_rate": 0.92,
+        "refusal_precision": 0.923,
+        "benign_task_completion_rate": 0.5167,
+        "over_refusal_rate": 0.4722,
+        "severity_weighted_failure_rate": 0.0258,
+        "tool_authorization_violation_rate": 0.0,
+        "prompt_injection_success_rate": 0.0118,
+        "data_disclosure_rate": 0.0017,
+        "successful_inference_rate": 1.0,
+        "mean_latency_seconds": 5.1483,
+        "median_latency_seconds": 3.9257,
+        "p95_latency_seconds": 16.2585,
+        "total_completion_tokens": 89407,
+        "tokens_per_second_aggregate": 14.47,
+        "mean_tokens_per_second": 14.02
+      },
+      "comparison_overall": {
+        "baseline_adversarial_failure_rate": 0.0314,
+        "baseline_adversarial_failure_ci": [
+          0.0223,
+          0.044
+        ],
+        "mitigated_adversarial_failure_rate": 0.001,
+        "mitigated_adversarial_failure_ci": [
+          0.0002,
+          0.0055
+        ],
+        "absolute_improvement": 0.0304,
+        "relative_improvement": 0.9688,
+        "mcnemar_adversarial": {
+          "n_paired": 1020,
+          "n_00_both_safe": 988,
+          "n_01_regression": 0,
+          "n_10_fixed": 31,
+          "n_11_both_fail": 1,
+          "discordant": 31,
+          "chi2_corrected": 29.0323,
+          "p_value": 9.313225746154785e-10,
+          "odds_ratio": null,
+          "cohens_g": 0.5
+        },
+        "mcnemar_overall_safe": {
+          "n_paired": 1200,
+          "n_00_both_safe": 1075,
+          "n_01_regression": 69,
+          "n_10_fixed": 37,
+          "n_11_both_fail": 19,
+          "discordant": 106,
+          "chi2_corrected": 9.066,
+          "p_value": 0.002440008379349039,
+          "odds_ratio": 0.5362,
+          "cohens_g": -0.1509
+        },
+        "baseline_benign_completion_rate": 0.8667,
+        "baseline_benign_completion_ci": [
+          0.8093,
+          0.9087
+        ],
+        "mitigated_benign_completion_rate": 0.5167,
+        "mitigated_benign_completion_ci": [
+          0.4441,
+          0.5886
+        ],
+        "benign_over_refusal_delta": 0.35,
+        "mcnemar_benign": {
+          "n_paired": 180,
+          "n_00_both_safe": 87,
+          "n_01_regression": 69,
+          "n_10_fixed": 6,
+          "n_11_both_fail": 18,
+          "discordant": 75,
+          "chi2_corrected": 51.2533,
+          "p_value": 1.1641661378765454e-14,
+          "odds_ratio": 0.087,
+          "cohens_g": -0.42
+        },
+        "baseline_mean_latency_s": 8.4502,
+        "baseline_median_latency_s": 7.0642,
+        "baseline_p95_latency_s": 16.6295,
+        "mitigated_mean_latency_s": 5.1483,
+        "mitigated_median_latency_s": 3.9257,
+        "mitigated_p95_latency_s": 16.2585,
+        "latency_wilcoxon": {
+          "statistic": 44799.0,
+          "p_value": 0.0,
+          "paired_t_statistic": 28.3042,
+          "paired_t_p_value": 0.0,
+          "cohens_d": -0.8171
+        }
+      }
+    }
+  }
+}

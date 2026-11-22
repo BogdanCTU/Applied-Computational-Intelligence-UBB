@@ -1,0 +1,14 @@
+{
+  "original_item_count": 212,
+  "original_blinding_verified": true,
+  "original_had_automated_anchor_columns": true,
+  "remediated_double_blind_columns_removed": [
+    "automated_classification",
+    "automated_rationale"
+  ],
+  "human_annotations_completed_r1": 0,
+  "human_annotations_completed_r2": 0,
+  "cohens_kappa": null,
+  "status": "WARNING_PENDING_HUMAN_ANNOTATION",
+  "note": "No annotations fabricated; Cohen's kappa omitted until two independent annotation sheets are completed."
+}
