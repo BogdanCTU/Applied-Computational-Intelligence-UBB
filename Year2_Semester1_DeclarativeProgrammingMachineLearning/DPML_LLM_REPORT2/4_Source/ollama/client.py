@@ -69,19 +69,33 @@ class OllamaClient:
             resp.raise_for_status()
             return dict(resp.json())
 
+    def unload_model(self, model_name: str) -> bool:
+        """Unload a loaded model from unified memory via keep_alive=0."""
+        try:
+            with httpx.Client(timeout=15.0) as client:
+                resp = client.post(
+                    f"{self.host}/api/generate",
+                    json={"model": model_name, "keep_alive": 0},
+                )
+                return resp.status_code == 200
+        except Exception:
+            return False
+
     def _build_payload(
         self,
         model: str,
         messages: list[dict[str, Any]],
         temperature: float = 0.0,
-        num_predict: int = 96,
+        num_predict: int = 256,
         think: bool = False,
         tools: Optional[list[dict[str, Any]]] = None,
         seed: Optional[int] = 42,
+        num_ctx: int = 2048,
     ) -> dict[str, Any]:
         options: dict[str, Any] = {
             "temperature": temperature,
             "num_predict": num_predict,
+            "num_ctx": num_ctx,
         }
         if seed is not None:
             options["seed"] = seed

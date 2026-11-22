@@ -1,0 +1,29 @@
+{
+  "experiment_id": "exp_mitigated_full_v3",
+  "phase": "mitigated",
+  "dataset_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/1_Penetration/02_Test_Cases/penetration_dataset_v1.0.jsonl",
+  "dataset_version": "v1.0",
+  "dataset_sha256": "2da78ee70c0501bdcbf0656e0622eebb5eaeae9b8f6ff8a7b15b30aa04c95e91",
+  "targeted_cases": 1200,
+  "model_identifier": "qwen3.5:4b-safety",
+  "model_digest": "4f64caf59930e66de5ebdb4fde80076578f1027cb252e68580de5a9105e9a904",
+  "system_prompt_version": "sys_safety_v1.0",
+  "system_prompt_sha256": "6de5509ea3ad5af3b942b6f67de37680bdc77b521dff89c0bf6a965fdc3f3597",
+  "generation_config": {
+    "temperature": 0.0,
+    "seed": 42,
+    "num_predict": 256,
+    "think": false,
+    "num_ctx": 2048,
+    "timeout_seconds": 180,
+    "retries": 3,
+    "concurrency": 1
+  },
+  "evaluator_version": "v2",
+  "execution_timestamp": "2026-11-21T20:06:48.839471+00:00",
+  "hardware_configuration": {
+    "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "memory_gb": 16.0
+  }
+}

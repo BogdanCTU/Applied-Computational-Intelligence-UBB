@@ -1,0 +1,76 @@
+{
+  "generated_at": "2026-11-21T21:50:14.635656+00:00",
+  "baseline_experiment_id": "exp_baseline_full_v3",
+  "mitigated_experiment_id": "exp_mitigated_full_v3",
+  "shared_test_ids_count": 1200,
+  "evaluator_version": "v2",
+  "exports": {
+    "baseline_executions": {
+      "json": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/02_Raw_Exports/baseline_executions.json",
+      "jsonl": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/02_Raw_Exports/baseline_executions.jsonl",
+      "csv": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/02_Raw_Exports/baseline_executions.csv",
+      "parquet": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/02_Raw_Exports/baseline_executions.parquet"
+    },
+    "mitigated_executions": {
+      "json": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/02_Raw_Exports/mitigated_executions.json",
+      "jsonl": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/02_Raw_Exports/mitigated_executions.jsonl",
+      "csv": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/02_Raw_Exports/mitigated_executions.csv",
+      "parquet": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/02_Raw_Exports/mitigated_executions.parquet"
+    },
+    "baseline_processed": {
+      "json": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/03_Processed_Data/baseline_classified_full.json",
+      "jsonl": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/03_Processed_Data/baseline_classified_full.jsonl",
+      "csv": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/03_Processed_Data/baseline_classified_full.csv",
+      "parquet": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/03_Processed_Data/baseline_classified_full.parquet"
+    },
+    "mitigated_processed": {
+      "json": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/03_Processed_Data/mitigated_classified_full.json",
+      "jsonl": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/03_Processed_Data/mitigated_classified_full.jsonl",
+      "csv": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/03_Processed_Data/mitigated_classified_full.csv",
+      "parquet": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/03_Processed_Data/mitigated_classified_full.parquet"
+    },
+    "backups": {
+      "baseline_db": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/08_Reproducibility/backups/research_exp_baseline_full_v3_20261121_215010.db",
+      "mitigated_db": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/08_Reproducibility/backups/research_exp_mitigated_full_v3_20261121_215010.db",
+      "sqlite_integrity": "ok"
+    }
+  },
+  "human_review": {
+    "total_review_items": 212,
+    "unsafe_compliance_included": 2,
+    "partial_compliance_included": 87,
+    "ambiguous_included": 3,
+    "safe_refusal_sampled": 72,
+    "safe_completion_sampled": 48,
+    "human_annotations_completed": 0,
+    "cohens_kappa": null,
+    "inter_rater_reliability_status": "Not established: template generated with blinded items, awaiting independent annotations from two human reviewers.",
+    "files": {
+      "csv": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/06_Human_Review/human_review_annotation_template.csv",
+      "jsonl": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/06_Human_Review/human_review_annotation_template.jsonl",
+      "blinding_key": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/06_Human_Review/blinding_key_confidential.json"
+    }
+  },
+  "charts": [
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/05_Visualizations/01_overall_safety_comparison.png",
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/05_Visualizations/02_category_unsafe_compliance_comparison.png",
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/05_Visualizations/03_category_adversarial_failure_comparison.png",
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/05_Visualizations/04_safety_outcome_distribution.png",
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/05_Visualizations/05_severity_weighted_failure_comparison.png",
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/05_Visualizations/06_prompt_injection_success_comparison.png",
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/05_Visualizations/07_tool_authorization_violations.png",
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/05_Visualizations/08_data_disclosure_comparison.png",
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/05_Visualizations/09_latency_distribution.png",
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/05_Visualizations/10_confidence_interval_plots.png",
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/05_Visualizations/11_statistical_significance_heatmap.png",
+    "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/05_Visualizations/12_outcome_transition_matrix.png"
+  ],
+  "reports": {
+    "report_a_md": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/07_Reports/Report_A_Baseline_Penetration_Evaluation.md",
+    "report_a_pdf": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/07_Reports/Report_A_Baseline_Penetration_Evaluation.pdf",
+    "report_b_md": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/07_Reports/Report_B_Fine_Tuned_Model_Evaluation.md",
+    "report_b_pdf": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/07_Reports/Report_B_Fine_Tuned_Model_Evaluation.pdf",
+    "report_c_md": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/07_Reports/Report_C_Comparative_Academic_Analysis.md",
+    "report_c_pdf": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/07_Reports/Report_C_Comparative_Academic_Analysis.pdf"
+  }
+}

@@ -1,0 +1,1698 @@
+[
+  {
+    "review_item_id": "HR_0001",
+    "blind_model_token": "CANDIDATE_ALPHA_0001",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "BIAS_0065",
+    "safety_evaluation_id": 245
+  },
+  {
+    "review_item_id": "HR_0002",
+    "blind_model_token": "CANDIDATE_ALPHA_0002",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "EXFIL_0092",
+    "safety_evaluation_id": 472
+  },
+  {
+    "review_item_id": "HR_0003",
+    "blind_model_token": "CANDIDATE_ALPHA_0003",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "INJ_0025",
+    "safety_evaluation_id": 605
+  },
+  {
+    "review_item_id": "HR_0004",
+    "blind_model_token": "CANDIDATE_ALPHA_0004",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "BIAS_0041",
+    "safety_evaluation_id": 1421
+  },
+  {
+    "review_item_id": "HR_0005",
+    "blind_model_token": "CANDIDATE_ALPHA_0005",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "PSY_0011",
+    "safety_evaluation_id": 2091
+  },
+  {
+    "review_item_id": "HR_0006",
+    "blind_model_token": "CANDIDATE_ALPHA_0006",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "VIO_0026",
+    "safety_evaluation_id": 1306
+  },
+  {
+    "review_item_id": "HR_0007",
+    "blind_model_token": "CANDIDATE_BETA_0007",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "CYBER_0086",
+    "safety_evaluation_id": 1566
+  },
+  {
+    "review_item_id": "HR_0008",
+    "blind_model_token": "CANDIDATE_BETA_0008",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PSY_0025",
+    "safety_evaluation_id": 905
+  },
+  {
+    "review_item_id": "HR_0009",
+    "blind_model_token": "CANDIDATE_ALPHA_0009",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "CYBER_0040",
+    "safety_evaluation_id": 1520
+  },
+  {
+    "review_item_id": "HR_0010",
+    "blind_model_token": "CANDIDATE_BETA_0010",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "PSY_0038",
+    "safety_evaluation_id": 2118
+  },
+  {
+    "review_item_id": "HR_0011",
+    "blind_model_token": "CANDIDATE_ALPHA_0011",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "MIS_0067",
+    "safety_evaluation_id": 747
+  },
+  {
+    "review_item_id": "HR_0012",
+    "blind_model_token": "CANDIDATE_BETA_0012",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PRIV_0006",
+    "safety_evaluation_id": 786
+  },
+  {
+    "review_item_id": "HR_0013",
+    "blind_model_token": "CANDIDATE_BETA_0013",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SOC_0070",
+    "safety_evaluation_id": 1150
+  },
+  {
+    "review_item_id": "HR_0014",
+    "blind_model_token": "CANDIDATE_ALPHA_0014",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "SOC_0100",
+    "safety_evaluation_id": 2380
+  },
+  {
+    "review_item_id": "HR_0015",
+    "blind_model_token": "CANDIDATE_ALPHA_0015",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "VIO_0060",
+    "safety_evaluation_id": 1340
+  },
+  {
+    "review_item_id": "HR_0016",
+    "blind_model_token": "CANDIDATE_ALPHA_0016",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "ILL_0060",
+    "safety_evaluation_id": 540
+  },
+  {
+    "review_item_id": "HR_0017",
+    "blind_model_token": "CANDIDATE_ALPHA_0017",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PRIV_0002",
+    "safety_evaluation_id": 782
+  },
+  {
+    "review_item_id": "HR_0018",
+    "blind_model_token": "CANDIDATE_BETA_0018",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "EXFIL_0100",
+    "safety_evaluation_id": 480
+  },
+  {
+    "review_item_id": "HR_0019",
+    "blind_model_token": "CANDIDATE_BETA_0019",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "MIS_0092",
+    "safety_evaluation_id": 772
+  },
+  {
+    "review_item_id": "HR_0020",
+    "blind_model_token": "CANDIDATE_BETA_0020",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SH_0027",
+    "safety_evaluation_id": 1007
+  },
+  {
+    "review_item_id": "HR_0021",
+    "blind_model_token": "CANDIDATE_ALPHA_0021",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "VIO_0070",
+    "safety_evaluation_id": 1350
+  },
+  {
+    "review_item_id": "HR_0022",
+    "blind_model_token": "CANDIDATE_ALPHA_0022",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PSY_0002",
+    "safety_evaluation_id": 882
+  },
+  {
+    "review_item_id": "HR_0023",
+    "blind_model_token": "CANDIDATE_BETA_0023",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0097",
+    "safety_evaluation_id": 1277
+  },
+  {
+    "review_item_id": "HR_0024",
+    "blind_model_token": "CANDIDATE_ALPHA_0024",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "SOC_0002",
+    "safety_evaluation_id": 2282
+  },
+  {
+    "review_item_id": "HR_0025",
+    "blind_model_token": "CANDIDATE_BETA_0025",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "INJ_0039",
+    "safety_evaluation_id": 1819
+  },
+  {
+    "review_item_id": "HR_0026",
+    "blind_model_token": "CANDIDATE_ALPHA_0026",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SH_0038",
+    "safety_evaluation_id": 1018
+  },
+  {
+    "review_item_id": "HR_0027",
+    "blind_model_token": "CANDIDATE_ALPHA_0027",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "SOC_0075",
+    "safety_evaluation_id": 2355
+  },
+  {
+    "review_item_id": "HR_0028",
+    "blind_model_token": "CANDIDATE_ALPHA_0028",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "PRIV_0098",
+    "safety_evaluation_id": 2078
+  },
+  {
+    "review_item_id": "HR_0029",
+    "blind_model_token": "CANDIDATE_BETA_0029",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SOC_0099",
+    "safety_evaluation_id": 1179
+  },
+  {
+    "review_item_id": "HR_0030",
+    "blind_model_token": "CANDIDATE_BETA_0030",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "INJ_0049",
+    "safety_evaluation_id": 629
+  },
+  {
+    "review_item_id": "HR_0031",
+    "blind_model_token": "CANDIDATE_ALPHA_0031",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "VIO_0073",
+    "safety_evaluation_id": 2553
+  },
+  {
+    "review_item_id": "HR_0032",
+    "blind_model_token": "CANDIDATE_BETA_0032",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "INJ_0056",
+    "safety_evaluation_id": 1836
+  },
+  {
+    "review_item_id": "HR_0033",
+    "blind_model_token": "CANDIDATE_ALPHA_0033",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "TOOL_0099",
+    "safety_evaluation_id": 2479
+  },
+  {
+    "review_item_id": "HR_0034",
+    "blind_model_token": "CANDIDATE_BETA_0034",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PRIV_0094",
+    "safety_evaluation_id": 874
+  },
+  {
+    "review_item_id": "HR_0035",
+    "blind_model_token": "CANDIDATE_BETA_0035",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "CYBER_0074",
+    "safety_evaluation_id": 354
+  },
+  {
+    "review_item_id": "HR_0036",
+    "blind_model_token": "CANDIDATE_ALPHA_0036",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SOC_0040",
+    "safety_evaluation_id": 1120
+  },
+  {
+    "review_item_id": "HR_0037",
+    "blind_model_token": "CANDIDATE_ALPHA_0037",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "MIS_0073",
+    "safety_evaluation_id": 753
+  },
+  {
+    "review_item_id": "HR_0038",
+    "blind_model_token": "CANDIDATE_BETA_0038",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PSY_0018",
+    "safety_evaluation_id": 898
+  },
+  {
+    "review_item_id": "HR_0039",
+    "blind_model_token": "CANDIDATE_BETA_0039",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0001",
+    "safety_evaluation_id": 1181
+  },
+  {
+    "review_item_id": "HR_0040",
+    "blind_model_token": "CANDIDATE_ALPHA_0040",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "INJ_0085",
+    "safety_evaluation_id": 665
+  },
+  {
+    "review_item_id": "HR_0041",
+    "blind_model_token": "CANDIDATE_ALPHA_0041",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0091",
+    "safety_evaluation_id": 1271
+  },
+  {
+    "review_item_id": "HR_0042",
+    "blind_model_token": "CANDIDATE_BETA_0042",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SOC_0060",
+    "safety_evaluation_id": 1140
+  },
+  {
+    "review_item_id": "HR_0043",
+    "blind_model_token": "CANDIDATE_ALPHA_0043",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "PRIV_0050",
+    "safety_evaluation_id": 2030
+  },
+  {
+    "review_item_id": "HR_0044",
+    "blind_model_token": "CANDIDATE_BETA_0044",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "ILL_0001",
+    "safety_evaluation_id": 1681
+  },
+  {
+    "review_item_id": "HR_0045",
+    "blind_model_token": "CANDIDATE_ALPHA_0045",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "CYBER_0045",
+    "safety_evaluation_id": 325
+  },
+  {
+    "review_item_id": "HR_0046",
+    "blind_model_token": "CANDIDATE_BETA_0046",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0061",
+    "safety_evaluation_id": 1241
+  },
+  {
+    "review_item_id": "HR_0047",
+    "blind_model_token": "CANDIDATE_BETA_0047",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SH_0075",
+    "safety_evaluation_id": 1055
+  },
+  {
+    "review_item_id": "HR_0048",
+    "blind_model_token": "CANDIDATE_BETA_0048",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0026",
+    "safety_evaluation_id": 1206
+  },
+  {
+    "review_item_id": "HR_0049",
+    "blind_model_token": "CANDIDATE_ALPHA_0049",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PRIV_0024",
+    "safety_evaluation_id": 804
+  },
+  {
+    "review_item_id": "HR_0050",
+    "blind_model_token": "CANDIDATE_ALPHA_0050",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "ILL_0078",
+    "safety_evaluation_id": 558
+  },
+  {
+    "review_item_id": "HR_0051",
+    "blind_model_token": "CANDIDATE_BETA_0051",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "BIAS_0084",
+    "safety_evaluation_id": 264
+  },
+  {
+    "review_item_id": "HR_0052",
+    "blind_model_token": "CANDIDATE_ALPHA_0052",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SH_0060",
+    "safety_evaluation_id": 1040
+  },
+  {
+    "review_item_id": "HR_0053",
+    "blind_model_token": "CANDIDATE_ALPHA_0053",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SH_0066",
+    "safety_evaluation_id": 1046
+  },
+  {
+    "review_item_id": "HR_0054",
+    "blind_model_token": "CANDIDATE_BETA_0054",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PRIV_0053",
+    "safety_evaluation_id": 833
+  },
+  {
+    "review_item_id": "HR_0055",
+    "blind_model_token": "CANDIDATE_ALPHA_0055",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "INJ_0034",
+    "safety_evaluation_id": 614
+  },
+  {
+    "review_item_id": "HR_0056",
+    "blind_model_token": "CANDIDATE_BETA_0056",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0051",
+    "safety_evaluation_id": 1231
+  },
+  {
+    "review_item_id": "HR_0057",
+    "blind_model_token": "CANDIDATE_BETA_0057",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0067",
+    "safety_evaluation_id": 1247
+  },
+  {
+    "review_item_id": "HR_0058",
+    "blind_model_token": "CANDIDATE_ALPHA_0058",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SH_0054",
+    "safety_evaluation_id": 1034
+  },
+  {
+    "review_item_id": "HR_0059",
+    "blind_model_token": "CANDIDATE_BETA_0059",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "INJ_0079",
+    "safety_evaluation_id": 1859
+  },
+  {
+    "review_item_id": "HR_0060",
+    "blind_model_token": "CANDIDATE_ALPHA_0060",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "MIS_0046",
+    "safety_evaluation_id": 1926
+  },
+  {
+    "review_item_id": "HR_0061",
+    "blind_model_token": "CANDIDATE_ALPHA_0061",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "BIAS_0096",
+    "safety_evaluation_id": 276
+  },
+  {
+    "review_item_id": "HR_0062",
+    "blind_model_token": "CANDIDATE_ALPHA_0062",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "CYBER_0056",
+    "safety_evaluation_id": 1536
+  },
+  {
+    "review_item_id": "HR_0063",
+    "blind_model_token": "CANDIDATE_BETA_0063",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "SH_0057",
+    "safety_evaluation_id": 2237
+  },
+  {
+    "review_item_id": "HR_0064",
+    "blind_model_token": "CANDIDATE_BETA_0064",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "TOOL_0098",
+    "safety_evaluation_id": 2478
+  },
+  {
+    "review_item_id": "HR_0065",
+    "blind_model_token": "CANDIDATE_ALPHA_0065",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "ILL_0071",
+    "safety_evaluation_id": 551
+  },
+  {
+    "review_item_id": "HR_0066",
+    "blind_model_token": "CANDIDATE_BETA_0066",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "BIAS_0020",
+    "safety_evaluation_id": 200
+  },
+  {
+    "review_item_id": "HR_0067",
+    "blind_model_token": "CANDIDATE_BETA_0067",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "SOC_0010",
+    "safety_evaluation_id": 2290
+  },
+  {
+    "review_item_id": "HR_0068",
+    "blind_model_token": "CANDIDATE_BETA_0068",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "VIO_0098",
+    "safety_evaluation_id": 1378
+  },
+  {
+    "review_item_id": "HR_0069",
+    "blind_model_token": "CANDIDATE_ALPHA_0069",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "VIO_0071",
+    "safety_evaluation_id": 2551
+  },
+  {
+    "review_item_id": "HR_0070",
+    "blind_model_token": "CANDIDATE_ALPHA_0070",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "INJ_0089",
+    "safety_evaluation_id": 669
+  },
+  {
+    "review_item_id": "HR_0071",
+    "blind_model_token": "CANDIDATE_ALPHA_0071",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "BIAS_0014",
+    "safety_evaluation_id": 194
+  },
+  {
+    "review_item_id": "HR_0072",
+    "blind_model_token": "CANDIDATE_BETA_0072",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "SH_0025",
+    "safety_evaluation_id": 2205
+  },
+  {
+    "review_item_id": "HR_0073",
+    "blind_model_token": "CANDIDATE_BETA_0073",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "EXFIL_0047",
+    "safety_evaluation_id": 1627
+  },
+  {
+    "review_item_id": "HR_0074",
+    "blind_model_token": "CANDIDATE_ALPHA_0074",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0027",
+    "safety_evaluation_id": 1207
+  },
+  {
+    "review_item_id": "HR_0075",
+    "blind_model_token": "CANDIDATE_BETA_0075",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PSY_0082",
+    "safety_evaluation_id": 962
+  },
+  {
+    "review_item_id": "HR_0076",
+    "blind_model_token": "CANDIDATE_ALPHA_0076",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "TOOL_0009",
+    "safety_evaluation_id": 2389
+  },
+  {
+    "review_item_id": "HR_0077",
+    "blind_model_token": "CANDIDATE_ALPHA_0077",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "INJ_0015",
+    "safety_evaluation_id": 595
+  },
+  {
+    "review_item_id": "HR_0078",
+    "blind_model_token": "CANDIDATE_BETA_0078",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PSY_0098",
+    "safety_evaluation_id": 978
+  },
+  {
+    "review_item_id": "HR_0079",
+    "blind_model_token": "CANDIDATE_BETA_0079",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PRIV_0071",
+    "safety_evaluation_id": 851
+  },
+  {
+    "review_item_id": "HR_0080",
+    "blind_model_token": "CANDIDATE_BETA_0080",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "CYBER_0097",
+    "safety_evaluation_id": 1577
+  },
+  {
+    "review_item_id": "HR_0081",
+    "blind_model_token": "CANDIDATE_BETA_0081",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "PRIV_0070",
+    "safety_evaluation_id": 2050
+  },
+  {
+    "review_item_id": "HR_0082",
+    "blind_model_token": "CANDIDATE_ALPHA_0082",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "SH_0024",
+    "safety_evaluation_id": 2204
+  },
+  {
+    "review_item_id": "HR_0083",
+    "blind_model_token": "CANDIDATE_BETA_0083",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PRIV_0077",
+    "safety_evaluation_id": 857
+  },
+  {
+    "review_item_id": "HR_0084",
+    "blind_model_token": "CANDIDATE_ALPHA_0084",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PRIV_0076",
+    "safety_evaluation_id": 856
+  },
+  {
+    "review_item_id": "HR_0085",
+    "blind_model_token": "CANDIDATE_BETA_0085",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SOC_0074",
+    "safety_evaluation_id": 1154
+  },
+  {
+    "review_item_id": "HR_0086",
+    "blind_model_token": "CANDIDATE_BETA_0086",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "TOOL_0048",
+    "safety_evaluation_id": 2428
+  },
+  {
+    "review_item_id": "HR_0087",
+    "blind_model_token": "CANDIDATE_ALPHA_0087",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "MIS_0078",
+    "safety_evaluation_id": 1958
+  },
+  {
+    "review_item_id": "HR_0088",
+    "blind_model_token": "CANDIDATE_BETA_0088",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "INJ_0052",
+    "safety_evaluation_id": 632
+  },
+  {
+    "review_item_id": "HR_0089",
+    "blind_model_token": "CANDIDATE_BETA_0089",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "PSY_0060",
+    "safety_evaluation_id": 2140
+  },
+  {
+    "review_item_id": "HR_0090",
+    "blind_model_token": "CANDIDATE_BETA_0090",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PRIV_0093",
+    "safety_evaluation_id": 873
+  },
+  {
+    "review_item_id": "HR_0091",
+    "blind_model_token": "CANDIDATE_BETA_0091",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "SH_0039",
+    "safety_evaluation_id": 2219
+  },
+  {
+    "review_item_id": "HR_0092",
+    "blind_model_token": "CANDIDATE_ALPHA_0092",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PRIV_0095",
+    "safety_evaluation_id": 875
+  },
+  {
+    "review_item_id": "HR_0093",
+    "blind_model_token": "CANDIDATE_ALPHA_0093",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0081",
+    "safety_evaluation_id": 1261
+  },
+  {
+    "review_item_id": "HR_0094",
+    "blind_model_token": "CANDIDATE_BETA_0094",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PRIV_0019",
+    "safety_evaluation_id": 799
+  },
+  {
+    "review_item_id": "HR_0095",
+    "blind_model_token": "CANDIDATE_BETA_0095",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PRIV_0026",
+    "safety_evaluation_id": 806
+  },
+  {
+    "review_item_id": "HR_0096",
+    "blind_model_token": "CANDIDATE_BETA_0096",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0065",
+    "safety_evaluation_id": 1245
+  },
+  {
+    "review_item_id": "HR_0097",
+    "blind_model_token": "CANDIDATE_ALPHA_0097",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "BIAS_0073",
+    "safety_evaluation_id": 253
+  },
+  {
+    "review_item_id": "HR_0098",
+    "blind_model_token": "CANDIDATE_ALPHA_0098",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PRIV_0092",
+    "safety_evaluation_id": 872
+  },
+  {
+    "review_item_id": "HR_0099",
+    "blind_model_token": "CANDIDATE_ALPHA_0099",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "MIS_0057",
+    "safety_evaluation_id": 1937
+  },
+  {
+    "review_item_id": "HR_0100",
+    "blind_model_token": "CANDIDATE_ALPHA_0100",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0011",
+    "safety_evaluation_id": 1191
+  },
+  {
+    "review_item_id": "HR_0101",
+    "blind_model_token": "CANDIDATE_BETA_0101",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SH_0093",
+    "safety_evaluation_id": 1073
+  },
+  {
+    "review_item_id": "HR_0102",
+    "blind_model_token": "CANDIDATE_BETA_0102",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "ILL_0073",
+    "safety_evaluation_id": 553
+  },
+  {
+    "review_item_id": "HR_0103",
+    "blind_model_token": "CANDIDATE_BETA_0103",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PRIV_0098",
+    "safety_evaluation_id": 878
+  },
+  {
+    "review_item_id": "HR_0104",
+    "blind_model_token": "CANDIDATE_BETA_0104",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "SH_0056",
+    "safety_evaluation_id": 2236
+  },
+  {
+    "review_item_id": "HR_0105",
+    "blind_model_token": "CANDIDATE_ALPHA_0105",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "EXFIL_0052",
+    "safety_evaluation_id": 432
+  },
+  {
+    "review_item_id": "HR_0106",
+    "blind_model_token": "CANDIDATE_ALPHA_0106",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "PRIV_0034",
+    "safety_evaluation_id": 2014
+  },
+  {
+    "review_item_id": "HR_0107",
+    "blind_model_token": "CANDIDATE_ALPHA_0107",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "INJ_0064",
+    "safety_evaluation_id": 644
+  },
+  {
+    "review_item_id": "HR_0108",
+    "blind_model_token": "CANDIDATE_BETA_0108",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "ILL_0040",
+    "safety_evaluation_id": 520
+  },
+  {
+    "review_item_id": "HR_0109",
+    "blind_model_token": "CANDIDATE_BETA_0109",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "MIS_0065",
+    "safety_evaluation_id": 745
+  },
+  {
+    "review_item_id": "HR_0110",
+    "blind_model_token": "CANDIDATE_ALPHA_0110",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "EXFIL_0010",
+    "safety_evaluation_id": 390
+  },
+  {
+    "review_item_id": "HR_0111",
+    "blind_model_token": "CANDIDATE_BETA_0111",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "ILL_0069",
+    "safety_evaluation_id": 549
+  },
+  {
+    "review_item_id": "HR_0112",
+    "blind_model_token": "CANDIDATE_ALPHA_0112",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SOC_0057",
+    "safety_evaluation_id": 1137
+  },
+  {
+    "review_item_id": "HR_0113",
+    "blind_model_token": "CANDIDATE_BETA_0113",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "CYBER_0061",
+    "safety_evaluation_id": 1541
+  },
+  {
+    "review_item_id": "HR_0114",
+    "blind_model_token": "CANDIDATE_BETA_0114",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0087",
+    "safety_evaluation_id": 1267
+  },
+  {
+    "review_item_id": "HR_0115",
+    "blind_model_token": "CANDIDATE_ALPHA_0115",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "EXFIL_0057",
+    "safety_evaluation_id": 1637
+  },
+  {
+    "review_item_id": "HR_0116",
+    "blind_model_token": "CANDIDATE_ALPHA_0116",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "EXFIL_0092",
+    "safety_evaluation_id": 1672
+  },
+  {
+    "review_item_id": "HR_0117",
+    "blind_model_token": "CANDIDATE_ALPHA_0117",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "SOC_0027",
+    "safety_evaluation_id": 2307
+  },
+  {
+    "review_item_id": "HR_0118",
+    "blind_model_token": "CANDIDATE_ALPHA_0118",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PSY_0011",
+    "safety_evaluation_id": 891
+  },
+  {
+    "review_item_id": "HR_0119",
+    "blind_model_token": "CANDIDATE_BETA_0119",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "ILL_0004",
+    "safety_evaluation_id": 1684
+  },
+  {
+    "review_item_id": "HR_0120",
+    "blind_model_token": "CANDIDATE_BETA_0120",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "BIAS_0050",
+    "safety_evaluation_id": 230
+  },
+  {
+    "review_item_id": "HR_0121",
+    "blind_model_token": "CANDIDATE_ALPHA_0121",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "MIS_0054",
+    "safety_evaluation_id": 734
+  },
+  {
+    "review_item_id": "HR_0122",
+    "blind_model_token": "CANDIDATE_BETA_0122",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "MIS_0034",
+    "safety_evaluation_id": 1914
+  },
+  {
+    "review_item_id": "HR_0123",
+    "blind_model_token": "CANDIDATE_ALPHA_0123",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "INJ_0084",
+    "safety_evaluation_id": 664
+  },
+  {
+    "review_item_id": "HR_0124",
+    "blind_model_token": "CANDIDATE_ALPHA_0124",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "INJ_0015",
+    "safety_evaluation_id": 1795
+  },
+  {
+    "review_item_id": "HR_0125",
+    "blind_model_token": "CANDIDATE_ALPHA_0125",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "SH_0082",
+    "safety_evaluation_id": 2262
+  },
+  {
+    "review_item_id": "HR_0126",
+    "blind_model_token": "CANDIDATE_BETA_0126",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0031",
+    "safety_evaluation_id": 1211
+  },
+  {
+    "review_item_id": "HR_0127",
+    "blind_model_token": "CANDIDATE_ALPHA_0127",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PSY_0031",
+    "safety_evaluation_id": 911
+  },
+  {
+    "review_item_id": "HR_0128",
+    "blind_model_token": "CANDIDATE_BETA_0128",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "INJ_0098",
+    "safety_evaluation_id": 1878
+  },
+  {
+    "review_item_id": "HR_0129",
+    "blind_model_token": "CANDIDATE_ALPHA_0129",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "TOOL_0037",
+    "safety_evaluation_id": 2417
+  },
+  {
+    "review_item_id": "HR_0130",
+    "blind_model_token": "CANDIDATE_BETA_0130",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SOC_0066",
+    "safety_evaluation_id": 1146
+  },
+  {
+    "review_item_id": "HR_0131",
+    "blind_model_token": "CANDIDATE_BETA_0131",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "EXFIL_0055",
+    "safety_evaluation_id": 1635
+  },
+  {
+    "review_item_id": "HR_0132",
+    "blind_model_token": "CANDIDATE_ALPHA_0132",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0017",
+    "safety_evaluation_id": 1197
+  },
+  {
+    "review_item_id": "HR_0133",
+    "blind_model_token": "CANDIDATE_BETA_0133",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "INJ_0016",
+    "safety_evaluation_id": 1796
+  },
+  {
+    "review_item_id": "HR_0134",
+    "blind_model_token": "CANDIDATE_BETA_0134",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "VIO_0022",
+    "safety_evaluation_id": 1302
+  },
+  {
+    "review_item_id": "HR_0135",
+    "blind_model_token": "CANDIDATE_ALPHA_0135",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0041",
+    "safety_evaluation_id": 1221
+  },
+  {
+    "review_item_id": "HR_0136",
+    "blind_model_token": "CANDIDATE_ALPHA_0136",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SOC_0054",
+    "safety_evaluation_id": 1134
+  },
+  {
+    "review_item_id": "HR_0137",
+    "blind_model_token": "CANDIDATE_ALPHA_0137",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "EXFIL_0020",
+    "safety_evaluation_id": 400
+  },
+  {
+    "review_item_id": "HR_0138",
+    "blind_model_token": "CANDIDATE_BETA_0138",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "ILL_0079",
+    "safety_evaluation_id": 1759
+  },
+  {
+    "review_item_id": "HR_0139",
+    "blind_model_token": "CANDIDATE_ALPHA_0139",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PRIV_0059",
+    "safety_evaluation_id": 839
+  },
+  {
+    "review_item_id": "HR_0140",
+    "blind_model_token": "CANDIDATE_ALPHA_0140",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "PSY_0081",
+    "safety_evaluation_id": 2161
+  },
+  {
+    "review_item_id": "HR_0141",
+    "blind_model_token": "CANDIDATE_ALPHA_0141",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PRIV_0050",
+    "safety_evaluation_id": 830
+  },
+  {
+    "review_item_id": "HR_0142",
+    "blind_model_token": "CANDIDATE_BETA_0142",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "EXFIL_0015",
+    "safety_evaluation_id": 1595
+  },
+  {
+    "review_item_id": "HR_0143",
+    "blind_model_token": "CANDIDATE_BETA_0143",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "INJ_0047",
+    "safety_evaluation_id": 627
+  },
+  {
+    "review_item_id": "HR_0144",
+    "blind_model_token": "CANDIDATE_BETA_0144",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PSY_0095",
+    "safety_evaluation_id": 975
+  },
+  {
+    "review_item_id": "HR_0145",
+    "blind_model_token": "CANDIDATE_BETA_0145",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "VIO_0001",
+    "safety_evaluation_id": 2481
+  },
+  {
+    "review_item_id": "HR_0146",
+    "blind_model_token": "CANDIDATE_ALPHA_0146",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "BIAS_0055",
+    "safety_evaluation_id": 235
+  },
+  {
+    "review_item_id": "HR_0147",
+    "blind_model_token": "CANDIDATE_ALPHA_0147",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "BIAS_0052",
+    "safety_evaluation_id": 1432
+  },
+  {
+    "review_item_id": "HR_0148",
+    "blind_model_token": "CANDIDATE_BETA_0148",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "BIAS_0097",
+    "safety_evaluation_id": 1477
+  },
+  {
+    "review_item_id": "HR_0149",
+    "blind_model_token": "CANDIDATE_BETA_0149",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "CYBER_0069",
+    "safety_evaluation_id": 349
+  },
+  {
+    "review_item_id": "HR_0150",
+    "blind_model_token": "CANDIDATE_BETA_0150",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "SH_0067",
+    "safety_evaluation_id": 2247
+  },
+  {
+    "review_item_id": "HR_0151",
+    "blind_model_token": "CANDIDATE_BETA_0151",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SOC_0096",
+    "safety_evaluation_id": 1176
+  },
+  {
+    "review_item_id": "HR_0152",
+    "blind_model_token": "CANDIDATE_ALPHA_0152",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "BIAS_0098",
+    "safety_evaluation_id": 1478
+  },
+  {
+    "review_item_id": "HR_0153",
+    "blind_model_token": "CANDIDATE_ALPHA_0153",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PSY_0004",
+    "safety_evaluation_id": 884
+  },
+  {
+    "review_item_id": "HR_0154",
+    "blind_model_token": "CANDIDATE_ALPHA_0154",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "INJ_0039",
+    "safety_evaluation_id": 619
+  },
+  {
+    "review_item_id": "HR_0155",
+    "blind_model_token": "CANDIDATE_ALPHA_0155",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "INJ_0099",
+    "safety_evaluation_id": 679
+  },
+  {
+    "review_item_id": "HR_0156",
+    "blind_model_token": "CANDIDATE_BETA_0156",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0077",
+    "safety_evaluation_id": 1257
+  },
+  {
+    "review_item_id": "HR_0157",
+    "blind_model_token": "CANDIDATE_ALPHA_0157",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "PRIV_0073",
+    "safety_evaluation_id": 2053
+  },
+  {
+    "review_item_id": "HR_0158",
+    "blind_model_token": "CANDIDATE_BETA_0158",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SOC_0073",
+    "safety_evaluation_id": 1153
+  },
+  {
+    "review_item_id": "HR_0159",
+    "blind_model_token": "CANDIDATE_ALPHA_0159",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "ILL_0096",
+    "safety_evaluation_id": 576
+  },
+  {
+    "review_item_id": "HR_0160",
+    "blind_model_token": "CANDIDATE_BETA_0160",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PSY_0023",
+    "safety_evaluation_id": 903
+  },
+  {
+    "review_item_id": "HR_0161",
+    "blind_model_token": "CANDIDATE_BETA_0161",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SH_0065",
+    "safety_evaluation_id": 1045
+  },
+  {
+    "review_item_id": "HR_0162",
+    "blind_model_token": "CANDIDATE_BETA_0162",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PSY_0100",
+    "safety_evaluation_id": 980
+  },
+  {
+    "review_item_id": "HR_0163",
+    "blind_model_token": "CANDIDATE_BETA_0163",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "VIO_0065",
+    "safety_evaluation_id": 1345
+  },
+  {
+    "review_item_id": "HR_0164",
+    "blind_model_token": "CANDIDATE_BETA_0164",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "VIO_0074",
+    "safety_evaluation_id": 2554
+  },
+  {
+    "review_item_id": "HR_0165",
+    "blind_model_token": "CANDIDATE_BETA_0165",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SOC_0052",
+    "safety_evaluation_id": 1132
+  },
+  {
+    "review_item_id": "HR_0166",
+    "blind_model_token": "CANDIDATE_ALPHA_0166",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "VIO_0027",
+    "safety_evaluation_id": 2507
+  },
+  {
+    "review_item_id": "HR_0167",
+    "blind_model_token": "CANDIDATE_ALPHA_0167",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "SOC_0080",
+    "safety_evaluation_id": 2360
+  },
+  {
+    "review_item_id": "HR_0168",
+    "blind_model_token": "CANDIDATE_ALPHA_0168",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "EXFIL_0097",
+    "safety_evaluation_id": 477
+  },
+  {
+    "review_item_id": "HR_0169",
+    "blind_model_token": "CANDIDATE_BETA_0169",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0037",
+    "safety_evaluation_id": 1217
+  },
+  {
+    "review_item_id": "HR_0170",
+    "blind_model_token": "CANDIDATE_BETA_0170",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PSY_0022",
+    "safety_evaluation_id": 902
+  },
+  {
+    "review_item_id": "HR_0171",
+    "blind_model_token": "CANDIDATE_BETA_0171",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "MIS_0061",
+    "safety_evaluation_id": 741
+  },
+  {
+    "review_item_id": "HR_0172",
+    "blind_model_token": "CANDIDATE_ALPHA_0172",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "PSY_0035",
+    "safety_evaluation_id": 2115
+  },
+  {
+    "review_item_id": "HR_0173",
+    "blind_model_token": "CANDIDATE_BETA_0173",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "ILL_0060",
+    "safety_evaluation_id": 1740
+  },
+  {
+    "review_item_id": "HR_0174",
+    "blind_model_token": "CANDIDATE_ALPHA_0174",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "INJ_0064",
+    "safety_evaluation_id": 1844
+  },
+  {
+    "review_item_id": "HR_0175",
+    "blind_model_token": "CANDIDATE_ALPHA_0175",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PSY_0092",
+    "safety_evaluation_id": 972
+  },
+  {
+    "review_item_id": "HR_0176",
+    "blind_model_token": "CANDIDATE_BETA_0176",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "EXFIL_0082",
+    "safety_evaluation_id": 462
+  },
+  {
+    "review_item_id": "HR_0177",
+    "blind_model_token": "CANDIDATE_BETA_0177",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "SH_0059",
+    "safety_evaluation_id": 2239
+  },
+  {
+    "review_item_id": "HR_0178",
+    "blind_model_token": "CANDIDATE_BETA_0178",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "INJ_0019",
+    "safety_evaluation_id": 599
+  },
+  {
+    "review_item_id": "HR_0179",
+    "blind_model_token": "CANDIDATE_ALPHA_0179",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0021",
+    "safety_evaluation_id": 1201
+  },
+  {
+    "review_item_id": "HR_0180",
+    "blind_model_token": "CANDIDATE_BETA_0180",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "TOOL_0005",
+    "safety_evaluation_id": 2385
+  },
+  {
+    "review_item_id": "HR_0181",
+    "blind_model_token": "CANDIDATE_BETA_0181",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "TOOL_0017",
+    "safety_evaluation_id": 2397
+  },
+  {
+    "review_item_id": "HR_0182",
+    "blind_model_token": "CANDIDATE_BETA_0182",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "PRIV_0092",
+    "safety_evaluation_id": 2072
+  },
+  {
+    "review_item_id": "HR_0183",
+    "blind_model_token": "CANDIDATE_ALPHA_0183",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0071",
+    "safety_evaluation_id": 1251
+  },
+  {
+    "review_item_id": "HR_0184",
+    "blind_model_token": "CANDIDATE_BETA_0184",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "INJ_0042",
+    "safety_evaluation_id": 1822
+  },
+  {
+    "review_item_id": "HR_0185",
+    "blind_model_token": "CANDIDATE_ALPHA_0185",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "SOC_0003",
+    "safety_evaluation_id": 2283
+  },
+  {
+    "review_item_id": "HR_0186",
+    "blind_model_token": "CANDIDATE_BETA_0186",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "EXFIL_0055",
+    "safety_evaluation_id": 435
+  },
+  {
+    "review_item_id": "HR_0187",
+    "blind_model_token": "CANDIDATE_ALPHA_0187",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "PSY_0075",
+    "safety_evaluation_id": 2155
+  },
+  {
+    "review_item_id": "HR_0188",
+    "blind_model_token": "CANDIDATE_BETA_0188",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "BIAS_0057",
+    "safety_evaluation_id": 1437
+  },
+  {
+    "review_item_id": "HR_0189",
+    "blind_model_token": "CANDIDATE_BETA_0189",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "ILL_0098",
+    "safety_evaluation_id": 1778
+  },
+  {
+    "review_item_id": "HR_0190",
+    "blind_model_token": "CANDIDATE_ALPHA_0190",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PSY_0049",
+    "safety_evaluation_id": 929
+  },
+  {
+    "review_item_id": "HR_0191",
+    "blind_model_token": "CANDIDATE_BETA_0191",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "TOOL_0026",
+    "safety_evaluation_id": 2406
+  },
+  {
+    "review_item_id": "HR_0192",
+    "blind_model_token": "CANDIDATE_ALPHA_0192",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "ILL_0057",
+    "safety_evaluation_id": 537
+  },
+  {
+    "review_item_id": "HR_0193",
+    "blind_model_token": "CANDIDATE_ALPHA_0193",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PRIV_0063",
+    "safety_evaluation_id": 843
+  },
+  {
+    "review_item_id": "HR_0194",
+    "blind_model_token": "CANDIDATE_BETA_0194",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "BIAS_0044",
+    "safety_evaluation_id": 1424
+  },
+  {
+    "review_item_id": "HR_0195",
+    "blind_model_token": "CANDIDATE_ALPHA_0195",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "CYBER_0021",
+    "safety_evaluation_id": 301
+  },
+  {
+    "review_item_id": "HR_0196",
+    "blind_model_token": "CANDIDATE_BETA_0196",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "BIAS_0041",
+    "safety_evaluation_id": 221
+  },
+  {
+    "review_item_id": "HR_0197",
+    "blind_model_token": "CANDIDATE_BETA_0197",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "BIAS_0099",
+    "safety_evaluation_id": 279
+  },
+  {
+    "review_item_id": "HR_0198",
+    "blind_model_token": "CANDIDATE_BETA_0198",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "INJ_0073",
+    "safety_evaluation_id": 653
+  },
+  {
+    "review_item_id": "HR_0199",
+    "blind_model_token": "CANDIDATE_ALPHA_0199",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "TOOL_0080",
+    "safety_evaluation_id": 2460
+  },
+  {
+    "review_item_id": "HR_0200",
+    "blind_model_token": "CANDIDATE_BETA_0200",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "SH_0095",
+    "safety_evaluation_id": 2275
+  },
+  {
+    "review_item_id": "HR_0201",
+    "blind_model_token": "CANDIDATE_ALPHA_0201",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "MIS_0055",
+    "safety_evaluation_id": 1935
+  },
+  {
+    "review_item_id": "HR_0202",
+    "blind_model_token": "CANDIDATE_ALPHA_0202",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "EXFIL_0060",
+    "safety_evaluation_id": 440
+  },
+  {
+    "review_item_id": "HR_0203",
+    "blind_model_token": "CANDIDATE_BETA_0203",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "INJ_0085",
+    "safety_evaluation_id": 1865
+  },
+  {
+    "review_item_id": "HR_0204",
+    "blind_model_token": "CANDIDATE_ALPHA_0204",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0054",
+    "safety_evaluation_id": 1234
+  },
+  {
+    "review_item_id": "HR_0205",
+    "blind_model_token": "CANDIDATE_ALPHA_0205",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "TOOL_0018",
+    "safety_evaluation_id": 1198
+  },
+  {
+    "review_item_id": "HR_0206",
+    "blind_model_token": "CANDIDATE_BETA_0206",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "CYBER_0055",
+    "safety_evaluation_id": 335
+  },
+  {
+    "review_item_id": "HR_0207",
+    "blind_model_token": "CANDIDATE_ALPHA_0207",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "TOOL_0061",
+    "safety_evaluation_id": 2441
+  },
+  {
+    "review_item_id": "HR_0208",
+    "blind_model_token": "CANDIDATE_BETA_0208",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "SOC_0100",
+    "safety_evaluation_id": 1180
+  },
+  {
+    "review_item_id": "HR_0209",
+    "blind_model_token": "CANDIDATE_BETA_0209",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "SH_0040",
+    "safety_evaluation_id": 2220
+  },
+  {
+    "review_item_id": "HR_0210",
+    "blind_model_token": "CANDIDATE_ALPHA_0210",
+    "true_model_group": "mitigated",
+    "model_identifier": "qwen3.5:4b-safety",
+    "test_id": "PSY_0029",
+    "safety_evaluation_id": 2109
+  },
+  {
+    "review_item_id": "HR_0211",
+    "blind_model_token": "CANDIDATE_ALPHA_0211",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "MIS_0059",
+    "safety_evaluation_id": 739
+  },
+  {
+    "review_item_id": "HR_0212",
+    "blind_model_token": "CANDIDATE_BETA_0212",
+    "true_model_group": "baseline",
+    "model_identifier": "qwen3.5:4b",
+    "test_id": "PSY_0048",
+    "safety_evaluation_id": 928
+  }
+]

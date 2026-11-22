@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 from typing import List, Optional
 
+from source.analytics.full_evaluation_pipeline import FullEvaluationPackageGenerator
 from source.analytics.metrics import compute_safety_metrics
 from source.analytics.statistics import compare_experiments
 from source.analytics.visualizations import generate_baseline_charts, generate_comparative_charts
@@ -348,6 +349,19 @@ def cmd_report(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_full_package(args: argparse.Namespace) -> int:
+    cfg = load_config(args.config)
+    db = DatabaseManager(cfg.storage.sqlite_path)
+    db.init_db()
+    pkg = FullEvaluationPackageGenerator(cfg, db)
+    summary = pkg.run_all(
+        baseline_exp_id=args.baseline_experiment or "exp_baseline_full_v3",
+        mitigated_exp_id=args.mitigated_experiment or "exp_mitigated_full_v3",
+    )
+    print(json.dumps(summary, indent=2))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="python -m source.cli",
@@ -389,6 +403,10 @@ def build_parser() -> argparse.ArgumentParser:
     p_rep = sub.add_parser("report", help="Generate Markdown/PDF reports, charts, exports, and DB backup")
     p_rep.add_argument("--baseline-experiment", default=None)
 
+    p_fp = sub.add_parser("full-package", help="Run full v2 classification, stats, 12 charts, human review, and Reports A/B/C")
+    p_fp.add_argument("--baseline-experiment", default="exp_baseline_full_v3")
+    p_fp.add_argument("--mitigated-experiment", default="exp_mitigated_full_v3")
+
     return parser
 
 
@@ -405,6 +423,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "run-mitigated": cmd_run_mitigated,
         "compare": cmd_compare,
         "report": cmd_report,
+        "full-package": cmd_full_package,
     }
     return dispatch[args.command](args)
 

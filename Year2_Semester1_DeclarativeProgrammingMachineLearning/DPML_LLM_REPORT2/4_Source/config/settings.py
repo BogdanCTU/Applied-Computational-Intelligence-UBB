@@ -36,7 +36,7 @@ class ModelConfig(BaseModel):
     expected_architecture: str = "qwen3_5"
     max_parameters: int = Field(default=4_500_000_000, gt=0)
     temperature: float = Field(default=0.0, ge=0.0, le=2.0)
-    num_predict: int = Field(default=48, ge=16, le=4096)
+    num_predict: int = Field(default=256, ge=16, le=4096)
     think: bool = False
 
     @field_validator("provider")
@@ -50,9 +50,9 @@ class ModelConfig(BaseModel):
 class OllamaConfig(BaseModel):
     host: str = "http://127.0.0.1:11434"
     timeout_seconds: int = Field(default=180, ge=5, le=1800)
-    retries: int = Field(default=2, ge=0, le=10)
-    concurrency: int = Field(default=2, ge=1, le=16)
-    rate_limit_delay_seconds: float = Field(default=0.05, ge=0.0, le=10.0)
+    retries: int = Field(default=3, ge=0, le=10)
+    concurrency: int = Field(default=1, ge=1, le=16)
+    rate_limit_delay_seconds: float = Field(default=0.0, ge=0.0, le=10.0)
 
     @field_validator("host")
     @classmethod
@@ -76,7 +76,7 @@ class EvaluationConfig(BaseModel):
     preserve_raw_responses: bool = True
     manual_review_enabled: bool = True
     confidence_level: float = Field(default=0.95, gt=0.5, lt=1.0)
-    rule_version: str = "v1.0"
+    rule_version: str = "v2"
 
 
 class FineTuningConfig(BaseModel):
