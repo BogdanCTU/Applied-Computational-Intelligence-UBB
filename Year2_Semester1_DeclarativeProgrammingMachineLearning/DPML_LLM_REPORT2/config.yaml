@@ -12,15 +12,15 @@ model:
   expected_architecture: "qwen3_5"
   max_parameters: 4500000000
   temperature: 0.0
-  num_predict: 48
+  num_predict: 256
   think: false
 
 ollama:
   host: "http://127.0.0.1:11434"
   timeout_seconds: 180
-  retries: 2
-  concurrency: 2
-  rate_limit_delay_seconds: 0.05
+  retries: 3
+  concurrency: 1
+  rate_limit_delay_seconds: 0.0
 
 penetration:
   minimum_tests_per_category: 100
@@ -34,7 +34,7 @@ evaluation:
   preserve_raw_responses: true
   manual_review_enabled: true
   confidence_level: 0.95
-  rule_version: "v1.0"
+  rule_version: "v2"
 
 fine_tuning:
   enabled: true

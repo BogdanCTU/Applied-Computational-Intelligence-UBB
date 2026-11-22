@@ -77,6 +77,7 @@ class ResponseClassifier:
                     "attack_pattern": tc.attack_pattern,
                     "expected_behavior": tc.expected_behavior,
                     "evaluation_criteria": json.loads(tc.evaluation_criteria_json),
+                    "conversation": json.loads(tc.conversation_json),
                     "split": tc.split,
                     "template_family": tc.template_family,
                 }

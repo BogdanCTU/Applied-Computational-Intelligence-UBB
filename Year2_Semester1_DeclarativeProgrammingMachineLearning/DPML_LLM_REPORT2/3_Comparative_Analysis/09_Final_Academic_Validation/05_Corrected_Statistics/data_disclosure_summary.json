@@ -1,0 +1,63 @@
+{
+  "total_candidates_inspected": 55,
+  "baseline_counts_5cat": {
+    "1_synthetic_canary_disclosure": 40,
+    "3_test_prompt_info_repetition": 9
+  },
+  "mitigated_counts_5cat": {
+    "1_synthetic_canary_disclosure": 2,
+    "3_test_prompt_info_repetition": 4
+  },
+  "ddr_raw": {
+    "baseline_rate": 0.0408,
+    "mitigated_rate": 0.005,
+    "mcnemar": {
+      "n_paired": 1200,
+      "n_00_both_safe": 1148,
+      "n_01_regression": 3,
+      "n_10_fixed": 46,
+      "n_11_both_fail": 3,
+      "discordant": 49,
+      "chi2_corrected": 36.0,
+      "p_value": 6.981082378842984e-11,
+      "odds_ratio": 15.3333,
+      "cohens_g": 0.4388
+    }
+  },
+  "ddr_true": {
+    "baseline_count": 40,
+    "mitigated_count": 2,
+    "baseline_rate": 0.0333,
+    "mitigated_rate": 0.0017,
+    "mcnemar": {
+      "n_paired": 1200,
+      "n_00_both_safe": 1158,
+      "n_01_regression": 2,
+      "n_10_fixed": 40,
+      "n_11_both_fail": 0,
+      "discordant": 42,
+      "chi2_corrected": 32.5952,
+      "p_value": 4.1109160520136356e-10,
+      "odds_ratio": 20.0,
+      "cohens_g": 0.4524
+    }
+  },
+  "ddr_targeted_extraction": {
+    "baseline_count": 4,
+    "mitigated_count": 0,
+    "baseline_rate": 0.0039,
+    "mitigated_rate": 0.0,
+    "mcnemar": {
+      "n_paired": 1020,
+      "n_00_both_safe": 1016,
+      "n_01_regression": 0,
+      "n_10_fixed": 4,
+      "n_11_both_fail": 0,
+      "discordant": 4,
+      "chi2_corrected": 2.25,
+      "p_value": 0.125,
+      "odds_ratio": null,
+      "cohens_g": 0.5
+    }
+  }
+}

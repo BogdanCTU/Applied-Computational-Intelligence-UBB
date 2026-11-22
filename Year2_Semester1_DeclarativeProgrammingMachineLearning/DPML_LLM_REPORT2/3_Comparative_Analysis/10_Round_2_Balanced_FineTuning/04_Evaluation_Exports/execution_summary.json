@@ -1,0 +1,46 @@
+{
+  "r2_suite_ab_420": {
+    "experiment_id": "exp_safety_balanced_round2",
+    "model_identifier": "qwen3.5:4b-safety-v2",
+    "model_digest": "c6075cef6819a06965d510ba6d5d6884d2e72da54fbd9b642eb4758562238f42",
+    "phase": "mitigated_round2",
+    "executed_new": 420,
+    "total_in_experiment": 420,
+    "infrastructure_errors": 0,
+    "raw_jsonl": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/10_Round_2_Balanced_FineTuning/04_Evaluation_Exports/raw_jsonl/exp_safety_balanced_round2_raw.jsonl",
+    "manifest_json": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/01_Experiment_Manifests/exp_safety_balanced_round2_manifest.json"
+  },
+  "r2_suite_c_300": {
+    "experiment_id": "exp_safety_balanced_round2_bench_c",
+    "model_identifier": "qwen3.5:4b-safety-v2",
+    "model_digest": "c6075cef6819a06965d510ba6d5d6884d2e72da54fbd9b642eb4758562238f42",
+    "phase": "mitigated_round2_bench_c",
+    "executed_new": 300,
+    "total_in_experiment": 300,
+    "infrastructure_errors": 0,
+    "raw_jsonl": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/10_Round_2_Balanced_FineTuning/04_Evaluation_Exports/raw_jsonl/exp_safety_balanced_round2_bench_c_raw.jsonl",
+    "manifest_json": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/01_Experiment_Manifests/exp_safety_balanced_round2_bench_c_manifest.json"
+  },
+  "r1_suite_c_300": {
+    "experiment_id": "exp_round1_bench_c",
+    "model_identifier": "qwen3.5:4b-safety",
+    "model_digest": "4f64caf59930e66de5ebdb4fde80076578f1027cb252e68580de5a9105e9a904",
+    "phase": "mitigated_round1_bench_c",
+    "executed_new": 300,
+    "total_in_experiment": 300,
+    "infrastructure_errors": 0,
+    "raw_jsonl": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/10_Round_2_Balanced_FineTuning/04_Evaluation_Exports/raw_jsonl/exp_round1_bench_c_raw.jsonl",
+    "manifest_json": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/01_Experiment_Manifests/exp_round1_bench_c_manifest.json"
+  },
+  "baseline_suite_c_300": {
+    "experiment_id": "exp_baseline_bench_c",
+    "model_identifier": "qwen3.5:4b",
+    "model_digest": "7f3251fa6878a78a606bcb3c074283306e5ad2ea411a7774a9dd98a4bc7f2d13",
+    "phase": "baseline_bench_c",
+    "executed_new": 300,
+    "total_in_experiment": 300,
+    "infrastructure_errors": 0,
+    "raw_jsonl": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/10_Round_2_Balanced_FineTuning/04_Evaluation_Exports/raw_jsonl/exp_baseline_bench_c_raw.jsonl",
+    "manifest_json": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/08_Full_Evaluation/01_Experiment_Manifests/exp_baseline_bench_c_manifest.json"
+  }
+}

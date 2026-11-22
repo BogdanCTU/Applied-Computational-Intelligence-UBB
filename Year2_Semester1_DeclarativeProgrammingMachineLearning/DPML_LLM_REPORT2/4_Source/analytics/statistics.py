@@ -60,16 +60,32 @@ def mcnemar_paired_test(
         p_val = float(stats.binomtest(min(n10, n01), n=discordant, p=0.5, alternative="two-sided").pvalue)
 
     odds_ratio = (n10 / n01) if n01 > 0 else (float("inf") if n10 > 0 else 1.0)
+    cohens_g = (n10 / discordant) - 0.5 if discordant > 0 else 0.0
     return {
         "n_paired": n,
         "n_00_both_safe": n00,
         "n_01_regression": n01,
         "n_10_fixed": n10,
         "n_11_both_fail": n11,
+        "discordant": discordant,
         "chi2_corrected": round(float(chi2), 4),
         "p_value": float(p_val),
         "odds_ratio": None if math.isinf(odds_ratio) else round(float(odds_ratio), 4),
+        "cohens_g": round(float(cohens_g), 4),
     }
+
+
+def compute_cohens_kappa(rater_a: List[str], rater_b: List[str]) -> Optional[float]:
+    """Compute Cohen's kappa inter-rater agreement for two equal-length label lists."""
+    if not rater_a or len(rater_a) != len(rater_b):
+        return None
+    n = len(rater_a)
+    labels = sorted(set(rater_a) | set(rater_b))
+    p_o = sum(1 for a, b in zip(rater_a, rater_b) if a == b) / n
+    p_e = sum((rater_a.count(lbl) / n) * (rater_b.count(lbl) / n) for lbl in labels)
+    if abs(1.0 - p_e) < 1e-12:
+        return 1.0 if abs(p_o - 1.0) < 1e-12 else 0.0
+    return round((p_o - p_e) / (1.0 - p_e), 4)
 
 
 def benjamini_hochberg(p_values: List[float]) -> List[float]:
@@ -159,11 +175,20 @@ def compare_experiments(
     try:
         if any(abs(d) > 1e-6 for d in lat_diff) and len(lat_diff) >= 5:
             w_stat, w_p = stats.wilcoxon(base_lat, mit_lat)
-            lat_wilcoxon = {"statistic": round(float(w_stat), 4), "p_value": round(float(w_p), 6)}
+            t_stat, t_p = stats.ttest_rel(base_lat, mit_lat)
+            diff_std = float(np.std(lat_diff, ddof=1)) if len(lat_diff) > 1 else 0.0
+            cohens_d = float(np.mean(lat_diff)) / diff_std if diff_std > 0 else 0.0
+            lat_wilcoxon = {
+                "statistic": round(float(w_stat), 4),
+                "p_value": round(float(w_p), 6),
+                "paired_t_statistic": round(float(t_stat), 4),
+                "paired_t_p_value": round(float(t_p), 6),
+                "cohens_d": round(cohens_d, 4),
+            }
         else:
-            lat_wilcoxon = {"statistic": 0.0, "p_value": 1.0}
+            lat_wilcoxon = {"statistic": 0.0, "p_value": 1.0, "paired_t_statistic": 0.0, "paired_t_p_value": 1.0, "cohens_d": 0.0}
     except Exception:
-        lat_wilcoxon = {"statistic": None, "p_value": 1.0}
+        lat_wilcoxon = {"statistic": None, "p_value": 1.0, "paired_t_statistic": None, "paired_t_p_value": 1.0, "cohens_d": 0.0}
 
     # Category-level comparisons + multiple-comparison corrections
     cat_rows: List[Dict[str, Any]] = []
@@ -227,6 +252,27 @@ def compare_experiments(
         row["significant_fdr"] = fdr_p < alpha
         row["significant_holm"] = holm_p < alpha
         row["practically_meaningful"] = abs(row["absolute_improvement"]) >= 0.05
+        disc = row["mcnemar"].get("discordant", 0)
+        if row["significant_fdr"]:
+            row["inference_status"] = "statistically_significant"
+        elif disc == 0:
+            row["inference_status"] = "insufficient_failures_for_inference"
+        elif disc < 5 and row["mcnemar"]["n_10_fixed"] > row["mcnemar"]["n_01_regression"]:
+            row["inference_status"] = "descriptive_improvement"
+        else:
+            row["inference_status"] = "non_significant"
+
+    # Also compute overall benign + combined transition counts
+    b_ben_err = sum(1 for b, _ in ben_pairs if b["classification"] != "safe_completion")
+    m_ben_err = sum(1 for _, m in ben_pairs if m["classification"] != "safe_completion")
+    base_btcr_ci = wilson_confidence_interval(len(ben_pairs) - b_ben_err, len(ben_pairs), confidence_level)
+    mit_btcr_ci = wilson_confidence_interval(len(ben_pairs) - m_ben_err, len(ben_pairs), confidence_level)
+    base_afr_ci = wilson_confidence_interval(
+        sum(1 for b, _ in adv_pairs if _is_adv_fail(b)), len(adv_pairs), confidence_level
+    )
+    mit_afr_ci = wilson_confidence_interval(
+        sum(1 for _, m in adv_pairs if _is_adv_fail(m)), len(adv_pairs), confidence_level
+    )
 
     comparison = {
         "n_shared_ids": len(shared_ids),
@@ -235,17 +281,25 @@ def compare_experiments(
         "n_paired_benign": len(ben_pairs),
         "overall": {
             "baseline_adversarial_failure_rate": round(base_afr, 4),
+            "baseline_adversarial_failure_ci": [round(base_afr_ci[0], 4), round(base_afr_ci[1], 4)],
             "mitigated_adversarial_failure_rate": round(mit_afr, 4),
+            "mitigated_adversarial_failure_ci": [round(mit_afr_ci[0], 4), round(mit_afr_ci[1], 4)],
             "absolute_improvement": round(abs_imp, 4),
             "relative_improvement": round(rel_imp, 4),
             "mcnemar_adversarial": overall_adv_mcnemar,
             "mcnemar_overall_safe": overall_safe_mcnemar,
             "baseline_benign_completion_rate": round(base_btcr, 4),
+            "baseline_benign_completion_ci": [round(base_btcr_ci[0], 4), round(base_btcr_ci[1], 4)],
             "mitigated_benign_completion_rate": round(mit_btcr, 4),
+            "mitigated_benign_completion_ci": [round(mit_btcr_ci[0], 4), round(mit_btcr_ci[1], 4)],
             "benign_over_refusal_delta": round((1.0 - mit_btcr) - (1.0 - base_btcr), 4),
             "mcnemar_benign": ben_mcnemar,
             "baseline_mean_latency_s": round(float(np.mean(base_lat)) if base_lat else 0.0, 4),
+            "baseline_median_latency_s": round(float(np.median(base_lat)) if base_lat else 0.0, 4),
+            "baseline_p95_latency_s": round(float(np.percentile(base_lat, 95)) if base_lat else 0.0, 4),
             "mitigated_mean_latency_s": round(float(np.mean(mit_lat)) if mit_lat else 0.0, 4),
+            "mitigated_median_latency_s": round(float(np.median(mit_lat)) if mit_lat else 0.0, 4),
+            "mitigated_p95_latency_s": round(float(np.percentile(mit_lat, 95)) if mit_lat else 0.0, 4),
             "latency_wilcoxon": lat_wilcoxon,
         },
         "categories": cat_rows,

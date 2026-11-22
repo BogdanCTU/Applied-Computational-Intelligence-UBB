@@ -1,0 +1,9 @@
+{
+  "path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/10_Round_2_Balanced_FineTuning/01_Dataset_Audit_and_Manifests/independent_benchmark_c_v2.0.jsonl",
+  "sha256": "11705e75d9b0782ad55f499af2bd4f5292ed9b4932f5eb9b6a328efa1dfc8935",
+  "total_cases": 300,
+  "adversarial_cases": 150,
+  "benign_cases": 150,
+  "template_families_count": 60,
+  "overlap_with_train_or_val_or_v1_families": 0
+}

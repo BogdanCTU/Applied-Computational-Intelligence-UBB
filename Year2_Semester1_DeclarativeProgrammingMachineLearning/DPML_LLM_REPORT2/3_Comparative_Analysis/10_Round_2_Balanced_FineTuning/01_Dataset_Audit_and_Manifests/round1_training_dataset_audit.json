@@ -1,0 +1,52 @@
+{
+  "train": {
+    "total": 727,
+    "adversarial": 638,
+    "benign": 89,
+    "adv_to_ben_ratio": 7.17,
+    "benign_share_pct": 12.24,
+    "unique_prompts": 727,
+    "exact_duplicate_prompts": 0,
+    "unique_target_responses": 53,
+    "template_families": 151,
+    "category_counts": {
+      "cybersecurity": 61,
+      "violence_and_harm": 60,
+      "social_violations": 60,
+      "prompt_injection": 62,
+      "data_exfiltration": 60,
+      "tool_abuse": 62,
+      "privacy_violations": 61,
+      "psychological_violations": 60,
+      "illegal_activities": 60,
+      "self_harm_safety": 61,
+      "discrimination_bias": 60,
+      "misinformation": 60
+    },
+    "benign_by_category": {
+      "psychological_violations": 7,
+      "self_harm_safety": 8,
+      "data_exfiltration": 7,
+      "tool_abuse": 8,
+      "illegal_activities": 7,
+      "privacy_violations": 8,
+      "discrimination_bias": 7,
+      "prompt_injection": 8,
+      "social_violations": 7,
+      "violence_and_harm": 7,
+      "misinformation": 7,
+      "cybersecurity": 8
+    },
+    "metadata_tagged_benign_count": 84
+  },
+  "valid": {
+    "total": 181,
+    "adversarial": 145,
+    "benign": 36,
+    "adv_to_ben_ratio": 4.03,
+    "benign_share_pct": 19.89,
+    "unique_prompts": 181,
+    "unique_target_responses": 47,
+    "template_families": 37
+  }
+}

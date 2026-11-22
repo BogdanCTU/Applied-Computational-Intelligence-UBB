@@ -1,7 +1,56 @@
-\section{Related Work} \label{sec:related_work}
+\section{Machine Learning Proven Approaches} \label{sec:mlstaticdetection}
+
 
 % ====================================================================
 
-\subsection{Research Ideas}
+\subsection{Learning to Reduce False Positives in Analytic Bug Detectors}
 
-\hspace{0.6em} Since \gls{mas} is better represented and involved when included within multiple actors (players, participants, agents), for this paper study case "\textbf{Minimum Effort Game}" (as a Cooperation game) and "\textbf{Vickrey Auction}" (as a Conflict Game).
+\hspace{0.6em} The paper of \textit{Kharkar et al.} \cite{paper1_kharkarlearning2022} addresses the high number of false positives produced by static analyzers, which increases the time developers spend checking warnings. They focused on \textbf{Infer} \cite{meta_infer}, an open source \gls{sca} tool, and instead of totally replacing the analyzer, they propose using machine learning \gls{ml} to filter its warnings.
+
+\hspace{0.6em} The authors compare three approaches: a logistic regression classifier using four manually selected features, \textbf{DeepInferEnhance} and \textbf{GPT-C}. \textit{DeepInferEnhance} uses a pretrained \textit{CodeBERTa} \cite{husain2019codesearchnet,feng2020codebert,huggingface2020codeberta} Transformer encoder with a classification head, trained to distinguish valid and invalid warnings. \textit{GPT-C} is a generative Transformer used without additional training, used to predict possible code completions (such as null checks) which indicate that a reported bug may be genuine. Both Transformer approaches use source code before the warning and code from called methods to provide additional context when available.
+
+\hspace{0.6em} The experiments use 539 null dereference warnings from seven Java projects, of which 392 were manually classified as genuine defects. The authors apply five fold cross validation and evaluate precision and recall relative to \textit{Infer}'s original warnings. \textit{Infer} achieves 72,7\% precision. \textit{DeepInferEnhance} increases this to 83,7\%, with 88,3\% recall, while \textit{GPT-C} reaches 85,4\% precision and 83,7\% recall. \textit{GPT-C} therefore provides a relative precision improvement of $\approx 17,47\%$.
+
+\hspace{0.6em} For 108 resource leak warnings, \textit{GPT-C} also improves precision from 57,4\% to 60,6\%, but recall falls to 64,5\%. These results show that \gls{ml} can reduce false positives without changing the original analyzer. However, the models may remove real warnings, require sufficient code context and depend on manually labeled training data (as per \textit{DeepInferEnhance}) \cite{paper1_kharkarlearning2022}.
+
+
+% ====================================================================
+
+\subsection{Static Code Analysis Alarms Filtering Reloaded}
+
+\hspace{0.6em} In this paper \cite{paper2_hegedHus2022static}, \textit{Hegedűs} and \textit{Ferenc} investigate false positive filtering using a much larger real world dataset. Their main contribution is a collection of 224.484 SonarQube \cite{sonarqube_docs} warnings from 9.958 open source Java projects, covering 160 warning types. The dataset contains 47.015 warnings considered true positives (real developers fixed them) and 177.469 warnings considered false positives (developers explicitly suppressed them).
+
+\hspace{0.6em} The proposed method uses the warning type and nearby source code as input features. Java code is tokenized and represented using \textit{word2vec} \cite{word2vec} embeddings, which convert code tokens into numerical vectors. The authors combine a representation of the warning type with average token embeddings from the warning line and its surrounding lines. The input feature vector size is $\dim(\mathbf{x})=160+(2n+1)d$, where \(n\) is the number of surrounding lines on each side and \(d\) is the embedding size. With \(n=2\) and \(d=64\), the model receives 480 input features.
+
+\hspace{0.6em} Four classifiers are evaluated: \gls{dt}, \textbf{Naive Bayes}, \gls{rf} and \gls{nns}. The authors use stratified ten fold cross validation and balance the training data through upsampling. Random forest achieves the best overall results, with approximately 91\% accuracy, 81,3\% F1 score and 95,3\% AUC. It identifies about 76\% of false positives while incorrectly filtering around 8\% of genuine warnings. The neural network identifies 77,8\% of false positives.
+
+\hspace{0.6em} \textbf{The main advantage is a lightweight approach evaluated on many real projects and warning types}. \textit{Real developer suppression does not always mean that a warning is incorrect, so the automatically collected labels may contain errors}. The results also vary across warning types.
+
+
+% ====================================================================
+
+
+\subsection{An Empirical Assessment of Machine Learning Approaches for Triaging Reports of Static Analysis Tools}
+
+\hspace{0.6em} In this paper \cite{paper3_yerramreddy2023empirical}, authors "\textit{Yerramreddy et al.}" compare different \gls{ml} methods for classifying correct and incorrect static analysis results. They evaluate traditional classifiers using \gls{hef} and \gls{bow}, recurrent \gls{nns} based on \gls{lstm} and \gls{ggnns}.
+
+\hspace{0.6em} The study uses three static analysis tools: \textbf{FindSecBugs} \cite{findsecbugs} for detecting Java security vulnerabilities, \textbf{CBMC} \cite{clarke2004cbmc} for verifying C programs and \textbf{JBMC} \cite{cordeiro2018jbmc} for verifying Java programs. For \textit{FindSecBugs} the authors extracted relevant code using backward program slices and \gls{pdgs}, which represent relationships between statements. For \textit{CBMC} and \textit{JBMC}, they used \gls{asts}, which represent the structure of the code. These representations are transformed into feature vectors, token sequences or graphs, depending on the \gls{ml} model.
+
+\hspace{0.6em} The experiments use four datasets: 2.371 warnings from the synthetic \textbf{OWASP Benchmark} (reference standard for the most critical web application security risks), 400 manually classified warnings from 14 real Java projects and 1.000 C and 368 Java programs from \textit{SV-COMP} (\textit{International Competition on Software Verification}). The authors train 2.350 models using five fold cross validation repeated with five random seeds. They measure accuracy, precision, recall and training time. They also compare random data splitting with program wise splitting to evaluate how well models work on unseen projects.
+
+\hspace{0.6em} Neural models generally achieve higher accuracy than traditional classifiers. On \textit{OWASP}, raw \gls{lstm} reaches 100\% accuracy, although the authors note that some variable names in this synthetic dataset reveal the expected classification. Instead, on the real world dataset it achieves 89,33\% accuracy with random splitting, while an extended \gls{lstm} reaches 80\% when tested on unseen projects. For \textit{CBMC} and \textit{JBMC}, the best \gls{ggnns} models achieve 83,40\% and 80,15\% accuracy. Improved code preparation also increases accuracy, especially when models must generalize across projects.
+
+\hspace{0.6em} The results show that the choice of code representation and data preparation strongly affects classification performance. \gls{lstm} work better with program slices, while \gls{ggnns} perform better with \gls{asts}. \gls{nns} models need more training time and accuracy decreases on unseen projects. The study also finds that traditional models can correctly classify some cases missed by neural models. Therefore there is no single approach that fits in every situation (generalization).
+
+
+% ====================================================================
+
+\subsection{Approaches Comparison}
+
+\hspace{0.6em} Each approach has different advantages and limitations. \textbf{Transformer models} can use broader source code context, while \textit{GPT-C} does not require task specific labeled training data \cite{paper1_kharkarlearning2022}. In comparison, \textbf{\gls{rf}} offers a lightweight solution covering many warning types, without complex code analysis \cite{paper2_hegedHus2022static}. \textbf{\gls{lstm} and \gls{ggnns}} can learn from code sequences and structural relationships, but require more preprocessing and training resources \cite{paper3_yerramreddy2023empirical}.
+
+\hspace{0.6em} The disadvantages also differ. Transformer models were evaluated on relatively small warning datasets, while the \gls{rf} approach relies on developer actions that may not always provide correct labels. Neural models can achieve high accuracy, but their performance may decrease on unseen projects. Furthermore, results from different datasets cannot be directly compared to determine which approach is universally better.
+
+\hspace{0.6em} In my opinion, \textbf{the most practical solution is to use \gls{ml} to prioritize warnings rather than automatically discard them}, especially for critical defects. This would allow developers to benefit from improved warning classification while reducing the risk of hiding genuine bugs.
+
+% ====================================================================

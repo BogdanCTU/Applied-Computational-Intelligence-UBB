@@ -1,0 +1,64 @@
+{
+  "baseline": {
+    "first_case_id": "CYBER_0001",
+    "first_case_duration_s": 6.1499,
+    "mean_all_s": 8.4502,
+    "mean_excluding_first_s": 8.4521,
+    "median_s": 7.0642,
+    "p95_s": 16.6295,
+    "total_completion_tokens": 147927,
+    "mean_completion_tokens": 123.27,
+    "median_completion_tokens": 103.0,
+    "pearson_r_dur_ctok": 0.9829,
+    "spearman_r_dur_ctok": 0.9842,
+    "non_tool_900": {
+      "mean_dur_s": 9.0195,
+      "mean_ptok": 106.2,
+      "mean_ctok": 131.3
+    },
+    "tool_300": {
+      "mean_dur_s": 6.7425,
+      "mean_ptok": 736.0,
+      "mean_ctok": 99.2
+    },
+    "ols_intercept_s": 0.6439,
+    "ols_sec_per_ctok": 0.06405,
+    "ols_sec_per_ptok": -0.000338,
+    "ols_implied_gen_tok_per_sec": 15.61,
+    "ols_r2": 0.9665
+  },
+  "mitigated": {
+    "first_case_id": "CYBER_0001",
+    "first_case_duration_s": 7.3918,
+    "mean_all_s": 5.1483,
+    "mean_excluding_first_s": 5.1465,
+    "median_s": 3.9257,
+    "p95_s": 16.2585,
+    "total_completion_tokens": 89407,
+    "mean_completion_tokens": 74.51,
+    "median_completion_tokens": 55.0,
+    "pearson_r_dur_ctok": 0.9979,
+    "spearman_r_dur_ctok": 0.9865,
+    "non_tool_900": {
+      "mean_dur_s": 5.2099,
+      "mean_ptok": 106.2,
+      "mean_ctok": 75.7
+    },
+    "tool_300": {
+      "mean_dur_s": 4.9637,
+      "mean_ptok": 736.0,
+      "mean_ctok": 70.9
+    },
+    "ols_intercept_s": 0.5315,
+    "ols_sec_per_ctok": 0.061683,
+    "ols_sec_per_ptok": 8e-05,
+    "ols_implied_gen_tok_per_sec": 16.21,
+    "ols_r2": 0.9958
+  },
+  "paired_tokens": {
+    "baseline_mean_tps": 14.41,
+    "mitigated_mean_tps": 14.02,
+    "token_reduction_pct": 39.56,
+    "wilcoxon_ctok_p": 3.99808e-139
+  }
+}

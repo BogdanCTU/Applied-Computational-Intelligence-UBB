@@ -1,53 +1,45 @@
-\newpage
-\section{Theoretical Background}
+\section{Theoretical Background} \label{sec:theoreticalbackground}
 
 % %=========================================================
 
 
 \subsection{Static Code Analysis and Bug Detection}
  
-Static code analysis examines a program without executing it or supplying specific runtime inputs. Unlike dynamic analysis, which observes program behavior during execution, static analysis inspects source code or compiled representations to identify potential defects before they cause failures \cite{paperreference1_ayewah2008using}.
+\hspace{0.6em} \textbf{\gls{sca} examines a program without executing it or supplying specific runtime inputs}. On the other side there is Dynamic Code Analysis (or Code Dynamic Analysis) that evaluates a software program while it is actively running to observe its real time behaviour, performance and security. Static analysis inspects source code or compiled representations to identify potential defects before they cause failures in runtime. One of the firsts \gls{sca} tools actually dates back on 1977, with the paper of \textit{Johnson Stephen C.} "\textit{Lint, a C program checker}".
 
-FindBugs, presented by Ayewah et al., analyzes compiled Java bytecode using detectors designed to recognize common programming mistakes. Its mechanisms include bytecode inspection, bug-pattern matching, and intraprocedural data-flow analysis, which tracks properties such as variable types and nullness through a method's control-flow graph. Examples of detectable defects include potential null-pointer dereferences, infinite recursion, ignored return values, and logically inconsistent comparisons \cite{paperreference1_ayewah2008using}.
+\hspace{0.6em} A newer tool was studied in 2008 by \textit{Ayewah et al.} in their paper "\textit{Using static analysis to find bugs}" \cite{paperreference1_ayewah2008using}, called \textbf{FindBugs}. This tool analyzes compiled Java bytecode using detectors designed to recognize common programming mistakes. Examples of detectable defects include potential null pointer dereferences, infinite recursion, ignored return values and logically inconsistent comparisons.
 
-A reported defect is a \emph{true positive} when it corresponds to an actual programming error and a \emph{false positive} when the reported condition is not a genuine defect. Traditional analyzers cannot always determine whether a suspicious execution path is feasible. Consequently, they may report false positives or miss genuine defects. FindBugs deliberately focuses on defects that can be detected efficiently rather than guaranteeing detection of every possible error \cite{paperreference1_ayewah2008using}.
+\hspace{0.6em} A reported defect is a \textbf{true positive when it corresponds to an actual programming error} and a \textbf{false positive when the reported condition is not a genuine defect}. Traditional analyzers cannot always determine whether a suspicious execution path is feasible. Consequently, they may report false positives or miss genuine defects. At the respective time, \textit{FindBugs} deliberately focused on defects that can be detected efficiently rather than guaranteeing detection of every possible error.
 
-Industrial experience further demonstrates that practical static analysis must handle large codebases, complex build environments, and diverse programming constructs. Bessey et al.\ emphasize that excessive false positives undermine developer trust and increase the effort required to review warnings \cite{paperreference2_bessey2010few}.
+\hspace{0.6em} A paper from 2010 titled "\textit{A few billion lines of code later...}" by \textit{Bessey et al.} \cite{paperreference2_bessey2010few} took the topic and applied it on a larger scale. They demonstrate that on an industrial level the practical static analysis must be adapted to handle large codebases, complex build environments and diverse programming constructs. They also state that excessive false positives undermine developer trust and increase the effort required to review warnings.
+
+
+% %=========================================================
 
 \subsection{Machine Learning for Static Analysis}
 
-\emph{Supervised learning} trains a model using examples with known labels. For static-analysis warning classification, each training example represents a warning labeled as a genuine defect or a false positive. The model learns relationships between these labels and input \emph{features}, such as warning characteristics, surrounding code, or relevant program structure.
+\hspace{0.6em} Modern solution implies \textbf{supervised learning} by using labeled examples to train a \gls{ml} model. \textbf{The model learns from features such as warning types, surrounding code and program structure} to classify new warnings. \textbf{Code can be represented using numerical features, token sequences or graphs}. The surrounding code is important because a warning may depend on conditions or statements outside the reported line \cite{paper1_kharkarlearning2022,paper2_hegedHus2022static,paper3_yerramreddy2023empirical}.
 
-Source-code representation determines which information is available to the model. Code may be represented through numerical features, sequences of tokens, or structural relationships. Contextual information is important because the validity of a warning may depend on statements and conditions beyond its reported location.
-
-A common ML-assisted static-analysis workflow is:
-
+\hspace{0.6em} A typical \gls{ml} assisted \gls{sca} process is:
 \[
 \underbrace{\text{Source Code}
 \rightarrow \text{Static Analyzer}
-\rightarrow \text{Warnings}}_{\text{Static bug detection}}
+\rightarrow \text{Warnings}}_{\gls{sca}}
 \rightarrow
 \underbrace{\text{ML Classifier}
-\rightarrow \text{Warning Classification}}_{\text{ML-based triage}}
+\rightarrow \text{Warning Classification}}_{\gls{ml}}
 \]
 
-This workflow distinguishes \emph{direct bug detection}, where a model identifies suspected defects from program code, from \emph{warning classification}, where an existing static analyzer first generates candidate defects. In the latter approach, ML acts as a post-processing layer that estimates which warnings are genuine, helping filter false positives and prioritize developer inspection. However, this classification cannot recover defects that the underlying analyzer never reported.
+\hspace{0.6em} Unlike direct only \gls{ml} based bug detection, this approach uses \gls{ml} to filter warnings already generated by a static analyzer. \textbf{It can reduce false positives and help developers focus on genuine defects, but it cannot detect bugs that the original analyzer missed} \cite{paper1_kharkarlearning2022}.
+
 
 \subsection{Evaluation Metrics}
 
-Warning classifiers can be evaluated using a confusion matrix. Here, the positive class represents a genuine defect: \(TP\) denotes genuine warnings correctly retained, \(TN\) false-positive warnings correctly rejected, \(FP\) false-positive warnings incorrectly retained, and \(FN\) genuine warnings incorrectly rejected.
+\hspace{0.6em} \gls{ml} warning classifiers can be evaluated using precision, recall, F1-score and accuracy \cite{paper2_hegedHus2022static,paper3_yerramreddy2023empirical}. Considering real defects as the positive class, $TP$ represents correctly retained defects, $TN$ correctly rejected false warnings, $FP$ incorrect warnings retained and $FN$ real defects mistakenly filtered out: \newline
 
-The principal classification metrics are:
+$\mathrm{Precision} = \frac{TP}{TP+FP},\quad \mathrm{Recall} = \frac{TP}{TP+FN},\quad \mathrm{F1} = 2\cdot\frac{\mathrm{Precision}\cdot\mathrm{Recall}}{\mathrm{Precision}+\mathrm{Recall}},\quad \mathrm{Accuracy} = \frac{TP+TN}{TP+TN+FP+FN}$ \newline
 
-\begin{align}
-\mathrm{Precision} &= \frac{TP}{TP+FP},\\
-\mathrm{Recall} &= \frac{TP}{TP+FN},\\
-\mathrm{F1} &= 2\cdot
-\frac{\mathrm{Precision}\cdot\mathrm{Recall}}
-{\mathrm{Precision}+\mathrm{Recall}},\\
-\mathrm{Accuracy} &= \frac{TP+TN}{TP+TN+FP+FN}.
-\end{align}
+\hspace{0.6em} Precision shows how many retained warnings are real defects, while recall shows how many real defects are kept. $F1$ score balances these two measures and accuracy shows the proportion of correct classifications. High precision reduces unnecessary developer work, but recall must also be considered to avoid removing genuine warnings \cite{paper1_kharkarlearning2022,paper3_yerramreddy2023empirical}.
 
-Precision measures the proportion of retained warnings that represent genuine defects, while recall measures the proportion of genuine warnings successfully retained. F1-score balances precision and recall, whereas accuracy measures the overall proportion of correct classifications.
 
-Precision is particularly important for false-positive reduction because higher precision means developers encounter fewer incorrect reports among retained warnings. Nevertheless, precision must be considered alongside recall: aggressively filtering warnings may also suppress genuine defects. These metrics evaluate classification within the warnings produced by the static analyzer, not its ability to detect every defect present in the program.
+% %=========================================================

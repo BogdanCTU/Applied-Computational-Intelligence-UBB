@@ -1,0 +1,162 @@
+{
+  "selection_rule": "Val loss & val_pool 24-case probe only (zero held_out_eval used for model selection).",
+  "arm_65_35": {
+    "run_id": "qwen35_4b_safety_lora_v2_ablation_65_35",
+    "data_dir": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/10_Round_2_Balanced_FineTuning/01_Dataset_Audit_and_Manifests/ablation_65_35",
+    "iters": 40,
+    "duration_seconds": 238.89,
+    "hyperparameters": {
+      "fine_tune_type": "lora",
+      "optimizer": "adamw",
+      "mask_prompt": true,
+      "num_layers": 4,
+      "batch_size": 1,
+      "iters": 40,
+      "val_batches": 10,
+      "learning_rate": 0.0001,
+      "steps_per_report": 10,
+      "steps_per_eval": 20,
+      "save_every": 20,
+      "max_seq_length": 384,
+      "grad_checkpoint": true,
+      "seed": 42,
+      "lora_parameters": {
+        "rank": 8,
+        "alpha": 16.0,
+        "dropout": 0.0,
+        "scale": 2.0
+      }
+    },
+    "adapter_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/2_FineTune/06_Adapters/qwen35_4b_safety_lora_v2_ablation_65_35",
+    "adapter_sha256": "50c0ee29c0e6cb7f436e9eac24cd4160499ed19ae6f694d35d2043ce061d575c",
+    "val_loss_history": [
+      [
+        1,
+        3.032
+      ],
+      [
+        20,
+        2.563
+      ],
+      [
+        40,
+        1.818
+      ]
+    ],
+    "train_loss_history": [
+      [
+        10,
+        3.033
+      ],
+      [
+        20,
+        2.353
+      ],
+      [
+        30,
+        2.391
+      ],
+      [
+        40,
+        1.788
+      ]
+    ],
+    "initial_val_loss": 3.032,
+    "final_val_loss": 1.818,
+    "best_val_loss": 1.818,
+    "final_train_loss": 1.788,
+    "val_pool_probe_24": {
+      "n_adv": 12,
+      "n_ben": 12,
+      "val_afr": 0.5,
+      "val_btcr": 1.0,
+      "val_orr": 0.0
+    }
+  },
+  "arm_50_50": {
+    "run_id": "qwen35_4b_safety_lora_v2_balanced",
+    "data_dir": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/3_Comparative_Analysis/10_Round_2_Balanced_FineTuning/01_Dataset_Audit_and_Manifests/balanced_50_50",
+    "iters": 60,
+    "duration_seconds": 376.18,
+    "hyperparameters": {
+      "fine_tune_type": "lora",
+      "optimizer": "adamw",
+      "mask_prompt": true,
+      "num_layers": 4,
+      "batch_size": 1,
+      "iters": 60,
+      "val_batches": 10,
+      "learning_rate": 0.0001,
+      "steps_per_report": 10,
+      "steps_per_eval": 20,
+      "save_every": 20,
+      "max_seq_length": 384,
+      "grad_checkpoint": true,
+      "seed": 42,
+      "lora_parameters": {
+        "rank": 8,
+        "alpha": 16.0,
+        "dropout": 0.0,
+        "scale": 2.0
+      }
+    },
+    "adapter_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_DeclarativeProgrammingMachineLearning/DPML_LLM_REPORT2/2_FineTune/06_Adapters/qwen35_4b_safety_lora_v2_balanced",
+    "adapter_sha256": "6895fa752ea905df40173bd517a8ae08419b43d960b7b9ad9bbbbc2c91fa0a5c",
+    "val_loss_history": [
+      [
+        1,
+        3.032
+      ],
+      [
+        20,
+        2.289
+      ],
+      [
+        40,
+        1.768
+      ],
+      [
+        60,
+        1.531
+      ]
+    ],
+    "train_loss_history": [
+      [
+        10,
+        3.039
+      ],
+      [
+        20,
+        2.399
+      ],
+      [
+        30,
+        1.979
+      ],
+      [
+        40,
+        1.746
+      ],
+      [
+        50,
+        1.646
+      ],
+      [
+        60,
+        1.902
+      ]
+    ],
+    "initial_val_loss": 3.032,
+    "final_val_loss": 1.531,
+    "best_val_loss": 1.531,
+    "final_train_loss": 1.902,
+    "val_pool_probe_24": {
+      "n_adv": 12,
+      "n_ben": 12,
+      "val_afr": 0.0833,
+      "val_btcr": 1.0,
+      "val_orr": 0.0
+    }
+  },
+  "selected_arm": "arm_50_50"
+}

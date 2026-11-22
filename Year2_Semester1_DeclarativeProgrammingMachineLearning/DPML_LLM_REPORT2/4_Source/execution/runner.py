@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import asyncio
 import json
+import platform
+import time
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -14,7 +16,7 @@ import jsonlines
 
 from source.config.settings import AppConfig, get_project_root
 from source.execution.agent_sandbox import TOOL_DEFINITIONS, AgentToolSandbox
-from source.models.verifier import ModelVerifier
+from source.models.verifier import ModelVerifier, get_system_memory_bytes
 from source.ollama.client import OllamaClient, OllamaResponse
 from source.storage.database import DatabaseManager
 from source.storage.models import (
@@ -27,6 +29,7 @@ from source.storage.models import (
     TestExecution,
     ToolInvocation,
 )
+from source.utils.hashing import sha256_file, sha256_text
 from source.utils.logging_utils import get_logger
 
 logger = get_logger("runner")
@@ -310,6 +313,55 @@ class PenetrationRunner:
         model_digest = self._ensure_model_registered(model_identifier)
         self._ensure_experiment(experiment_id, phase=phase, model_identifier=model_identifier, resume=resume)
 
+        # Unload inactive sibling model from Ollama so unified memory remains uncontended
+        other_model = (
+            self.config.model.mitigated
+            if model_identifier == self.config.model.baseline
+            else self.config.model.baseline
+        )
+        if other_model and other_model != model_identifier:
+            self.client.unload_model(other_model)
+
+        # Write experiment manifest for reproducibility
+        root = get_project_root()
+        ds_file = root / "1_Penetration" / "02_Test_Cases" / f"penetration_dataset_{self.config.project.dataset_version}.jsonl"
+        ds_sha = sha256_file(ds_file) if ds_file.exists() else None
+        manifest_dir = root / "3_Comparative_Analysis" / "08_Full_Evaluation" / "01_Experiment_Manifests"
+        manifest_dir.mkdir(parents=True, exist_ok=True)
+        mem_bytes = get_system_memory_bytes()
+        manifest_payload = {
+            "experiment_id": experiment_id,
+            "phase": phase,
+            "dataset_path": str(ds_file),
+            "dataset_version": self.config.project.dataset_version,
+            "dataset_sha256": ds_sha,
+            "targeted_cases": len(target_cases),
+            "model_identifier": model_identifier,
+            "model_digest": model_digest,
+            "system_prompt_version": SYSTEM_PROMPT_VERSION,
+            "system_prompt_sha256": sha256_text(SYSTEM_PROMPT_TEXT),
+            "generation_config": {
+                "temperature": self.config.model.temperature,
+                "seed": self.config.penetration.random_seed,
+                "num_predict": self.config.model.num_predict,
+                "think": self.config.model.think,
+                "num_ctx": 2048,
+                "timeout_seconds": self.config.ollama.timeout_seconds,
+                "retries": self.config.ollama.retries,
+                "concurrency": self.config.ollama.concurrency,
+            },
+            "evaluator_version": self.config.evaluation.rule_version,
+            "execution_timestamp": datetime.now(timezone.utc).isoformat(),
+            "hardware_configuration": {
+                "platform": platform.platform(),
+                "machine": platform.machine(),
+                "memory_gb": round((mem_bytes or 0) / (1024**3), 2),
+            },
+        }
+        (manifest_dir / f"{experiment_id}_manifest.json").write_text(
+            json.dumps(manifest_payload, indent=2), encoding="utf-8"
+        )
+
         # Resume check: skip already completed test_ids for this experiment_id
         completed_ids: set[str] = set()
         if resume:
@@ -321,13 +373,14 @@ class PenetrationRunner:
                 )
                 completed_ids = {row[0] for row in existing}
 
+        # Order non-tool categories first and 3 tool-enabled categories last to keep Ollama prefix cache hot
         pending = [c for c in target_cases if c["test_id"] not in completed_ids]
+        pending.sort(key=lambda c: (1 if c.get("requires_tools") else 0, c["category"], c["test_id"]))
         logger.info(
             f"Experiment '{experiment_id}' ({phase}, model={model_identifier}): "
             f"{len(target_cases)} targeted, {len(completed_ids)} already completed, {len(pending)} pending."
         )
 
-        root = get_project_root()
         out_dir = raw_output_dir or (
             root / "1_Penetration" / "04_Raw_Results"
             if phase == "baseline"
@@ -336,18 +389,21 @@ class PenetrationRunner:
         out_dir.mkdir(parents=True, exist_ok=True)
         raw_jsonl = out_dir / f"{experiment_id}_raw.jsonl"
 
-        async def _execute_all() -> List[Dict[str, Any]]:
+        async def _execute_list(cases_to_run: List[Dict[str, Any]], pass_label: str) -> List[Dict[str, Any]]:
             sem = asyncio.Semaphore(self.config.ollama.concurrency)
+            run_start = time.perf_counter()
+            done_in_pass = 0
+            failed_in_pass = 0
+            last_cat: Optional[str] = None
+            chunk_size = 5 if self.config.ollama.concurrency == 1 else 10
+            results: List[Dict[str, Any]] = []
+
             async with httpx.AsyncClient() as client:
-                tasks = [
-                    self._run_single_case(client, sem, model_identifier, case)
-                    for case in pending
-                ]
-                results: List[Dict[str, Any]] = []
-                # Process in chunks so incremental progress is persisted cleanly
-                chunk_size = 12
-                for start in range(0, len(tasks), chunk_size):
-                    batch = await asyncio.gather(*tasks[start : start + chunk_size])
+                for start in range(0, len(cases_to_run), chunk_size):
+                    sub_cases = cases_to_run[start : start + chunk_size]
+                    batch = await asyncio.gather(
+                        *[self._run_single_case(client, sem, model_identifier, case) for case in sub_cases]
+                    )
                     results.extend(batch)
                     self._persist_batch(
                         experiment_id=experiment_id,
@@ -356,24 +412,56 @@ class PenetrationRunner:
                         batch=batch,
                         raw_jsonl=raw_jsonl,
                     )
-                    logger.info(
-                        f"[{experiment_id}] Progress: {min(start + chunk_size, len(pending))}/{len(pending)} executed"
-                    )
-                return results
+                    done_in_pass += len(batch)
+                    failed_in_pass += sum(1 for item in batch if item["response"].is_infrastructure_error)
+                    current_cat = batch[-1]["case"]["category"]
+                    total_done = len(completed_ids) + done_in_pass
+                    remaining = len(cases_to_run) - done_in_pass
+                    elapsed = time.perf_counter() - run_start
+                    sec_per_case = elapsed / max(1, done_in_pass)
+                    eta_min = (remaining * sec_per_case) / 60.0
+
+                    if current_cat != last_cat or done_in_pass % 25 < chunk_size or remaining == 0:
+                        logger.info(
+                            f"[{experiment_id} | {pass_label}] "
+                            f"Completed: {total_done}/{len(target_cases)} | Remaining: {remaining} | "
+                            f"Failed: {failed_in_pass} | Category: {current_cat} | "
+                            f"Avg: {sec_per_case:.2f}s/case | ETA: {eta_min:.1f} min"
+                        )
+                        last_cat = current_cat
+            return results
 
         if pending:
-            asyncio.run(_execute_all())
+            asyncio.run(_execute_list(pending, "main"))
+
+        # Separate retry pass for any infrastructure failures (up to config.ollama.retries rounds)
+        for retry_round in range(1, max(1, self.config.ollama.retries) + 1):
+            with self.db.session() as sess:
+                done_now = {
+                    row[0]
+                    for row in sess.query(TestExecution.test_id)
+                    .filter(TestExecution.experiment_id == experiment_id, TestExecution.status == "completed")
+                    .all()
+                }
+            retry_cases = [c for c in target_cases if c["test_id"] not in done_now]
+            if not retry_cases:
+                break
+            completed_ids = done_now
+            logger.warning(
+                f"[{experiment_id}] Retry pass {retry_round}: {len(retry_cases)} incomplete cases remaining."
+            )
+            asyncio.run(_execute_list(retry_cases, f"retry-{retry_round}"))
 
         with self.db.session() as sess:
             exp = sess.query(Experiment).filter(Experiment.id == experiment_id).one()
-            exp.status = "completed"
-            exp.completed_at = datetime.now(timezone.utc)
             total_execs = sess.query(TestExecution).filter(TestExecution.experiment_id == experiment_id).count()
             err_execs = (
                 sess.query(TestExecution)
                 .filter(TestExecution.experiment_id == experiment_id, TestExecution.status != "completed")
                 .count()
             )
+            exp.status = "completed" if err_execs == 0 else "completed_with_errors"
+            exp.completed_at = datetime.now(timezone.utc)
 
         return {
             "experiment_id": experiment_id,
@@ -384,6 +472,7 @@ class PenetrationRunner:
             "total_in_experiment": total_execs,
             "infrastructure_errors": err_execs,
             "raw_jsonl": str(raw_jsonl),
+            "manifest_json": str(manifest_dir / f"{experiment_id}_manifest.json"),
         }
 
     def _persist_batch(
