@@ -195,3 +195,27 @@ def test_runner_service_cooperative_cancellation(qapp: QApplication) -> None:
 
     assert "cancelled" in outcomes
     assert outcomes["cancelled"]["status"] == "cancelled"
+
+
+def test_light_theme_palette_and_accessibility_tokens(qapp: QApplication) -> None:
+    from PySide6.QtGui import QPalette
+    from src.gui.styles import PALETTE
+
+    state = WorkbenchState()
+    win = MainWindow(state=state)
+    win.show()
+    qapp.processEvents()
+
+    pal = qapp.palette()
+    assert pal.color(QPalette.Window).name().upper() == PALETTE.bg_main
+    assert pal.color(QPalette.Base).name().upper() == PALETTE.surface_primary
+    assert pal.color(QPalette.Text).name().upper() == PALETTE.text_primary
+    assert pal.color(QPalette.Highlight).name().upper() == PALETTE.selection_bg
+
+    for idx, expected_title in enumerate(win.NAV_ITEMS):
+        win.navigate_to(idx)
+        qapp.processEvents()
+        assert win.lbl_current_page.text() == expected_title
+
+    win.close()
+    qapp.processEvents()

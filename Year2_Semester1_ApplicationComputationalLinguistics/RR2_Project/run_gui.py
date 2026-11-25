@@ -36,8 +36,10 @@ def run_self_test(
     from PySide6.QtCore import QEventLoop, QTimer
     from PySide6.QtWidgets import QApplication
     from src.gui.main_window import MainWindow
+    from src.gui.styles import apply_light_theme
 
     app = QApplication.instance() or QApplication(sys.argv)
+    apply_light_theme(app)
     window = MainWindow()
     window.show()
     app.processEvents()
@@ -164,9 +166,11 @@ def main() -> int:
 
     from PySide6.QtWidgets import QApplication
     from src.gui.main_window import MainWindow
+    from src.gui.styles import apply_light_theme
 
     app = QApplication([sys.argv[0], *qt_args])
-    app.setApplicationName("Agent-OM Replication Workbench")
+    app.setApplicationName("Agent-OM Workbench")
+    apply_light_theme(app)
     window = MainWindow()
     window.show()
     return app.exec()

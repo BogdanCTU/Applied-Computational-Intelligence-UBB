@@ -1,4 +1,4 @@
-"""Screen 3: Dataset Manager View — OAEI benchmark browser + custom local ontology selector."""
+"""Screen 3: Dataset Manager View — OAEI benchmark selector and custom ontology pair configuration."""
 
 from __future__ import annotations
 
@@ -11,19 +11,19 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
-    QMessageBox,
     QPlainTextEdit,
-    QPushButton,
     QVBoxLayout,
     QWidget,
 )
 
 from ..services.dataset_service import DatasetDescriptor
 from ..state import WorkbenchState
+from ..styles import SPACE_SM
+from ..widgets import create_button, create_page_header, show_error_dialog
 
 
 class DatasetView(QWidget):
-    """Selects OAEI benchmark ontology pairs (read-only) or custom local ontologies and previews counts."""
+    """Selects OAEI benchmark datasets or custom local ontology pairs and previews entity counts."""
 
     def __init__(self, state: WorkbenchState, parent: QWidget | None = None):
         super().__init__(parent)
@@ -34,76 +34,125 @@ class DatasetView(QWidget):
 
     def _build_ui(self) -> None:
         root = QVBoxLayout(self)
-        root.setSpacing(12)
+        root.setContentsMargins(16, 16, 16, 16)
+        root.setSpacing(14)
 
-        title = QLabel("Ontology Dataset & Reference Alignment Manager")
-        title.setStyleSheet("font-size: 16px; font-weight: bold;")
-        root.addWidget(title)
+        header_w, _ = create_page_header(
+            "Datasets",
+            "Select an OAEI benchmark dataset or configure a custom local ontology pair.",
+        )
+        root.addWidget(header_w)
 
         # Discovered OAEI datasets
-        grp_oaei = QGroupBox("Discovered Read-Only Upstream OAEI Benchmark Datasets (original_repo/data/)")
+        grp_oaei = QGroupBox("OAEI Benchmark Dataset")
         lay_oaei = QHBoxLayout(grp_oaei)
+        lay_oaei.setSpacing(SPACE_SM)
+        lay_oaei.addWidget(QLabel("Benchmark:"))
         self.cmb_datasets = QComboBox()
-        btn_select_oaei = QPushButton("Load & Preview Selected Benchmark")
+        self.cmb_datasets.setAccessibleName("OAEI Benchmark Selector")
+        btn_select_oaei = create_button(
+            "Load Dataset",
+            role="primary",
+            tooltip="Set the selected benchmark as the active ontology pair",
+            accessible_name="Load Selected Benchmark",
+        )
         btn_select_oaei.clicked.connect(self._on_select_benchmark)
         lay_oaei.addWidget(self.cmb_datasets, stretch=1)
         lay_oaei.addWidget(btn_select_oaei)
         root.addWidget(grp_oaei)
 
         # Custom ontology selector
-        grp_custom = QGroupBox("Custom Local Ontology Pair (RDF/XML, OWL, Turtle)")
+        grp_custom = QGroupBox("Custom Ontology Pair")
         form = QFormLayout(grp_custom)
+        form.setSpacing(10)
+
         self.txt_src = QLineEdit()
-        btn_src = QPushButton("Browse...")
+        self.txt_src.setPlaceholderText("Path to source ontology (.xml, .owl, .rdf, .ttl)")
+        self.txt_src.setAccessibleName("Source ontology file path")
+        btn_src = create_button(
+            "Browse",
+            role="secondary",
+            tooltip="Choose source ontology file",
+            accessible_name="Browse Source Ontology",
+        )
         btn_src.clicked.connect(lambda: self._browse_into(self.txt_src))
         r_src = QHBoxLayout()
-        r_src.addWidget(self.txt_src)
+        r_src.setSpacing(SPACE_SM)
+        r_src.addWidget(self.txt_src, stretch=1)
         r_src.addWidget(btn_src)
         form.addRow("Source Ontology:", r_src)
 
         self.txt_tgt = QLineEdit()
-        btn_tgt = QPushButton("Browse...")
+        self.txt_tgt.setPlaceholderText("Path to target ontology (.xml, .owl, .rdf, .ttl)")
+        self.txt_tgt.setAccessibleName("Target ontology file path")
+        btn_tgt = create_button(
+            "Browse",
+            role="secondary",
+            tooltip="Choose target ontology file",
+            accessible_name="Browse Target Ontology",
+        )
         btn_tgt.clicked.connect(lambda: self._browse_into(self.txt_tgt))
         r_tgt = QHBoxLayout()
-        r_tgt.addWidget(self.txt_tgt)
+        r_tgt.setSpacing(SPACE_SM)
+        r_tgt.addWidget(self.txt_tgt, stretch=1)
         r_tgt.addWidget(btn_tgt)
         form.addRow("Target Ontology:", r_tgt)
 
         self.txt_ref = QLineEdit()
-        self.txt_ref.setPlaceholderText("Optional OAEI reference.xml for P/R/F1 evaluation")
-        btn_ref = QPushButton("Browse...")
+        self.txt_ref.setPlaceholderText("Optional reference alignment (.xml) for Precision/Recall/F1")
+        self.txt_ref.setAccessibleName("Reference alignment file path")
+        btn_ref = create_button(
+            "Browse",
+            role="secondary",
+            tooltip="Choose optional OAEI reference alignment file",
+            accessible_name="Browse Reference Alignment",
+        )
         btn_ref.clicked.connect(lambda: self._browse_into(self.txt_ref))
         r_ref = QHBoxLayout()
-        r_ref.addWidget(self.txt_ref)
+        r_ref.setSpacing(SPACE_SM)
+        r_ref.addWidget(self.txt_ref, stretch=1)
         r_ref.addWidget(btn_ref)
         form.addRow("Reference Alignment:", r_ref)
 
         opts = QHBoxLayout()
+        opts.setSpacing(SPACE_SM)
         self.txt_ctx = QLineEdit("conference")
-        self.chk_o1_code = QCheckBox("Source uses code IRIs (o1_is_code)")
-        self.chk_o2_code = QCheckBox("Target uses code IRIs (o2_is_code)")
-        btn_apply_custom = QPushButton("Use Custom Ontology Pair")
+        self.txt_ctx.setMinimumHeight(34)
+        self.txt_ctx.setMaximumWidth(160)
+        self.txt_ctx.setAccessibleName("Domain context")
+        self.chk_o1_code = QCheckBox("Source uses code IRIs")
+        self.chk_o2_code = QCheckBox("Target uses code IRIs")
+        btn_apply_custom = create_button(
+            "Apply Custom Pair",
+            role="secondary",
+            tooltip="Load and preview the custom source, target, and reference files",
+            accessible_name="Apply Custom Ontology Pair",
+        )
         btn_apply_custom.clicked.connect(self._on_apply_custom)
-        opts.addWidget(QLabel("Domain Context:"))
+        opts.addWidget(QLabel("Context:"))
         opts.addWidget(self.txt_ctx)
         opts.addWidget(self.chk_o1_code)
         opts.addWidget(self.chk_o2_code)
+        opts.addStretch(1)
         opts.addWidget(btn_apply_custom)
         form.addRow("Options:", opts)
         root.addWidget(grp_custom)
 
         # Live preview box
-        grp_prev = QGroupBox("Active Dataset Entity, Triple & Reference Alignment Preview")
+        grp_prev = QGroupBox("Dataset Summary")
         lay_prev = QVBoxLayout(grp_prev)
         self.txt_preview = QPlainTextEdit()
         self.txt_preview.setReadOnly(True)
-        self.txt_preview.setStyleSheet("font-family: Consolas, monospace; font-size: 12px;")
+        self.txt_preview.setAccessibleName("Dataset Summary Preview")
         lay_prev.addWidget(self.txt_preview)
         root.addWidget(grp_prev, stretch=1)
 
     def _browse_into(self, target_edit: QLineEdit) -> None:
         path, _ = QFileDialog.getOpenFileName(
-            self, "Select Ontology / Alignment File", "", "Ontology Files (*.xml *.owl *.rdf *.ttl *.n3);;All Files (*)"
+            self,
+            "Select Ontology or Alignment File",
+            "",
+            "Ontology Files (*.xml *.owl *.rdf *.ttl *.n3);;All Files (*)",
         )
         if path:
             target_edit.setText(path)
@@ -136,7 +185,12 @@ class DatasetView(QWidget):
             self.state.set_dataset(desc)
             self._preview_descriptor(desc)
         except Exception as exc:
-            QMessageBox.critical(self, "Dataset Error", str(exc))
+            show_error_dialog(
+                self,
+                "Dataset Error",
+                exc,
+                "Verify that both source and target ontology file paths exist and are valid RDF/OWL files.",
+            )
 
     def _preview_descriptor(self, desc: DatasetDescriptor) -> None:
         try:
@@ -159,13 +213,12 @@ class DatasetView(QWidget):
                 f"Reference Pairs:  {info['reference_count']} 1:1 equivalence mappings",
             ]
             for s_u, t_u in info["reference_pairs"][:20]:
-                lines.append(f"  = {s_u}  <-->  {t_u}")
+                lines.append(f"  {s_u} = {t_u}")
             if info["committed_gpt4o_predict_present"]:
                 lines.append("")
                 lines.append(
-                    f"Committed Upstream Reference Alignment (GPT-4o): Present ({info['committed_gpt4o_predict_count']} pairs)"
+                    f"Committed Reference Alignment (GPT-4o): Present ({info['committed_gpt4o_predict_count']} pairs)"
                 )
             self.txt_preview.setPlainText("\n".join(lines))
         except Exception as exc:
             self.txt_preview.setPlainText(f"Failed to preview dataset: {exc}")
-

@@ -1,11 +1,10 @@
-"""Screen 9: Logs & Experiment History View — Live streaming console, Cancel button, and run browser."""
+"""Screen 9: Run History View — Live streaming console, cancellation, and run history browser."""
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
@@ -13,7 +12,6 @@ from PySide6.QtWidgets import (
     QLabel,
     QPlainTextEdit,
     QProgressBar,
-    QPushButton,
     QSplitter,
     QTableWidget,
     QTableWidgetItem,
@@ -22,10 +20,20 @@ from PySide6.QtWidgets import (
 )
 
 from ..state import WorkbenchState
+from ..styles import SPACE_SM
+from ..widgets import (
+    apply_status_label,
+    configure_table,
+    confirm_destructive_action,
+    create_button,
+    create_page_header,
+    format_user_error,
+    make_status_item,
+)
 
 
 class HistoryLogsView(QWidget):
-    """Provides real-time execution log monitoring, safe run cancellation, and historical run browsing."""
+    """Provides real-time execution log monitoring, run cancellation, and historical run browsing."""
 
     def __init__(self, state: WorkbenchState, parent: QWidget | None = None):
         super().__init__(parent)
@@ -37,30 +45,51 @@ class HistoryLogsView(QWidget):
 
     def _build_ui(self) -> None:
         root = QVBoxLayout(self)
-        root.setSpacing(10)
+        root.setContentsMargins(16, 16, 16, 16)
+        root.setSpacing(12)
 
-        title = QLabel("Live Execution Logs & Experiment History")
-        title.setStyleSheet("font-size: 16px; font-weight: bold;")
-        root.addWidget(title)
+        btn_refresh = create_button(
+            "Refresh",
+            role="secondary",
+            tooltip="Reload the list of recorded experiment runs",
+            accessible_name="Refresh Run History",
+        )
+        btn_refresh.clicked.connect(self.refresh_history)
+        header_w, _ = create_page_header(
+            "Run History",
+            "Monitor active execution logs and inspect completed experiment runs.",
+            right_widget=btn_refresh,
+        )
+        root.addWidget(header_w)
 
         # Active run control bar
-        grp_live = QGroupBox("Active Execution Monitor")
+        grp_live = QGroupBox("Execution Status")
         live_lay = QHBoxLayout(grp_live)
-        self.lbl_live_status = QLabel("Status: IDLE (No active background run)")
-        self.lbl_live_status.setStyleSheet("font-weight: bold; color: #334155;")
+        live_lay.setSpacing(SPACE_SM)
+        self.lbl_live_status = QLabel("Ready")
+        apply_status_label(self.lbl_live_status, "Ready", level="neutral")
+
         self.progress = QProgressBar()
         self.progress.setRange(0, 100)
         self.progress.setValue(0)
-        self.progress.setFixedWidth(220)
+        self.progress.setFixedWidth(210)
+        self.progress.setAccessibleName("Active run progress")
 
-        self.btn_cancel = QPushButton("Cancel Active Run")
-        self.btn_cancel.setEnabled(False)
-        self.btn_cancel.setStyleSheet(
-            "background-color: #DC2626; color: white; font-weight: bold; padding: 5px 12px;"
+        self.btn_cancel = create_button(
+            "Cancel Run",
+            role="destructive",
+            tooltip="Stop the currently running experiment at the next safe checkpoint",
+            accessible_name="Cancel Active Run",
         )
-        self.btn_cancel.clicked.connect(self.state.runner_service.cancel_active_run)
+        self.btn_cancel.setEnabled(False)
+        self.btn_cancel.clicked.connect(self._on_cancel_clicked)
 
-        self.btn_clear_log = QPushButton("Clear Console")
+        self.btn_clear_log = create_button(
+            "Clear Log",
+            role="secondary",
+            tooltip="Clear messages from the live log console",
+            accessible_name="Clear Execution Log",
+        )
         self.btn_clear_log.clicked.connect(lambda: self.txt_live_log.clear())
 
         live_lay.addWidget(self.lbl_live_status, stretch=1)
@@ -72,30 +101,19 @@ class HistoryLogsView(QWidget):
         splitter = QSplitter(Qt.Vertical)
 
         # Top pane: Live streaming console
-        grp_console = QGroupBox("Streaming Execution Log")
+        grp_console = QGroupBox("Execution Log")
         con_lay = QVBoxLayout(grp_console)
         self.txt_live_log = QPlainTextEdit()
         self.txt_live_log.setReadOnly(True)
         self.txt_live_log.setMaximumBlockCount(2000)
-        self.txt_live_log.setPlaceholderText("Live stage progress and telemetry appear here during runs...")
-        self.txt_live_log.setStyleSheet("font-family: Consolas, monospace; font-size: 11px;")
+        self.txt_live_log.setPlaceholderText("Live stage progress and telemetry appear here during execution.")
         con_lay.addWidget(self.txt_live_log)
         splitter.addWidget(grp_console)
 
-        # Bottom pane: Experiment History table + JSON detail inspector
-        bottom_widget = QWidget()
-        bot_lay = QVBoxLayout(bottom_widget)
-        bot_lay.setContentsMargins(0, 0, 0, 0)
-
-        hdr_lay = QHBoxLayout()
-        hdr_lay.addWidget(QLabel("Indexed Replication & Reference Runs (Read-Only Safe):"))
-        btn_refresh = QPushButton("Refresh Run History")
-        btn_refresh.clicked.connect(self.refresh_history)
-        hdr_lay.addStretch(1)
-        hdr_lay.addWidget(btn_refresh)
-        bot_lay.addLayout(hdr_lay)
-
-        horiz_split = QSplitter(Qt.Horizontal)
+        # Bottom pane: Experiment History table + JSON detail inspector stacked vertically for full table readability
+        grp_hist = QGroupBox("Recorded Runs")
+        hist_lay = QVBoxLayout(grp_hist)
+        detail_split = QSplitter(Qt.Vertical)
 
         self.tbl_runs = QTableWidget(0, 9)
         self.tbl_runs.setHorizontalHeaderLabels(
@@ -104,34 +122,31 @@ class HistoryLogsView(QWidget):
                 "Profile",
                 "Status",
                 "F1 (%)",
-                "P (%)",
-                "R (%)",
+                "Precision (%)",
+                "Recall (%)",
                 "Runtime (s)",
-                "LLM Calls",
+                "Calls",
                 "Tokens",
             ]
         )
-        self.tbl_runs.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
-        for col in range(1, 9):
-            self.tbl_runs.horizontalHeader().setSectionResizeMode(col, QHeaderView.ResizeToContents)
-        self.tbl_runs.setEditTriggers(QTableWidget.NoEditTriggers)
-        self.tbl_runs.setSelectionBehavior(QTableWidget.SelectRows)
-        self.tbl_runs.setSelectionMode(QTableWidget.SingleSelection)
+        configure_table(self.tbl_runs, stretch_last=False)
+        hh = self.tbl_runs.horizontalHeader()
+        hh.setSectionResizeMode(0, QHeaderView.Stretch)
+        hh.setSectionResizeMode(1, QHeaderView.Stretch)
+        for col in range(2, 9):
+            hh.setSectionResizeMode(col, QHeaderView.ResizeToContents)
         self.tbl_runs.itemSelectionChanged.connect(self._on_run_selected)
-        horiz_split.addWidget(self.tbl_runs)
+        detail_split.addWidget(self.tbl_runs)
 
         self.txt_detail = QPlainTextEdit()
         self.txt_detail.setReadOnly(True)
-        self.txt_detail.setPlaceholderText("Select a run on the left to inspect its configuration & summary JSON...")
-        self.txt_detail.setStyleSheet("font-family: Consolas, monospace; font-size: 11px;")
-        horiz_split.addWidget(self.txt_detail)
-        horiz_split.setStretchFactor(0, 3)
-        horiz_split.setStretchFactor(1, 2)
+        self.txt_detail.setPlaceholderText("Select a run above to inspect its summary and configuration JSON.")
+        detail_split.addWidget(self.txt_detail)
+        detail_split.setSizes([260, 150])
 
-        bot_lay.addWidget(horiz_split, stretch=1)
-        splitter.addWidget(bottom_widget)
-        splitter.setStretchFactor(0, 1)
-        splitter.setStretchFactor(1, 2)
+        hist_lay.addWidget(detail_split, stretch=1)
+        splitter.addWidget(grp_hist)
+        splitter.setSizes([130, 440])
 
         root.addWidget(splitter, stretch=1)
 
@@ -145,44 +160,75 @@ class HistoryLogsView(QWidget):
         r.run_cancelled.connect(self._on_run_cancelled)
         r.run_failed.connect(self._on_run_failed)
 
+    def _on_cancel_clicked(self) -> None:
+        if confirm_destructive_action(
+            self,
+            "Cancel Experiment",
+            "Stop the running experiment at the next safe checkpoint?",
+        ):
+            self.state.runner_service.cancel_active_run()
+
     def _on_run_started(self, exp_id: str) -> None:
-        self.lbl_live_status.setText(f"Status: RUNNING — {exp_id}")
-        self.lbl_live_status.setStyleSheet("font-weight: bold; color: #2563EB;")
+        apply_status_label(self.lbl_live_status, f"Running: {exp_id}", level="info")
         self.btn_cancel.setEnabled(True)
         self.progress.setValue(5)
 
     def _on_stage_updated(self, stage: str, cur: int, tot: int, msg: str) -> None:
         pct = min(98, max(5, int((cur / max(tot, 1)) * 100)))
         self.progress.setValue(pct)
-        self.lbl_live_status.setText(f"Status: RUNNING [{stage}] ({cur}/{tot})")
+        apply_status_label(self.lbl_live_status, f"Running: {stage} ({cur}/{tot})", level="info")
 
     def _on_run_finished(self, summary: dict) -> None:
-        self.lbl_live_status.setText(f"Status: COMPLETED — {summary.get('experiment_id', '')}")
-        self.lbl_live_status.setStyleSheet("font-weight: bold; color: #059669;")
+        apply_status_label(
+            self.lbl_live_status,
+            f"Completed: {summary.get('experiment_id', '')}",
+            level="success",
+        )
         self.btn_cancel.setEnabled(False)
         self.progress.setValue(100)
         self.refresh_history()
 
     def _on_run_cancelled(self, summary: dict) -> None:
-        self.lbl_live_status.setText(f"Status: CANCELLED — {summary.get('experiment_id', '')}")
-        self.lbl_live_status.setStyleSheet("font-weight: bold; color: #D97706;")
+        apply_status_label(
+            self.lbl_live_status,
+            f"Cancelled: {summary.get('experiment_id', '')}",
+            level="warning",
+        )
         self.btn_cancel.setEnabled(False)
         self.refresh_history()
 
     def _on_run_failed(self, err: str) -> None:
-        self.lbl_live_status.setText(f"Status: FAILED — {err}")
-        self.lbl_live_status.setStyleSheet("font-weight: bold; color: #DC2626;")
+        apply_status_label(
+            self.lbl_live_status,
+            f"Failed: {format_user_error(err)}",
+            level="error",
+        )
         self.btn_cancel.setEnabled(False)
 
     def refresh_history(self) -> None:
         self._runs_cache = self.state.history_service.list_runs(include_historical=True)
         self.tbl_runs.setRowCount(len(self._runs_cache))
         for r_idx, rec in enumerate(self._runs_cache):
-            status_str = str(rec.get("status", "unknown"))
-            cells = [
-                str(rec.get("experiment_id", "")),
-                str(rec.get("profile_name", "")),
-                status_str,
+            raw_status = str(rec.get("status", "unknown"))
+            status_low = raw_status.lower()
+            if status_low == "completed":
+                status_text, status_lvl = "Completed", "success"
+            elif "readonly" in status_low:
+                status_text, status_lvl = "Reference", "info"
+            elif status_low == "cancelled":
+                status_text, status_lvl = "Cancelled", "warning"
+            elif status_low == "failed":
+                status_text, status_lvl = "Failed", "error"
+            else:
+                status_text, status_lvl = raw_status, "neutral"
+
+            exp_id = str(rec.get("experiment_id", ""))
+            it_exp = QTableWidgetItem(exp_id)
+            it_exp.setToolTip(exp_id)
+            it_prof = QTableWidgetItem(str(rec.get("profile_name", "")))
+            it_status = make_status_item(status_text, level=status_lvl)
+
+            num_vals = [
                 f"{float(rec.get('f1_pct', 0.0)):.2f}",
                 f"{float(rec.get('precision_pct', 0.0)):.2f}",
                 f"{float(rec.get('recall_pct', 0.0)):.2f}",
@@ -190,18 +236,14 @@ class HistoryLogsView(QWidget):
                 str(rec.get("llm_calls", 0)),
                 str(rec.get("total_tokens", 0)),
             ]
-            for c_idx, val in enumerate(cells):
+            self.tbl_runs.setItem(r_idx, 0, it_exp)
+            self.tbl_runs.setItem(r_idx, 1, it_prof)
+            self.tbl_runs.setItem(r_idx, 2, it_status)
+            for offset, val in enumerate(num_vals):
                 it = QTableWidgetItem(val)
-                if c_idx >= 2:
-                    it.setTextAlignment(Qt.AlignCenter)
-                if c_idx == 2:
-                    if status_str == "completed":
-                        it.setBackground(QColor("#DCFCE7"))
-                    elif "readonly" in status_str:
-                        it.setBackground(QColor("#E0F2FE"))
-                    elif status_str in ("cancelled", "failed"):
-                        it.setBackground(QColor("#FEE2E2"))
-                self.tbl_runs.setItem(r_idx, c_idx, it)
+                it.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+                self.tbl_runs.setItem(r_idx, 3 + offset, it)
+
         if self._runs_cache and self.tbl_runs.currentRow() < 0:
             self.tbl_runs.selectRow(0)
 
@@ -225,4 +267,3 @@ class HistoryLogsView(QWidget):
             except Exception:
                 pass
         self.txt_detail.setPlainText(json.dumps(payload, indent=2))
-

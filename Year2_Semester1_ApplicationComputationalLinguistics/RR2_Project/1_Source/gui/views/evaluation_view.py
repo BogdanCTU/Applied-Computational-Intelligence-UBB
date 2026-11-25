@@ -1,4 +1,4 @@
-"""Screen 8: Evaluation View — Embedded Matplotlib FigureCanvasQTAgg charts & attrition tables."""
+"""Screen 8: Evaluation View — Embedded Matplotlib charts and stage-by-stage attrition tables."""
 
 from __future__ import annotations
 
@@ -9,7 +9,6 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QHeaderView,
     QLabel,
-    QPushButton,
     QSplitter,
     QTabWidget,
     QTableWidget,
@@ -19,10 +18,12 @@ from PySide6.QtWidgets import (
 )
 
 from ..state import WorkbenchState
+from ..styles import PALETTE, SPACE_SM
+from ..widgets import configure_table, create_button, create_page_header
 
 
 class EvaluationView(QWidget):
-    """Displays P/R/F1 comparison tables, stage-by-stage attrition, and interactive Matplotlib charts."""
+    """Displays P/R/F1 comparison tables, stage-by-stage attrition, and Matplotlib charts."""
 
     def __init__(self, state: WorkbenchState, parent: QWidget | None = None):
         super().__init__(parent)
@@ -34,17 +35,22 @@ class EvaluationView(QWidget):
 
     def _build_ui(self) -> None:
         root = QVBoxLayout(self)
-        root.setSpacing(8)
+        root.setContentsMargins(16, 16, 16, 16)
+        root.setSpacing(12)
 
-        top = QHBoxLayout()
-        title = QLabel("Experimental Evaluation, Stage Attrition & Matplotlib Charts")
-        title.setStyleSheet("font-size: 16px; font-weight: bold;")
-        btn_refresh = QPushButton("Recompute Charts & Metrics")
+        btn_refresh = create_button(
+            "Refresh Charts",
+            role="secondary",
+            tooltip="Recompute evaluation metrics and regenerate figures",
+            accessible_name="Refresh Charts",
+        )
         btn_refresh.clicked.connect(self.refresh)
-        top.addWidget(title)
-        top.addStretch()
-        top.addWidget(btn_refresh)
-        root.addLayout(top)
+        header_w, _ = create_page_header(
+            "Evaluation",
+            "Analyze alignment quality metrics, stage-by-stage candidate attrition, and charts.",
+            right_widget=btn_refresh,
+        )
+        root.addWidget(header_w)
 
         splitter = QSplitter(Qt.Vertical)
 
@@ -55,40 +61,54 @@ class EvaluationView(QWidget):
         # Stage attrition table below charts
         bottom = QWidget()
         blay = QVBoxLayout(bottom)
+        blay.setContentsMargins(0, 8, 0, 0)
+        blay.setSpacing(SPACE_SM)
         row_sel = QHBoxLayout()
+        row_sel.setSpacing(SPACE_SM)
         self.cmb_attr_run = QComboBox()
+        self.cmb_attr_run.setAccessibleName("Attrition Run Selector")
         self.cmb_attr_run.currentIndexChanged.connect(self._refresh_attrition_table)
-        row_sel.addWidget(QLabel("Inspect Stage-by-Stage Candidate Attrition for Run:"))
+        row_sel.addWidget(QLabel("Experiment:"))
         row_sel.addWidget(self.cmb_attr_run, stretch=1)
         blay.addLayout(row_sel)
 
         self.tbl_attrition = QTableWidget(0, 5)
         self.tbl_attrition.setHorizontalHeaderLabels(
-            ["Pipeline Stage", "Candidate Pairs", "True Positives (TP)", "False Positives (FP)", "Recall Ceiling (%)"]
+            ["Pipeline Stage", "Candidate Pairs", "True Positives", "False Positives", "Recall Ceiling (%)"]
         )
-        self.tbl_attrition.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.tbl_attrition.setEditTriggers(QTableWidget.NoEditTriggers)
+        configure_table(self.tbl_attrition, stretch_last=False)
+        hh = self.tbl_attrition.horizontalHeader()
+        hh.setSectionResizeMode(0, QHeaderView.Stretch)
+        for col in range(1, 5):
+            hh.setSectionResizeMode(col, QHeaderView.ResizeToContents)
         blay.addWidget(self.tbl_attrition)
         splitter.addWidget(bottom)
-        splitter.setSizes([400, 220])
+        splitter.setSizes([470, 190])
 
         root.addWidget(splitter, stretch=1)
 
     def refresh(self) -> None:
-        # Rebuild embedded Matplotlib FigureCanvasQTAgg tabs
         self.chart_tabs.clear()
         self._canvases.clear()
 
         figs = self.state.evaluation_service.build_all_figures()
         titles = {
-            "prf1_bar": "1. Precision / Recall / F1 Bar Comparison",
-            "pr_scatter": "2. Precision vs. Recall (Iso-F1 Contours)",
-            "stage_attrition": "3. Stage-by-Stage Candidate Attrition",
-            "threshold_sensitivity": "4. Similarity Threshold Sensitivity",
+            "prf1_bar": "Precision, Recall && F1",
+            "pr_scatter": "Precision vs. Recall",
+            "stage_attrition": "Stage Attrition",
+            "threshold_sensitivity": "Threshold Sensitivity",
         }
         for key, label in titles.items():
             if key in figs:
-                canvas = FigureCanvasQTAgg(figs[key])
+                fig = figs[key]
+                fig.set_dpi(96)
+                fig.patch.set_facecolor(PALETTE.surface_primary)
+                for ax in fig.get_axes():
+                    if ax.get_title():
+                        ax.title.set_fontsize(10)
+                fig.tight_layout(pad=1.0)
+                canvas = FigureCanvasQTAgg(fig)
+                canvas.setMinimumHeight(260)
                 self._canvases.append(canvas)
                 self.chart_tabs.addTab(canvas, label)
 
@@ -121,6 +141,5 @@ class EvaluationView(QWidget):
             for c_idx, v in enumerate(vals):
                 it = QTableWidgetItem(v)
                 if c_idx >= 1:
-                    it.setTextAlignment(Qt.AlignCenter)
+                    it.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
                 self.tbl_attrition.setItem(r_idx, c_idx, it)
-
