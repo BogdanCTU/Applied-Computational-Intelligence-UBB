@@ -1,81 +1,43 @@
-# Machine Learning-Based Bug Detection in C# Source Code (v3.0.0)
+# CISE Project — Machine Learning-Based C# Source-Code Bug Detection System (`v5.0.0`)
 
-**Institution:** Babeș-Bolyai University, Faculty of Mathematics and Computer Science  
-**Programme:** Applied Computational Intelligence, Master's Degree  
-**Course:** Computational Intelligence in Software Engineering (CISE), Project 2  
+A modular, Roslyn-backed **C# Source-Code Bug Detection System** that analyzes `.cs` source files at the method level and uses a trained `scikit-learn` **`RandomForestClassifier`** to classify individual methods as **`BUG`**, **`CLEAN`**, or **`UNCERTAIN`** (and explicitly **`ANALYSIS_ERROR`** on syntax-broken input).
 
-> **Scope Disclaimer:** This system is a **static machine learning defect indicator** trained on historical Git bug-fix commits and SZZ blame mappings across public C# repositories. It is **not** a formally verified bug prover; flagged classes indicate elevated statistical propensity for defects under historical SZZ evidence, while unflagged code represents candidate-clean code under the Open-World Assumption.
+> **Note on Legacy Artifacts:** Prior `v1`–`v4` defect-proneness / SZZ files are isolated in `0_LegacyArchive_v1_v4/` and never mixed with `v5.0.0`.
 
----
+## Key Measured Results (`v5.0.0`)
 
-## Executive Summary
+- **Validated Dataset (`csharp_bug_detection_v5.0.0`):** `5,275` methods (`2,264` `BUG` / `3,011` `CLEAN`) across `637` repositories (`536` Microsoft InferredBugs, `56` GitHub bug-fix repos, `45` hard-negative repos), after rejecting `6,755` noisy, refactoring, duplicate, or cross-label conflicting records.
+- **Champion Model (`rf_I_v5.0.0_20261126_150933`):** Experiment `I` (`536` features across Lexical, AST, Control-Flow, Data-Flow, and Supplementary Structural groups; thresholds `0.440 / 0.470 / 0.541`):
+  - **Independent Test (`1,132` methods, `137` unseen repos):** Accuracy `0.5433`, Precision `0.5028`, Recall `0.6833`, F1 `0.5793`, ROC-AUC `0.5848`, PR-AUC `0.5586` (vs. `0.5012` PR-AUC for structural metrics alone).
+  - **Hard-Negative Holdout (`233` complex verified-correct methods, `12` unseen repos):** Binary Specificity `85.41%` (`14.59%` FPR), 3-way Selective FPR **`0.00%`** (`143` `CLEAN`, `90` `UNCERTAIN`, `0` confident `BUG` false positives).
+  - **Verification:** `.NET 9.0` Roslyn Release build (`0` warnings/errors) + `19/19` automated `pytest` tests passed (including headless Streamlit `AppTest` across all 6 pages).
 
-Version `3.0.0` transforms the project from a 5-repository method-level prototype into a **106-repository class- and file-level C# static bug detection platform** optimized for **high precision**:
+## Quick Start
 
-- **Empirical Corpus (`csharp_class_empirical_v3` v3.0.0):** `5,711` production C# class/struct/record observations (`2,829` defect-prone / `49.54%`, `2,882` candidate-clean / `50.46%`) mined across **`106` distinct public GitHub C# repositories** (`300` discovered, `304` candidates evaluated, `15` documented exclusions, `0` collection failures; SHA-256: `7087edb539cf44690a3b97fbd66f6cf0cd6853b320c328f4f58522561a07e70c`).
-- **Granularity & Roslyn `v3.0.0` Feature Extractor:** Dedicated .NET 9.0 Roslyn CLI analyzing classes, structs, records, and multi-class `.cs` files via `--batch-stdin` NDJSON streaming. Extracts **40 isolated class-level static metrics** (strictly excluding nested types from parent metrics and enclosing line counts) while retaining full backward compatibility for the legacy **26 method-level metrics**.
-- **Precision Optimization & Validation Protocol:** Partitioned strictly by repository into **`84` Development repositories** (`4,730` classes) and **`22` untouched Independent Holdout repositories** (`981` classes). All 7 required ML families (`DummyClassifier`, `LogisticRegression`, `DecisionTreeClassifier`, `RandomForestClassifier`, `ExtraTreesClassifier`, `HistGradientBoostingClassifier`, `CalibratedClassifierCV`) were evaluated under **5x4 Nested GroupKFold** with **inner-fold precision threshold selection**.
-- **Headline Champion Result (`class_precision_champion_v3` = `rf_opt_depth12_leaf4_log2`, threshold $\tau = 0.600$):**
-  - **Nested CV OOF (84 dev repos):** **Precision = 82.30%** (outer mean `82.45% +/- 2.70%`), Recall = `61.71%`, F1 = `70.53%`, ROC-AUC = `0.8260`, PR-AUC = `0.8280`.
-  - **Untouched 22-Repo Holdout (981 classes):** **Precision = 83.43%**, **Recall = 61.99%**, **F1 = 71.13%**, **ROC-AUC = 0.8449**, **PR-AUC = 0.8327**, **FPR = 11.00%** (`TP=287, FP=57, FN=176, TN=461`).
-  - Surpasses both the **>= 75%** minimum acceptable target and the **>= 80%** preferred precision target while maintaining recall above the **>= 50%** floor.
-
----
-
-## Model Benchmark Comparison (`3_TestResults/ClassModelOptimization/`)
-
-| Rank / Model Family | Config ID | Threshold ($\tau$, Inner CV) | Nested OOF Prec / Rec / F1 | Holdout Prec | Holdout Rec | Holdout F1 | Holdout ROC-AUC |
-|---|---|---:|---|---:|---:|---:|---:|
-| **Random Forest (Champion)** | `rf_opt_depth12_leaf4_log2` | `0.60` | **82.30%** / 61.71% / **70.53%** | **83.43%** | **61.99%** | **71.13%** | 0.8449 |
-| Random Forest (Unweighted) | `rf_opt_depth10_leaf6_unweighted` | `0.60` | 81.69% / 61.83% / 70.39% | 82.66% | 61.77% | 70.70% | 0.8460 |
-| Calibrated Ensemble (Sigmoid RF) | `calibrated_rf_sigmoid` | `0.64` | 81.56% / 61.71% / 70.26% | 83.09% | 61.56% | 70.72% | **0.8478** |
-| Extra Trees | `et_opt_depth10_leaf4_log2_bal` | `0.60` | 82.63% / 61.12% / 70.26% | 83.33% | 58.32% | 68.61% | 0.8368 |
-| Calibrated Ensemble (Isotonic ET) | `calibrated_et_isotonic` | `0.64` | 82.11% / 60.74% / 69.83% | 83.28% | 58.10% | 68.45% | 0.8365 |
-| Random Forest (Baseline) | `rf_baseline_compact` | `0.62` | 82.27% / 60.40% / 69.66% | 82.88% | 59.61% | 69.35% | 0.8428 |
-| HistGradientBoosting (Unweighted) | `hgb_depth4_leaf25_unweighted` | `0.64` | 81.40% / 60.86% / 69.65% | 81.85% | 57.45% | 67.51% | **0.8502** |
-| HistGradientBoosting (Balanced) | `hgb_depth5_leaf20_l2_2` | `0.66` | 82.01% / 58.20% / 68.08% | 83.06% | 54.00% | 65.45% | 0.8433 |
-| Logistic Regression (Balanced L2) | `lr_std_l2_c01_bal` | `0.58` | 80.82% / 60.57% / 69.24% | 80.18% | 56.80% | 66.50% | 0.8184 |
-| Decision Tree (Depth 6 Balanced) | `dt_depth6_leaf10_bal` | `0.70` | 81.61% / 53.25% / 64.45% | 84.23% | 50.76% | 63.34% | 0.7953 |
-| DummyClassifier (Stratified) | `dummy_stratified` | `0.30` | 49.43% / 49.49% / 49.46% | 44.83% | 47.73% | 46.23% | 0.4761 |
-
----
-
-## System Quick Start
-
-### 1. Build the Roslyn Static Analyzer (.NET 9.0)
 ```bash
-dotnet build 2_SourceCode/RoslynAnalyzer/RoslynAnalyzer.csproj -c Release
+# 1. Build C# Roslyn Preprocessor
+dotnet build 2_SourceCode/RoslynPreprocessor/RoslynPreprocessor.csproj -c Release
+
+# 2. Run automated tests
+.venv/bin/pytest 2_SourceCode/Tests/ -v
+
+# 3. Detect bugs in a C# file from CLI
+PYTHONPATH=2_SourceCode .venv/bin/python -m bug_detector detect 2_SourceCode/Tests/fixtures/verified_buggy.cs
+
+# 4. Launch minimal 6-page Streamlit GUI
+.venv/bin/streamlit run app.py
 ```
 
-### 2. Launch the Class & File Bug Detection Web Application
-```bash
-.venv/bin/streamlit run 2_SourceCode/Python/app.py
-```
-Supports **Paste C# Class/Struct/Record**, **Upload Complete `.cs` File** (multi-class analysis with file-level max/mean/flagged risk aggregation + per-class drill-down), and **Legacy Method Diagnostic Mode**.
-
-### 3. Re-Run Class ML Optimization or Data Collection
-```bash
-.venv/bin/python 2_SourceCode/Scripts/run_100_repo_class_pipeline.py --target-repos 106 --max-discover 300 --max-commits 250
-.venv/bin/python 2_SourceCode/Scripts/run_class_model_optimization.py
-```
-
-### 4. Run Automated Tests
-```bash
-.venv/bin/pytest -v
-```
-
----
-
-## Project Documentation Map
+## Documentation Index
 
 - [Executive Summary](SUMMARY_DOC.md)
+- [Final Implementation & Validation Report](FINAL_IMPLEMENTATION_REPORT.md)
 - [System Architecture](5_Documentation/01_Architecture/SYSTEM_ARCHITECTURE.md)
-- [Database Schema](1_Database/Schema/database_schema.md) & [Database Architecture](5_Documentation/02_Database/DATABASE_ARCHITECTURE.md)
-- [Dataset Schema](1_Database/Schema/dataset_schema.md)
-- [Source Code Guide](5_Documentation/03_SourceCode/SOURCE_CODE_GUIDE.md)
-- [ML Methodology](5_Documentation/04_MachineLearning/PROJECT_METHODOLOGY.md) & [Experimental Results](5_Documentation/04_MachineLearning/EXPERIMENTAL_RESULTS.md)
-- [Validation & Limitations](5_Documentation/05_Validation/VALIDATION_AND_LIMITATIONS.md)
-- [User Guide](5_Documentation/06_UserGuide/USER_GUIDE.md)
-- [Academic Final Report](5_Documentation/07_AcademicReport/FINAL_REPORT.md)
+- [Dataset Methodology](5_Documentation/02_Dataset/DATASET_METHODOLOGY.md) & [Data Collection Guide](5_Documentation/02_Dataset/DATA_COLLECTION_GUIDE.md)
+- [Preprocessing & Feature Engineering](5_Documentation/03_PreprocessingAndFeatures/PREPROCESSING_AND_FEATURES.md)
+- [ML Methodology & Training Guide](5_Documentation/04_MachineLearning/ML_METHODOLOGY_AND_TRAINING_GUIDE.md)
+- [Experimental Results & Limitations](5_Documentation/05_Evaluation/EXPERIMENTAL_RESULTS_AND_LIMITATIONS.md)
+- [Database Architecture](5_Documentation/06_Database/DATABASE_ARCHITECTURE.md), [DB Schema](1_Database/Schema/database_schema_v5.md), & [Dataset Schema](1_Database/Schema/dataset_schema_v5.md)
+- [Installation & Config](5_Documentation/07_UserAndDeveloperGuide/INSTALLATION_AND_CONFIG.md), [User Guide](5_Documentation/07_UserAndDeveloperGuide/USER_GUIDE.md), & [Testing Guide](5_Documentation/07_UserAndDeveloperGuide/TESTING_GUIDE.md)
+- [Academic Research Report](5_Documentation/08_AcademicReport/ACADEMIC_RESEARCH_REPORT.md)
 - [Presentation Slides (`6_Presentation/`)](6_Presentation/01_ProjectOverview.md)
-- [Archived Method-Level Artifacts](5_Documentation/08_Archive/README.md) & [Defense Validation](5_Documentation/09_Defense/DEFENSE_PACKAGE_VALIDATION.md)

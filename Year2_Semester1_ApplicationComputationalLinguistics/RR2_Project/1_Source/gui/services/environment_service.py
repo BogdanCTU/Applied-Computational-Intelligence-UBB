@@ -72,7 +72,7 @@ class EnvironmentService:
             try:
                 data = json.loads(manifest_path.read_text(encoding="utf-8"))
                 baseline_hash = data.get("aggregate_sha256")
-                baseline_files = data.get("total_files")
+                baseline_files = data.get("total_files") or data.get("file_count")
             except Exception:
                 pass
         return {

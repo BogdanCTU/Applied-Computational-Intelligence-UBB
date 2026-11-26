@@ -1,20 +1,14 @@
-# Slide 5 — Machine Learning Results & Precision Target Achievement
+# Slide 5 — Machine Learning Results (`A`–`I` & Independent Evaluation)
 
-## 7-Family Comparison (`5x4` Nested OOF vs. Untouched `22`-Repo Holdout)
+- **Champion:** `RandomForestClassifier` Experiment `I` (`536` features across all 5 groups; `rf_I_v5.0.0_20261126_150933`).
+- **Thresholds (OOF-Calibrated):** `threshold_low = 0.440`, `threshold_center = 0.470`, `threshold_high = 0.541`.
 
-| Model Family | Config ID | Inner $\tau$ | Nested OOF Prec / Rec / F1 | Holdout Prec | Holdout Rec | Holdout F1 | Holdout ROC-AUC |
-|---|---|---:|---|---:|---:|---:|---:|
-| **Random Forest (Champ)** | `rf_opt_depth12_leaf4_log2` | **`0.60`** | **82.30%** / 61.71% / **70.53%** | **83.43%** | **61.99%** | **71.13%** | **0.8449** |
-| Calibrated Ensemble | `calibrated_rf_sigmoid` | `0.64` | 81.56% / 61.71% / 70.26% | 83.09% | 61.56% | 70.72% | **0.8478** |
-| Extra Trees | `et_opt_depth10_leaf4_log2_bal` | `0.60` | 82.63% / 61.12% / 70.26% | 83.33% | 58.32% | 68.61% | 0.8368 |
-| HistGradientBoosting | `hgb_depth4_leaf25_unweighted` | `0.64` | 81.40% / 60.86% / 69.65% | 81.85% | 57.45% | 67.51% | **0.8502** |
-| Logistic Regression | `lr_std_l2_c01_bal` | `0.58` | 80.82% / 60.57% / 69.24% | 80.18% | 56.80% | 66.50% | 0.8184 |
-| Decision Tree | `dt_depth6_leaf10_bal` | `0.70` | 81.61% / 53.25% / 64.45% | **84.23%** | 50.76% | 63.34% | 0.7953 |
-| DummyClassifier | `dummy_stratified` | `0.30` | 49.43% / 49.49% / 49.46% | 44.83% | 47.73% | 46.23% | 0.4761 |
+| Evaluation Split | Samples (Repos) | Accuracy | Precision | Recall | F1 | Specificity / FPR | ROC-AUC | PR-AUC |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Dev Nested CV OOF | `3,910` (`488`) | `0.5642` | `0.5085` | `0.6667` | `0.5770` | `0.4818` / `0.5182` | `0.6000` | `0.5287` |
+| Independent Test | `1,132` (`137`) | `0.5433` | `0.5028` | `0.6833` | `0.5793` | `0.4239` / `0.5761` | `0.5848` | `0.5586` |
+| Hard-Negative Test | `233` (`12`) | `0.8541` | — | — | — | `0.8541` / `0.1459` | — | — |
+| Temporal Test | `453` (`14`) | `0.5475` | `0.5473` | `0.4911` | `0.5176` | `0.6026` / `0.3974` | `0.5524` | `0.5365` |
 
-- **Precision Target Outcome:** **BOTH `>= 80%` preferred and `>= 75%` minimum precision achieved** (`82.30%` OOF / `83.43%` holdout, `TP=287, FP=57, FN=176, TN=461`, `FPR=11.00%`, `+13.82 pp` vs. v2 holdout precision `69.61%`).
-- **Top Drivers (Permutation Importance):** `class_loc` (`0.0118`), `total_property_access_count` (`0.0102`), `wmc_density` (`0.0102`), `total_method_call_count` (`0.0077`), `structural_density` (`0.0071`).
-
----
-
-*Previous:* [Dataset & Methodology](04_DatasetAndMethodology.md) | *Next:* [Application Demo](06_ApplicationDemo.md)
+- On `hard_negative_test`, **selective FPR is `0.00%`** (`143` `CLEAN`, `90` `UNCERTAIN`, `0` confident false-positive `BUG`s).
+- Structural metrics alone (`A`) achieved only `0.5012` test PR-AUC vs. `0.5586` (`I`).

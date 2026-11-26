@@ -1,6 +1,0 @@
-fold,val_repo_count,val_samples,tau_inner,criterion,nom_precision,nom_recall,nom_f1,opt_precision,opt_recall,opt_f1,opt_accuracy,roc_auc,pr_auc,brier_score
-1,16,942,0.6,tier1_precision>=0.80_recall>=0.50_max_f05,0.75,0.7143,0.7317,0.8035,0.6017,0.6881,0.7325,0.8241,0.8301,0.1706
-2,17,946,0.62,tier1_precision>=0.80_recall>=0.50_max_f05,0.7709,0.6991,0.7333,0.836,0.5736,0.6804,0.7368,0.8255,0.8141,0.1702
-3,17,946,0.62,tier1_precision>=0.80_recall>=0.50_max_f05,0.7264,0.7561,0.741,0.7827,0.6496,0.71,0.7262,0.7929,0.8058,0.1864
-4,17,946,0.6,tier1_precision>=0.80_recall>=0.50_max_f05,0.7959,0.6681,0.7264,0.853,0.5792,0.6899,0.7463,0.8466,0.8429,0.162
-5,17,950,0.6,tier1_precision>=0.80_recall>=0.50_max_f05,0.768,0.7586,0.7633,0.8473,0.6755,0.7517,0.7684,0.8464,0.8539,0.159

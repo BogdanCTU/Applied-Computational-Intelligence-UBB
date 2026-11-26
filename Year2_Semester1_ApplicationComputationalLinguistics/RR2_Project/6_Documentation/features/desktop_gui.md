@@ -1,73 +1,81 @@
-# Feature Documentation — PySide6 Desktop GUI (`src/gui/`)
+# Feature Documentation — PySide6 Desktop GUI (`1_Source/gui/`)
 
 ## 1. Feature Purpose
-The Desktop GUI provides an interactive, multi-tab **PySide6 (Qt 6)** scientific workbench for inspecting ontologies, validating local ≤4B Ollama models and PostgreSQL + `pgvector` databases, launching or replaying Agent-OM matching pipelines, comparing experimental metrics ($P$, $R$, $F_1$, MRR, Hits@$k$, latency), and reading project documentation offline. It also supports a headless `--self-test` mode for automated CI and standalone PyInstaller binary verification.
+The Desktop GUI provides an interactive, 10-screen **PySide6 (Qt 6)** scientific workbench with a unified light theme (`#F5F6F8` / `#FFFFFF` / `#EEF1F4`, `#2457A6` primary accent, `#17202A` primary text) for inspecting ontologies, verifying local PostgreSQL + `pgvector` and ≤4B Ollama models, running Agent-OM matching pipelines, inspecting intermediate outputs, comparing experiments, viewing evaluation charts, and exporting reproducible artifacts. It also supports headless `--self-test` verification for CI and standalone PyInstaller binary builds.
 
 ---
 
 ## 2. Input Data
 - **User Controls & Configuration Selections:**
-  - Active model profile selection (`local_4b_default`, `local_4b_baseline`, `local_4b_mxbai`, `local_4b_reasoner`, `local_qwen35_comparison`, `historical_8b`, `historical_12b`).
-  - Similarity threshold $\tau \in [0.50, 0.99]$ and top-$k$ parameter.
-  - Selected replication run manifest (`manifest.json`), comparison matrix (`phase5_17point_comparison.json`, `phase6_ablation_matrix.json`), or Markdown report (`6_Documentation/`).
+  - Active model profile selection (`local_4b_baseline`, `local_4b_optimized`, `local_4b_reasoning`, `local_adapted`, `upstream_lite_parity`, `experimental`, `upstream_product_reference`).
+  - Matching parameters (`similarity_threshold`, `top_k`, `rrf_k`, `temperature`, `seed`, `tool_routing_mode`, `predicate_scope`, and parity checkboxes).
+  - Selected OAEI benchmark or custom local ontology pair plus experiment run identifiers.
 - **CLI Flags:**
-  - `--self-test`: Runs automated headless tab instantiation, service verification, and screenshot/log validation before exiting with code `0`.
+  - `--self-test`: Runs headless offscreen verification across all 10 screens, PostgreSQL, Ollama, and dataset discovery, printing JSON diagnostics and exiting with code `0`.
 
 ---
 
 ## 3. Processing Steps
-1. **Application Startup (`1_Source/gui/app.py`):**
-   - Initializes `QApplication`, loads the dark/scientific Qt stylesheet (`1_Source/gui/styles/theme.py`), and resolves paths dynamically via `1_Source/gui/paths.py`.
+1. **Application Startup & Centralized Light Theme (`run_gui.py`, `1_Source/gui/styles/theme.py`):**
+   - Initializes `QApplication`, applies the Fusion style, explicit light `QPalette`, system UI typography (`Segoe UI` on Windows, system font fallback elsewhere), and centralized QSS via `apply_light_theme()`.
+   - Resolves workspace paths dynamically via `1_Source/gui/paths.py` across both Python source and frozen PyInstaller builds.
 2. **Service Layer Initialization (`1_Source/gui/services/`):**
-   - `EnvironmentService` (`environment_service.py`), `DatabaseService` (`database_service.py`), and `OllamaService` (`ollama_service.py`): Probe Python `3.13`, PostgreSQL `127.0.0.1:5432` (`pgvector` status and row counts across `agent_om_local` and `agent_om_adapted`), and Ollama `127.0.0.1:11434` (installed models and exact GGUF parameter counts).
-   - `ConfigurationService` (`configuration_service.py`): Manages the 7 model profiles and enforces the strict ≤4B ($4,000,000,000$) parameter ceiling.
-   - `DatasetService` (`dataset_service.py`) & `PipelineInspectionService` (`pipeline_inspection_service.py`): Inspect extracted CMT and ConfOf ontology entities, candidates, and stage outputs.
-   - `ExperimentRunnerService` (`experiment_runner_service.py`): Executes or replays Agent-OM matching runs on a background `QThread` (`1_Source/gui/workers/experiment_worker.py`) so the Qt event loop remains responsive.
-   - `ExperimentHistoryService` (`experiment_history_service.py`), `EvaluationService` (`evaluation_service.py`), and `ArtifactComparisonService` (`artifact_comparison_service.py`): Load historical and Phase 5/6 replication run manifests, CSV predictions, comparison JSONs, and PNG charts.
-   - `ReportGenerationService` (`report_generation_service.py`): Exports comparison reports and CSV summaries to `output/replication_runs/exports/` without modifying protected historical baseline files.
-3. **Interactive Tab Views (`1_Source/gui/views/`):**
-   - **Dashboard View (`dashboard_view.py`):** Project status cards, environment health indicators, and quick-launch controls.
-   - **Environment View (`environment_view.py`):** Live verification of Python 3.13, PostgreSQL + `pgvector`, Ollama models, and the ≤4B parameter cap ($4,000,000,000$ ceiling).
-   - **Configuration View (`configuration_view.py`) & Dataset View (`dataset_view.py`):** Profile selector, hyperparameter controls ($\tau$, $k$, prompt mode), and CMT–ConfOf ontology entity browser.
-   - **Wizard View (`wizard_view.py`) & Inspector View (`inspector_view.py`):** Guided pipeline execution with live progress bar, stage-by-stage log streaming, and candidate inspection.
-   - **Evaluation View (`evaluation_view.py`), Comparison View (`comparison_view.py`), & History View (`history_view.py`):** Interactive tables of all replication runs, TP/FP/FN breakdowns, 17-point multi-tier comparisons, and embedded scientific charts.
-   - **Export View (`export_view.py`):** Reproducible run bundle and Markdown report exporter.
+   - `EnvironmentService` (`environment_service.py`), `DatabaseService` (`database_service.py`), and `OllamaService` (`ollama_service.py`): Probe Python `3.13`, PostgreSQL `127.0.0.1:5432` (`pgvector` status and row counts across protected `agent_om_local` and isolated DBs), and Ollama `127.0.0.1:11434` (installed models and exact `/api/show` parameter counts).
+   - `ConfigurationService` (`configuration_service.py`): Manages the 7 model profiles, enforces `agent_om_local` write protection and cloud read-only guards, and supports JSON preset import/export.
+   - `DatasetService` (`dataset_service.py`) & `PipelineInspectionService` (`pipeline_inspection_service.py`): Inspect extracted CMT and ConfOf ontology entities, representations, similarity scores, and validation decisions.
+   - `ExperimentRunnerService` (`experiment_runner_service.py`): Executes matching pipelines in a background `QThread` or isolated subprocess with DB mutex locking and cooperative cancellation.
+   - `ExperimentHistoryService` (`experiment_history_service.py`), `EvaluationService` (`evaluation_service.py`), and `ArtifactComparisonService` (`artifact_comparison_service.py`): Load replication run manifests, compute 17-point intermediate comparisons, and generate Matplotlib figures.
+   - `ReportGenerationService` (`report_generation_service.py`): Exports non-destructive timestamped bundles to `output/replication_runs/exports/` without modifying protected historical artifacts.
+3. **Ten Interactive Workbench Screens (`1_Source/gui/views/`):**
+   - **Dashboard (`dashboard_view.py`):** Service connection status panels, workflow quick actions, and CMT–ConfOf benchmark summary table.
+   - **Environment (`environment_view.py`):** Runtime diagnostics, PostgreSQL database inspector + isolated DB provisioning, and Ollama `<=4B` model compliance table.
+   - **Datasets (`dataset_view.py`):** Read-only OAEI benchmark loader and custom local ontology selector with entity/triple preview.
+   - **Configuration (`configuration_view.py`):** Scrollable model profile selector, responsive hyperparameter grid, parity checkboxes, JSON presets, and configuration status validator.
+   - **Run Pipeline (`wizard_view.py`):** Two-row execution controls (`Run Matching`, `Run Baseline`, `Cancel Run` with confirmation), progress bar, 14-stage pipeline status table, and live execution log.
+   - **Inspector (`inspector_view.py`):** Searchable/sortable entity inspection table with tabs for Entity Representations, Retrieval and RRF Scores, and Validation Decisions.
+   - **Comparison (`comparison_view.py`):** Automated pair-level classification table (`Shared TP`, `Shared FP`, `Missed by Both (FN)`, etc.) and 17-point JSON checkpoint comparison.
+   - **Evaluation (`evaluation_view.py`):** Interactive Matplotlib figure tabs (`Precision, Recall & F1`, `Precision vs. Recall`, `Stage Attrition`, `Threshold Sensitivity`) and stage attrition table.
+   - **Run History (`history_view.py`):** Execution status bar, live console output, full-width 9-column run history table, and JSON detail viewer.
+   - **Export (`export_view.py`):** Export settings form and manifest log outputting CSV, JSON, RDF/XML, PNG charts, and Markdown reports.
 
 ---
 
 ## 4. Output Data
-- **Visual Analytics & Interactive Tables:** Rendered directly in the PySide6 desktop window.
-- **Exported Run Bundles:** Saved to `output/replication_runs/exports/` when the user triggers an export.
-- **Self-Test Verification Exit Code:** Returns exit code `0` with diagnostic confirmation when invoked with `--self-test`.
+- **Interactive Tables, Status Panels, and Charts:** Rendered consistently in the light-themed Qt window (`1380x860` default, resizable down to `1024x680`).
+- **Exported Run Bundles:** Written to `output/replication_runs/exports/`.
+- **Self-Test Verification Output:** JSON diagnostics confirming `screens_verified: 10` and service reachability with exit code `0`.
 
 ---
 
 ## 5. Main Implementation Files
-- [`1_Source/gui/app.py`](../../1_Source/gui/app.py) — Entry point and `--self-test` harness.
-- [`1_Source/gui/main_window.py`](../../1_Source/gui/main_window.py) — Main `QMainWindow` container and 10-tab navigation workspace.
+- [`run_gui.py`](../../run_gui.py) — Desktop GUI entry point and `--self-test` harness.
+- [`1_Source/gui/main_window.py`](../../1_Source/gui/main_window.py) — Compact light header, 10-item left sidebar navigation, `QStackedWidget`, and status bar.
+- [`1_Source/gui/styles/theme.py`](../../1_Source/gui/styles/theme.py) & [`check_white.svg`](../../1_Source/gui/styles/check_white.svg) — Centralized light color palette, Fusion `QPalette`, typography scale, and QSS design system.
+- [`1_Source/gui/widgets/common.py`](../../1_Source/gui/widgets/common.py) — Standardized page headers, primary/secondary/destructive buttons, table configurator, accessible status items/labels, and user-friendly dialogs.
 - [`1_Source/gui/paths.py`](../../1_Source/gui/paths.py) — Dynamic path resolver for source and PyInstaller (`sys._MEIPASS`) frozen builds.
-- [`1_Source/gui/services/`](../../1_Source/gui/services/) — `environment_service.py`, `ollama_service.py`, `database_service.py`, `configuration_service.py`, `dataset_service.py`, `pipeline_inspection_service.py`, `experiment_runner_service.py`, `experiment_history_service.py`, `evaluation_service.py`, `artifact_comparison_service.py`, `report_generation_service.py`.
-- [`1_Source/gui/views/`](../../1_Source/gui/views/) — `dashboard_view.py`, `environment_view.py`, `dataset_view.py`, `configuration_view.py`, `wizard_view.py`, `inspector_view.py`, `evaluation_view.py`, `comparison_view.py`, `history_view.py`, `export_view.py`.
-- [`packaging/agent_om.spec`](../../packaging/agent_om.spec) — PyInstaller standalone packaging specification.
+- [`1_Source/gui/services/`](../../1_Source/gui/services/) — 11 GUI service modules (`environment_service.py`, `ollama_service.py`, `database_service.py`, `configuration_service.py`, `dataset_service.py`, `pipeline_inspection_service.py`, `experiment_runner_service.py`, `experiment_history_service.py`, `evaluation_service.py`, `artifact_comparison_service.py`, `report_generation_service.py`).
+- [`1_Source/gui/views/`](../../1_Source/gui/views/) — All 10 view classes (`dashboard_view.py`, `environment_view.py`, `dataset_view.py`, `configuration_view.py`, `wizard_view.py`, `inspector_view.py`, `comparison_view.py`, `evaluation_view.py`, `history_view.py`, `export_view.py`).
+- [`packaging/agent_om.spec`](../../packaging/agent_om.spec) — PyInstaller standalone `--onedir` packaging specification.
 
 ---
 
 ## 6. Configuration Options
 - `--self-test`: CLI flag for automated headless verification.
-- `QT_QPA_PLATFORM=offscreen`: Standard Qt environment variable for headless CI / terminal testing.
+- `QT_QPA_PLATFORM=offscreen`: Qt platform flag for headless CI / terminal execution.
 
 ---
 
 ## 7. Dependencies
 - `PySide6` (`6.12.0`), `PySide6-Addons`, `PySide6-Essentials`, `shiboken6`.
-- `matplotlib` (`3.11.2`) for chart rendering.
+- `matplotlib` (`3.11.2`) for embedded `FigureCanvasQTAgg` chart rendering.
 
 ---
 
 ## 8. Relevant Tests
-- [`2_Tests/gui/test_gui_services_and_views.py`](../../2_Tests/gui/test_gui_services_and_views.py) — End-to-end `pytest-qt` test suite covering `MainWindow`, all tab views, `EnvCheckService`, `ArtifactsService`, `ExportService`, and `--self-test` execution.
+- [`2_Tests/gui/test_gui_services_and_views.py`](../../2_Tests/gui/test_gui_services_and_views.py) — Automated `pytest-qt` test suite covering `MainWindow` navigation across all 10 screens, centralized light-theme `QPalette` tokens, all GUI services, database mutex locking, cooperative run cancellation, and export bundling.
 
 ---
 
 ## 9. Known Limitations
-- Running a live full-dataset LLM pipeline from the GUI requires local Ollama and PostgreSQL services to be active; however, browsing all historical and Phase 5/6 replication runs, alignment tables, and charts works completely offline.
+- Running a live ontology matching experiment from the GUI requires local PostgreSQL (`127.0.0.1:5432`) and local Ollama (`127.0.0.1:11434`) to be running; browsing existing runs, comparisons, and charts works offline.
+- Automated screenshot inspection was conducted in headless Qt `offscreen` mode rather than a native Windows 11 desktop session.

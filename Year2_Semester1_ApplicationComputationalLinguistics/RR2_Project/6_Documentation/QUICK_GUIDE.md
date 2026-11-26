@@ -38,12 +38,14 @@ Copy `.env.example` to `.env` if you wish to customize local ports or default mo
 
 ## 4. Starting the Desktop Application
 
+The PySide6 workbench uses a standardized light theme (`#F5F6F8` background, `#FFFFFF` cards, `#2457A6` primary actions, accessible contrast status labels) across 10 navigation screens (`Dashboard`, `Environment`, `Datasets`, `Configuration`, `Run Pipeline`, `Inspector`, `Comparison`, `Evaluation`, `Run History`, `Export`).
+
 ```bash
 # Launch the interactive 10-screen PySide6 desktop GUI from source:
 .venv/bin/python run_gui.py
 
 # Or run the automated headless 10-screen self-test:
-.venv/bin/python run_gui.py --self-test
+QT_QPA_PLATFORM=offscreen .venv/bin/python run_gui.py --self-test
 
 # Or run the standalone packaged application:
 ./dist/AgentOM/AgentOM

@@ -1,22 +1,6 @@
-# Slide 1 — Project Overview: Static Bug Detection in C# (`v3.0.0`)
+# Slide 1 — Project Overview: C# Source-Code Bug Detection (`v5.0.0`)
 
-**Machine Learning-Based Bug Detection in C# Source Code**  
-Babeș-Bolyai University — M.Sc. Applied Computational Intelligence  
-Course: Computational Intelligence in Software Engineering (CISE), Project 2  
-
----
-
-## Core Mission & Transformation
-
-- **Goal:** Provide a reproducible static ML risk indicator capable of triaging entire C# classes, structs, records, and `.cs` source files **without executing code**.
-- **v2 → v3 Evolution:**
-  - **Repository Scale:** `5` training repos $\rightarrow$ **`106` processed public C# repositories** (`300` discovered, `15` documented exclusions, `0` failures).
-  - **Granularity:** Isolated methods (`26` features) $\rightarrow$ **C# classes/structs/records (`40` isolated Roslyn metrics `v3.0.0`) + multi-class `.cs` file aggregation**.
-  - **Precision Objective:** Exceed `>= 75%` minimum / `>= 80%` preferred precision while maintaining `>= 50%` recall under strict zero-leakage repository grouping.
-- **Headline Result (`class_precision_champion_v3` at $\tau = 0.600$):**
-  - **82.30% Precision / 61.71% Recall** (`5x4` Nested `GroupKFold` OOF, `84` dev repos)
-  - **83.43% Precision / 61.99% Recall / 0.8449 ROC-AUC** (`22`-repo untouched holdout, `981` classes)
-
----
-
-*Next:* [Problem & Objectives](02_ProblemAndObjectives.md)
+- **Goal:** Classify individual C# methods as `BUG`, `CLEAN`, or `UNCERTAIN` directly from source code using a trained `RandomForestClassifier`.
+- **Architectural Reset:** Replaces legacy `v1`–`v4` defect-proneness / SZZ risk-scoring code (archived in `0_LegacyArchive_v1_v4/`).
+- **Stack:** `.NET 9.0` Microsoft Roslyn (`Microsoft.CodeAnalysis.CSharp 4.12.0`) + Python `3.13` (`scikit-learn 1.9.1`, `pydantic 2.14`, `SQLite 3` WAL, `Streamlit 1.67`).
+- **Artifacts:** `1_Database/SQLite/bug_detector_v5.db`, `1_Database/Datasets/v5/csharp_bug_detection_v5.0.0.parquet`, `4_AppBuild/Models/v5/rf_I_v5.0.0_20261126_150933/`.

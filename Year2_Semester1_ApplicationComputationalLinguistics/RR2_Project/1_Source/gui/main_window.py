@@ -1,4 +1,4 @@
-"""Main application window hosting the 10-screen sidebar and safety banner."""
+"""Main application window hosting the 10-screen light-theme sidebar and compact header."""
 
 from __future__ import annotations
 
@@ -6,6 +6,7 @@ from typing import Optional
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QCloseEvent
 from PySide6.QtWidgets import (
+    QApplication,
     QFrame,
     QHBoxLayout,
     QLabel,
@@ -21,6 +22,8 @@ from PySide6.QtWidgets import (
 
 from .paths import ProjectPaths
 from .state import WorkbenchState
+from .styles import PALETTE, apply_light_theme
+from .widgets import format_user_error
 from .views import (
     ComparisonView,
     ConfigurationView,
@@ -36,27 +39,29 @@ from .views import (
 
 
 class MainWindow(QMainWindow):
-    """Primary Windows Desktop GUI window for the Agent-OM Guided Replication Workbench."""
+    """Primary desktop GUI window for the Agent-OM Workbench."""
 
     NAV_ITEMS = [
-        "1. Dashboard",
-        "2. Environment Diagnostics",
-        "3. Dataset Manager",
-        "4. Configuration Profiles",
-        "5. Replication Wizard (14 Stages)",
-        "6. Pipeline Stage Inspector",
-        "7. Original vs Local Comparison",
-        "8. Evaluation & Charts",
-        "9. Live Logs & Run History",
-        "10. Report & Artifact Export",
+        "Dashboard",
+        "Environment",
+        "Datasets",
+        "Configuration",
+        "Run Pipeline",
+        "Inspector",
+        "Comparison",
+        "Evaluation",
+        "Run History",
+        "Export",
     ]
 
     def __init__(self, state: Optional[WorkbenchState] = None, paths: Optional[ProjectPaths] = None):
         super().__init__()
         self.state = state or WorkbenchState(paths=paths, parent=self)
-        self.setWindowTitle("Agent-OM Guided Replication & Validation Workbench (Local-Only)")
+        self.setWindowTitle("Agent-OM Workbench")
         self.resize(1380, 860)
+        self.setMinimumSize(1024, 680)
 
+        apply_light_theme(QApplication.instance() or self)
         self._build_ui()
         self._connect_signals()
         self.nav_list.setCurrentRow(0)
@@ -68,58 +73,51 @@ class MainWindow(QMainWindow):
         outer.setContentsMargins(0, 0, 0, 0)
         outer.setSpacing(0)
 
-        # Top strict safety banner
-        banner = QFrame()
-        banner.setStyleSheet(
-            "QFrame { background-color: #0F172A; color: #F8FAFC; padding: 6px 14px; }"
-        )
-        ban_lay = QHBoxLayout(banner)
-        ban_lay.setContentsMargins(12, 6, 12, 6)
-        lbl_title = QLabel("Agent-OM Replication Workbench")
-        lbl_title.setStyleSheet("color: #F8FAFC; font-size: 14px; font-weight: bold;")
-        mode_tag = "Packaged .exe" if self.state.paths.is_frozen else "Python Source"
-        lbl_guards = QLabel(
-            f"Mode: {mode_tag}  |  original_repo/: STRICTLY READ-ONLY  |  "
-            "Inference: Local Ollama (127.0.0.1)  |  Hybrid Memory: PostgreSQL + pgvector (127.0.0.1)"
-        )
-        lbl_guards.setStyleSheet("color: #93C5FD; font-size: 11px; font-weight: bold;")
-        ban_lay.addWidget(lbl_title)
-        ban_lay.addStretch(1)
-        ban_lay.addWidget(lbl_guards)
-        outer.addWidget(banner)
+        # Compact top application header
+        header = QFrame()
+        header.setObjectName("AppHeader")
+        hdr_lay = QHBoxLayout(header)
+        hdr_lay.setContentsMargins(16, 10, 16, 10)
+        hdr_lay.setSpacing(12)
 
-        # Body: Sidebar + Stacked 10 Views
+        lbl_title = QLabel("Agent-OM Workbench")
+        lbl_title.setObjectName("AppTitleLabel")
+
+        sep = QLabel("/")
+        sep.setStyleSheet(f"color: {PALETTE.border}; font-size: 16px; background: transparent;")
+
+        self.lbl_current_page = QLabel(self.NAV_ITEMS[0])
+        self.lbl_current_page.setObjectName("HeaderPageLabel")
+
+        mode_tag = "Standalone" if self.state.paths.is_frozen else "Python Source"
+        self.lbl_header_status = QLabel(
+            f"Mode: {mode_tag}  |  Local Loopback (127.0.0.1)  |  Reference Repo: Read-Only"
+        )
+        self.lbl_header_status.setObjectName("HeaderMetaLabel")
+
+        hdr_lay.addWidget(lbl_title)
+        hdr_lay.addWidget(sep)
+        hdr_lay.addWidget(self.lbl_current_page)
+        hdr_lay.addStretch(1)
+        hdr_lay.addWidget(self.lbl_header_status)
+        outer.addWidget(header)
+
+        # Body: Left Navigation Sidebar + Stacked 10 Views
         body = QHBoxLayout()
         body.setContentsMargins(0, 0, 0, 0)
         body.setSpacing(0)
 
         self.nav_list = QListWidget()
-        self.nav_list.setFixedWidth(255)
-        self.nav_list.setStyleSheet(
-            """
-            QListWidget {
-                background-color: #1E293B;
-                color: #E2E8F0;
-                border: none;
-                font-size: 12px;
-                padding-top: 6px;
-            }
-            QListWidget::item {
-                padding: 10px 14px;
-                border-bottom: 1px solid #334155;
-            }
-            QListWidget::item:selected {
-                background-color: #2563EB;
-                color: #FFFFFF;
-                font-weight: bold;
-            }
-            """
-        )
+        self.nav_list.setObjectName("SidebarNav")
+        self.nav_list.setFixedWidth(205)
+        self.nav_list.setAccessibleName("Primary Navigation")
+        self.nav_list.setFocusPolicy(Qt.StrongFocus)
         for label in self.NAV_ITEMS:
-            self.nav_list.addItem(QListWidgetItem(label))
+            item = QListWidgetItem(label)
+            self.nav_list.addItem(item)
 
         self.stack = QStackedWidget()
-        self.stack.setStyleSheet("QStackedWidget { background-color: #F8FAFC; padding: 10px; }")
+        self.stack.setObjectName("MainStack")
 
         self.dashboard_view = DashboardView(self.state)
         self.environment_view = EnvironmentView(self.state)
@@ -153,28 +151,31 @@ class MainWindow(QMainWindow):
 
         status_bar = QStatusBar()
         self.setStatusBar(status_bar)
-        status_bar.showMessage(f"Workspace ready — Project root: {self.state.paths.project_root}")
+        status_bar.showMessage("Ready")
 
     def _connect_signals(self) -> None:
         self.nav_list.currentRowChanged.connect(self._on_nav_changed)
         self.state.navigate_requested.connect(self.navigate_to)
         r = self.state.runner_service
         r.run_started.connect(
-            lambda exp_id: self.statusBar().showMessage(f"Running experiment: {exp_id}")
+            lambda exp_id: self.statusBar().showMessage(f"Running: {exp_id}")
         )
         r.run_finished.connect(
             lambda s: self.statusBar().showMessage(
-                f"Completed experiment: {s.get('experiment_id', '')} in {s.get('total_runtime_s', 0)}s"
+                f"Completed: {s.get('experiment_id', '')} ({s.get('total_runtime_s', 0)}s)"
             )
         )
         r.run_cancelled.connect(
-            lambda s: self.statusBar().showMessage(f"Cancelled experiment: {s.get('experiment_id', '')}")
+            lambda s: self.statusBar().showMessage(f"Cancelled: {s.get('experiment_id', '')}")
         )
-        r.run_failed.connect(lambda err: self.statusBar().showMessage(f"Experiment failed: {err}"))
+        r.run_failed.connect(
+            lambda err: self.statusBar().showMessage(f"Failed: {format_user_error(err)}")
+        )
 
     def _on_nav_changed(self, row: int) -> None:
         if 0 <= row < self.stack.count():
             self.stack.setCurrentIndex(row)
+            self.lbl_current_page.setText(self.NAV_ITEMS[row])
 
     def navigate_to(self, page_index: int) -> None:
         if 0 <= page_index < self.nav_list.count():
@@ -184,9 +185,8 @@ class MainWindow(QMainWindow):
         if self.state.runner_service.is_running:
             ans = QMessageBox.question(
                 self,
-                "Active Experiment Running",
-                "An experiment is currently running in the background.\n"
-                "Cancel it cleanly and close the application?",
+                "Active Experiment",
+                "An experiment run is currently active.\nCancel the run and close the application?",
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.No,
             )
@@ -197,4 +197,3 @@ class MainWindow(QMainWindow):
             if self.state.runner_service._thread is not None:
                 self.state.runner_service._thread.wait(5000)
         event.accept()
-

@@ -1,4 +1,4 @@
-"""Screen 6: Pipeline Inspector View — Searchable/sortable intermediate artifact explorer."""
+"""Screen 6: Inspector View — Searchable entity representations, candidate scores, and decisions."""
 
 from __future__ import annotations
 
@@ -14,7 +14,6 @@ from PySide6.QtWidgets import (
     QLabel,
     QLineEdit,
     QPlainTextEdit,
-    QPushButton,
     QSplitter,
     QTabWidget,
     QTableView,
@@ -23,6 +22,8 @@ from PySide6.QtWidgets import (
 )
 
 from ..state import WorkbenchState
+from ..styles import SPACE_SM
+from ..widgets import configure_table, create_button, create_page_header
 
 
 class PipelineInspectorView(QWidget):
@@ -38,24 +39,35 @@ class PipelineInspectorView(QWidget):
 
     def _build_ui(self) -> None:
         root = QVBoxLayout(self)
-        root.setSpacing(8)
+        root.setContentsMargins(16, 16, 16, 16)
+        root.setSpacing(12)
 
-        title = QLabel("Pipeline Intermediate Output & Entity Alignment Inspector")
-        title.setStyleSheet("font-size: 16px; font-weight: bold;")
-        root.addWidget(title)
+        btn_reload = create_button(
+            "Refresh",
+            role="secondary",
+            tooltip="Reload available experiment runs and inspection data",
+            accessible_name="Refresh Runs",
+        )
+        btn_reload.clicked.connect(self.refresh_run_list)
+        header_w, _ = create_page_header(
+            "Inspector",
+            "Examine extracted entity representations, candidate similarity scores, and validation decisions.",
+            right_widget=btn_reload,
+        )
+        root.addWidget(header_w)
 
         top = QHBoxLayout()
+        top.setSpacing(SPACE_SM)
         self.cmb_run = QComboBox()
+        self.cmb_run.setAccessibleName("Experiment Run Selector")
         self.cmb_run.currentIndexChanged.connect(self._on_load_selected_run)
         self.txt_filter = QLineEdit()
-        self.txt_filter.setPlaceholderText("Filter by URI, entity_id, type, or matched target...")
-        btn_reload = QPushButton("Reload Runs")
-        btn_reload.clicked.connect(self.refresh_run_list)
-        top.addWidget(QLabel("Select Run:"))
+        self.txt_filter.setPlaceholderText("Filter by entity ID, URI, type, or target")
+        self.txt_filter.setAccessibleName("Filter entities")
+        top.addWidget(QLabel("Experiment:"))
         top.addWidget(self.cmb_run, stretch=1)
-        top.addWidget(QLabel("Search:"))
+        top.addWidget(QLabel("Filter:"))
         top.addWidget(self.txt_filter, stretch=1)
-        top.addWidget(btn_reload)
         root.addLayout(top)
 
         splitter = QSplitter(Qt.Vertical)
@@ -68,9 +80,9 @@ class PipelineInspectorView(QWidget):
                 "Side",
                 "Type",
                 "Syntactic Name",
-                "Cand Count",
+                "Candidates",
                 "Validations",
-                "Final Reciprocal Match",
+                "Final Match",
             ]
         )
         self.proxy = QSortFilterProxyModel(self)
@@ -82,10 +94,15 @@ class PipelineInspectorView(QWidget):
         self.table = QTableView()
         self.table.setModel(self.proxy)
         self.table.setSortingEnabled(True)
-        self.table.setSelectionBehavior(QTableView.SelectRows)
-        self.table.setSelectionMode(QTableView.SingleSelection)
-        self.table.setEditTriggers(QTableView.NoEditTriggers)
-        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        configure_table(self.table, stretch_last=False)
+        hh = self.table.horizontalHeader()
+        hh.setSectionResizeMode(0, QHeaderView.Stretch)
+        hh.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        hh.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        hh.setSectionResizeMode(3, QHeaderView.Stretch)
+        hh.setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        hh.setSectionResizeMode(5, QHeaderView.ResizeToContents)
+        hh.setSectionResizeMode(6, QHeaderView.Stretch)
         self.table.selectionModel().selectionChanged.connect(self._on_row_selected)
         splitter.addWidget(self.table)
 
@@ -93,15 +110,17 @@ class PipelineInspectorView(QWidget):
         self.tabs = QTabWidget()
         self.txt_reps = QPlainTextEdit()
         self.txt_reps.setReadOnly(True)
+        self.txt_reps.setPlaceholderText("Select a row above to view its syntactic, lexical, and semantic representations.")
         self.txt_cands = QPlainTextEdit()
         self.txt_cands.setReadOnly(True)
+        self.txt_cands.setPlaceholderText("Select a row above to view retrieval similarity scores and RRF rankings.")
         self.txt_vals = QPlainTextEdit()
         self.txt_vals.setReadOnly(True)
-        for t in (self.txt_reps, self.txt_cands, self.txt_vals):
-            t.setStyleSheet("font-family: Consolas, monospace; font-size: 11px;")
-        self.tabs.addTab(self.txt_reps, "1. Syntactic / Lexical / Semantic Representations")
-        self.tabs.addTab(self.txt_cands, "2. Strategy Similarity Scores & RRF Rankings")
-        self.tabs.addTab(self.txt_vals, "3. LLM Validation Prompts, Bypass & Decisions")
+        self.txt_vals.setPlaceholderText("Select a row above to view LLM validation prompts and decisions.")
+
+        self.tabs.addTab(self.txt_reps, "Entity Representations")
+        self.tabs.addTab(self.txt_cands, "Retrieval && RRF Scores")
+        self.tabs.addTab(self.txt_vals, "Validation Decisions")
         splitter.addWidget(self.tabs)
         splitter.setSizes([360, 260])
 
@@ -124,17 +143,25 @@ class PipelineInspectorView(QWidget):
         self._rows = self.state.inspection_service.build_entity_inspection_rows(str(exp_id))
         self.model.removeRows(0, self.model.rowCount())
         for idx, row in enumerate(self._rows):
-            items = [
-                QStandardItem(str(row["entity_id"])),
-                QStandardItem(str(row["side"])),
-                QStandardItem(str(row["entity_type"])),
-                QStandardItem(str(row["syntactic_text"])),
-                QStandardItem(str(row["candidate_count"])),
-                QStandardItem(str(row["validation_attempts"])),
-                QStandardItem(str(row["final_matched_uris"])),
-            ]
+            final_uris = str(row["final_matched_uris"])
+            it_id = QStandardItem(str(row["entity_id"]))
+            it_id.setToolTip(str(row["entity_uri"]))
+            it_side = QStandardItem(str(row["side"]))
+            it_type = QStandardItem(str(row["entity_type"]))
+            it_syn = QStandardItem(str(row["syntactic_text"]))
+            it_cand = QStandardItem(str(row["candidate_count"]))
+            it_cand.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+            it_val = QStandardItem(str(row["validation_attempts"]))
+            it_val.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+            it_match = QStandardItem(final_uris)
+            if final_uris:
+                it_match.setToolTip(final_uris)
+
+            items = [it_id, it_side, it_type, it_syn, it_cand, it_val, it_match]
             items[0].setData(idx, Qt.UserRole)
             self.model.appendRow(items)
+        if self.proxy.rowCount() > 0:
+            self.table.selectRow(0)
 
     def _on_row_selected(self) -> None:
         indexes = self.table.selectionModel().selectedRows()
@@ -147,7 +174,7 @@ class PipelineInspectorView(QWidget):
         r = self._rows[int(raw_idx)]
         rep_txt = (
             f"Entity ID:   {r['entity_id']}\n"
-            f"Entity URI:  {r['entity_uri']} ({r['side']} — {r['entity_type']})\n"
+            f"Entity URI:  {r['entity_uri']} ({r['side']} - {r['entity_type']})\n"
             f"Final Match: {r['final_matched_uris'] or '(None)'}\n\n"
             f"--- SYNTACTIC REPRESENTATION ---\n{r['syntactic_text']}\n\n"
             f"--- LEXICAL EXPLANATION ---\n{r['lexical_text']}\n\n"
@@ -156,4 +183,3 @@ class PipelineInspectorView(QWidget):
         self.txt_reps.setPlainText(rep_txt)
         self.txt_cands.setPlainText(json.dumps(r["candidate_detail"], indent=2))
         self.txt_vals.setPlainText(json.dumps(r["validation_detail"], indent=2))
-

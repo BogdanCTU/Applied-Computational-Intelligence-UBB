@@ -1,4 +1,4 @@
-"""Screen 7: Comparison View — Side-by-side Original vs Local 17-point & pair diff view."""
+"""Screen 7: Comparison View — Side-by-side 17-point checkpoint and pair-level diff viewer."""
 
 from __future__ import annotations
 
@@ -11,7 +11,6 @@ from PySide6.QtWidgets import (
     QHeaderView,
     QLabel,
     QPlainTextEdit,
-    QPushButton,
     QSplitter,
     QTableWidget,
     QTableWidgetItem,
@@ -20,10 +19,12 @@ from PySide6.QtWidgets import (
 )
 
 from ..state import WorkbenchState
+from ..styles import PALETTE, SPACE_SM
+from ..widgets import configure_table, create_button, create_page_header, make_status_item
 
 
 class ComparisonView(QWidget):
-    """Side-by-side comparison across Original Reference, Upstream Lite, Local Parity, and Local Adapted."""
+    """Side-by-side comparison across Reference, Upstream Lite, Local Parity, and Local Adapted runs."""
 
     def __init__(self, state: WorkbenchState, parent: QWidget | None = None):
         super().__init__(parent)
@@ -34,40 +35,56 @@ class ComparisonView(QWidget):
 
     def _build_ui(self) -> None:
         root = QVBoxLayout(self)
-        root.setSpacing(8)
+        root.setContentsMargins(16, 16, 16, 16)
+        root.setSpacing(12)
 
-        title = QLabel("Original vs. Local Side-by-Side 17-Point Artifact & Alignment Comparison")
-        title.setStyleSheet("font-size: 16px; font-weight: bold;")
-        root.addWidget(title)
+        header_w, _ = create_page_header(
+            "Comparison",
+            "Compare two experiment runs across 17 intermediate checkpoints and pair-level alignments.",
+        )
+        root.addWidget(header_w)
 
         bar = QHBoxLayout()
+        bar.setSpacing(SPACE_SM)
         self.cmb_a = QComboBox()
+        self.cmb_a.setAccessibleName("Run A selector")
         self.cmb_b = QComboBox()
-        btn_cmp = QPushButton("Run 17-Point Side-by-Side Comparison")
-        btn_cmp.setStyleSheet("background-color: #2563EB; color: white; font-weight: bold; padding: 5px 10px;")
+        self.cmb_b.setAccessibleName("Run B selector")
+        btn_cmp = create_button(
+            "Compare Runs",
+            role="primary",
+            tooltip="Compute pair-level differences and 17-point checkpoint comparison",
+            accessible_name="Compare Runs",
+        )
         btn_cmp.clicked.connect(self.run_comparison)
         bar.addWidget(QLabel("Run A:"))
         bar.addWidget(self.cmb_a, stretch=1)
-        bar.addWidget(QLabel("vs. Run B:"))
+        bar.addWidget(QLabel("Run B:"))
         bar.addWidget(self.cmb_b, stretch=1)
         bar.addWidget(btn_cmp)
         root.addLayout(bar)
 
         splitter = QSplitter(Qt.Vertical)
 
-        # Pair-level diff table with color coding
+        # Pair-level diff table
         self.tbl_pairs = QTableWidget(0, 6)
         self.tbl_pairs.setHorizontalHeaderLabels(
-            ["Source URI", "Target URI", "In Reference", "In Run A", "In Run B", "Diff Classification"]
+            ["Source URI", "Target URI", "In Reference", "In Run A", "In Run B", "Classification"]
         )
-        self.tbl_pairs.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.tbl_pairs.setEditTriggers(QTableWidget.NoEditTriggers)
+        configure_table(self.tbl_pairs, stretch_last=False)
+        hh = self.tbl_pairs.horizontalHeader()
+        hh.setSectionResizeMode(0, QHeaderView.Stretch)
+        hh.setSectionResizeMode(1, QHeaderView.Stretch)
+        for col in range(2, 6):
+            hh.setSectionResizeMode(col, QHeaderView.ResizeToContents)
         splitter.addWidget(self.tbl_pairs)
 
         # Full 17-point JSON report
         self.txt_report = QPlainTextEdit()
         self.txt_report.setReadOnly(True)
-        self.txt_report.setStyleSheet("font-family: Consolas, monospace; font-size: 11px;")
+        self.txt_report.setPlaceholderText(
+            "Select Run A and Run B above, then click Compare Runs to inspect pair-level diffs and checkpoints."
+        )
         splitter.addWidget(self.txt_report)
         splitter.setSizes([320, 280])
 
@@ -83,6 +100,8 @@ class ComparisonView(QWidget):
             cmb.blockSignals(False)
         if self.cmb_b.count() > 1:
             self.cmb_b.setCurrentIndex(1)
+        if self.cmb_a.count() > 0 and self.cmb_b.count() > 0:
+            self.run_comparison()
 
     def run_comparison(self) -> None:
         id_a = self.cmb_a.currentData()
@@ -98,32 +117,42 @@ class ComparisonView(QWidget):
 
         diff_rows = res["pair_diff_rows"]
         self.tbl_pairs.setRowCount(len(diff_rows))
-        color_map = {
-            "Shared TP": QColor("#DCFCE7"),
-            "Shared FP": QColor("#FEE2E2"),
-            "Only in A (TP)": QColor("#DBEAFE"),
-            "Only in B (TP)": QColor("#EDE9FE"),
-            "Only in A (FP)": QColor("#FEF3C7"),
-            "Only in B (FP)": QColor("#FEF3C7"),
-            "Missed by Both (FN)": QColor("#F1F5F9"),
+        cat_level_map = {
+            "Shared TP": "success",
+            "Shared FP": "error",
+            "Only in A (TP)": "info",
+            "Only in B (TP)": "info",
+            "Only in A (FP)": "warning",
+            "Only in B (FP)": "warning",
+            "Missed by Both (FN)": "neutral",
         }
         for r_idx, row in enumerate(diff_rows):
             cat = str(row["category"])
-            bg = color_map.get(cat, QColor("#FFFFFF"))
-            vals = [
-                str(row["source_uri"]),
-                str(row["target_uri"]),
-                "Yes" if row["in_reference"] else "No",
-                "Yes" if row["in_run_a"] else "No",
-                "Yes" if row["in_run_b"] else "No",
-                cat,
-            ]
-            for c_idx, val in enumerate(vals):
-                it = QTableWidgetItem(val)
-                it.setBackground(bg)
-                if 2 <= c_idx <= 4:
-                    it.setTextAlignment(Qt.AlignCenter)
-                self.tbl_pairs.setItem(r_idx, c_idx, it)
+            lvl = cat_level_map.get(cat, "neutral")
+            src_uri = str(row["source_uri"])
+            tgt_uri = str(row["target_uri"])
+
+            it_src = QTableWidgetItem(src_uri)
+            it_src.setToolTip(src_uri)
+            it_src.setForeground(QColor(PALETTE.text_primary))
+
+            it_tgt = QTableWidgetItem(tgt_uri)
+            it_tgt.setToolTip(tgt_uri)
+            it_tgt.setForeground(QColor(PALETTE.text_primary))
+
+            it_ref = QTableWidgetItem("Yes" if row["in_reference"] else "No")
+            it_ref.setTextAlignment(Qt.AlignCenter)
+            it_a = QTableWidgetItem("Yes" if row["in_run_a"] else "No")
+            it_a.setTextAlignment(Qt.AlignCenter)
+            it_b = QTableWidgetItem("Yes" if row["in_run_b"] else "No")
+            it_b.setTextAlignment(Qt.AlignCenter)
+            it_cat = make_status_item(cat, level=lvl)
+
+            self.tbl_pairs.setItem(r_idx, 0, it_src)
+            self.tbl_pairs.setItem(r_idx, 1, it_tgt)
+            self.tbl_pairs.setItem(r_idx, 2, it_ref)
+            self.tbl_pairs.setItem(r_idx, 3, it_a)
+            self.tbl_pairs.setItem(r_idx, 4, it_b)
+            self.tbl_pairs.setItem(r_idx, 5, it_cat)
 
         self.txt_report.setPlainText(json.dumps(res["report_17"], indent=2))
-
