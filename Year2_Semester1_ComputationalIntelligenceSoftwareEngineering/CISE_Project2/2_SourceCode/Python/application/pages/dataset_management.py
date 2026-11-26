@@ -8,7 +8,7 @@ import streamlit as st
 from core.settings import AppSettings
 from database.repository import CLASS_FEATURE_NAMES, RepositoryDB
 from services.dataset.feature_extractor import FeatureExtractor
-from services.dataset.dataset_builder import DatasetBuilder, DEFAULT_NUMERICAL_FEATURES
+from services.dataset.dataset_builder import DatasetBuilder
 from services.dataset.exporter import DatasetExporter
 
 
@@ -71,7 +71,7 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
             ds_stats = builder.compute_dataset_statistics(ds_id, [])
             repo_dist = ds_stats.get("repository_distribution", {})
             if repo_dist:
-                st.caption(f"Repositories included: {len(repo_dist)} | Defect-prone: {ds_stats.get('buggy_count', 0)} | Candidate-clean: {ds_stats.get('clean_count', 0)}")
+                st.caption(f"Repositories included: {len(repo_dist)} | BUG classes: {ds_stats.get('buggy_count', 0)} | CLEAN classes: {ds_stats.get('clean_count', 0)}")
                 dist_df = pd.DataFrame([{"Repository": k, "Observations": v} for k, v in sorted(repo_dist.items(), key=lambda x: x[1], reverse=True)])
                 st.dataframe(dist_df, hide_index=True, width="stretch")
         else:
@@ -87,7 +87,7 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
             st.warning("No extracted class feature records found. Run collection or batch extraction first.")
         else:
             df_feat = pd.DataFrame(rows)
-            df_feat["Label_Text"] = df_feat["label"].map({1: "Defect-Prone Class (1)", 0: "Candidate-Clean Class (0)"})
+            df_feat["Label_Text"] = df_feat["label"].map({1: "BUG (Defect-Positive)", 0: "CLEAN (Candidate-Clean)"})
             avail = [f for f in CLASS_FEATURE_NAMES if f in df_feat.columns]
 
             col_s1, col_s2 = st.columns([1, 2])
@@ -105,8 +105,8 @@ def render_dataset_management(db: RepositoryDB, settings: AppSettings) -> None:
                     x="Label_Text",
                     y=selected_metric,
                     color="Label_Text",
-                    title=f"Distribution of {selected_metric} by Class Label",
-                    color_discrete_map={"Defect-Prone Class (1)": "#4a7bb0", "Candidate-Clean Class (0)": "#5b9e78"},
+                    title=f"Distribution of {selected_metric} by Classifier Label",
+                    color_discrete_map={"BUG (Defect-Positive)": "#c0392b", "CLEAN (Candidate-Clean)": "#27ae60"},
                 )
                 fig_box.update_layout(showlegend=False, margin=dict(l=20, r=20, t=40, b=20))
                 st.plotly_chart(fig_box, width="stretch")

@@ -37,11 +37,7 @@ class RoslynClient:
             if (PROJECT_ROOT / "2_SourceCode" / "RoslynAnalyzer" / "RoslynAnalyzer.csproj").exists()
             else PROJECT_ROOT / "roslyn_analyzer" / "RoslynAnalyzer.csproj"
         )
-        default_dll = (
-            PROJECT_ROOT / "2_SourceCode" / "RoslynAnalyzer" / "bin" / "Release" / "net9.0" / "RoslynAnalyzer.dll"
-            if (PROJECT_ROOT / "2_SourceCode" / "RoslynAnalyzer" / "bin" / "Release" / "net9.0" / "RoslynAnalyzer.dll").exists()
-            else (PROJECT_ROOT / "roslyn_analyzer" / "bin" / "Release" / "net9.0" / "RoslynAnalyzer.dll")
-        )
+        default_dll = default_proj.parent / "bin" / "Release" / "net9.0" / "RoslynAnalyzer.dll"
         self.project_path = project_path or default_proj
         self.dll_path = dll_path or default_dll
         self.timeout_seconds = timeout_seconds

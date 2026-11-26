@@ -1,16 +1,17 @@
-# Slide 4 — Dataset #3 & Validation Methodology
+# Slide 4 — Top-200 Dataset & Validation Methodology
 
-## Empirical Corpus (`csharp_class_empirical_v3` v3.0.0)
+## Empirical Corpus (`csharp_class_top200_v4` v4.0.0)
 
-- **Repository Funnel:** `300` discovered (`304` queued candidates) $\rightarrow$ **`106` processed repositories**, `15` documented exclusions (`9` zero bug-fix commits, `4` `< 5` production C# files, `2` insufficient buggy/clean classes), `0` failures.
-- **Total Class Observations:** **`5,711`** (`2,829` SZZ defect-prone / `49.54%`, `2,882` candidate-clean / `50.46%`), `0` missing feature values across `40` isolated class metrics (`62` CSV columns; SHA-256: `7087edb5...`).
-- **Duplicate & Revision Integrity:** From `5,743` extracted candidates, removed `28` intra-repo exact hash duplicates and `4` repeated structural revisions (`0` cross-repo exact duplicates, `0` conflicting clean classes); retained `819` legitimate historical class revisions strictly grouped by `repository_id`.
+- **Repository Funnel:** `500` discovered (`stars` descending) -> `367` eligible -> **`200` processed repositories** (`4,409`–`121,429` stars), **`179` documented exclusions** (`132` oversized >120MB, `1` insufficient size, `29` no bug fixes, `10` insufficient production `.cs` files, `5` no SZZ traces on production `.cs`, `1` no buggy classes, `1` no clean classes), **`0` failed**.
+- **Dataset Size & Balance:** **`9,588` classes** (**`4,425` BUG** / `46.15%`, **`5,163` CLEAN** / `53.85%`), `0` nulls across `40` Roslyn features (`65` CSV columns; SHA-256 `c7ff8436...`), plus `67,556` method localization rows.
+- **Duplicate Audit:** `9,646` -> `9,588` retained (`41` intra-repo exact, `12` cross-repo exact, `5` repeated structural revisions removed; `1,025` historical revisions retained strictly inside single-repository groups).
 
-## Zero-Leakage Validation Design
+## Zero-Leakage Validation & Feature Audit
 
-1. **Strict Repository Holdout (`GroupShuffleSplit`):** `84` Development repos (`4,730` classes) vs. **`22` Untouched Holdout repos (`981` classes)**.
-2. **5x4 Nested `GroupKFold`:** Inside Development repos, median imputation, zero-variance filtering, correlation pruning / scaling (for LR), and precision threshold selection ($\tau \in [0.30, 0.88]$ targeting $\text{Prec} \ge 0.80 \land \text{Rec} \ge 0.50$ maximizing $F_{0.5}$) happen **strictly in inner folds**.
-3. **7 Model Families Benchmarked:** `RandomForestClassifier`, `ExtraTreesClassifier`, `HistGradientBoostingClassifier`, `CalibratedClassifierCV`, `LogisticRegression`, `DecisionTreeClassifier`, and `DummyClassifier`.
+1. **Strict Repository Holdout (`GroupShuffleSplit`):** **`160` Dev repos (`7,546` classes)** vs. **`40` Untouched Holdout repos (`2,042` classes)**.
+2. **40-Feature Sufficiency:** All `40` nonzero variance; ablation removing `10` collinear features (`|ρ| > 0.90`) slightly hurt Nested CV F1 (`0.7160` vs. `0.7193`) and Holdout F1 (`68.90%` vs. `69.67%`), so all 40 were kept.
+3. **Inner-CV Thresholding:** `5×4` Nested `GroupKFold` (`select_classifier_threshold`) tuned $\tau$ strictly in inner folds (`rf_depth12_leaf4_log2_all40`: $\tau = 0.520$).
+4. **Separate Method Localizer:** Trained on matching `157` dev repos (`54,678` methods) and tested on matching `38` holdout repos (`12,878` methods).
 
 ---
 

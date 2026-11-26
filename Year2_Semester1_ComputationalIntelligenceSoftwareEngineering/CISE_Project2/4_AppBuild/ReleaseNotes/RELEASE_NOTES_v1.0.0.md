@@ -61,3 +61,32 @@ This release provides an empirical machine-learning pipeline and local Streamlit
 
 5. **Historical Preservation**
    - Preserved all v1/v2 method-level CSVs (`csharp_empirical_v1_v1.0.0.csv`, `csharp_empirical_v2_v2.0.0.csv`), all 4 historical `.joblib` bundles, all original SQLite `observations`/`features` rows, a pre-migration DB archive (`bug_detection_method_v2_archive.db`), and historical `3_TestResults/CrossValidation` and `HoldoutEvaluation` JSON reports intact.
+
+
+---
+
+# Release Notes — Version 4.0.0 (Top-200 C# Bug Detection Classifier & Provenance-Aware Localization)
+
+**Release Date:** November 25, 2026  
+**Scope:** Refactoring from defect risk scoring into an explicit binary **`BUG` / `CLEAN` C# Bug Detection Classifier** backed by the **Top 200 public C# GitHub repositories ranked by stars**, improved SZZ class/method/line localization, a separately validated ML Method Localizer, and partial-analysis safety guardrails.
+
+## Major Highlights
+
+1. **Top-200 Star-Ranked Repository Collection (`csharp_class_top200_v4` v4.0.0)**
+   - Added `GitHubClient.discover_top_csharp_repositories_by_stars()` (`language:csharp fork:false archived:false`, `sort="stars"&order="desc"`) and `2_SourceCode/Scripts/run_top200_csharp_pipeline.py`.
+   - Discovered `500` repositories, selected `367` eligible candidates, and processed **`200` repositories** (`4,409` to `121,429` stars; `179` documented exclusions, `0` failures), producing **`9,588` class observations** (**`4,425` BUG** / `46.15%`, **`5,163` CLEAN** / `53.85%`; SHA-256 `c7ff8436...`; `65` CSV columns, `0` nulls across all `40` Roslyn features).
+
+2. **Provenance-Aware SZZ Localization & Separately Validated ML Method Localizer**
+   - Added `class_bug_localizations` SQLite table (`7,361` verified historical localization records mapping SZZ commits to enclosing class, enclosing method signature/bounds, and contiguous line ranges).
+   - Trained `method_localizer_top200_v4.joblib` (26 method metrics across `67,556` method observations in `method_localization_top200_v4.csv`) on the exact matching dev split (`157` repos / `54,678` methods), achieving **`44.99%` Top-1** and **`68.64%` Top-3** class hit rates (`0.6611` ROC-AUC) on the untouched `38`-repo holdout (`12,878` methods).
+   - Strictly separates verified historical SZZ line evidence from ML-estimated suspicious methods and explicitly marks exact line localization as `unavailable` on unseen code.
+
+3. **Binary Classifier Optimization (`class_bug_classifier_top200_v4.joblib`)**
+   - Strictly partitioned into `160` Dev repos (`7,546` classes) and `40` untouched Holdout repos (`2,042` classes) via `2_SourceCode/Scripts/run_top200_classifier_optimization.py`.
+   - Champion (`rf_depth12_leaf4_log2_all40`, inner-CV $\tau = 0.520$) achieved **77.66% Nested CV OOF precision** and **79.47% untouched holdout precision** (**62.02% recall**, **69.67% F1**, **0.8180 ROC-AUC**, **0.8104 PR-AUC**, **15.71% FPR**, **37.98% FNR**), exceeding the `>= 75%` precision target while beating `DummyClassifier` (`51.93%` precision, `0.5221` ROC-AUC).
+
+4. **Refactored Streamlit Application & Partial-Analysis Safety**
+   - Updated `2_SourceCode/Python/application/pages/bug_prediction.py` and all sibling pages so primary verdicts show **`BUG DETECTED`** (`st.error`), **`CLEAN`** (`st.success`), or **`ANALYSIS INCOMPLETE`** (`st.warning`), with confidence/probability shown as secondary context and multi-class `.cs` files displaying individual class verdicts plus overall counts while never marking syntax-broken files as `CLEAN`.
+
+5. **Full Backward Compatibility**
+   - Preserved `csharp_empirical_v1_v1.0.0.csv`, `csharp_empirical_v2_v2.0.0.csv`, `csharp_class_empirical_v3_v3.0.0.csv`, all 12 previous `.joblib` models, SQLite `observations` (`877` rows), and `bug_detection_method_v2_archive.db`.

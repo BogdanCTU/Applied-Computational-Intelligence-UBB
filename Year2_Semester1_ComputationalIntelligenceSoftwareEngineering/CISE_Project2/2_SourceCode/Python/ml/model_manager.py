@@ -140,13 +140,25 @@ class ModelManager:
         logger.info(f"Loaded model '{bundle.get('model_name')}' from {path}")
         return bundle
 
-    def list_saved_models(self, granularity: Optional[str] = None) -> List[Dict[str, Any]]:
+    def list_saved_models(
+        self,
+        granularity: Optional[str] = None,
+        exclude_granularities: Optional[List[str]] = None,
+    ) -> List[Dict[str, Any]]:
         """Authoritative single-source model registry across disk bundles and SQLite records."""
         register_unpickle_aliases()
         models: List[Dict[str, Any]] = []
         seen_names: set[str] = set()
+        excluded = set(exclude_granularities if exclude_granularities is not None else (["method_localizer"] if granularity is None else []))
 
         preferred_order = [
+            "class_bug_classifier_top200_v4",
+            "rf_class_top200_v4",
+            "et_class_top200_v4",
+            "hgb_class_top200_v4",
+            "calibrated_class_top200_v4",
+            "lr_class_top200_v4",
+            "dt_class_top200_v4",
             "class_precision_champion_v3",
             "rf_class_opt_v3",
             "et_class_opt_v3",
@@ -177,6 +189,8 @@ class ModelManager:
                 est = bundle.get("model")
                 algo_name = bundle.get("algorithm") or self._resolve_algorithm_name(est)
                 m_gran = bundle.get("granularity", "method")
+                if m_gran in excluded:
+                    continue
                 if granularity and m_gran != granularity:
                     continue
                 db_rec = db_by_name.get(m_name) or db_by_name.get(p.stem)
@@ -206,6 +220,8 @@ class ModelManager:
                 m_name = str(m.get("name", ""))
                 if m_name not in seen_names:
                     m_gran = m.get("granularity", "method")
+                    if m_gran in excluded:
+                        continue
                     if granularity and m_gran != granularity:
                         continue
                     models.append(m)

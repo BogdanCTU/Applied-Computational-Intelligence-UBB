@@ -1,8 +1,8 @@
-# User Guide and Application Manual
+# User Guide and Application Manual (`v4.0.0`)
 
-**Application:** C# Defect Predictor (Streamlit Workbench)  
+**Application:** C# Bug Detection Classifier (Streamlit Workbench)  
 **Entry Point:** `app.py` (`2_SourceCode/Python/app.py`)  
-**System:** CISE Project 2 — Machine Learning-Based Bug Detection in C# Source Code  
+**System:** CISE Project 2 — Machine Learning-Based C# Bug Detection Classifier  
 
 ---
 
@@ -10,57 +10,49 @@
 
 | Requirement | Version / Details |
 | :--- | :--- |
-| Python | >= 3.11 (with packages from `requirements.txt`) |
+| Python | >= 3.11 (`.venv` environment) |
 | .NET SDK | 9.0 (`dotnet build 2_SourceCode/RoslynAnalyzer/RoslynAnalyzer.csproj -c Release`) |
 | Git | Command-line client in system `PATH` |
 | Network | Required only for GitHub repository discovery and cloning |
 
 ### Launch Commands
-
-**Linux / macOS:**
 ```bash
-source .venv/bin/activate
-python -m streamlit run app.py
+# macOS / Linux
+.venv/bin/streamlit run 2_SourceCode/Python/app.py
 ```
-
-**Windows:**
-```powershell
-.\.venv\Scripts\Activate.ps1
-python -m streamlit run app.py
-```
-Or run `4_AppBuild\Windows\run_app.bat`.
 
 ---
 
 ## 2. Application Pages and Functionality
 
-All pages share the unified `ModelManager.list_saved_models()` registry and reflect the class/file-level corpus alongside preserved legacy method-level artifacts.
+All pages read from the unified `ModelManager.list_saved_models()` registry (`class_bug_classifier_top200_v4` is prioritized first; auxiliary `method_localizer` bundles are automatically paired during inference and hidden from the primary classifier selector).
 
 | Page | Primary Controls | Outputs |
 | :--- | :--- | :--- |
-| **Dashboard** | Navigation only | Processed/registered repository counts, class observation label distribution, active champion model metrics & stored threshold from the unified registry, 5-stage class/file pipeline, and methodological constraints. |
-| **Repository Collection** | Paginated GitHub discovery (`Batch Discovery`), checkpoint/run monitor (`Collection Runs & Progress`), manual URL import, repo sync/commit extraction | Composite selection rankings, exclusion reasons, checkpoint progress toward 100+ repositories, and per-repo mining stats. |
-| **Bug Analysis & SZZ** | Strict bug-fix threshold slider, SZZ runner, class observation extractor & audit overrides (`1`, `0`, `-1`), legacy method tab | Classified bug-fixing commits, SZZ line-blame traces, and class-level pre-fix vs. post-fix code inspection with BIC provenance. |
-| **Dataset Management** | Batch 40-metric class extraction, dataset snapshot viewer, boxplots across 40 features, custom snapshot builder & CSV/manifest export | Extraction counts, repository distribution table, feature distribution plots, and SHA-256 checksummed exports. |
-| **Model Training** | Dataset selector (class or method), 6 model family options, hyperparameters, repository holdout ratio, inner-CV precision threshold optimization | Repository-separated GroupKFold CV vs. untouched holdout Precision/Recall/F1/ROC-AUC and serialized `.joblib` bundle with stored threshold. |
-| **Model Evaluation** | Multi-model nested benchmark table, unified model selector, confusion matrix, ROC/PR curves, MDI & permutation importances, split provenance | Stored decision threshold, nested CV vs. holdout metrics, confusion matrices, and feature rankings. |
-| **Real-World Bug Detection** | **Input A:** C# class editor; **Input B:** `.cs` file upload; repository class validation benchmark; prediction history & legacy method diagnostic | Class defect probability (`predict_proba()`), stored-threshold binary label (`Defect-Prone Class (1)` / `Candidate-Clean Class (0)`), risk category, 40 class metrics, file-level multi-class summary, and individual class drill-down. |
-| **Settings** | GitHub PAT, collection concurrency/commit/checkpoint limits, Roslyn timeout, storage paths, risk tier sliders, unified default model selector | Session configuration updates and prediction history management. |
+| **Dashboard** | Navigation & model status | Processed repository count (`200+`), BUG/CLEAN label totals, active classifier threshold/metrics, 5-stage pipeline diagram, and static-indicator scope disclaimer. |
+| **Repository Collection** | Paginated GitHub star-desc discovery, checkpoint monitor (`run_top200_csharp_pipeline`), manual repo import, commit sync | Top-200 star ranking, transparent exclusion reasons, checkpoint progress, and mining statistics. |
+| **Bug Analysis & SZZ** | Bug-fix threshold slider, SZZ runner, class & method/line localization inspector, legacy method tab | Classified bug-fix commits, SZZ traces, `class_bug_localizations` verified methods & line ranges, and pre-fix vs. post-fix inspection. |
+| **Dataset Management** | Batch 40-metric class extraction, dataset snapshot viewer, boxplots, CSV/manifest export | Extraction counts, Top-200 repository distribution, SHA-256 checksummed CSV (`csharp_class_top200_v4`), and method localization corpus stats. |
+| **Model Training** | Dataset selector, ML family selection, repository holdout ratio, inner-CV threshold optimization | Repository-separated CV vs. holdout Precision/Recall/F1/ROC-AUC/PR-AUC/FPR/FNR and versioned `.joblib` bundle. |
+| **Model Evaluation** | Multi-model nested benchmark (`12` v4 configs), confusion matrix, ROC/PR curves, feature importances | Outer CV vs. holdout metrics, FPR/FNR rates, confusion matrices, and repository split provenance. |
+| **Real-World Bug Detection** | **Tab 1:** Paste C# Class; **Tab 2:** Upload `.cs` File (single/multi-class); **Tab 3:** Repo Validation Benchmark; **Tab 4:** Prediction History & Legacy Method Diagnostic | Explicit **`BUG DETECTED`** (`st.error`) / **`CLEAN`** (`st.success`) verdict, secondary probability & confidence, **Verified Historical SZZ Locations** vs. **ML-Estimated Suspicious Methods**, per-class table + overall `.cs` file counts, and **`ANALYSIS INCOMPLETE`** warning on syntax errors. |
+| **Settings** | GitHub PAT, Top-200 collection limits (`target=200`, `max_size_kb=120000`), Roslyn timeout, storage paths, default classifier selector | Session config updates and SQLite history management. |
 
 ---
 
-## 3. Prediction Semantics & File-Level Aggregation
+## 3. Interpreting Predictions & Bug Localization
 
-1. **Class-Level Prediction (Primary Task):**
-   - `defect_probability`: Estimated via `model.predict_proba(X_proc)[:, 1]`.
-   - `predicted_label`: Explicitly computed by comparing `defect_probability >= bundle["decision_threshold"]` (never relying on an implicit `0.50` `model.predict()` cutoff when an optimized threshold is stored).
-   - `risk_category`: Triage band based on `PredictionSettings` defaults (`Low risk <= 0.30`, `Medium risk 0.31–0.60`, `High risk > 0.60`), kept conceptually distinct from binary classification.
-2. **File-Level Analysis (`.cs` Upload):**
-   - Every `class`, `struct`, and `record` declared in the uploaded `.cs` file receives an independent `ClassPrediction`.
-   - The file summary reports `classes_analyzed_count`, `classes_flagged_count`, `highest_class_risk_score`, `mean_class_risk_score`, `max_defect_probability`, and `file_risk_category`.
-   - Elevated probabilities or flagged classifications indicate structural defect propensity supported by historical SZZ evidence, not formal verification of a confirmed defect.
-3. **Legacy Method Compatibility:**
-   - Preserved method-level bundles (`et_nested_opt_v3_depth6_leaf6_log2`, `rf_nested_opt_v3_depth6_leaf8_log2`, `exp_final_5fold_v2_best_rf_compact_regularized`, `rf_csharp_empirical_model`) remain selectable for the legacy single-method diagnostic view.
+1. **Class Verdict (`BUG DETECTED` vs. `CLEAN`):**
+   - Each extracted `class`, `struct`, or `record` is scored independently via `defect_probability = predict_proba(X_proc)[:, 1]`.
+   - When `defect_probability >= decision_threshold` (`0.520` for `class_bug_classifier_top200_v4`), the verdict is **`BUG DETECTED`** (`classification="BUG"`); otherwise **`CLEAN`** (`classification="CLEAN"`).
+   - Confidence (`confidence`) and raw probability are shown strictly as secondary context.
+2. **Distinguishing Localization Sources:**
+   - **Verified Historical SZZ Evidence (SQLite Match):** Shown only when the analyzed class matches a stored revision in `class_bug_localizations`—displays exact pre-fix commit SHAs, affected method signatures, and historical line ranges.
+   - **ML-Estimated Suspicious Methods (`method_localizer_top200_v4.joblib`):** For unseen `BUG` classes without historical SZZ matches, ranks methods inside the class by standalone method defect score and shows method declaration line ranges explicitly labeled as **ML-estimated (not verified ground truth)**.
+   - **Unavailable Exact Lines:** On unseen code, exact buggy line numbers are explicitly displayed as **`unavailable`**. Class-level feature drivers explain why the class resembles buggy history statistically, never claiming line proof.
+3. **Multi-Class `.cs` Files & Syntax Failures:**
+   - Multi-class `.cs` uploads evaluate every valid class independently and present an overall summary (`Analyzed`, `BUG`, `CLEAN`, `Failed/Syntax Errors`).
+   - If Roslyn reports syntax errors (`syntax_error_count > 0`) or any class fails extraction (`classes_failed_count > 0`), the file verdict is **`ANALYSIS INCOMPLETE`** (or **`BUG (PARTIAL ANALYSIS)`** if another class flagged BUG) and **never `CLEAN`**.
 
 ---
 
@@ -68,6 +60,7 @@ All pages share the unified `ModelManager.list_saved_models()` registry and refl
 
 | Symptom | Cause | Corrective Action |
 | :--- | :--- | :--- |
-| `RoslynAnalyzer.dll` missing or build error | .NET 9.0 analyzer binary not compiled or `dotnet` not in `PATH` | Install .NET 9.0 SDK and run `dotnet build 2_SourceCode/RoslynAnalyzer/RoslynAnalyzer.csproj -c Release`. |
-| Compatibility warning on Real-World Bug Detection page | A legacy method-level model is selected while analyzing a class/file | Select a `class`-granularity model (e.g. `class_precision_champion_v3`) in the Unified Registry dropdown. |
-| GitHub API rate limit error | Unauthenticated GitHub API quota reached during discovery | Provide a GitHub Personal Access Token in **Settings** or `.env` (`GITHUB_TOKEN`), or resume from checkpoint. |
+| `RoslynAnalyzer.dll` missing | .NET 9.0 Release binary not compiled | Run `dotnet build 2_SourceCode/RoslynAnalyzer/RoslynAnalyzer.csproj -c Release`. |
+| Granularity mismatch warning | Legacy method model active on class/file view | Select `class_bug_classifier_top200_v4` from the classifier dropdown. |
+| `NoClassesFoundError` | Pasted snippet contains only top-level statements or unparseable syntax with 0 valid classes | Wrap code inside a complete `class`, `struct`, or `record` declaration and fix syntax errors. |
+| GitHub rate-limit hit | Unauthenticated API quota reached | Set `GITHUB_TOKEN` in `.env` or **Settings**, then resume from checkpoint. |

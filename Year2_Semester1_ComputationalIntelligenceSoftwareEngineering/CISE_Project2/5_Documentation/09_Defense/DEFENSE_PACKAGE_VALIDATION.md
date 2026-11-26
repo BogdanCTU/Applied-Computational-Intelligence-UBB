@@ -112,4 +112,20 @@ All historical method-level artifacts listed above remain unmodified with identi
 
 ### Binary Defense Package Files Notice
 
-The binary deliverables in `5_Documentation/09_Defense/` (`FINAL_DEFENSE_PRESENTATION.pptx`, `DEFENSE_QUESTIONS_AND_ANSWERS.docx`, `FINAL_DEFENSE_SPEAKER_NOTES.docx`, `LIVE_DEMO_SCRIPT.docx`, and `METHODOLOGY_AND_RESULTS_SUMMARY.pdf`) remain the pre-existing method-level (v2) defense archive and were **not** binary-regenerated during this run; all canonical v3.0.0 defense slides and written academic documentation live in [../../6_Presentation/](../../6_Presentation/01_ProjectOverview.md), [../04_MachineLearning/EXPERIMENTAL_RESULTS.md](../04_MachineLearning/EXPERIMENTAL_RESULTS.md), and [../07_AcademicReport/FINAL_REPORT.md](../07_AcademicReport/FINAL_REPORT.md).
+The binary deliverables in `5_Documentation/09_Defense/` (`FINAL_DEFENSE_PRESENTATION.pptx`, `DEFENSE_QUESTIONS_AND_ANSWERS.docx`, `FINAL_DEFENSE_SPEAKER_NOTES.docx`, `LIVE_DEMO_SCRIPT.docx`, and `METHODOLOGY_AND_RESULTS_SUMMARY.pdf`) remain the pre-existing method-level (v2) defense archive and were **not** binary-regenerated during subsequent releases; all canonical defense slides and written academic documentation live in [../../6_Presentation/](../../6_Presentation/01_ProjectOverview.md), [../04_MachineLearning/EXPERIMENTAL_RESULTS.md](../04_MachineLearning/EXPERIMENTAL_RESULTS.md), and [../07_AcademicReport/FINAL_REPORT.md](../07_AcademicReport/FINAL_REPORT.md).
+
+
+---
+
+## v4.0.0 Top-200 Star-Ranked Classifier & Localization Addendum (`2026-11-25`)
+
+All protected historical datasets (`v1`, `v2`, `v3`), historical JSON results, `bug_detection_method_v2_archive.db`, and historical `.joblib` models remain preserved byte-for-byte intact alongside the new v4.0.0 deliverables:
+
+| Artifact | Verification Status | Key Verified Properties |
+|---|---|---|
+| `1_Database/Datasets/Processed/csharp_class_top200_v4_v4.0.0.csv` | Verified (`c7ff8436b3d9beae096df413985bf128095fc6b25cad0239cb27b452f07226c2`) | `9,588` classes (`4,425` BUG, `5,163` CLEAN) across `200` Top-Star C# repos (`500` discovered, `179` excluded, `0` failed), `65` CSV columns (`0` nulls) |
+| `1_Database/SQLite/bug_detection.db` (`class_bug_localizations`) | Verified (`7,361` rows) | Verified historical SZZ method signatures, bounds, and compressed line ranges across `4,473` BUG class observations |
+| `3_TestResults/Top200ClassifierOptimization/top200_classifier_summary.json` | Verified | `5x4` Nested `GroupKFold` (`160` dev repos / `7,546` classes) + `40`-repo untouched holdout (`2,042` classes) |
+| `4_AppBuild/Assets/Models/class_bug_classifier_top200_v4.joblib` | Verified (`rf_depth12_leaf4_log2_all40`, $\tau = 0.520$) | Holdout Prec `79.47%`, Rec `62.02%`, F1 `69.67%`, ROC-AUC `0.8180`, PR-AUC `0.8104`, FPR `15.71%`, FNR `37.98%` |
+| `4_AppBuild/Assets/Models/method_localizer_top200_v4.joblib` | Verified (matching `157/38` repo split) | `67,556` method rows; Holdout `Top-1 = 44.99%`, `Top-3 = 68.64%`, `ROC-AUC = 0.6611`, `Prec = 22.46%` |
+| Markdown Slide Deck (`6_Presentation/01..07`) | Updated to v4.0.0 | Reflects `BUG`/`CLEAN` classifier, `200` repos, `9,588` classes, `79.47%` holdout precision, and honest localization scope |

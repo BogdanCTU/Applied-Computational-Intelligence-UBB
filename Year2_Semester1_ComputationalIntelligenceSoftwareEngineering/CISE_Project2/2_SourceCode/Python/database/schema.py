@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS repositories (
     url TEXT NOT NULL,
     description TEXT,
     license TEXT,
+    language TEXT DEFAULT 'C#',
     default_branch TEXT DEFAULT 'main',
     stars INTEGER DEFAULT 0,
     forks INTEGER DEFAULT 0,
@@ -286,6 +287,9 @@ CREATE TABLE IF NOT EXISTS class_observations (
     label_confidence REAL DEFAULT 1.0,
     szz_trace_count INTEGER DEFAULT 0,
     blamed_lines_json TEXT,
+    localization_status TEXT DEFAULT 'unavailable',
+    affected_methods_json TEXT,
+    affected_line_ranges_json TEXT,
     evidence_category TEXT NOT NULL,
     bug_fixing_commit_message TEXT,
     issue_or_pr_url TEXT,
@@ -419,9 +423,33 @@ CREATE TABLE IF NOT EXISTS predictions (
     metrics_json TEXT NOT NULL,
     file_summary_json TEXT,
     predicted_label INTEGER NOT NULL,
+    classification_label TEXT,
     risk_score REAL NOT NULL,
     risk_category TEXT NOT NULL,
+    localization_json TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Historical Method and Line-Range Bug Localization Records from SZZ
+CREATE TABLE IF NOT EXISTS class_bug_localizations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    class_observation_id INTEGER NOT NULL REFERENCES class_observations(id) ON DELETE CASCADE,
+    repository_id INTEGER NOT NULL REFERENCES repositories(id) ON DELETE CASCADE,
+    commit_sha TEXT NOT NULL,
+    bug_fix_commit_sha TEXT,
+    bug_inducing_commit_sha TEXT,
+    file_path TEXT NOT NULL,
+    qualified_class_name TEXT NOT NULL,
+    method_name TEXT,
+    method_signature TEXT,
+    method_start_line INTEGER,
+    method_end_line INTEGER,
+    affected_lines_json TEXT,
+    affected_line_ranges_json TEXT,
+    localization_status TEXT DEFAULT 'verified_historical',
+    szz_confidence REAL DEFAULT 0.85,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(class_observation_id, method_signature, bug_fix_commit_sha)
 );
 
 -- Indexes for performance
@@ -442,6 +470,8 @@ CREATE INDEX IF NOT EXISTS idx_class_obs_commit ON class_observations(commit_sha
 CREATE INDEX IF NOT EXISTS idx_class_obs_fp ON class_observations(source_fingerprint);
 CREATE INDEX IF NOT EXISTS idx_class_obs_struct_fp ON class_observations(structural_fingerprint);
 CREATE INDEX IF NOT EXISTS idx_class_features_obs ON class_features(class_observation_id);
+CREATE INDEX IF NOT EXISTS idx_class_loc_obs ON class_bug_localizations(class_observation_id);
+CREATE INDEX IF NOT EXISTS idx_class_loc_repo ON class_bug_localizations(repository_id);
 CREATE INDEX IF NOT EXISTS idx_predictions_model ON predictions(model_id);
 CREATE INDEX IF NOT EXISTS idx_predictions_created ON predictions(created_at);
 CREATE INDEX IF NOT EXISTS idx_predictions_granularity ON predictions(granularity);

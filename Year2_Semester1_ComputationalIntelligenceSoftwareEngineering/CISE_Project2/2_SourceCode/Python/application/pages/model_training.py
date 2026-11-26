@@ -15,7 +15,7 @@ from database.repository import RepositoryDB
 from ml.cross_validation import (
     RepositoryGroupKFoldValidator,
     compute_binary_classification_metrics,
-    select_precision_optimal_threshold,
+    select_classifier_threshold,
 )
 from ml.evaluator import ModelEvaluator
 from ml.model_manager import ModelManager
@@ -54,8 +54,8 @@ def render_model_training(db: RepositoryDB, settings: AppSettings) -> None:
     unit_label = "Classes" if ds_granularity == "class" else "Methods"
     c1, c2, c3, c4 = st.columns(4)
     c1.metric(f"Total {unit_label}", stats.get("total_observations", 0))
-    c2.metric("Defect-Prone (1)", stats.get("buggy_count", 0))
-    c3.metric("Candidate-Clean (0)", stats.get("clean_count", 0))
+    c2.metric("BUG (1)", stats.get("buggy_count", 0))
+    c3.metric("CLEAN (0)", stats.get("clean_count", 0))
     c4.metric("Repositories", len(stats.get("repository_distribution", {})))
 
     # 2. Model Family & Hyperparameters
@@ -155,11 +155,11 @@ def render_model_training(db: RepositoryDB, settings: AppSettings) -> None:
                 decision_threshold = 0.50
                 criterion = "nominal_0.50"
                 if optimize_precision and cv_res.oof_predictions:
-                    t_res = select_precision_optimal_threshold(
+                    t_res = select_classifier_threshold(
                         cv_res.oof_predictions["y_true"],
                         cv_res.oof_predictions["y_prob"],
-                        min_precision_preferred=settings.ml.preferred_precision_target,
-                        min_precision_acceptable=settings.ml.min_precision_target,
+                        min_precision_target=settings.ml.preferred_precision_target,
+                        min_precision_floor=settings.ml.min_precision_target,
                         min_recall=settings.ml.min_recall_floor,
                     )
                     decision_threshold = float(t_res["selected_threshold"])

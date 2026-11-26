@@ -75,6 +75,9 @@ CLASS_IDENTIFIER_COLUMNS = [
     "label",
     "label_confidence",
     "szz_trace_count",
+    "localization_status",
+    "affected_methods_json",
+    "affected_line_ranges_json",
     "evidence_category",
 ]
 

@@ -331,6 +331,107 @@ class GitHubClient:
             "excluded": excluded,
         }
 
+    def discover_top_csharp_repositories_by_stars(
+        self,
+        target_discovery: int = 500,
+        min_stars: int = 100,
+        min_size_kb: int = 50,
+        max_size_kb: int = 120000,
+        exclude_forks: bool = True,
+        exclude_archived: bool = True,
+        max_pages: int = 8,
+        progress_callback: Optional[Callable[[str, int], None]] = None,
+    ) -> Dict[str, Any]:
+        """Discover public C# repositories via paginated GitHub search ordered strictly by stars descending.
+
+        Excludes forks, archived repositories, empty repositories, and unsuitable targets while logging
+        exact exclusion reasons for reproducibility.
+        """
+        discovered_by_name: Dict[str, Dict[str, Any]] = {}
+        queries_executed = 0
+        rate_limited = False
+
+        # Search globally sorted by stars descending; GitHub caps single-query pagination at 1000 results (10 pages x 100)
+        upper_star_bound: Optional[int] = None
+        band_idx = 0
+        while len(discovered_by_name) < target_discovery and band_idx < 4:
+            band_idx += 1
+            lowest_star_in_band: Optional[int] = None
+            for page in range(1, min(max_pages, 10) + 1):
+                if len(discovered_by_name) >= target_discovery:
+                    break
+                try:
+                    res = self.search_repositories(
+                        min_stars=min_stars,
+                        max_stars=upper_star_bound,
+                        exclude_forks=exclude_forks,
+                        exclude_archived=exclude_archived,
+                        page=page,
+                        per_page=100,
+                        sort="stars",
+                        order="desc",
+                    )
+                    queries_executed += 1
+                    items = res.get("items", [])
+                    if not items:
+                        break
+                    for item in items:
+                        slug = (item.get("full_name") or "").lower()
+                        if not slug or slug in discovered_by_name:
+                            continue
+                        stars = int(item.get("stars", 0) or 0)
+                        lowest_star_in_band = stars if lowest_star_in_band is None else min(lowest_star_in_band, stars)
+                        is_sel, score, sel_reason, excl_reason = evaluate_repository_candidate(
+                            item,
+                            min_stars=min_stars,
+                            min_size_kb=min_size_kb,
+                            max_size_kb=max_size_kb,
+                            exclude_forks=exclude_forks,
+                            exclude_archived=exclude_archived,
+                        )
+                        item["is_selected"] = is_sel
+                        item["selection_score"] = score
+                        item["selection_reason"] = f"Top-starred C# ranking (stars={stars}); {sel_reason}" if is_sel else ""
+                        item["exclusion_reason"] = excl_reason
+                        discovered_by_name[slug] = item
+
+                    if progress_callback:
+                        progress_callback(f"Discovered {len(discovered_by_name)} top-starred C# repositories", len(discovered_by_name))
+
+                    if len(items) < 100:
+                        break
+                    if not self.token:
+                        time.sleep(6.5)
+                except RateLimitExceededError:
+                    rate_limited = True
+                    logger.warning(f"GitHub search rate limit hit after {len(discovered_by_name)} candidates.")
+                    break
+                except GitHubAPIError as e:
+                    logger.warning(f"Star-ranked search failed on page {page}: {e}")
+                    break
+
+            if rate_limited or lowest_star_in_band is None or lowest_star_in_band <= min_stars:
+                break
+            upper_star_bound = max(min_stars, lowest_star_in_band - 1)
+
+        all_candidates = list(discovered_by_name.values())
+        selected = [c for c in all_candidates if c.get("is_selected")]
+        excluded = [c for c in all_candidates if not c.get("is_selected")]
+        selected.sort(key=lambda c: (-int(c.get("stars", 0) or 0), str(c.get("full_name", "")).lower()))
+        for rank, item in enumerate(selected, 1):
+            item["selection_rank"] = rank
+
+        return {
+            "discovered_total": len(all_candidates),
+            "selected_total": len(selected),
+            "excluded_total": len(excluded),
+            "queries_executed": queries_executed,
+            "rate_limited": rate_limited,
+            "ranking_strategy": "stars_descending",
+            "selected": selected,
+            "excluded": excluded,
+        }
+
     def get_repository(self, owner: str, name: str) -> Dict[str, Any]:
         """Fetch complete repository metadata for a specific owner/name."""
         logger.info(f"Fetching metadata for repository: {owner}/{name}")

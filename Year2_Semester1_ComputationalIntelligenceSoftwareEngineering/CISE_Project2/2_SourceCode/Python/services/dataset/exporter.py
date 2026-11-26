@@ -103,18 +103,18 @@ class DatasetExporter:
                 "repository_distribution": stats.get("repository_distribution", {}),
                 "labeling_methodology": {
                     "positive_label": (
-                        "1 (Defect-prone class): Mapped via SZZ (git blame -w -M -C) from heuristic "
+                        "1 (BUG — Defect-positive class): Mapped via SZZ (git blame -w -M -C) from heuristic "
                         "bug-fixing commits on production C# files to the innermost enclosing class/struct/record "
-                        "in the pre-fix parent revision."
+                        "in the pre-fix parent revision, with enclosing method and line-range localization recorded when available."
                     ),
                     "negative_label": (
-                        "0 (Candidate-clean class): Substantive production classes sampled from HEAD files "
+                        "0 (CLEAN — Candidate-clean class): Substantive production classes sampled from HEAD files "
                         "with zero recorded bug-fixing commits or SZZ traces in the mined commit window, "
-                        "interpreted under the Open-World Assumption (not confirmed defect-free)."
+                        "interpreted under the Open-World Assumption (no defect evidence observed in mined history)."
                     ),
                     "leakage_and_filtering": (
                         "All test directories, test fixtures, build directories (bin/obj), and auto-generated "
-                        "files are excluded via is_production_csharp_file()."
+                        "files are excluded via is_production_csharp_file(); all train/CV/holdout partitions enforce strict repository-level separation."
                     ),
                 },
                 "duplicate_analysis": duplicate_analysis or {},

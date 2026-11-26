@@ -117,6 +117,17 @@ def render_bug_analysis(db: RepositoryDB, settings: AppSettings) -> None:
         else:
             st.caption("No SZZ traces recorded for this repository.")
 
+        locs = db.list_class_bug_localizations(repository_id=repo_id)
+        if locs:
+            st.subheader("Verified Historical Class & Method Localizations")
+            st.dataframe(
+                pd.DataFrame(locs)[
+                    ["qualified_class_name", "method_name", "method_start_line", "method_end_line", "affected_line_ranges_json", "localization_status", "bug_fix_commit_sha"]
+                ],
+                hide_index=True,
+                width="stretch",
+            )
+
     # TAB 3: Class Observations (Primary)
     with tab3:
         st.subheader("Class-Level Observation Extraction & Attribution")

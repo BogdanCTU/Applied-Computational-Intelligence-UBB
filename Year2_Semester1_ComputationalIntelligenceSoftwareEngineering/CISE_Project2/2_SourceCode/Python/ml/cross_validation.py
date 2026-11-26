@@ -195,6 +195,7 @@ def compute_threshold_curve(
         tn, fp = cm[0][0], cm[0][1]
         fn, tp = cm[1][0], cm[1][1]
         fpr = float(fp / max(1, fp + tn))
+        fnr = float(fn / max(1, fn + tp))
         curve.append({
             "threshold": round(float(t), 4),
             "accuracy": round(acc, 4),
@@ -203,6 +204,7 @@ def compute_threshold_curve(
             "f1": round(f1, 4),
             "f05": round(f05, 4),
             "fpr": round(fpr, 4),
+            "fnr": round(fnr, 4),
             "predicted_positives": int(tp + fp),
             "true_negatives": int(tn),
             "false_positives": int(fp),
@@ -210,6 +212,57 @@ def compute_threshold_curve(
             "true_positives": int(tp),
         })
     return curve
+
+
+def select_classifier_threshold(
+    y_true: np.ndarray,
+    y_prob: np.ndarray,
+    min_precision_target: float = 0.77,
+    min_precision_floor: float = 0.75,
+    min_recall: float = 0.50,
+    min_predicted_positives: int = 5,
+    thresholds: Optional[List[float]] = None,
+) -> Dict[str, Any]:
+    """Select decision threshold strictly on CV probabilities optimizing F1/Recall above the 75% precision floor."""
+    if thresholds is None:
+        thresholds = [round(x, 2) for x in np.arange(0.30, 0.90, 0.02)]
+
+    curve = compute_threshold_curve(y_true, y_prob, thresholds=thresholds)
+    nontrivial = [c for c in curve if c["predicted_positives"] >= min_predicted_positives]
+    if not nontrivial:
+        nontrivial = [c for c in curve if c["predicted_positives"] >= 1] or curve
+
+    tier1 = [
+        c for c in nontrivial
+        if c["precision"] >= min_precision_target and c["recall"] >= min_recall
+    ]
+    if tier1:
+        best = max(tier1, key=lambda c: (c["f1"], c["recall"], c["precision"]))
+        criterion = f"tier1_precision>={min_precision_target:.2f}_recall>={min_recall:.2f}_max_f1_recall"
+        return {"selected_threshold": best["threshold"], "criterion": criterion, "inner_metrics": best, "curve": curve}
+
+    tier2 = [
+        c for c in nontrivial
+        if c["precision"] >= min_precision_floor and c["recall"] >= min_recall
+    ]
+    if tier2:
+        best = max(tier2, key=lambda c: (c["f1"], c["recall"], c["precision"]))
+        criterion = f"tier2_precision>={min_precision_floor:.2f}_recall>={min_recall:.2f}_max_f1_recall"
+        return {"selected_threshold": best["threshold"], "criterion": criterion, "inner_metrics": best, "curve": curve}
+
+    tier3 = [c for c in nontrivial if c["recall"] >= min_recall]
+    if tier3:
+        best = max(tier3, key=lambda c: (c["f1"], c["precision"], c["recall"]))
+        criterion = f"tier3_recall>={min_recall:.2f}_max_f1"
+        return {"selected_threshold": best["threshold"], "criterion": criterion, "inner_metrics": best, "curve": curve}
+
+    best = max(nontrivial, key=lambda c: (c["f1"], c["precision"]))
+    return {
+        "selected_threshold": best["threshold"],
+        "criterion": "tier4_fallback_max_f1",
+        "inner_metrics": best,
+        "curve": curve,
+    }
 
 
 def select_precision_optimal_threshold(
@@ -287,6 +340,7 @@ def compute_binary_classification_metrics(
     tn, fp = cm[0][0], cm[0][1]
     fn, tp = cm[1][0], cm[1][1]
     fpr = float(fp / max(1, fp + tn))
+    fnr = float(fn / max(1, fn + tp))
 
     has_multi = len(np.unique(y_t)) > 1
     roc_auc = float(roc_auc_score(y_t, y_p)) if has_multi else 0.5
@@ -301,6 +355,7 @@ def compute_binary_classification_metrics(
         "f1": round(f1, 4),
         "f05": round(f05, 4),
         "fpr": round(fpr, 4),
+        "fnr": round(fnr, 4),
         "roc_auc": round(roc_auc, 4),
         "pr_auc": round(pr_auc, 4),
         "brier_score": round(brier, 4),

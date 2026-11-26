@@ -1,19 +1,14 @@
-# Slide 2 — Problem Statement & Transformation Objectives
+# Slide 2 — Problem Statement & Scope Correction (`v4.0.0`)
 
-## Limitations of Legacy Method-Level v2
+## From Risk-Scoring to Explicit Bug Detection Classification
 
-- **Narrow Empirical Diversity:** Only `5` training repositories (`578` methods) + `1` holdout (`159` methods).
-- **High Structural Noise:** Tiny helper methods (`3–10` LOC) had overlapping metric vectors across buggy and clean methods, capping holdout precision around **`69.61%`** (well below real-world precision needs).
-- **Unrealistic Developer Input:** Practitioners review **complete classes and `.cs` source files** (often containing multiple classes/structs/records), not isolated out-of-context methods.
-
----
-
-## v3.0.0 Transformation Objectives
-
-1. **>= 100 C# Repositories:** Build a resumable, checkpointed collection pipeline (`run_100_repo_class_pipeline.py`) across diverse open-source C# projects -> **Achieved: `106` processed repositories (`5,711` classes)**.
-2. **Class & Multi-Class File Granularity:** Extend `.NET 9.0` Roslyn analyzer to extract **40 isolated class metrics** (`schema v3.0.0`) with zero nested-type bleed-over while aggregating multi-class `.cs` files cleanly.
-3. **High Precision Target:** Achieve **$\ge 80\%$ preferred precision** ($\ge 75\%$ minimum) with recall $\ge 50\%$ using zero-leakage nested `GroupKFold` and untouched repo holdout validation.
-4. **Scientific Epistemology:** Frame predictions strictly as **ML-based static defect indications** under historical SZZ evidence and the Open-World Assumption — never as formal bug proof.
+- **Clear Developer Decision:** Practitioners need explicit **`BUG` / `CLEAN`** verdicts at class and `.cs` file level rather than uncalibrated Low/Medium/High risk dashboards.
+- **Top-200 Star-Ranked Benchmark:** Replacing smaller/stratified subsets with the **Top 200 public C# repositories ranked by GitHub stars descending** evaluates generalization across major production C# systems (`2dust/v2rayN` down to `tmenier/Flurl`).
+- **Honest Localization Distinction:**
+  - **Verified Historical SZZ Evidence:** Map pre-fix bug-fix diffs to enclosing class, method, and line ranges when matched historically in SQLite (`class_bug_localizations`).
+  - **ML-Estimated Suspicious Methods:** Train a **separate** method localizer (`method_localizer_top200_v4.joblib`) on method metrics rather than misrepresenting class feature importances as line proof.
+  - **Unavailable Exact Lines on Unseen Code:** Explicitly report exact buggy line ranges as **`unavailable`** when no historical SZZ match exists.
+- **Safety Guarantee:** Never classify a multi-class `.cs` file as `CLEAN` when syntax errors or per-class extraction failures occur (`ANALYSIS INCOMPLETE`).
 
 ---
 

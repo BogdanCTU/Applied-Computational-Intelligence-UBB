@@ -10,10 +10,10 @@ from ml.model_manager import ModelManager
 
 
 def render_dashboard(db: RepositoryDB, settings: AppSettings) -> None:
-    st.title("Machine Learning-Based Bug Detection in C# Source Code")
+    st.title("Machine Learning-Based C# Bug Detection Classifier")
     st.caption(
-        "Static class- and file-level C# bug detection combining Roslyn AST metrics, "
-        "SZZ defect history provenance, and repository-grouped cross-validation."
+        "Static binary bug detection classifier (BUG / CLEAN) across C# classes and complete .cs files, "
+        "backed by top-starred public C# GitHub repositories, SZZ provenance, and Roslyn AST metrics."
     )
 
     stats = db.get_summary_statistics()
@@ -38,12 +38,12 @@ def render_dashboard(db: RepositoryDB, settings: AppSettings) -> None:
             labels_df = pd.DataFrame(
                 [
                     {
-                        "Class": "Defect-Prone Class (1)",
+                        "Class": "BUG (Defect-Positive)",
                         "Count": stats.get("class_observations_buggy", 0),
                         "Share": f"{stats.get('class_observations_buggy', 0) / total_classes * 100:.1f}%",
                     },
                     {
-                        "Class": "Candidate-Clean Class (0)",
+                        "Class": "CLEAN (Candidate-Clean)",
                         "Count": stats.get("class_observations_non_buggy", 0),
                         "Share": f"{stats.get('class_observations_non_buggy', 0) / total_classes * 100:.1f}%",
                     },

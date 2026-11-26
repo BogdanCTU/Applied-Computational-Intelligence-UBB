@@ -18,7 +18,7 @@ from database.repository import RepositoryDB
 from ml.model_manager import ModelManager
 
 st.set_page_config(
-    page_title="C# Defect Predictor | Class & File Bug Detection",
+    page_title="C# Bug Detection Classifier",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -37,8 +37,8 @@ def main() -> None:
     repo_db = st.session_state.repo_db
 
     with st.sidebar:
-        st.subheader("C# Bug Detection")
-        st.caption("Machine Learning-Based Bug Detection in C# Source Code (Class & File Level)")
+        st.subheader("C# Bug Detection Classifier")
+        st.caption("Machine Learning-Based C# Bug Detection Classifier (BUG / CLEAN)")
 
         page_options = [
             "Dashboard",
@@ -70,8 +70,8 @@ def main() -> None:
                     {"Item": "Repositories", "Count": f"{stats['repositories_processed']} processed / {stats['repositories_total']}"},
                     {"Item": "Commits", "Count": f"{stats['commits_total']} ({stats['commits_bug_fix']} fixes)"},
                     {"Item": "Class Observations", "Count": str(stats.get("class_observations_total", 0))},
-                    {"Item": "Defect-Prone Classes", "Count": str(stats.get("class_observations_buggy", 0))},
-                    {"Item": "Candidate-Clean Classes", "Count": str(stats.get("class_observations_non_buggy", 0))},
+                    {"Item": "BUG Classes", "Count": str(stats.get("class_observations_buggy", 0))},
+                    {"Item": "CLEAN Classes", "Count": str(stats.get("class_observations_non_buggy", 0))},
                     {"Item": "Legacy Methods", "Count": str(stats["observations_total"])},
                     {"Item": "Datasets / Models", "Count": f"{stats['datasets_count']} / {len(registered_models)}"},
                 ]

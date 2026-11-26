@@ -1,23 +1,17 @@
-# Slide 7 — Conclusions, Limitations & Future Work
+# Slide 7 — Conclusions, Limitations & Future Work (`v4.0.0`)
 
 ## Key Achievements
 
-1. **106-Repository Corpus:** Expanded empirical training and evaluation data from `5` to **`106` distinct public C# repositories** (`5,711` classes, `28,972` commits, `16,161` SZZ blame traces, `0` missing feature values).
-2. **Class & File Roslyn Architecture:** `.NET 9.0` Roslyn `v3.0.0` computes `40` isolated class/struct/record metrics (excluding nested type double-counting) and supports batch NDJSON streaming plus multi-class `.cs` file scoring.
-3. **High-Precision Benchmark Target Exceeded:** Inner-CV thresholded Random Forest (`class_precision_champion_v3`, $\tau = 0.600$) achieves **`82.30%` Nested CV precision** and **`83.43%` untouched holdout precision** (`+13.82 pp` over legacy v2 holdout precision `69.61%`) with `61.99%` recall and `0.8449` ROC-AUC.
-4. **Full Reproducibility & Compatibility:** Preserved all legacy method datasets, 4 historical models, and SQLite method rows untouched (`bug_detection_method_v2_archive.db`).
+1. **Top-200 Star-Ranked C# Corpus:** Discovered `500` repos, processed **`200` repositories** (`4,409`–`121,429` stars; `179` documented exclusions, `0` failed), yielding **`9,588` classes** (**`4,425` BUG** / **`5,163` CLEAN**) and **`7,361` verified SZZ localization records**.
+2. **High-Precision Binary Classifier:** Random Forest champion (`class_bug_classifier_top200_v4`, $\tau = 0.520$) achieves **`79.47%` untouched holdout precision**, **`62.02%` recall**, **`69.67%` F1**, **`0.8180` ROC-AUC**, **`15.71%` FPR**, and **`37.98%` FNR** across `40` unseen repositories (`2,042` classes), beating `DummyClassifier` by `+27.54 pp` precision.
+3. **Honest Localization & Partial-Analysis Guard:** Separate ML Method Localizer reaches **`68.64%` Top-3 class hit rate** (`0.6611` ROC-AUC), unseen exact lines are explicitly marked **`unavailable`**, and syntax-broken files never render `CLEAN`.
 
-## Scientific Limitations & Threats to Validity
+## Remaining Limitations & Future Work
 
-- **Open-World Negative Labels:** Candidate-clean classes lack recorded SZZ history in the `250`-commit window; this is not formal verification of zero bugs.
-- **Short Semantic Bugs:** Compact classes (`median_loc = 48.0`) with subtle contract or logic errors account for False Negatives (`n=176`).
-- **Base-Rate Prevalence Shift:** Under lower real-world defect rates (`10%–20%`), Bayesian PPV shifts (`38.50%–58.48%`), reinforcing human-in-the-loop triage.
-
-## Future Directions
-
-- Incorporate Git change churn, developer entropy, and inter-class dependency graph centrality alongside AST complexity.
-- Extend Roslyn diagnostics with lightweight nullability/exception-flow semantic indicators.
+- **Open-World Labels & Base-Rate Shift:** Expected PPV drops to `17.20%–49.67%` at `5%–20%` real-world defect rates -> triage aid, not automated blocker.
+- **Structural Blind Spots:** Semantic bugs inside short classes drive false negatives (`37.98%` FNR); exact line localization remains unavailable statically on unseen code; pre-existing binary `.pptx`/`.docx`/`.pdf` defense files remain archival v2 snapshots.
+- **Future Work:** Add git change-churn/ownership entropy and lightweight semantic dataflow/nullability indicators.
 
 ---
 
-*Previous:* [Live Application & Class/File Demo](06_ApplicationDemo.md)
+*Previous:* [Application Demo](06_ApplicationDemo.md)

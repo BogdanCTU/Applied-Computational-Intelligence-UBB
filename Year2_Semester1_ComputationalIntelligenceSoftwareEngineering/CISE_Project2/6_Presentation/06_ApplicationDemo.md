@@ -1,18 +1,16 @@
-# Slide 6 — Streamlit Class & File Bug Detection Application
+# Slide 6 — Refactored Bug Detection GUI & Provenance Display
 
-## Multi-Granularity User Workflow (`2_SourceCode/Python/app.py`)
+## Primary `BUG DETECTED` / `CLEAN` Experience (`2_SourceCode/Python/application/pages/bug_prediction.py`)
 
-All `8` Streamlit pages read from the unified `ModelManager.list_saved_models()` registry (`class_precision_champion_v3` defaulted at top, with stored threshold `tau = 0.600`).
+All `8` Streamlit pages share `ModelManager.list_saved_models()` with `class_bug_classifier_top200_v4` ($\tau = 0.520$) selected first:
 
-1. **Input A — Single C# Class / Struct / Record Paste (`predict_class_code`):**
-   - Parses snippet with Roslyn `v3.0.0`, isolates target type (`40` metrics), computes `predict_proba()[:, 1]`, and flags defect propensity at $\ge \tau$ alongside top influential metrics and internal methods.
-2. **Input B — Full `.cs` Source File Upload (`predict_csharp_file`):**
-   - Independently extracts and predicts every non-nested and nested type inside multi-class `.cs` files without collapsing classes together.
-   - Displays file-level summary (`classes_analyzed_count`, `classes_flagged_count`, `max_defect_probability`, `mean_class_risk_score`) plus expandable per-class breakdown.
-3. **Backward-Compatible Method Diagnostic Mode (`predict_method_code`):**
-   - Retained for legacy `26`-metric method inspection when a historical method model bundle is selected.
-4. **Repository Telemetry & Evaluation Pages:**
-   - Updated `Dashboard`, `Repository Collection`, `Bug Analysis`, `Dataset Management`, `Model Training`, and `Model Evaluation` views backed live by SQLite (`122` repos, `5,711` dataset classes, `3_TestResults/ClassModelOptimization/`).
+1. **Clear Binary Primary Verdict (`format_class_verdict`, `format_file_verdict`):**
+   - Displays **`BUG DETECTED`** (`st.error`) or **`CLEAN`** (`st.success`), with probability and model confidence placed secondary.
+2. **Multi-Class `.cs` Files & Partial-Analysis Safety (`predict_csharp_file`):**
+   - Evaluates each extracted `class`/`struct`/`record` independently, summarizes **`BUG`**, **`CLEAN`**, and **Failed/Syntax Error** counts, and displays **`ANALYSIS INCOMPLETE`** (`st.warning`) rather than `CLEAN` whenever any syntax error or failed class exists.
+3. **Strictly Provenance-Separated Bug Localization:**
+   - **Verified Historical SZZ Evidence:** Displayed ONLY on historical SQLite matches (`class_bug_localizations`), showing exact commit SHAs, affected methods, and line ranges.
+   - **ML-Estimated Suspicious Methods:** On unseen `BUG` classes, `method_localizer_top200_v4.joblib` ranks suspicious methods, while exact buggy lines are explicitly marked **`unavailable`**.
 
 ---
 

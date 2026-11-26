@@ -23,24 +23,36 @@ def render_model_evaluation(db: RepositoryDB, settings: AppSettings) -> None:
         "all retained model families."
     )
 
-    # Display multi-model class-level benchmark comparison if available
-    comp_csv = PROJECT_ROOT / "3_TestResults" / "ClassModelOptimization" / "class_model_comparison.csv"
-    ho_csv = PROJECT_ROOT / "3_TestResults" / "ClassModelOptimization" / "class_holdout_results.csv"
+    # Display Top-200 class-level benchmark comparison (falling back to v3 if v4 not generated yet)
+    top200_comp = PROJECT_ROOT / "3_TestResults" / "Top200ClassifierOptimization" / "top200_model_comparison.csv"
+    top200_ho = PROJECT_ROOT / "3_TestResults" / "Top200ClassifierOptimization" / "top200_holdout_results.csv"
+    top200_loc = PROJECT_ROOT / "3_TestResults" / "Top200ClassifierOptimization" / "method_localizer_evaluation.json"
+    comp_csv = top200_comp if top200_comp.exists() else (PROJECT_ROOT / "3_TestResults" / "ClassModelOptimization" / "class_model_comparison.csv")
+    ho_csv = top200_ho if top200_ho.exists() else (PROJECT_ROOT / "3_TestResults" / "ClassModelOptimization" / "class_holdout_results.csv")
     if comp_csv.exists():
-        with st.expander("Class-Level Multi-Model Benchmark (Nested 5x4 GroupKFold & Holdout)", expanded=False):
-            st.caption("Nested cross-validation OOF results across all 7 retained model families:")
+        with st.expander("Multi-Model Bug Classifier Benchmark (Nested GroupKFold & Untouched Holdout)", expanded=True):
+            st.caption("Nested cross-validation OOF results across all evaluated model families:")
             df_comp = pd.read_csv(comp_csv)
             show_cols = [
                 c for c in [
                     "config_id", "family", "recommended_threshold",
-                    "oof_precision", "oof_recall", "oof_f1", "oof_accuracy",
+                    "oof_precision", "oof_recall", "oof_f1", "oof_fpr", "oof_fnr",
                     "oof_roc_auc", "oof_pr_auc", "oof_brier",
                 ] if c in df_comp.columns
             ]
             st.dataframe(df_comp[show_cols], hide_index=True, width="stretch")
             if ho_csv.exists():
-                st.caption("One-shot Independent Untouched Holdout Repository Evaluation:")
+                st.caption("One-shot Independent Untouched Holdout Repository Evaluation (with FPR & FNR):")
                 st.dataframe(pd.read_csv(ho_csv), hide_index=True, width="stretch")
+            if top200_loc.exists():
+                loc_eval = json.loads(top200_loc.read_text(encoding="utf-8"))
+                hm = loc_eval.get("holdout_metrics", {})
+                st.caption(
+                    f"Separately Validated Method Localizer Holdout — Precision: {hm.get('precision', 0):.3f}, "
+                    f"Recall: {hm.get('recall', 0):.3f}, F1: {hm.get('f1', 0):.3f}, ROC-AUC: {hm.get('roc_auc', 0):.3f}, "
+                    f"Top-1 BUG Class Hit: {loc_eval.get('holdout_top1_class_hit_rate', 0):.1%}, "
+                    f"Top-3 Hit: {loc_eval.get('holdout_top3_class_hit_rate', 0):.1%}"
+                )
 
     model_mgr = ModelManager(settings.storage.models_dir, db=db)
     models = model_mgr.list_saved_models()

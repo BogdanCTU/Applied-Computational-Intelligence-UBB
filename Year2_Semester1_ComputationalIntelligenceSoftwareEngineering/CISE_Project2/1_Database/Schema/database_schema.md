@@ -1,8 +1,8 @@
-# SQLite Database Schema Specification
+# SQLite Database Schema Specification (v4.0.0)
 
 **Database File:** `1_Database/SQLite/bug_detection.db`  
 **Engine:** SQLite 3 (WAL mode enabled, Foreign Key enforcement active)  
-**System:** CISE Project 2 — Machine Learning-Based Bug Detection in C# Source Code  
+**System:** CISE Project 2 — Machine Learning-Based C# Bug Detection Classifier  
 
 ---
 
@@ -17,6 +17,7 @@ erDiagram
     FILE_OBSERVATIONS ||--o{ CLASS_OBSERVATIONS : "contains"
     REPOSITORIES ||--o{ CLASS_OBSERVATIONS : "samples"
     CLASS_OBSERVATIONS ||--|| CLASS_FEATURES : "measured_by_40"
+    CLASS_OBSERVATIONS ||--o{ CLASS_BUG_LOCALIZATIONS : "localized_by_szz"
     DATASETS ||--o{ DATASET_CLASS_OBSERVATIONS : "groups"
     CLASS_OBSERVATIONS ||--o{ DATASET_CLASS_OBSERVATIONS : "included_in"
     REPOSITORIES ||--o{ METHODS : "declares_legacy"
@@ -29,9 +30,9 @@ erDiagram
 
 ---
 
-## 2. Primary Class/File-Level & Collection Tables
+## 2. Primary Class/File-Level, Localization & Collection Tables
 
-### 2.1 `repositories`
+### 2.1 `repositories` (`246` rows in live DB)
 Tracks discovered, selected, excluded, and processed open-source C# repositories.
 
 | Column | Type | Constraints | Description |
@@ -39,11 +40,11 @@ Tracks discovered, selected, excluded, and processed open-source C# repositories
 | `id` | `INTEGER` | PRIMARY KEY AUTOINCREMENT | Unique repository identifier |
 | `full_name` | `TEXT` | UNIQUE NOT NULL | GitHub `owner/repo` slug |
 | `name` / `owner` / `url` | `TEXT` | NOT NULL | Repository identity and clone URL |
-| `description` / `license` | `TEXT` | | Description and SPDX license identifier |
+| `description` / `license` / `language` | `TEXT` | | Description, SPDX license identifier, and primary GitHub language (`C#`) |
 | `default_branch` | `TEXT` | DEFAULT 'main' | Primary git branch |
 | `stars` / `forks` / `size_kb` | `INTEGER` | DEFAULT 0 | Popularity and repository size metrics |
 | `is_cloned` / `local_path` / `status` | `INTEGER` / `TEXT` | | Local clone tracking and pipeline state (`registered`, `cloned`, `synced`, `processed`, `excluded`, `failed`) |
-| `selection_score` / `selection_rank` | `REAL` / `INTEGER` | | Composite discovery ranking score and rank |
+| `selection_score` / `selection_rank` | `REAL` / `INTEGER` | | Discovery star ranking score and rank |
 | `selection_reason` / `exclusion_reason` | `TEXT` | | Explicit audit rationale for inclusion or exclusion |
 | `is_selected` / `is_fork` / `is_archived` | `INTEGER` | DEFAULT 0/1 | Selection and GitHub status flags |
 | `pushed_at` / `created_at_gh` | `TEXT` | | GitHub activity timestamps |
@@ -56,8 +57,8 @@ Tracks resumable multi-repository collection runs (`run_id`, `target_repositorie
 ### 2.3 `file_observations`
 Tracks analyzed `.cs` source file revisions (`repository_id`, `commit_sha`, `file_path`, `total_lines`, `namespace_count`, `class_count`, `method_count`, `file_fingerprint`, `created_at`). Unique on `(repository_id, commit_sha, file_path)`.
 
-### 2.4 `class_observations`
-Primary prediction unit pairing C# class/struct/record declarations with SZZ defect provenance and fingerprints.
+### 2.4 `class_observations` (`9,648` rows in live DB)
+Primary prediction unit pairing C# class/struct/record declarations with SZZ defect provenance, localization status, and fingerprints.
 
 | Column | Type | Constraints | Description |
 | :--- | :--- | :--- | :--- |
@@ -71,33 +72,49 @@ Primary prediction unit pairing C# class/struct/record declarations with SZZ def
 | `start_line` / `end_line` / `is_nested` / `enclosing_type_name` | `INTEGER` / `TEXT` | | 1-based line bounds and nesting metadata |
 | `source_code` / `corrected_code` | `TEXT` | | Pre-fix/sampled source and post-fix reference code |
 | `source_fingerprint` / `structural_fingerprint` | `TEXT` | NOT NULL | SHA-256 hashes for exact and comment/whitespace-normalized deduplication |
-| `label` / `label_confidence` | `INTEGER` / `REAL` | NOT NULL | `1` = Defect-prone class, `0` = Candidate-clean class, `-1` = Uncertain |
+| `label` / `label_confidence` | `INTEGER` / `REAL` | NOT NULL | `1` = `BUG` (Defect-positive class), `0` = `CLEAN` (Candidate-clean class), `-1` = Uncertain |
 | `szz_trace_count` / `blamed_lines_json` | `INTEGER` / `TEXT` | | Number and list of SZZ blamed line numbers in class |
+| `localization_status` | `TEXT` | DEFAULT 'unavailable' | v4 provenance status: `verified_historical`, `class_only`, `not_applicable`, or `unavailable` |
+| `affected_methods_json` | `TEXT` | DEFAULT '[]' | JSON summary of enclosing SZZ-blamed methods and spans |
+| `affected_line_ranges_json` | `TEXT` | DEFAULT '[]' | JSON list of compressed contiguous affected line ranges (`{"start": int, "end": int}`) |
 | `evidence_category` / `bug_fixing_commit_message` / `review_status` | `TEXT` | | `szz_class_bic`, `stable_head_class`, manual overrides, and commit message |
 
-### 2.5 `class_features`
-Stores the 40 static Roslyn class-level features (schema version `3.0.0`, analyzer version `2.0.0`) linked 1:1 to `class_observations(id)`:
-- **Size & Composition (7):** `class_loc`, `class_logical_loc`, `method_count`, `constructor_count`, `property_count`, `field_count`, `nested_type_count`.
-- **Parameters, Locals & Statements (5):** `total_parameter_count`, `max_parameter_count`, `total_local_variable_count`, `total_statement_count`, `total_return_count`.
-- **Complexity & Nesting Distributions (6):** `total_cyclomatic_complexity`, `mean_method_complexity`, `max_method_complexity`, `std_method_complexity`, `max_nesting_depth`, `mean_nesting_depth`.
-- **Control Flow & Operators (9):** `total_boolean_operator_count`, `total_logical_operator_count`, `total_conditional_expression_count`, `total_if_count`, `total_switch_count`, `total_loop_count`, `total_try_catch_count`, `total_throw_count`, `total_break_continue_count`.
-- **Coupling & Member Access (5):** `total_method_call_count`, `total_field_access_count`, `total_property_access_count`, `total_assignment_count`, `total_object_creation_count`.
-- **Modifiers & Density Ratios (8):** `static_method_count`, `async_method_count`, `generic_method_count`, `high_complexity_method_count`, `large_method_count`, `complexity_concentration`, `structural_density`, `wmc_density`.
+### 2.5 `class_bug_localizations` (v4.0.0 — `7,361` rows in live DB)
+Stores verified historical SZZ method- and line-range bug localization provenance linked to `class_observations(id)`. Unique constraint on `(class_observation_id, method_signature, bug_fix_commit_sha)`.
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `INTEGER` | PRIMARY KEY AUTOINCREMENT | Localization record ID |
+| `class_observation_id` | `INTEGER` | NOT NULL, FK -> `class_observations(id)` | Enclosing class observation (`ON DELETE CASCADE`) |
+| `repository_id` | `INTEGER` | NOT NULL, FK -> `repositories(id)` | Source repository |
+| `commit_sha` | `TEXT` | NOT NULL | Pre-fix parent revision SHA |
+| `bug_fix_commit_sha` | `TEXT` | | Fixing commit SHA providing historical proof |
+| `bug_inducing_commit_sha` | `TEXT` | | Blamed bug-inducing commit SHA(s) |
+| `file_path` / `qualified_class_name` | `TEXT` | | Enclosing file path and qualified class name |
+| `method_name` / `method_signature` | `TEXT` | | Enclosing method identifier and full signature (nullable if class/field-level diff) |
+| `method_start_line` / `method_end_line` | `INTEGER` | | 1-based enclosing method span in pre-fix source |
+| `affected_lines_json` | `TEXT` | NOT NULL DEFAULT '[]' | JSON list of individual blamed line numbers |
+| `affected_line_ranges_json` | `TEXT` | NOT NULL DEFAULT '[]' | Compressed contiguous `[start, end]` line ranges |
+| `localization_status` | `TEXT` | NOT NULL DEFAULT 'verified_historical' | Provenance tag (`verified_historical` / `class_only` / `unavailable`) |
+| `szz_confidence` | `REAL` | DEFAULT 0.85 | Confidence of SZZ mapping |
+
+### 2.6 `class_features` (`9,648` rows in live DB)
+Stores the 40 static Roslyn class-level features (schema version `3.0.0`) linked 1:1 to `class_observations(id)`.
 
 ---
 
 ## 3. Commits, SZZ, Datasets, Models & Predictions
 
-- **`commits` & `commit_files` & `szz_results`**: Commit history, bug-fix scores, per-file diff stats, and `git blame -w -M -C` BIC traces.
-- **`datasets` & `dataset_class_observations` & `dataset_observations`**: Versioned snapshots across both `granularity='class'` and historical `granularity='method'`, storing `repository_count`, `feature_schema_version`, `export_path`, `manifest_path`, and `sha256_checksum`.
-- **`models`**: Unified model metadata registry (`name`, `algorithm`, `version`, `granularity`, `dataset_id`, `dataset_version`, `decision_threshold`, `threshold_selection_criterion`, `parameters_json`, `metrics_json`, `feature_names_json`, `model_file_path`).
-- **`predictions`**: Inference audit log storing `granularity`, `dataset_version`, `decision_threshold`, `class_name`, `namespace_name`, `file_name`, `start_line`, `end_line`, `method_count`, `loc`, `cyclomatic_complexity`, `file_summary_json`, `predicted_label`, `risk_score`, `risk_category`, and `created_at`.
+- **`commits` (`46,053`) & `commit_files` (`405,930`) & `szz_results` (`24,166`)**: Commit history, bug-fix scores, per-file diff stats, and `git blame -w -M -C` BIC traces.
+- **`datasets` (`3`) & `dataset_class_observations` (`9,588`) & `dataset_observations`**: Versioned snapshots across both `granularity='class'` (ID 3: `csharp_class_top200_v4`, `9,588` rows) and historical `granularity='method'` (ID 1: `csharp_empirical_v1` `483` rows; ID 2: `csharp_empirical_v2` `578` rows).
+- **`models`**: Unified model metadata registry (`name`, `algorithm`, `version`, `granularity` in `{class, method, method_localizer}`, `dataset_id`, `dataset_version`, `decision_threshold`, `threshold_selection_criterion`, `parameters_json`, `metrics_json`, `feature_names_json`, `model_file_path`).
+- **`predictions`**: Inference audit log including v4 columns `classification_label` (`BUG` / `CLEAN`) and `localization_json` (provenance-tagged verified historical SZZ or ML suspicious methods), alongside `granularity`, `dataset_version`, `decision_threshold`, `class_name`, `namespace_name`, `file_name`, `start_line`, `end_line`, `method_count`, `loc`, `cyclomatic_complexity`, `file_summary_json`, `predicted_label`, `risk_score`, `risk_category`, and `created_at`.
 
 ---
 
 ## 4. Historical Method-Level Tables (Preserved)
 
-`methods`, `observations`, `features`, and `dataset_observations` remain untouched in `1_Database/SQLite/bug_detection.db` for backward compatibility with Datasets #1 (`v1.0.0`) and #2 (`v2.0.0`). An unmodified pre-migration copy is also preserved at `1_Database/SQLite/bug_detection_method_v2_archive.db`.
+`methods`, `observations` (`877` rows), `features`, and `dataset_observations` remain untouched in `1_Database/SQLite/bug_detection.db` for backward compatibility with Datasets #1 (`v1.0.0`) and #2 (`v2.0.0`). An unmodified pre-migration snapshot is preserved at `1_Database/SQLite/bug_detection_method_v2_archive.db`.
 
 ---
 
@@ -121,6 +138,8 @@ CREATE INDEX IF NOT EXISTS idx_class_obs_commit ON class_observations(commit_sha
 CREATE INDEX IF NOT EXISTS idx_class_obs_fp ON class_observations(source_fingerprint);
 CREATE INDEX IF NOT EXISTS idx_class_obs_struct_fp ON class_observations(structural_fingerprint);
 CREATE INDEX IF NOT EXISTS idx_class_features_obs ON class_features(class_observation_id);
+CREATE INDEX IF NOT EXISTS idx_class_bug_loc_obs ON class_bug_localizations(class_observation_id);
+CREATE INDEX IF NOT EXISTS idx_class_bug_loc_repo ON class_bug_localizations(repository_id);
 CREATE INDEX IF NOT EXISTS idx_predictions_model ON predictions(model_id);
 CREATE INDEX IF NOT EXISTS idx_predictions_created ON predictions(created_at);
 CREATE INDEX IF NOT EXISTS idx_predictions_granularity ON predictions(granularity);

@@ -1,112 +1,89 @@
-# Experimental Results & Comparative Analysis (`v3.0.0`)
+# Experimental Results & Comparative Analysis (`v4.0.0`)
 
-**Experiment Runner:** `2_SourceCode/Scripts/run_class_model_optimization.py`  
-**Primary Dataset:** Dataset #3 (`csharp_class_empirical_v3` v3.0.0 — `5,711` classes across `106` public C# repositories)  
-**Artifact Directory:** `3_TestResults/ClassModelOptimization/`
-
----
-
-## 1. Corpus Summary & Feature Distributional Separation
-
-Across `106` successfully mined C# repositories (`4,730` Development classes across `84` repos; `981` Untouched Holdout classes across `22` repos), defect-prone classes exhibit substantially higher size, cyclomatic mass, nesting depth, and interaction density than candidate-clean classes:
-
-| Roslyn Feature (`v3.0.0`) | Defect-Prone Median (Mean) | Candidate-Clean Median (Mean) |
-|---|---:|---:|
-| `class_loc` | **176.00** (342.21) | 29.00 (64.53) |
-| `class_logical_loc` | **75.00** (155.53) | 7.00 (24.94) |
-| `method_count` | **7.00** (13.69) | 2.00 (3.25) |
-| `total_cyclomatic_complexity` | **29.00** (60.98) | 4.00 (11.60) |
-| `max_method_complexity` | **8.00** (13.64) | 2.00 (4.27) |
-| `max_nesting_depth` | **3.00** (3.01) | 0.00 (0.99) |
-| `total_method_call_count` | **35.00** (76.45) | 4.00 (13.19) |
-| `total_if_count` | **10.00** (22.14) | 0.00 (3.10) |
-| `large_method_count` | **1.00** (1.91) | 0.00 (0.23) |
-| `structural_density` | **0.42** (0.40) | 0.23 (0.25) |
-| `complexity_concentration` | 0.30 (0.38) | 0.50 (0.61) |
+**Experiment Runner:** `2_SourceCode/Scripts/run_top200_classifier_optimization.py`  
+**Primary Dataset:** Dataset #3 (`csharp_class_top200_v4` v4.0.0 — `9,588` classes across `200` Top-Star C# repositories)  
+**Artifact Directory:** `3_TestResults/Top200ClassifierOptimization/`
 
 ---
 
-## 2. 5x4 Nested GroupKFold Benchmark Across All 7 Model Families (`84` Dev Repos, `4,730` Classes)
+## 1. Corpus Summary & Partitioning
 
-All thresholds ($\tau$) were selected exclusively within inner folds and evaluated out-of-fold on unseen outer repositories (`class_model_comparison.csv`):
-
-| Config ID | Model Family | Inner-CV $\tau$ | Outer Mean Prec (+/- std) | Outer Mean Rec (+/- std) | OOF Prec | OOF Rec | OOF F1 | OOF ROC-AUC | OOF PR-AUC | OOF Brier |
-|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| **`rf_opt_depth12_leaf4_log2`** | **Random Forest (Champ)** | **`0.60`** | **82.45% +/- 2.70%** | **61.59% +/- 4.01%** | **82.30%** | **61.71%** | **70.53%** | **0.8260** | **0.8280** | **0.1697** |
-| `rf_opt_depth10_leaf6_unweighted` | Random Forest | `0.60` | 81.94% +/- 3.15% | 61.71% +/- 4.38% | 81.69% | 61.83% | 70.39% | 0.8263 | 0.8290 | 0.1694 |
-| `calibrated_rf_sigmoid` | Calibrated Ensemble | `0.64` | 81.90% +/- 3.26% | 61.57% +/- 5.07% | 81.56% | 61.71% | 70.26% | 0.8261 | 0.8298 | 0.1694 |
-| `et_opt_depth10_leaf4_log2_bal` | Extra Trees | `0.60` | 82.84% +/- 3.00% | 60.92% +/- 7.23% | 82.63% | 61.12% | 70.26% | 0.8254 | 0.8282 | 0.1709 |
-| `calibrated_et_isotonic` | Calibrated Ensemble | `0.64` | 82.36% +/- 3.14% | 60.62% +/- 4.04% | 82.11% | 60.74% | 69.83% | 0.8250 | 0.8276 | 0.1700 |
-| `rf_baseline_compact` | Random Forest (Base) | `0.62` | 82.81% +/- 3.66% | 60.20% +/- 7.08% | 82.27% | 60.40% | 69.66% | 0.8262 | 0.8275 | 0.1694 |
-| `hgb_depth4_leaf25_unweighted` | HistGradientBoosting | `0.64` | 81.83% +/- 3.97% | 60.77% +/- 4.16% | 81.40% | 60.86% | 69.65% | 0.8211 | 0.8227 | 0.1721 |
-| `et_opt_depth12_leaf5_sqrt` | Extra Trees | `0.60` | 82.80% +/- 2.55% | 59.73% +/- 4.47% | 82.66% | 59.85% | 69.43% | 0.8267 | 0.8298 | 0.1696 |
-| `lr_std_l2_c01_bal` | Logistic Regression | `0.58` | 81.11% +/- 3.04% | 60.47% +/- 3.86% | 80.82% | 60.57% | 69.24% | 0.8138 | 0.8174 | 0.1761 |
-| `lr_robust_l2_c01` | Logistic Regression | `0.58` | 81.22% +/- 3.53% | 59.97% +/- 4.24% | 80.83% | 60.06% | 68.91% | 0.8137 | 0.8172 | 0.1765 |
-| `hgb_depth5_leaf20_l2_2` | HistGradientBoosting | `0.66` | 82.04% +/- 2.33% | 58.16% +/- 2.29% | 82.01% | 58.20% | 68.08% | 0.8147 | 0.8168 | 0.1759 |
-| `dt_depth5_leaf15` | Decision Tree | `0.70` | 82.20% +/- 3.43% | 53.85% +/- 3.14% | 82.01% | 53.93% | 65.07% | 0.8010 | 0.7958 | 0.1850 |
-| `dt_depth6_leaf10_bal` | Decision Tree | `0.70` | 82.08% +/- 3.78% | 53.16% +/- 4.64% | 81.61% | 53.25% | 64.45% | 0.7905 | 0.7910 | 0.1906 |
-| `dummy_stratified` | DummyClassifier | `0.30` | 49.44% +/- 1.65% | 49.52% +/- 1.53% | 49.43% | 49.49% | 49.46% | 0.4941 | 0.4973 | 0.5059 |
-
-### Champion Outer Fold Consistency (`champion_outer_folds.csv`)
-
-| Outer Fold | Val Repos | Val Classes | Inner $\tau$ | Selection Criterion | Prec ($\tau=0.50$) | Opt Prec ($\tau$) | Opt Rec ($\tau$) | Opt F1 | ROC-AUC |
-|---:|---:|---:|---:|---|---:|---:|---:|---:|---:|
-| 1 | 16 | 942 | `0.60` | `tier1_precision>=0.80_recall>=0.50_max_f05` | 75.00% | 80.35% | 60.17% | 68.81% | 0.8241 |
-| 2 | 17 | 946 | `0.62` | `tier1_precision>=0.80_recall>=0.50_max_f05` | 77.09% | 83.60% | 57.36% | 68.04% | 0.8255 |
-| 3 | 17 | 946 | `0.62` | `tier1_precision>=0.80_recall>=0.50_max_f05` | 72.64% | 78.27% | 64.96% | 71.00% | 0.7929 |
-| 4 | 17 | 946 | `0.60` | `tier1_precision>=0.80_recall>=0.50_max_f05` | 79.59% | 85.30% | 57.92% | 68.99% | 0.8466 |
-| 5 | 17 | 950 | `0.60` | `tier1_precision>=0.80_recall>=0.50_max_f05` | 76.80% | 84.73% | 67.55% | 75.17% | 0.8464 |
+- **Total Validated Classes (`200` repos, `4,409`–`121,429` stars):** `9,588` (**`4,425` BUG** / `46.15%`, **`5,163` CLEAN** / `53.85%`), `40` Roslyn features (`0` missing values).
+- **Development Set (5×4 Nested `GroupKFold`):** `160` repositories, **`7,546` classes** (`3,414` BUG, `4,132` CLEAN).
+- **Independent Untouched Holdout:** `40` unseen repositories, **`2,042` classes** (`1,011` BUG, `1,031` CLEAN). Zero repository overlap (`0` shared repos).
 
 ---
 
-## 3. Untouched Independent Repository Holdout (`22` Unseen Repos, `981` Classes)
+## 2. 5×4 Nested GroupKFold Benchmark (`160` Dev Repos, `7,546` Classes)
 
-Single-shot evaluation on `22` held-out repositories (`463` buggy, `518` clean) after full Development fit (`class_holdout_results.csv`):
+All thresholds ($\tau$) were selected exclusively inside inner CV folds (`select_classifier_threshold`):
 
-| Config ID | Inner-CV $\tau$ | Holdout Prec ($\tau$) | Holdout Rec ($\tau$) | Holdout F1 | Holdout Acc | Holdout ROC-AUC | Holdout PR-AUC | Holdout FPR | Nom ($\tau=0.50$) Prec / Rec |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| **`rf_opt_depth12_leaf4_log2`** | **`0.60`** | **83.43%** | **61.99%** | **71.13%** | **76.25%** | **0.8449** | **0.8327** | **11.00%** | 78.47% / 73.22% |
-| `rf_opt_depth10_leaf6_unweighted` | `0.60` | 82.66% | 61.77% | 70.70% | 75.84% | 0.8460 | 0.8338 | 11.58% | 78.14% / 72.57% |
-| `calibrated_rf_sigmoid` | `0.64` | 83.09% | 61.56% | 70.72% | 75.94% | **0.8478** | **0.8350** | 11.20% | 77.55% / 73.87% |
-| `et_opt_depth10_leaf4_log2_bal` | `0.60` | 83.33% | 58.32% | 68.61% | 74.82% | 0.8368 | 0.8299 | 10.42% | 77.45% / 68.25% |
-| `calibrated_et_isotonic` | `0.64` | 83.28% | 58.10% | 68.45% | 74.72% | 0.8365 | 0.8296 | 10.42% | 77.37% / 68.68% |
-| `rf_baseline_compact` | `0.62` | 82.88% | 59.61% | 69.35% | 75.13% | 0.8428 | 0.8288 | 11.00% | 77.55% / 72.35% |
-| `hgb_depth4_leaf25_unweighted` | `0.64` | 81.85% | 57.45% | 67.51% | 73.90% | **0.8502** | 0.8324 | 11.39% | 78.37% / 72.79% |
-| `hgb_depth5_leaf20_l2_2` | `0.66` | 83.06% | 54.00% | 65.45% | 73.09% | 0.8433 | 0.8261 | 9.85% | 78.27% / 72.35% |
-| `lr_std_l2_c01_bal` | `0.58` | 80.18% | 56.80% | 66.50% | 72.99% | 0.8184 | 0.8100 | 12.55% | 76.06% / 65.87% |
-| `lr_robust_l2_c01` | `0.58` | 80.31% | 56.37% | 66.24% | 72.88% | 0.8116 | 0.8031 | 12.36% | 76.01% / 65.01% |
-| `dt_depth6_leaf10_bal` | `0.70` | **84.23%** | 50.76% | 63.34% | 72.27% | 0.7953 | 0.7896 | **8.49%** | 74.00% / 68.25% |
-| `dt_depth5_leaf15` | `0.70` | 81.95% | 47.08% | 59.81% | 70.13% | 0.8104 | 0.7790 | 9.27% | 72.59% / 71.49% |
-| `dummy_stratified` | `0.30` | 44.83% | 47.73% | 46.23% | 47.60% | 0.4761 | 0.4607 | 52.51% | 44.83% / 47.73% |
+| Config ID | Model Family | Inner $\tau$ | Outer Mean Prec (+/- std) | Outer Mean Rec (+/- std) | OOF Prec | OOF Rec | OOF F1 | OOF ROC-AUC | OOF PR-AUC | OOF FPR / FNR |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| **`rf_depth12_leaf4_log2_all40`** | **Random Forest (Champ)** | **`0.52`** | **77.58% ± 2.49%** | **66.92% ± 4.33%** | **77.66%** | **66.99%** | **71.93%** | **0.8330** | **0.8102** | **15.92% / 33.01%** |
+| `calibrated_rf_sigmoid` | Calibrated Ensemble | `0.54` | 77.71% ± 2.30% | 66.43% ± 3.96% | 77.77% | 66.49% | 71.69% | 0.8334 | 0.8112 | 15.71% / 33.51% |
+| `rf_depth12_leaf4_corr_pruned` | RF (Pruned 30) | `0.54` | 77.94% ± 2.66% | 66.14% ± 4.01% | 77.96% | 66.20% | 71.60% | **0.8339** | **0.8120** | 15.46% / 33.80% |
+| `rf_depth14_leaf3_sqrt_unweighted` | Random Forest | `0.52` | 77.99% ± 2.68% | 65.98% ± 4.68% | 78.05% | 66.05% | 71.55% | 0.8321 | 0.8092 | 15.34% / 33.95% |
+| `hgb_depth4_leaf15_unweighted` | HistGradientBoosting | `0.54` | 77.81% ± 2.51% | 65.16% ± 4.27% | 77.87% | 65.23% | 70.99% | 0.8308 | 0.8096 | 15.32% / 34.77% |
+| `et_depth12_leaf4_log2_bal` | Extra Trees | `0.54` | 78.12% ± 2.81% | 64.16% ± 4.59% | **78.24%** | 64.24% | 70.55% | 0.8302 | 0.8123 | 14.76% / 35.76% |
+| `hgb_depth5_leaf20_l2_2` | HistGradientBoosting | `0.58` | 77.82% ± 2.38% | 64.34% ± 4.30% | 77.90% | 64.41% | 70.51% | 0.8277 | 0.8059 | 15.10% / 35.59% |
+| `et_depth14_leaf5_sqrt` | Extra Trees | `0.52` | 77.74% ± 3.01% | 64.37% ± 5.03% | 77.82% | 64.44% | 70.50% | 0.8317 | **0.8126** | 15.17% / 35.56% |
+| `lr_robust_l2_c02` | Logistic Regression | `0.50` | 77.89% ± 2.20% | 63.13% ± 5.04% | 77.91% | 63.21% | 69.79% | 0.8175 | 0.7961 | 14.81% / 36.79% |
+| `lr_std_l2_c01_bal` | Logistic Regression | `0.56` | **78.20% ± 2.26%** | 62.47% ± 5.46% | **78.24%** | 62.57% | 69.53% | 0.8175 | 0.7970 | 14.38% / 37.43% |
+| `dt_depth6_leaf12_bal` | Decision Tree | `0.64` | 78.19% ± 2.08% | 60.26% ± 4.67% | 78.23% | 60.31% | 68.11% | 0.8056 | 0.7846 | **13.87%** / 39.69% |
+| `dummy_stratified` | `DummyClassifier` | `0.30` | 45.57% ± 1.10% | 46.12% ± 1.26% | 45.57% | 46.10% | 45.84% | 0.5030 | 0.4539 | 45.50% / 53.90% |
 
-**Champion Confusion Matrix (Untouched 22-Repo Holdout, $\tau=0.600$):** `TN = 461`, `FP = 57`, `FN = 176`, `TP = 287` (`287 / 463` defects detected; `F0.5 = 78.03%`, `Brier = 0.1599`). Both `>= 75%` and `>= 80%` precision targets plus `>= 50%` recall floor are met simultaneously on OOF and untouched holdout.
+### Champion Outer Fold Breakdown (`top200_champion_outer_folds.csv`)
 
----
-
-## 4. Method-Level (v2) vs. Class-Level (v3) Empirical Comparison
-
-| Evaluation Axis | Method-Level v2 (`csharp_empirical_v2` / `JamesNK/Newtonsoft.Json`) | Class-Level v3 (`csharp_class_empirical_v3`) | Observed Gain |
-|---|---|---|---|
-| Repository Scale | `5` train + `1` holdout (`6` total) | **`84` dev + `22` holdout (`106` total)** | **17.7x repos** |
-| Observations & Features | `578` methods + `159` holdout (`26` features) | **`5,711` classes (`40` features)** | **9.9x samples** |
-| Nested CV OOF Precision | `65.64%` (`et_nested_opt_v3`, $\tau \in [0.35, 0.40]$) | **`82.30%`** (`rf_opt_depth12_leaf4_log2`, $\tau=0.600$) | **+16.66 pp** |
-| Nested CV ROC-AUC | `0.7470` (`et_nested_opt_v3`) | **`0.8260`** (Champion RF) | **+0.0790** |
-| Untouched Holdout Precision | `69.61%` ($\tau=0.40$) / `69.79%` ($\tau=0.50$) | **`83.43%`** (`22` repos, $\tau=0.600$) | **+13.82 pp** |
-| Untouched Holdout ROC-AUC | `0.8209` (`1` repo) | **`0.8449`** (`22` unseen repos) | **+0.0240** |
-
-Aggregating structural signals to the isolated C# class/struct/record eliminates tiny single-method noise (getters, one-line lambdas) while amplifying multi-method complexity, nesting, and coupling differences across heterogeneous codebases.
+| Outer Fold | Val Repos | Val Classes | Inner $\tau$ | Prec ($\tau=0.50$) | Opt Prec ($\tau$) | Opt Rec ($\tau$) | Opt F1 | FPR / FNR | ROC-AUC | PR-AUC |
+|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|---:|
+| 1 | 32 | 1,507 | `0.52` | 74.28% | 75.30% | 64.87% | 69.69% | 17.78% / 35.13% | 0.8194 | 0.7953 |
+| 2 | 32 | 1,510 | `0.54` | 75.93% | 79.00% | 72.73% | 75.73% | 16.40% / 27.27% | **0.8540** | **0.8410** |
+| 3 | 32 | 1,510 | `0.56` | 76.10% | **81.27%** | 71.49% | **76.07%** | **14.16% / 28.51%** | 0.8496 | 0.8325 |
+| 4 | 32 | 1,510 | `0.52` | 73.17% | 74.42% | 62.84% | 68.14% | 16.86% / 37.16% | 0.8181 | 0.7910 |
+| 5 | 32 | 1,509 | `0.52` | **76.35%** | 77.90% | 62.67% | 69.46% | 14.39% / 37.33% | 0.8281 | 0.7927 |
 
 ---
 
-## 5. Feature Importances & Holdout Error Analysis
+## 3. Independent Untouched Holdout Evaluation (`40` Unseen Repos, `2,042` Classes)
 
-### Top Global Feature Drivers (`class_precision_champion_v3`)
-- **By Holdout Permutation Importance:** `class_loc` (`0.0118`), `total_property_access_count` (`0.0102`), `wmc_density` (`0.0102`), `total_method_call_count` (`0.0077`), `structural_density` (`0.0071`), `class_logical_loc` (`0.0069`), `total_parameter_count` (`0.0061`), `mean_method_complexity` (`0.0057`), `constructor_count` (`0.0057`), `field_count` (`0.0049`).
-- **By Training MDI Importance:** `class_loc` (`0.1027`), `total_method_call_count` (`0.0713`), `total_statement_count` (`0.0698`), `class_logical_loc` (`0.0651`), `total_property_access_count` (`0.0628`), `total_if_count` (`0.0479`), `total_cyclomatic_complexity` (`0.0450`).
+Evaluated once on the untouched `40`-repo holdout (`1,011` BUG, `1,031` CLEAN) using fixed inner-CV thresholds (`top200_holdout_results.csv`):
 
-### Error Breakdown & Base-Rate PPV Sensitivity (`holdout_error_analysis.csv`)
-- **True Positives (`n=287`):** `median_loc=351.0`, `median_methods=12.0`, `median_wmc=57.0`, `median_nest=4.0`, `mean_prob=0.8186`.
-- **False Positives (`n=57`):** Large, complex candidate-clean classes (e.g., `StableSwarmUI/BackendHandler` [`class_loc=894, WMC=118, prob=0.9753`], `slskd/Application` [`1691 LOC, WMC=209, prob=0.9527`], `EFCore.BulkExtensions/BatchUtil` [`955 LOC, WMC=168, prob=0.9499`]) whose structural complexity closely mirrors defect-prone classes or may mask dormant unreported bugs under Open-World labeling (`median_loc=186.0`, `median_wmc=36.0`).
-- **False Negatives (`n=176`):** Concise classes carrying semantic, API-contract, serialization, or domain-logic bugs that do not inflate AST volume (`median_loc=48.0`, `median_wmc=7.0`, `mean_prob=0.3761`; e.g., `coverlet/ConfigurationExtensions` [`7 LOC, WMC=1, prob=0.0924`], `YamlDotNet/YamlSerializableAttribute` [`21 LOC, WMC=2, prob=0.1011`]).
-- **Per-Repository Holdout Variance:** Strongest precision on dense stateful systems (`MessagePack-CSharp` `100.0%`, `testcontainers-dotnet` `100.0%`, `microsoft/FASTER` `98.36%`, `modelcontextprotocol/csharp-sdk` `94.29%`); lower precision on small repositories with very few positive classes (`slskd` `33.33%` [`1` pos], `RetroBar` `38.46%` [`6` pos], `Electron.NET` `40.00%` [`6` pos]).
-- **Bayesian Prevalence Adjustment (`class_optimization_summary.json`):** At empirical study prevalence ($\pi = 0.4954$), Bayes PPV $= 84.69\%$; at real-world defect prevalences ($\pi \in \{0.20, 0.10, 0.05, 0.02\}$), expected PPV shifts to **`58.48%`**, **`38.50%`**, **`22.87%`**, and **`10.31%`** respectively.
+| Config ID | Inner $\tau$ | Precision | Recall | F1 | Accuracy | ROC-AUC | PR-AUC | FPR | FNR | Confusion Matrix `[[TN, FP], [FN, TP]]` |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| **`rf_depth12_leaf4_log2_all40`** | **`0.52`** | **79.47%** | **62.02%** | **69.67%** | **73.26%** | 0.8180 | **0.8104** | 15.71% | **37.98%** | `[[869, 162], [384, 627]]` |
+| `rf_depth12_leaf4_corr_pruned` | `0.54` | 80.83% | 60.04% | 68.90% | 73.16% | 0.8186 | 0.8074 | 13.97% | 39.96% | `[[887, 144], [404, 607]]` |
+| `calibrated_rf_sigmoid` | `0.54` | 81.05% | 59.64% | 68.72% | 73.11% | 0.8182 | 0.8099 | 13.68% | 40.36% | `[[890, 141], [408, 603]]` |
+| `hgb_depth5_leaf20_l2_2` | `0.58` | 81.84% | 58.85% | 68.47% | 73.16% | 0.8202 | 0.8078 | 12.80% | 41.15% | `[[899, 132], [416, 595]]` |
+| `rf_depth14_leaf3_sqrt_unweighted` | `0.52` | 81.32% | 58.56% | 68.09% | 72.82% | 0.8168 | 0.8085 | 13.19% | 41.44% | `[[895, 136], [419, 592]]` |
+| `hgb_depth4_leaf15_unweighted` | `0.54` | 81.84% | 57.07% | 67.25% | 72.48% | **0.8215** | 0.8081 | 12.42% | 42.93% | `[[903, 128], [434, 577]]` |
+| `dt_depth6_leaf12_bal` | `0.64` | 81.56% | 56.87% | 67.02% | 72.28% | 0.7951 | 0.7747 | 12.61% | 43.13% | `[[901, 130], [436, 575]]` |
+| `et_depth12_leaf4_log2_bal` | `0.54` | 79.17% | 56.78% | 66.13% | 71.20% | 0.8103 | 0.8014 | 14.65% | 43.22% | `[[880, 151], [437, 574]]` |
+| `lr_robust_l2_c02` | `0.50` | 81.82% | 55.19% | 65.92% | 71.74% | 0.8051 | 0.7982 | 12.03% | 44.81% | `[[907, 124], [453, 558]]` |
+| `et_depth14_leaf5_sqrt` | `0.52` | 80.49% | 55.09% | 65.41% | 71.16% | 0.8115 | 0.8023 | 13.09% | 44.91% | `[[896, 135], [454, 557]]` |
+| `lr_std_l2_c01_bal` | `0.56` | **81.89%** | 54.10% | 65.16% | 71.35% | 0.8041 | 0.7972 | **11.74%** | 45.90% | `[[910, 121], [464, 547]]` |
+| `dummy_stratified` | `0.30` | 51.93% | 47.97% | 49.87% | 52.25% | 0.5221 | 0.5067 | 43.55% | 52.03% | `[[582, 449], [526, 485]]` |
+
+**Target Verification:** Champion (`class_bug_classifier_top200_v4`) achieves **`79.47%` Precision** on the untouched holdout (exceeding the **`>= 75%`** target by `+4.47 pp`), **`62.02%` Recall**, **`69.67%` F1**, **`0.8180` ROC-AUC**, **`0.8104` PR-AUC**, **`15.71%` FPR**, and **`37.98%` FNR** (Brier `0.1763`), strictly outperforming `DummyClassifier` (`+27.54 pp` precision, `+0.2959` ROC-AUC). Note that at $\tau = 0.50$ nominal, holdout precision/recall for `rf_depth12_leaf4_log2_all40` was `78.33%` / `65.08%`.
+
+---
+
+## 4. Separately Validated ML Method Localizer (`method_localizer_evaluation.json`)
+
+Evaluated on the exact same repository-grouped holdout split across SZZ-localized `BUG` classes that contain multiple methods:
+- **Dev:** `157` repos, `2,670` BUG classes, `54,678` methods.
+- **Holdout:** `38` repos, `778` BUG classes, `12,878` methods (`1,321` SZZ-buggy methods = `10.26%` base rate).
+- **Holdout Metrics ($\tau = 0.600$):**
+  - **Top-1 Class Hit Rate:** **`44.99%`** | **Top-3 Class Hit Rate:** **`68.64%`**
+  - **Method ROC-AUC:** `0.6611` | **Method PR-AUC:** `0.1906`
+  - **Method Precision:** `22.46%` | **Method Recall:** `28.31%` | **F1:** `25.05%` | **FPR:** `11.17%` | **FNR:** `71.69%`
+  - **Confusion Matrix:** `[[10266, 1291], [947, 374]]`
+
+Because method-level positive prevalence within a single BUG class averages `~10.3%`, exact method classification is intentionally presented as a **Top-$k$ suspicious method ranking (`68.64%` Top-3 recall)** labeled *ML-Estimated (not verified ground truth)* rather than definitive line proof.
+
+---
+
+## 5. Per-Repository Holdout Variance & Base-Rate Sensitivity
+
+- **Per-Repository Holdout Highlights (`top200_holdout_per_repository.csv`):** Strong precision on dense libraries/systems (`ClosedXML` `100.0%`, `ScreenToGif` `100.0%`, `microsoft/FASTER` `95.95%`, `FastEndpoints` `93.55%`, `dotnetcore/CAP` `92.59%`, `MassTransit` `91.30%`, `protobuf-net` `89.66%`, `RestSharp` `89.66%`, `microsoft/semantic-kernel` `87.50%`), lower precision on small-sample UI/utility repos (`TechnitiumSoftware/DnsServer` `36.84%`, `seerge/g-helper` `40.00%`, `stride3d/stride` `44.44%`, `Notepads` `48.15%`).
+- **Bayesian Base-Rate Sensitivity:** Applying holdout `TPR = 62.02%` and `FPR = 15.71%`: at empirical dataset prevalence (`46.15%`), Bayes PPV is `77.18%`; at realistic real-world code defect rates (`20%`, `10%`, `5%`, `2%`), deployed precision drops to **`49.67%`**, **`30.49%`**, **`17.20%`**, and **`7.45%`** respectively.

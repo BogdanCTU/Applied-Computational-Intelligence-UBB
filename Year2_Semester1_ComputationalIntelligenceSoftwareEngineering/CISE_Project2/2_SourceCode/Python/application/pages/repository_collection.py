@@ -29,14 +29,14 @@ def parse_github_url(url: str) -> tuple[str, str]:
 
 def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> None:
     st.title("Repository Collection")
-    st.caption("Discover, rank, clone, and incrementally mine 100+ public C# repositories with resumable checkpoints.")
+    st.caption("Discover, filter, clone, and mine the Top 200 public C# GitHub repositories ranked by stars descending.")
 
     gh_client = GitHubClient(token=settings.github.token)
     repo_mgr = RepositoryManager(settings.storage.repositories_dir, db=db)
     commit_collector = CommitCollector(db)
 
     tab1, tab2, tab3, tab4 = st.tabs([
-        "Batch Discovery (100+)",
+        "Top-200 GitHub Discovery",
         "Collection Runs & Progress",
         "Manual Import",
         "Managed Repositories",
@@ -44,16 +44,16 @@ def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> Non
 
     # TAB 1: GitHub Discovery
     with tab1:
-        st.subheader("Paginated GitHub C# Repository Discovery & Ranking")
+        st.subheader("Paginated GitHub C# Repository Discovery (Ranked by Stars)")
         col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
         with col1:
-            keywords = st.text_input("Keywords or topic (optional)", placeholder="parser, serialization, orm")
+            keywords = st.text_input("Keywords or topic (optional)", placeholder="Leave empty for Top-200 star ranking")
         with col2:
             min_stars = st.number_input("Min stars", min_value=10, value=settings.collection.min_stars, step=25)
         with col3:
-            min_size_kb = st.number_input("Min size (KB)", min_value=50, value=settings.collection.min_repo_size_kb, step=50)
+            min_size_kb = st.number_input("Min size (KB)", min_value=10, value=settings.collection.min_repo_size_kb, step=50)
         with col4:
-            target_disc = st.number_input("Discovery target", min_value=15, max_value=300, value=120, step=15)
+            target_disc = st.number_input("Discovery pool", min_value=20, max_value=600, value=250, step=25)
 
         col_opts1, col_opts2 = st.columns(2)
         with col_opts1:
@@ -63,8 +63,8 @@ def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> Non
 
         c_btn1, c_btn2 = st.columns(2)
         with c_btn1:
-            if st.button("Discover & Rank C# Repositories", width="stretch"):
-                with st.spinner("Querying GitHub Search API across stratified star bands..."):
+            if st.button("Discover Top-Starred C# Repositories", width="stretch"):
+                with st.spinner("Querying GitHub Search API sorted by stars descending..."):
                     try:
                         if keywords and keywords.strip():
                             res = gh_client.search_repositories(
@@ -78,8 +78,8 @@ def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> Non
                             st.session_state["search_results"] = res["items"]
                             st.caption(f"Discovered {res['total_count']} matching repositories (showing {len(res['items'])}).")
                         else:
-                            disc = gh_client.discover_csharp_repositories(
-                                target_count=int(target_disc),
+                            disc = gh_client.discover_top_csharp_repositories_by_stars(
+                                target_discovery=int(target_disc),
                                 min_stars=int(min_stars),
                                 min_size_kb=int(min_size_kb),
                                 max_size_kb=settings.collection.max_repo_size_kb,
@@ -149,11 +149,13 @@ def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> Non
         else:
             st.caption("No batch collection runs logged in SQLite yet.")
 
-        cp_path = settings.storage.processed_dir / "collection_checkpoint_v3.json"
+        cp_path = settings.storage.processed_dir / "collection_checkpoint_top200_v4.json"
+        if not cp_path.exists():
+            cp_path = settings.storage.processed_dir / "collection_checkpoint_v3.json"
         if cp_path.exists():
             cp = json.loads(cp_path.read_text(encoding="utf-8"))
             c_cp1, c_cp2, c_cp3, c_cp4 = st.columns(4)
-            c_cp1.metric("Checkpoint Target", cp.get("target_repos", 100))
+            c_cp1.metric("Checkpoint Target", cp.get("target_repos", 200))
             c_cp2.metric("Processed OK", len(cp.get("processed", {})))
             c_cp3.metric("Excluded", len(cp.get("excluded", {})))
             c_cp4.metric("Failed", len(cp.get("failed", {})))
@@ -163,8 +165,8 @@ def render_repository_collection(db: RepositoryDB, settings: AppSettings) -> Non
                     excl_rows = [{"Repository": k, "Reason": v.get("reason", "")} for k, v in cp["excluded"].items()]
                     st.dataframe(pd.DataFrame(excl_rows), hide_index=True, width="stretch")
         st.caption(
-            "CLI command for resumable 100+ collection: "
-            "`python 2_SourceCode/Scripts/run_100_repo_class_pipeline.py --target-repos 106`"
+            "CLI command for resumable Top-200 star-ranked collection: "
+            "`python 2_SourceCode/Scripts/run_top200_csharp_pipeline.py --target-repos 200`"
         )
 
     # TAB 3: Manual Import

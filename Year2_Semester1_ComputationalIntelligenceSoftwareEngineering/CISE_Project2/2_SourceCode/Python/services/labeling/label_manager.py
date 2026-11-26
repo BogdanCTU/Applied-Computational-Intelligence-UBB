@@ -23,6 +23,23 @@ AUTO_GENERATED_MARKERS = (
 )
 
 
+def compress_line_ranges(lines: List[int]) -> List[Dict[str, int]]:
+    """Collapse sorted 1-based source line numbers into contiguous [start, end] spans."""
+    unique_sorted = sorted({int(ln) for ln in lines if ln and int(ln) > 0})
+    if not unique_sorted:
+        return []
+    ranges: List[Dict[str, int]] = []
+    start = prev = unique_sorted[0]
+    for ln in unique_sorted[1:]:
+        if ln == prev + 1:
+            prev = ln
+        else:
+            ranges.append({"start": start, "end": prev})
+            start = prev = ln
+    ranges.append({"start": start, "end": prev})
+    return ranges
+
+
 def compute_source_fingerprints(source_code: str) -> Tuple[str, str]:
     """Compute exact normalized source SHA-256 and comment/whitespace-normalized structural SHA-256."""
     norm_lines = [ln.rstrip() for ln in source_code.replace("\r\n", "\n").replace("\r", "\n").splitlines()]
@@ -244,6 +261,53 @@ class LabelManager:
             src_fp, struct_fp = compute_source_fingerprints(src_code)
             bics_sorted = sorted(agg["bics"])
             lines_sorted = sorted(set(agg["lines"]))
+            line_ranges = compress_line_ranges(lines_sorted)
+            loc_confidence = round(max(agg["confidences"]), 3) if agg["confidences"] else 0.85
+
+            # Map SZZ blamed lines to enclosing methods extracted by Roslyn in the same pass
+            class_methods = cls.get("methods") or []
+            method_buckets: Dict[str, Dict[str, Any]] = {}
+            for dl in lines_sorted:
+                enclosing_m = [
+                    m for m in class_methods
+                    if int(m.get("start_line", 0) or 0) <= dl <= int(m.get("end_line", 0) or 0)
+                ]
+                if enclosing_m:
+                    enclosing_m.sort(key=lambda m: (int(m.get("end_line", 0)) - int(m.get("start_line", 0)), int(m.get("start_line", 0))))
+                    tm = enclosing_m[0]
+                    msig = tm.get("method_signature") or tm.get("method_name") or "UnknownMethod"
+                    mname = tm.get("method_name")
+                    m_start = tm.get("start_line")
+                    m_end = tm.get("end_line")
+                else:
+                    msig = "__class_scope__"
+                    mname = None
+                    m_start = None
+                    m_end = None
+
+                if msig not in method_buckets:
+                    method_buckets[msig] = {
+                        "method_name": mname,
+                        "method_signature": msig,
+                        "method_start_line": m_start,
+                        "method_end_line": m_end,
+                        "lines": [],
+                    }
+                method_buckets[msig]["lines"].append(dl)
+
+            affected_methods_summary = [
+                {
+                    "method_name": b["method_name"],
+                    "method_signature": b["method_signature"],
+                    "start_line": b["method_start_line"],
+                    "end_line": b["method_end_line"],
+                    "affected_lines": sorted(set(b["lines"])),
+                    "affected_line_ranges": compress_line_ranges(b["lines"]),
+                }
+                for b in method_buckets.values()
+                if b["method_name"] is not None
+            ]
+            loc_status = "verified_historical" if lines_sorted else "unavailable"
 
             obs_data = {
                 "file_observation_id": agg["file_observation_id"],
@@ -266,15 +330,39 @@ class LabelManager:
                 "source_fingerprint": src_fp,
                 "structural_fingerprint": struct_fp,
                 "label": 1,
-                "label_confidence": round(max(agg["confidences"]), 3),
+                "label_confidence": loc_confidence,
                 "szz_trace_count": len(lines_sorted),
                 "blamed_lines_json": json.dumps(lines_sorted),
+                "localization_status": loc_status,
+                "affected_methods_json": json.dumps(affected_methods_summary),
+                "affected_line_ranges_json": json.dumps(line_ranges),
                 "evidence_category": "szz_class_bic",
                 "bug_fixing_commit_message": agg["fix_commit"].message.strip()[:500],
                 "issue_or_pr_url": None,
             }
             obs_id = self.db.insert_class_observation(obs_data)
             obs_data["id"] = obs_id
+
+            if obs_id > 0 and lines_sorted:
+                for b in method_buckets.values():
+                    b_lines = sorted(set(b["lines"]))
+                    self.db.insert_class_bug_localization({
+                        "class_observation_id": obs_id,
+                        "repository_id": repository_id,
+                        "commit_sha": agg["parent_sha"],
+                        "bug_fix_commit_sha": fix_sha,
+                        "bug_inducing_commit_sha": ",".join(bics_sorted[:5]),
+                        "file_path": file_path,
+                        "qualified_class_name": qname,
+                        "method_name": b["method_name"],
+                        "method_signature": b["method_signature"],
+                        "method_start_line": b["method_start_line"],
+                        "method_end_line": b["method_end_line"],
+                        "affected_lines_json": json.dumps(b_lines),
+                        "affected_line_ranges_json": json.dumps(compress_line_ranges(b_lines)),
+                        "localization_status": "verified_historical",
+                        "szz_confidence": loc_confidence,
+                    })
 
             metrics = cls.get("metrics") or {}
             if obs_id > 0 and metrics:
@@ -408,6 +496,9 @@ class LabelManager:
                     "label_confidence": 0.80,
                     "szz_trace_count": 0,
                     "blamed_lines_json": json.dumps([]),
+                    "localization_status": "unavailable",
+                    "affected_methods_json": json.dumps([]),
+                    "affected_line_ranges_json": json.dumps([]),
                     "evidence_category": "stable_head_class",
                     "bug_fixing_commit_message": "Sampled from stable HEAD file without recorded bug-fix traces.",
                     "issue_or_pr_url": None,
@@ -434,6 +525,212 @@ class LabelManager:
 
     def mark_class_observation_uncertain(self, class_observation_id: int, reason: str = "ambiguous_evidence") -> None:
         self.db.update_class_observation_label(class_observation_id, new_label=-1, reason=reason)
+
+    def backfill_class_localizations(self, repository_id: int, local_path: Path | str) -> int:
+        """Populate method & line-range localizations for existing Label 1 class observations without re-cloning."""
+        buggy_obs = self.db.list_class_observations(repository_id=repository_id, label=1)
+        if not buggy_obs:
+            return 0
+        existing_locs = {loc["class_observation_id"] for loc in self.db.list_class_bug_localizations(repository_id=repository_id)}
+        needing = [
+            o for o in buggy_obs
+            if o["id"] not in existing_locs or o.get("localization_status", "unavailable") == "unavailable"
+        ]
+        if not needing:
+            return 0
+
+        repo = git.Repo(local_path)
+        batch_items: List[Dict[str, Any]] = []
+        obs_by_item: Dict[str, List[Dict[str, Any]]] = {}
+        seen_file_rev: Dict[Tuple[str, str], str] = {}
+
+        for o in needing:
+            blamed_lines = json.loads(o.get("blamed_lines_json") or "[]")
+            if not blamed_lines:
+                continue
+            key = (o["commit_sha"], o["file_path"])
+            if key not in seen_file_rev:
+                code = self.get_file_content_at_commit(repo, o["commit_sha"], o["file_path"])
+                if not code:
+                    continue
+                item_id = f"loc_{len(batch_items)}"
+                seen_file_rev[key] = item_id
+                batch_items.append({"id": item_id, "code": code})
+            item_id = seen_file_rev[key]
+            obs_by_item.setdefault(item_id, []).append(o)
+
+        if not batch_items:
+            return 0
+
+        analysis_map = self.roslyn.analyze_batch(batch_items)
+        updated_count = 0
+
+        for item_id, obs_group in obs_by_item.items():
+            resp = analysis_map.get(item_id)
+            if not resp or not resp.get("success"):
+                continue
+            classes = resp.get("classes", [])
+            for o in obs_group:
+                blamed_lines = sorted({int(x) for x in json.loads(o.get("blamed_lines_json") or "[]")})
+                if not blamed_lines:
+                    continue
+                target_cls = None
+                for c in classes:
+                    if c.get("qualified_class_name") == o["qualified_class_name"]:
+                        target_cls = c
+                        break
+                if not target_cls:
+                    for c in classes:
+                        if c.get("class_name") == o["class_name"]:
+                            target_cls = c
+                            break
+
+                class_methods = target_cls.get("methods", []) if target_cls else []
+                method_buckets: Dict[str, Dict[str, Any]] = {}
+                for dl in blamed_lines:
+                    enclosing_m = [
+                        m for m in class_methods
+                        if int(m.get("start_line", 0) or 0) <= dl <= int(m.get("end_line", 0) or 0)
+                    ]
+                    if enclosing_m:
+                        enclosing_m.sort(key=lambda m: (int(m.get("end_line", 0)) - int(m.get("start_line", 0)), int(m.get("start_line", 0))))
+                        tm = enclosing_m[0]
+                        msig = tm.get("method_signature") or tm.get("method_name") or "UnknownMethod"
+                        mname = tm.get("method_name")
+                        m_start = tm.get("start_line")
+                        m_end = tm.get("end_line")
+                    else:
+                        msig = "__class_scope__"
+                        mname = None
+                        m_start = None
+                        m_end = None
+                    if msig not in method_buckets:
+                        method_buckets[msig] = {
+                            "method_name": mname,
+                            "method_signature": msig,
+                            "method_start_line": m_start,
+                            "method_end_line": m_end,
+                            "lines": [],
+                        }
+                    method_buckets[msig]["lines"].append(dl)
+
+                affected_methods_summary = [
+                    {
+                        "method_name": b["method_name"],
+                        "method_signature": b["method_signature"],
+                        "start_line": b["method_start_line"],
+                        "end_line": b["method_end_line"],
+                        "affected_lines": sorted(set(b["lines"])),
+                        "affected_line_ranges": compress_line_ranges(b["lines"]),
+                    }
+                    for b in method_buckets.values()
+                    if b["method_name"] is not None
+                ]
+                line_ranges = compress_line_ranges(blamed_lines)
+                self.db.update_class_observation_localization(
+                    class_observation_id=o["id"],
+                    localization_status="verified_historical",
+                    affected_methods_json=json.dumps(affected_methods_summary),
+                    affected_line_ranges_json=json.dumps(line_ranges),
+                )
+                for b in method_buckets.values():
+                    b_lines = sorted(set(b["lines"]))
+                    self.db.insert_class_bug_localization({
+                        "class_observation_id": o["id"],
+                        "repository_id": repository_id,
+                        "commit_sha": o["commit_sha"],
+                        "bug_fix_commit_sha": o.get("bug_fix_commit_sha") or "",
+                        "bug_inducing_commit_sha": o.get("bug_inducing_commit_sha"),
+                        "file_path": o["file_path"],
+                        "qualified_class_name": o["qualified_class_name"],
+                        "method_name": b["method_name"],
+                        "method_signature": b["method_signature"],
+                        "method_start_line": b["method_start_line"],
+                        "method_end_line": b["method_end_line"],
+                        "affected_lines_json": json.dumps(b_lines),
+                        "affected_line_ranges_json": json.dumps(compress_line_ranges(b_lines)),
+                        "localization_status": "verified_historical",
+                        "szz_confidence": float(o.get("label_confidence", 0.85)),
+                    })
+                updated_count += 1
+        return updated_count
+
+    def extract_method_localization_examples(
+        self,
+        repository_id: int,
+        local_path: Path | str,
+        max_classes: int = 80,
+    ) -> List[Dict[str, Any]]:
+        """Extract method-level feature examples inside BUG classes for training/evaluating method localization."""
+        buggy_obs = self.db.list_class_observations(repository_id=repository_id, label=1)[:max_classes]
+        if not buggy_obs:
+            return []
+
+        repo = git.Repo(local_path)
+        batch_items: List[Dict[str, Any]] = []
+        obs_by_item: Dict[str, List[Dict[str, Any]]] = {}
+        seen_file_rev: Dict[Tuple[str, str], str] = {}
+
+        for o in buggy_obs:
+            blamed_lines = json.loads(o.get("blamed_lines_json") or "[]")
+            if not blamed_lines:
+                continue
+            key = (o["commit_sha"], o["file_path"])
+            if key not in seen_file_rev:
+                code = self.get_file_content_at_commit(repo, o["commit_sha"], o["file_path"])
+                if not code:
+                    continue
+                item_id = f"mloc_{len(batch_items)}"
+                seen_file_rev[key] = item_id
+                batch_items.append({"id": item_id, "code": code})
+            obs_by_item.setdefault(seen_file_rev[key], []).append(o)
+
+        if not batch_items:
+            return []
+
+        analysis_map = self.roslyn.analyze_batch(batch_items)
+        rows: List[Dict[str, Any]] = []
+        for item_id, obs_group in obs_by_item.items():
+            resp = analysis_map.get(item_id)
+            if not resp or not resp.get("success"):
+                continue
+            classes = resp.get("classes", [])
+            for o in obs_group:
+                blamed_set = {int(x) for x in json.loads(o.get("blamed_lines_json") or "[]")}
+                target_cls = next((c for c in classes if c.get("qualified_class_name") == o["qualified_class_name"]), None)
+                if not target_cls:
+                    target_cls = next((c for c in classes if c.get("class_name") == o["class_name"]), None)
+                if not target_cls:
+                    continue
+                methods = target_cls.get("methods") or []
+                if len(methods) < 2:
+                    continue
+                any_pos = False
+                cls_rows: List[Dict[str, Any]] = []
+                for m in methods:
+                    m_metrics = m.get("metrics") or {}
+                    if not m_metrics:
+                        continue
+                    s_line = int(m.get("start_line", 0) or 0)
+                    e_line = int(m.get("end_line", 0) or 0)
+                    is_buggy_method = 1 if any(s_line <= bl <= e_line for bl in blamed_set) else 0
+                    if is_buggy_method == 1:
+                        any_pos = True
+                    row = {
+                        "repository_id": repository_id,
+                        "class_observation_id": o["id"],
+                        "qualified_class_name": o["qualified_class_name"],
+                        "method_name": m.get("method_name", ""),
+                        "method_signature": m.get("method_signature", ""),
+                        "start_line": s_line,
+                        "end_line": e_line,
+                        "is_buggy_method": is_buggy_method,
+                    }
+                    row.update(m_metrics)
+                    cls_rows.append(row)
+                if any_pos:
+                    rows.extend(cls_rows)
+        return rows
 
     # ---------------------------------------------------------
     # Historical Method-Level Extraction (Preserved)

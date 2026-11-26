@@ -1,59 +1,48 @@
-# Executive Project Summary — C# Static Bug Detection (`v3.0.0`)
+# Executive Project Summary — C# Bug Detection Classifier (`v4.0.0`)
 
-**Title:** Machine Learning-Based Bug Detection in C# Source Code  
+**Title:** Machine Learning-Based C# Bug Detection Classifier  
 **Institution:** Babeș-Bolyai University, Faculty of Mathematics and Computer Science — Applied Computational Intelligence (CISE Project 2)
 
 ---
 
-## 1. System Transformation Overview
+## 1. System Evolution Overview
 
-This project evolved from a **5-repository method-level** defect predictor (`csharp_empirical_v2`, 578 methods, 26 metrics) into a **106-repository class- and file-level** C# static bug detection platform (`csharp_class_empirical_v3`, 5,711 classes, 40 metrics) optimized for **high precision**.
+The project evolved across four documented milestones from a 5-repository method-level prototype (`v2.0.0`, `578` methods, `26` metrics) through a 106-repository class-level study (`v3.0.0`, `5,711` classes, `40` metrics) into the **`v4.0.0` Top-200 star-ranked C# Bug Detection Classifier** (`csharp_class_top200_v4`, **`9,588` classes** across **`200` repositories**), paired with a separately validated ML Method Localizer and provenance-aware historical SZZ localization.
 
-| Dimension | Legacy Method v2 | Transformed Class/File v3.0.0 |
-|---|---|---|
-| Primary Prediction Target | Individual C# methods | Complete C# classes / structs / records (+ multi-class `.cs` files) |
-| Empirical Corpus | `5` repos, `578` methods (+`159` holdout) | **`106` public C# repos**, **`5,711` classes** (`84` dev / `22` holdout repos) |
-| Roslyn Feature Schema | `26` method metrics (`v1.0.0`) | **`40` isolated class metrics (`v3.0.0`)** + legacy `26` method metrics |
-| Precision Target | Unconstrained / recall-tilted (`64.21%` CV, `69.61%` holdout) | **>= 80% preferred / >= 75% min** with recall >= 50% |
-| Achieved Champion Precision | `69.61%` (Newtonsoft holdout at $\tau=0.40$) | **82.30% Nested CV OOF / 83.43% Untouched Holdout ($\tau=0.600$)** |
-| Achieved Champion Recall / AUC | `89.87%` / `0.8209` ROC-AUC | **61.99% Recall / 0.8449 ROC-AUC / 0.8327 PR-AUC** |
-| Application Interface | Method paste / single-method scan | **Class paste, full multi-class `.cs` upload, unified ModelManager, legacy method mode** |
-
----
-
-## 2. Empirical Dataset & Data Quality (`1_Database/`)
-
-- **GitHub Discovery & Collection (`class_v3_20261121_124127`):** Queried `300` star-stratified non-fork non-archived C# repositories (`304` queued including local/existing seeded repos), excluded `15` (lack of production `.cs` files, missing bug-fix commits, or insufficient buggy/clean classes), failed `0`, and fully mined **`106` repositories** (`28,972` commits, `158,722` commit file entries, `16,161` SZZ blame traces stored in SQLite `1_Database/SQLite/bug_detection.db`).
-- **Provenance & Labeling Integrity:**
-  - **Label 1 (`2,829` classes, `49.54%`):** Extracted from pre-fix parent revisions of commits traced via strict heuristic bug-fix classification and `git blame -w -M -C` SZZ mapping to the innermost enclosing type.
-  - **Label 0 (`2,882` classes, `50.46%`):** Candidate-clean substantive production classes sampled from `HEAD` files having zero bug-fixing or SZZ history in the mined window (**Open-World Assumption**: not guaranteed defect-free).
-- **Duplicate & Leakage Audit (`collection_summary_v3.json`):** `5,743` candidate records reduced to `5,711` by removing `28` intra-repository exact duplicates and `4` repeated structural revisions (`0` cross-repository exact duplicates, `0` conflicting clean classes, `0` test files); `819` distinct historical class revisions were retained and strictly grouped by `repository_id` during train/test/CV splits so no historical revision ever straddles folds.
+| Dimension | Legacy Method v2 | Class Study v3 | Current Classifier v4.0.0 |
+|---|---|---|---|
+| Primary Task | Individual method defect scoring | Class/file defect risk scoring | Explicit binary **`BUG` / `CLEAN` class & multi-class `.cs` classifier** |
+| Empirical Corpus | `5` repos (`578` methods) | `106` repos (`5,711` classes) | **`200` Top-Star C# repos (`9,588` classes: `4,425` BUG, `5,163` CLEAN)** |
+| Feature Schema | `26` method metrics | `40` class metrics | **`40` isolated class metrics** + separate **`26`-metric ML Method Localizer** |
+| Evaluation Split | 5×4 Nested GroupKFold (+ 1 holdout repo) | `84` dev / `22` holdout repos | **`160` dev (`7,546` classes) / `40` untouched holdout (`2,042` classes)** |
+| Precision Target | Unconstrained (`69.61%` holdout) | >= 80% preferred | **>= 75% holdout precision target with balanced recall** |
+| Champion Holdout Metrics | `69.61%` Prec / `89.87%` Rec / `0.8209` AUC | `83.43%` Prec / `61.99%` Rec / `0.8449` AUC | **`79.47%` Prec / `62.02%` Rec / `69.67%` F1 / `0.8180` AUC / `15.71%` FPR / `37.98%` FNR** |
+| Localization Scope | None | Class probability only | **Verified historical SZZ lines/methods (`7,361` rows) vs. ML suspicious methods (`Top-3 68.64%`); exact unseen lines `unavailable`** |
 
 ---
 
-## 3. Roslyn `v3.0.0` Analyzer & Application Architecture (`2_SourceCode/`)
+## 2. Top-200 Star-Ranked Dataset & Labeling (`1_Database/`)
 
-- **`2_SourceCode/RoslynAnalyzer/Program.cs` (.NET 9.0):** Supports C# `LanguageVersion.Latest` (records, structs, primary constructors, file-scoped namespaces), `--batch-stdin` NDJSON streaming, strict nested-type isolation (`GetTypeOwnedNodes<T>` + nested span subtraction from `class_loc`), and outputs structured JSON (`FileMetadata`, `ClassLocation`, `ClassMetrics`, nested `MethodLocation`s, `ExtractionWarnings`, `ParsingDiagnostics`).
-- **`2_SourceCode/Python/ml/` (`model_manager.py`, `predictor.py`, `cross_validation.py`, `experiment_runner.py`):**
-  - `ModelManager.list_saved_models()` provides an authoritative single registry serving all 8 Streamlit pages (`class_precision_champion_v3` first, followed by 7 class bundles and 4 preserved method bundles).
-  - `BugPredictor` executes explicit threshold classification `int(prob >= self.decision_threshold)` using `predict_proba()[:, 1]` for both pasted classes (`predict_class_code`) and multi-class `.cs` uploads (`predict_csharp_file`), reporting file-level flags, max/mean probabilities, and per-class drill-down alongside an explicit static-indicator disclaimer.
-
----
-
-## 4. Machine Learning Validation & Error Insights (`3_TestResults/ClassModelOptimization/`)
-
-- **Zero-Leakage Evaluation Design:**
-  - **Development Partition:** `84` repositories (`4,730` classes: `2,366` buggy, `2,364` clean).
-  - **Untouched Independent Holdout:** `22` repositories (`981` classes: `463` buggy, `518` clean).
-  - **5x4 Nested `GroupKFold`:** All preprocessing (median imputation, zero-variance pruning, correlation pruning / scaling where configured) and precision threshold selection (`select_precision_optimal_threshold`, prioritizing `Precision >= 0.80` & `Recall >= 0.50` maximizing $F_{0.5}$) occur **exclusively inside inner folds**.
-- **Champion Performance (`rf_opt_depth12_leaf4_log2` / `class_precision_champion_v3`, $\tau = 0.600$):**
-  - Exceeds the `>= 80%` preferred precision target in both Nested CV OOF (**82.30%**, outer fold range `78.27%–85.30%`, `std = 2.70%`) and Untouched Holdout (**83.43%**, `981` classes, `TP=287, FP=57, FN=176, TN=461`).
-  - Nominal threshold $\tau = 0.50$ on holdout achieved `78.47%` precision / `73.22%` recall; inner-CV threshold selection lifted precision by **+4.96 percentage points** cleanly past `80%` while preserving `61.99%` recall.
-- **Error Pattern Analysis (`holdout_error_analysis.csv`):**
-  - Flagged TPs are structurally large/complex (`median_loc = 351.0, median_wmc = 57.0`), FNs occur primarily in concise classes containing subtle semantic defects (`median_loc = 48.0, median_wmc = 7.0`), and FPs represent structurally large candidate-clean classes (`median_loc = 186.0, median_wmc = 36.0`). Under realistic industrial defect base rates (`10%–20%`), Bayes' rule yields deployed PPV of **`38.50%–58.48%`**, reinforcing human-in-the-loop code review rather than automated blocking.
+- **GitHub Discovery & Collection (`top200_v4_20261125_135308`):** Queried `language:csharp fork:false archived:false` sorted strictly by **GitHub stars descending**. Discovered **`500` repositories**, filtered **`367` eligible candidates**, successfully collected and validated **`200` repositories** (star range **`4,409`** [`tmenier/Flurl`] to **`121,429`** [`2dust/v2rayN`]), transparently recorded **`179` exclusions** (`132` `excluded_excessive_size_kb` >120,000 KB, `1` `excluded_insufficient_size_kb`, `29` `no_bug_fixing_commits_detected`, `10` `insufficient_production_csharp_files`, `5` `no_szz_traces_on_production_csharp`, `1` `no_substantive_buggy_classes`, `1` `no_candidate_clean_classes`), and experienced **`0` failures**.
+- **SZZ Provenance & Method/Line Localization:**
+  - **BUG (`4,425` classes, `46.15%`):** Extracted from pre-fix parent commits traced via bug-fix commit classification and `git blame -w -M -C` SZZ mapping to enclosing classes and enclosing methods, persisting **`7,361` verified historical localization records** (`class_bug_localizations`) across `4,473` SQLite BUG observations.
+  - **CLEAN (`5,163` classes, `53.85%`):** Candidate-clean substantive production classes sampled from `HEAD` files with zero observed bug-fixing or SZZ history in the mined window (**Open-World Assumption**).
+- **Duplicate & Leakage Audit (`collection_summary_top200_v4.json`):** `9,646` candidates reduced to **`9,588`** (`41` intra-repo exact, `12` cross-repo exact, `5` repeated structural revisions removed; `1,025` legitimate historical revisions retained inside repo groups; `0` test files; `0` conflicting clean classes; `0` missing values across all `40` features).
+- **Method Localization Corpus (`method_localization_top200_v4.csv`):** `67,556` method rows extracted from SZZ-localized BUG classes to train and evaluate the separate ML Method Localizer without holdout leakage.
 
 ---
 
-## 5. Preserved Historical Artifacts
+## 3. Binary Classifier, Localization Separation & Streamlit GUI (`2_SourceCode/`)
 
-All legacy method-level datasets (`v1.0.0`, `v2.0.0`), 4 `.joblib` method bundles, historical JSON evaluation outputs, pre-migration DB archive (`bug_detection_method_v2_archive.db`), and SQLite method `observations` (`877` rows) remain completely unmodified and verified via SHA-256 digests.
+- **Roslyn `.NET 9.0` Analyzer (`2_SourceCode/RoslynAnalyzer/Program.cs`):** Supports C# `LanguageVersion.Latest`, `--batch-stdin` NDJSON streaming, isolated class metrics (`GetTypeOwnedNodes<T>`), enclosed method signatures/line bounds, and full syntax diagnostics.
+- **ML Classifier (`rf_depth12_leaf4_log2_all40`, bundle `class_bug_classifier_top200_v4.joblib`, $\tau = 0.520$):**
+  - Threshold selection (`select_classifier_threshold`) runs strictly on inner CV folds (`160` dev repos), achieving **`77.66%` Nested CV OOF precision** (`66.99%` recall, `0.8330` ROC-AUC) and **`79.47%` untouched holdout precision** (`62.02%` recall, `69.67%` F1, `0.8180` ROC-AUC, `0.8104` PR-AUC, `15.71%` FPR, `37.98%` FNR, CM `[[869, 162], [384, 627]]`).
+  - Feature sufficiency audit verified all `40` Roslyn features have nonzero variance (`0` nulls); removing 10 collinear features (`|ρ| > 0.90`) slightly reduced Nested CV F1 (`0.7160` vs. `0.7193`) and Holdout F1 (`68.90%` vs. `69.67%`), justifying retaining all 40 features.
+- **ML Method Localizer (`method_localizer_top200_v4.joblib`, `26` method features):** Evaluated on the strict matching `38`-repo holdout (`778` BUG classes, `12,878` methods, `10.26%` positive rate): **Top-1 hit `44.99%`**, **Top-3 hit `68.64%`**, **ROC-AUC `0.6611`**, **Precision `22.46%`**, **Recall `28.31%`**. Explicitly distinguishes **Verified Historical SZZ Locations** from **ML-Estimated Suspicious Methods**, and marks **exact line localization `unavailable` on unseen code**.
+- **Streamlit UI (`app.py`, `application/pages/bug_prediction.py`):** Displays **`BUG DETECTED`** (error) or **`CLEAN`** (success) as primary output with probability/confidence secondary, per-class and file summary counts for multi-class `.cs` files, and refuses to classify syntax-broken/incomplete files as `CLEAN` (`ANALYSIS INCOMPLETE` / `BUG (PARTIAL ANALYSIS)`).
+
+---
+
+## 4. Preserved Historical Artifacts
+
+All legacy method-level CSVs (`v1.0.0`, `v2.0.0`), the v3 106-repo CSV (`csharp_class_empirical_v3_v3.0.0.csv`), all prior `.joblib` model bundles, historical JSON evaluation reports, `bug_detection_method_v2_archive.db`, and SQLite method `observations` (`877` rows) remain intact and verified via SHA-256 checksums.

@@ -1,0 +1,1485 @@
+{
+  "dataset_version": "4.0.0",
+  "dataset_name": "csharp_class_top200_v4",
+  "granularity": "class",
+  "collection_date": "2026-11-25T14:37:41.441724+00:00",
+  "repository_count": 200,
+  "observation_count": 9588,
+  "positive_count": 4425,
+  "negative_count": 5163,
+  "positive_rate": 0.4615,
+  "feature_count": 40,
+  "feature_schema_version": "3.0.0",
+  "feature_definitions": {
+    "class_loc": "Non-empty physical lines in class/struct/record excluding nested types.",
+    "class_logical_loc": "Total executable statements and expression bodies across owned class members.",
+    "method_count": "Number of direct method declarations in the type.",
+    "constructor_count": "Number of direct constructors (including primary constructors).",
+    "property_count": "Number of direct property declarations in the type.",
+    "field_count": "Number of direct field variable declarators in the type.",
+    "nested_type_count": "Number of direct nested class/struct/record/interface declarations.",
+    "total_parameter_count": "Sum of formal parameters across direct callable members.",
+    "max_parameter_count": "Maximum parameter count among direct callable members.",
+    "total_local_variable_count": "Sum of local variable declarations across direct members.",
+    "total_statement_count": "Sum of statement AST nodes across direct members.",
+    "total_return_count": "Sum of return statements and expression bodies across direct members.",
+    "total_cyclomatic_complexity": "Weighted Methods per Class (sum of McCabe complexities, minimum 1).",
+    "mean_method_complexity": "Mean McCabe cyclomatic complexity across direct callable members.",
+    "max_method_complexity": "Maximum McCabe cyclomatic complexity among direct callable members.",
+    "std_method_complexity": "Population standard deviation of McCabe complexity across callable members.",
+    "max_nesting_depth": "Maximum lexical control-flow nesting depth across direct members.",
+    "mean_nesting_depth": "Mean maximum nesting depth across direct callable members.",
+    "total_boolean_operator_count": "Sum of !, &, |, ^ operators across direct members.",
+    "total_logical_operator_count": "Sum of &&, ||, ?? short-circuit operators across direct members.",
+    "total_conditional_expression_count": "Sum of ternary (? :) conditional expressions.",
+    "total_if_count": "Total if statements across direct members.",
+    "total_switch_count": "Total switch statements and switch expressions across direct members.",
+    "total_loop_count": "Total for/foreach/while/do-while loops across direct members.",
+    "total_try_catch_count": "Total try-catch-finally blocks across direct members.",
+    "total_throw_count": "Total throw statements and expressions across direct members.",
+    "total_break_continue_count": "Total break and continue jump statements across direct members.",
+    "total_method_call_count": "Total method invocation expressions across direct members.",
+    "total_field_access_count": "Total lowercase/underscore member field accesses.",
+    "total_property_access_count": "Total PascalCase member property accesses.",
+    "total_assignment_count": "Total assignment expressions across direct members.",
+    "total_object_creation_count": "Total explicit and implicit 'new' object creations.",
+    "static_method_count": "Count of static methods declared in the type.",
+    "async_method_count": "Count of async methods declared in the type.",
+    "generic_method_count": "Count of generic methods declared in the type.",
+    "high_complexity_method_count": "Count of callable members with cyclomatic complexity >= 10.",
+    "large_method_count": "Count of callable members with loc >= 40 or statements >= 25.",
+    "complexity_concentration": "Ratio of max_method_complexity to total_cyclomatic_complexity.",
+    "structural_density": "Ratio of total_statement_count to class_loc.",
+    "wmc_density": "Ratio of total_cyclomatic_complexity to class_loc."
+  },
+  "repository_distribution": {
+    "microsoft/FASTER": 123,
+    "dotnet/orleans": 109,
+    "MassTransit/MassTransit": 105,
+    "sharpemu/sharpemu": 104,
+    "Humanizr/Humanizer": 103,
+    "studyzy/imewlconverter": 101,
+    "seredis/StackExchange.Redis": 101,
+    "sebastienros/jint": 101,
+    "akkadotnet/akka.net": 96,
+    "GlitchEnzo/NuGetForUnity": 96,
+    "litedb-org/LiteDB": 91,
+    "openutau/OpenUtau": 90,
+    "naudio/NAudio": 89,
+    "dotnet/BenchmarkDotNet": 87,
+    "restsharp/RestSharp": 87,
+    "huynhsontung/Screenbox": 87,
+    "reactiveui/ReactiveUI": 85,
+    "Jeric-X/SyncClipboard": 85,
+    "dotnet/MQTTnet": 85,
+    "xoofx/markdig": 84,
+    "felixse/FluentTerminal": 83,
+    "ant-design-blazor/ant-design-blazor": 83,
+    "dotnet/machinelearning": 82,
+    "LibreHardwareMonitor/LibreHardwareMonitor": 81,
+    "dotnetcore/CAP": 81,
+    "DapperLib/Dapper": 80,
+    "spectreconsole/spectre.console": 80,
+    "reactiveui/refit": 80,
+    "jstedfast/MailKit": 80,
+    "fullstackhero/dotnet-starter-kit": 80,
+    "BlueHeisenberg/SCSKiller": 80,
+    "beeradmoore/dlss-swapper": 79,
+    "2dust/v2rayN": 78,
+    "1Remote/1Remote": 78,
+    "FastEndpoints/FastEndpoints": 78,
+    "commandlineparser/commandline": 78,
+    "BililiveRecorder/BililiveRecorder": 77,
+    "BCUninstaller/Bulk-Crap-Uninstaller": 75,
+    "PCL-Community/PCL-CE": 75,
+    "btcpayserver/btcpayserver": 73,
+    "MaterialDesignInXAML/MaterialDesignInXamlToolkit": 72,
+    "Sylinko/Everywhere": 72,
+    "Perfare/Il2CppDumper": 71,
+    "SignalR/SignalR": 71,
+    "ThreeMammals/Ocelot": 71,
+    "domaindrivendev/Swashbuckle.AspNetCore": 71,
+    "SebLague/Digital-Logic-Sim": 71,
+    "dotnet/Open-XML-SDK": 71,
+    "ExcelDataReader/ExcelDataReader": 70,
+    "protobuf-net/protobuf-net": 69,
+    "KnifeLemon/Filee": 68,
+    "NLog/NLog": 68,
+    "MapsterMapper/Mapster": 68,
+    "modelcontextprotocol/csharp-sdk": 67,
+    "serilog/serilog": 66,
+    "graphql-dotnet/graphql-dotnet": 66,
+    "LuckyPennySoftware/MediatR": 65,
+    "RicoSuter/NSwag": 65,
+    "2dust/clashN": 65,
+    "lepoco/wpfui": 64,
+    "openhardwaremonitor/openhardwaremonitor": 64,
+    "andrewmd5/Borderless-Gaming": 63,
+    "microsoft/semantic-kernel": 62,
+    "srwi/EverythingToolbar": 62,
+    "bitwarden/server": 61,
+    "greenshot/greenshot": 61,
+    "Sophia-Community/SophiApp": 61,
+    "microsoft/WPF-Samples": 60,
+    "pythonnet/pythonnet": 60,
+    "dbrizov/NaughtyAttributes": 60,
+    "Scighost/Starward": 60,
+    "nilaoda/N_m3u8DL-RE": 59,
+    "Facepunch/sbox-public": 59,
+    "simplcommerce/SimplCommerce": 59,
+    "memstechtips/Winhance": 58,
+    "JosefNemec/Playnite": 58,
+    "lucasg/Dependencies": 58,
+    "MessagePack-CSharp/MessagePack-CSharp": 58,
+    "cobbr/Covenant": 58,
+    "grpc/grpc-dotnet": 57,
+    "bchavez/Bogus": 56,
+    "aalhour/C-Sharp-Algorithms": 56,
+    "jellyfin/jellyfin": 55,
+    "MathewSachin/Captura": 55,
+    "AutoDarkMode/Windows-Auto-Night-Mode": 54,
+    "GhostPack/Seatbelt": 53,
+    "focus-creative-games/luban": 53,
+    "JiaFeiMiao-K-Cat/DiscImageStudio": 52,
+    "0x7c13/Notepads": 52,
+    "Live-Charts/LiveCharts2": 52,
+    "autofac/Autofac": 52,
+    "k1tbyte/Wand-Enhancer": 51,
+    "microsoft/calculator": 51,
+    "JamesNK/Newtonsoft.Json": 51,
+    "danielgerlag/workflow-core": 51,
+    "Kinnara/ModernWpf": 51,
+    "shadowsocksr-backup/shadowsocksr-csharp": 51,
+    "TheAlgorithms/C-Sharp": 49,
+    "HandyOrg/HandyControl": 49,
+    "microsoft/VFSForGit": 49,
+    "mob-sakai/ParticleEffectForUGUI": 47,
+    "icsharpcode/ILSpy": 46,
+    "peass-ng/PEASS-ng": 46,
+    "sourcegit-org/sourcegit": 46,
+    "anjoy8/Blog.Core": 46,
+    "Davidobot/BetterJoy": 46,
+    "ardalis/CleanArchitecture": 45,
+    "itsfatduck/optimizerDuck": 43,
+    "lostindark/DriverStoreExplorer": 43,
+    "dotnet/wpf": 43,
+    "Shane32/QRCoder": 43,
+    "xunit/xunit": 43,
+    "CoplayDev/unity-mcp": 40,
+    "kgrzybek/modular-monolith-with-ddd": 40,
+    "FluentValidation/FluentValidation": 40,
+    "gibbed/SteamAchievementManager": 40,
+    "BepInEx/BepInEx": 40,
+    "Orbmu2k/nvidiaProfileInspector": 40,
+    "quartznet/quartznet": 40,
+    "Cysharp/ZLinq": 40,
+    "PrismLibrary/Prism": 39,
+    "App-vNext/Polly": 37,
+    "HangfireIO/Hangfire": 37,
+    "mpvnet-player/mpv.net": 37,
+    "GhostPack/Rubeus": 37,
+    "Tyrrrz/CliWrap": 37,
+    "metatube-community/jellyfin-plugin-metatube": 37,
+    "dotnet/eShop": 36,
+    "gerardog/gsudo": 36,
+    "PowerShell/PowerShell": 34,
+    "Flow-Launcher/Flow.Launcher": 34,
+    "tmenier/Flurl": 34,
+    "MudBlazor/MudBlazor": 31,
+    "RayWangQvQ/BiliBiliToolPro": 31,
+    "actions/runner": 31,
+    "ramjke/Translumo": 31,
+    "rayenghanmi/RyTuneX": 31,
+    "TheJoeFin/Text-Grab": 31,
+    "TechnitiumSoftware/DnsServer": 28,
+    "zalo/MathUtilities": 28,
+    "PhilippC/keepass2android": 27,
+    "nilaoda/N_m3u8DL-CLI": 26,
+    "louthy/language-ext": 26,
+    "nomi-san/parsec-vdd": 25,
+    "JoshClose/CsvHelper": 25,
+    "dotnetcore/BootstrapBlazor": 25,
+    "Tyrrrz/YoutubeDownloader": 24,
+    "dremin/RetroBar": 24,
+    "shadowsocks/shadowsocks-windows": 22,
+    "aspnetboilerplate/aspnetboilerplate": 22,
+    "ElectronNET/Electron.NET": 22,
+    "dotnet-state-machine/stateless": 22,
+    "win-acme/win-acme": 22,
+    "hanmin0822/MisakaTranslator": 22,
+    "HMBSbige/NatTypeTester": 21,
+    "Cysharp/MemoryPack": 21,
+    "Tyrrrz/DiscordChatExporter": 20,
+    "huiyadanli/RevokeMsgPatcher": 19,
+    "jasontaylordev/CleanArchitecture": 19,
+    "stride3d/stride": 19,
+    "dotnet/reactive": 19,
+    "timschneeb/GalaxyBudsClient": 19,
+    "marian42/wavefunctioncollapse": 19,
+    "Archeb/opentrace": 19,
+    "NickeManarin/ScreenToGif": 16,
+    "TGSAN/CMWTAT_Digital_Edition": 16,
+    "Jackett/Jackett": 16,
+    "runcat-dev/RunCat365": 16,
+    "dotnet/yarp": 16,
+    "pardeike/Harmony": 16,
+    "ClosedXML/ClosedXML": 16,
+    "Fody/Fody": 16,
+    "VeriorPies/ParrelSync": 14,
+    "atom0s/Steamless": 14,
+    "netchx/netch": 13,
+    "winsw/winsw": 13,
+    "chocolatey/choco": 13,
+    "Diorser/LiteMonitor": 13,
+    "Stability-AI/StableSwarmUI": 13,
+    "Code52/carnac": 13,
+    "IgorMundstein/WinMemoryCleaner": 12,
+    "hbons/SparkleShare": 12,
+    "seerge/g-helper": 10,
+    "wmjordan/PDFPatcher": 10,
+    "Cysharp/UniTask": 10,
+    "builtbybel/FluentCleaner": 10,
+    "sschmid/Entitas": 10,
+    "the1812/Malware-Patch": 10,
+    "unchihugo/FluentFlyout": 10,
+    "hellzerg/optimizer": 9,
+    "git-ecosystem/git-credential-manager": 9,
+    "davidfowl/AspNetCoreDiagnosticScenarios": 9,
+    "ldqk/Masuit.Tools": 9,
+    "shimat/opencvsharp": 9,
+    "DotNetNext/SqlSugar": 9,
+    "proxysu/ProxySU": 9,
+    "AngleSharp/AngleSharp": 9,
+    "woijfwefw/Tai": 9,
+    "inkle/ink": 9,
+    "dvf/blockchain": 5
+  },
+  "labeling_methodology": {
+    "positive_label": "1 (BUG \u2014 Defect-positive class): Mapped via SZZ (git blame -w -M -C) from heuristic bug-fixing commits on production C# files to the innermost enclosing class/struct/record in the pre-fix parent revision, with enclosing method and line-range localization recorded when available.",
+    "negative_label": "0 (CLEAN \u2014 Candidate-clean class): Substantive production classes sampled from HEAD files with zero recorded bug-fixing commits or SZZ traces in the mined commit window, interpreted under the Open-World Assumption (no defect evidence observed in mined history).",
+    "leakage_and_filtering": "All test directories, test fixtures, build directories (bin/obj), and auto-generated files are excluded via is_production_csharp_file(); all train/CV/holdout partitions enforce strict repository-level separation."
+  },
+  "duplicate_analysis": {
+    "total_candidate_records": 9646,
+    "retained_records": 9588,
+    "test_files_excluded": 0,
+    "conflicting_clean_excluded": 0,
+    "intra_repo_exact_duplicates_removed": 41,
+    "cross_repo_exact_duplicates_removed": 12,
+    "intra_repo_exact_duplicates_detected": 41,
+    "cross_repo_exact_duplicates_detected": 12,
+    "repeated_structural_revision_duplicates": 5,
+    "legitimate_historical_revisions_retained": 1025
+  },
+  "exclusions": [
+    {
+      "full_name": "files-community/Files",
+      "url": "https://github.com/files-community/Files",
+      "stars": 46803,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:290494>120000"
+    },
+    {
+      "full_name": "ShareX/ShareX",
+      "url": "https://github.com/ShareX/ShareX",
+      "stars": 41368,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:165746>120000"
+    },
+    {
+      "full_name": "dotnet/aspnetcore",
+      "url": "https://github.com/dotnet/aspnetcore",
+      "stars": 38543,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:415622>120000"
+    },
+    {
+      "full_name": "iOfficeAI/OfficeCLI",
+      "url": "https://github.com/iOfficeAI/OfficeCLI",
+      "stars": 33574,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:322881>120000"
+    },
+    {
+      "full_name": "DevToys-app/DevToys",
+      "url": "https://github.com/DevToys-app/DevToys",
+      "stars": 32320,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:229324>120000"
+    },
+    {
+      "full_name": "AvaloniaUI/Avalonia",
+      "url": "https://github.com/AvaloniaUI/Avalonia",
+      "stars": 31871,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:236631>120000"
+    },
+    {
+      "full_name": "BeyondDimension/SteamTools",
+      "url": "https://github.com/BeyondDimension/SteamTools",
+      "stars": 27747,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:271384>120000"
+    },
+    {
+      "full_name": "Devolutions/UniGetUI",
+      "url": "https://github.com/Devolutions/UniGetUI",
+      "stars": 27248,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:956001>120000"
+    },
+    {
+      "full_name": "QL-Win/QuickLook",
+      "url": "https://github.com/QL-Win/QuickLook",
+      "stars": 25907,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:348154>120000"
+    },
+    {
+      "full_name": "dotnet/maui",
+      "url": "https://github.com/dotnet/maui",
+      "stars": 23318,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:2430622>120000"
+    },
+    {
+      "full_name": "QuantConnect/Lean",
+      "url": "https://github.com/QuantConnect/Lean",
+      "stars": 22706,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:590613>120000"
+    },
+    {
+      "full_name": "dotnet/roslyn",
+      "url": "https://github.com/dotnet/roslyn",
+      "stars": 20796,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:2723142>120000"
+    },
+    {
+      "full_name": "lively-community/lively",
+      "url": "https://github.com/lively-community/lively",
+      "stars": 20211,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:363448>120000"
+    },
+    {
+      "full_name": "Unity-Technologies/ml-agents",
+      "url": "https://github.com/Unity-Technologies/ml-agents",
+      "stars": 19893,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:3028725>120000"
+    },
+    {
+      "full_name": "ppy/osu",
+      "url": "https://github.com/ppy/osu",
+      "stars": 19527,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:209774>120000"
+    },
+    {
+      "full_name": "dotnet/runtime",
+      "url": "https://github.com/dotnet/runtime",
+      "stars": 18463,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:1268994>120000"
+    },
+    {
+      "full_name": "babalae/better-genshin-impact",
+      "url": "https://github.com/babalae/better-genshin-impact",
+      "stars": 18313,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:383777>120000"
+    },
+    {
+      "full_name": "Sonarr/Sonarr",
+      "url": "https://github.com/Sonarr/Sonarr",
+      "stars": 17853,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:364181>120000"
+    },
+    {
+      "full_name": "OpenRA/OpenRA",
+      "url": "https://github.com/OpenRA/OpenRA",
+      "stars": 17833,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:351833>120000"
+    },
+    {
+      "full_name": "Tichau/FileConverter",
+      "url": "https://github.com/Tichau/FileConverter",
+      "stars": 15786,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:238859>120000"
+    },
+    {
+      "full_name": "duplicati/duplicati",
+      "url": "https://github.com/duplicati/duplicati",
+      "stars": 15227,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:220506>120000"
+    },
+    {
+      "full_name": "SubtitleEdit/subtitleedit",
+      "url": "https://github.com/SubtitleEdit/subtitleedit",
+      "stars": 15132,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:300999>120000"
+    },
+    {
+      "full_name": "d2phap/ImageGlass",
+      "url": "https://github.com/d2phap/ImageGlass",
+      "stars": 15062,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:494558>120000"
+    },
+    {
+      "full_name": "Radarr/Radarr",
+      "url": "https://github.com/Radarr/Radarr",
+      "stars": 14886,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:319186>120000"
+    },
+    {
+      "full_name": "dotnet/efcore",
+      "url": "https://github.com/dotnet/efcore",
+      "stars": 14826,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:250873>120000"
+    },
+    {
+      "full_name": "MonoGame/MonoGame",
+      "url": "https://github.com/MonoGame/MonoGame",
+      "stars": 14671,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:120533>120000"
+    },
+    {
+      "full_name": "abpframework/abp",
+      "url": "https://github.com/abpframework/abp",
+      "stars": 14471,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:3367163>120000"
+    },
+    {
+      "full_name": "QuestPDF/QuestPDF",
+      "url": "https://github.com/QuestPDF/QuestPDF",
+      "stars": 14232,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:1030866>120000"
+    },
+    {
+      "full_name": "JustArchiNET/ArchiSteamFarm",
+      "url": "https://github.com/JustArchiNET/ArchiSteamFarm",
+      "stars": 13836,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:248161>120000"
+    },
+    {
+      "full_name": "dotnet/AspNetCore.Docs",
+      "url": "https://github.com/dotnet/AspNetCore.Docs",
+      "stars": 13159,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:871029>120000"
+    },
+    {
+      "full_name": "Kareadita/Kavita",
+      "url": "https://github.com/Kareadita/Kavita",
+      "stars": 12186,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:345841>120000"
+    },
+    {
+      "full_name": "microsoft/garnet",
+      "url": "https://github.com/microsoft/garnet",
+      "stars": 12103,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:257754>120000"
+    },
+    {
+      "full_name": "mono/mono",
+      "url": "https://github.com/mono/mono",
+      "stars": 11475,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:579418>120000"
+    },
+    {
+      "full_name": "tui-cs/Terminal.Gui",
+      "url": "https://github.com/tui-cs/Terminal.Gui",
+      "stars": 11321,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:201270>120000"
+    },
+    {
+      "full_name": "mRemoteNG/mRemoteNG",
+      "url": "https://github.com/mRemoteNG/mRemoteNG",
+      "stars": 11237,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:288777>120000"
+    },
+    {
+      "full_name": "StockSharp/StockSharp",
+      "url": "https://github.com/StockSharp/StockSharp",
+      "stars": 11156,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:2053307>120000"
+    },
+    {
+      "full_name": "cefsharp/CefSharp",
+      "url": "https://github.com/cefsharp/CefSharp",
+      "stars": 10270,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:293419>120000"
+    },
+    {
+      "full_name": "nopSolutions/nopCommerce",
+      "url": "https://github.com/nopSolutions/nopCommerce",
+      "stars": 10188,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:1736411>120000"
+    },
+    {
+      "full_name": "LuckyPennySoftware/AutoMapper",
+      "url": "https://github.com/LuckyPennySoftware/AutoMapper",
+      "stars": 10175,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:127572>120000"
+    },
+    {
+      "full_name": "unoplatform/uno",
+      "url": "https://github.com/unoplatform/uno",
+      "stars": 10134,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:376430>120000"
+    },
+    {
+      "full_name": "egametang/ET",
+      "url": "https://github.com/egametang/ET",
+      "stars": 9965,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:688609>120000"
+    },
+    {
+      "full_name": "MahApps/MahApps.Metro",
+      "url": "https://github.com/MahApps/MahApps.Metro",
+      "stars": 9838,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:125244>120000"
+    },
+    {
+      "full_name": "Tianyu199509/DeskBox",
+      "url": "https://github.com/Tianyu199509/DeskBox",
+      "stars": 9690,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:158948>120000"
+    },
+    {
+      "full_name": "XINCGer/Unity3DTraining",
+      "url": "https://github.com/XINCGer/Unity3DTraining",
+      "stars": 9219,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:753878>120000"
+    },
+    {
+      "full_name": "LykosAI/StabilityMatrix",
+      "url": "https://github.com/LykosAI/StabilityMatrix",
+      "stars": 9079,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:149482>120000"
+    },
+    {
+      "full_name": "jynew/jynew",
+      "url": "https://github.com/jynew/jynew",
+      "stars": 9007,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:5331482>120000"
+    },
+    {
+      "full_name": "AssetRipper/AssetRipper",
+      "url": "https://github.com/AssetRipper/AssetRipper",
+      "stars": 9004,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:451915>120000"
+    },
+    {
+      "full_name": "BornToBeRoot/NETworkManager",
+      "url": "https://github.com/BornToBeRoot/NETworkManager",
+      "stars": 8993,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:182600>120000"
+    },
+    {
+      "full_name": "JeffreySu/WeiXinMPSDK",
+      "url": "https://github.com/JeffreySu/WeiXinMPSDK",
+      "stars": 8928,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:157952>120000"
+    },
+    {
+      "full_name": "STranslate/STranslate",
+      "url": "https://github.com/STranslate/STranslate",
+      "stars": 8730,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:150087>120000"
+    },
+    {
+      "full_name": "gitextensions/gitextensions",
+      "url": "https://github.com/gitextensions/gitextensions",
+      "stars": 8635,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:160836>120000"
+    },
+    {
+      "full_name": "OrchardCMS/OrchardCore",
+      "url": "https://github.com/OrchardCMS/OrchardCore",
+      "stars": 8230,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:359600>120000"
+    },
+    {
+      "full_name": "Unity-Technologies/EntityComponentSystemSamples",
+      "url": "https://github.com/Unity-Technologies/EntityComponentSystemSamples",
+      "stars": 8226,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:765991>120000"
+    },
+    {
+      "full_name": "PixiEditor/PixiEditor",
+      "url": "https://github.com/PixiEditor/PixiEditor",
+      "stars": 8160,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:167966>120000"
+    },
+    {
+      "full_name": "SixLabors/ImageSharp",
+      "url": "https://github.com/SixLabors/ImageSharp",
+      "stars": 8057,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:159766>120000"
+    },
+    {
+      "full_name": "elsa-workflows/elsa-core",
+      "url": "https://github.com/elsa-workflows/elsa-core",
+      "stars": 7945,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:227017>120000"
+    },
+    {
+      "full_name": "NickvisionApps/Parabolic",
+      "url": "https://github.com/NickvisionApps/Parabolic",
+      "stars": 7802,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:157846>120000"
+    },
+    {
+      "full_name": "Prowlarr/Prowlarr",
+      "url": "https://github.com/Prowlarr/Prowlarr",
+      "stars": 7662,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:276312>120000"
+    },
+    {
+      "full_name": "LorisYounger/VPet",
+      "url": "https://github.com/LorisYounger/VPet",
+      "stars": 7295,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:1476734>120000"
+    },
+    {
+      "full_name": "ScottPlot/ScottPlot",
+      "url": "https://github.com/ScottPlot/ScottPlot",
+      "stars": 6809,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:142638>120000"
+    },
+    {
+      "full_name": "mgth/LittleBigMouse",
+      "url": "https://github.com/mgth/LittleBigMouse",
+      "stars": 6770,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:320471>120000"
+    },
+    {
+      "full_name": "rmcrackan/Libation",
+      "url": "https://github.com/rmcrackan/Libation",
+      "stars": 6480,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:146393>120000"
+    },
+    {
+      "full_name": "microsoft/aspire",
+      "url": "https://github.com/microsoft/aspire",
+      "stars": 6454,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:236057>120000"
+    },
+    {
+      "full_name": "luolangaga/tubatools",
+      "url": "https://github.com/luolangaga/tubatools",
+      "stars": 6431,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:810637>120000"
+    },
+    {
+      "full_name": "MirrorNetworking/Mirror",
+      "url": "https://github.com/MirrorNetworking/Mirror",
+      "stars": 6406,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:417609>120000"
+    },
+    {
+      "full_name": "dotnet/skills",
+      "url": "https://github.com/dotnet/skills",
+      "stars": 6364,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:605952>120000"
+    },
+    {
+      "full_name": "nissl-lab/npoi",
+      "url": "https://github.com/nissl-lab/npoi",
+      "stars": 6210,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:162743>120000"
+    },
+    {
+      "full_name": "UnityTechnologies/open-project-1",
+      "url": "https://github.com/UnityTechnologies/open-project-1",
+      "stars": 6115,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:4876097>120000"
+    },
+    {
+      "full_name": "microsoft/MixedRealityToolkit-Unity",
+      "url": "https://github.com/microsoft/MixedRealityToolkit-Unity",
+      "stars": 6077,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:1919940>120000"
+    },
+    {
+      "full_name": "Azure/azure-sdk-for-net",
+      "url": "https://github.com/Azure/azure-sdk-for-net",
+      "stars": 6074,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:4751775>120000"
+    },
+    {
+      "full_name": "kurrent-io/KurrentDB",
+      "url": "https://github.com/kurrent-io/KurrentDB",
+      "stars": 5890,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:362811>120000"
+    },
+    {
+      "full_name": "Lidarr/Lidarr",
+      "url": "https://github.com/Lidarr/Lidarr",
+      "stars": 5853,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:321682>120000"
+    },
+    {
+      "full_name": "tModLoader/tModLoader",
+      "url": "https://github.com/tModLoader/tModLoader",
+      "stars": 5811,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:856652>120000"
+    },
+    {
+      "full_name": "ChilliCream/graphql-platform",
+      "url": "https://github.com/ChilliCream/graphql-platform",
+      "stars": 5768,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:853780>120000"
+    },
+    {
+      "full_name": "mono/SkiaSharp",
+      "url": "https://github.com/mono/SkiaSharp",
+      "stars": 5642,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:1061344>120000"
+    },
+    {
+      "full_name": "liangxiegame/QFramework",
+      "url": "https://github.com/liangxiegame/QFramework",
+      "stars": 5628,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:543449>120000"
+    },
+    {
+      "full_name": "Mzying2001/CefFlashBrowser",
+      "url": "https://github.com/Mzying2001/CefFlashBrowser",
+      "stars": 5591,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:315899>120000"
+    },
+    {
+      "full_name": "TelegramMessenger/Unigram",
+      "url": "https://github.com/TelegramMessenger/Unigram",
+      "stars": 5559,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:446405>120000"
+    },
+    {
+      "full_name": "dotnet/msbuild",
+      "url": "https://github.com/dotnet/msbuild",
+      "stars": 5558,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:194567>120000"
+    },
+    {
+      "full_name": "ServiceStack/ServiceStack",
+      "url": "https://github.com/ServiceStack/ServiceStack",
+      "stars": 5501,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:475207>120000"
+    },
+    {
+      "full_name": "k8gege/Ladon",
+      "url": "https://github.com/k8gege/Ladon",
+      "stars": 5346,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:214177>120000"
+    },
+    {
+      "full_name": "umbraco/Umbraco-CMS",
+      "url": "https://github.com/umbraco/Umbraco-CMS",
+      "stars": 5289,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:491377>120000"
+    },
+    {
+      "full_name": "kwsch/PKHeX",
+      "url": "https://github.com/kwsch/PKHeX",
+      "stars": 5287,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:136735>120000"
+    },
+    {
+      "full_name": "dotnet/Silk.NET",
+      "url": "https://github.com/dotnet/Silk.NET",
+      "stars": 5263,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:1759714>120000"
+    },
+    {
+      "full_name": "tixl3d/tixl",
+      "url": "https://github.com/tixl3d/tixl",
+      "stars": 5200,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:986762>120000"
+    },
+    {
+      "full_name": "Unity-Technologies/FPSSample",
+      "url": "https://github.com/Unity-Technologies/FPSSample",
+      "stars": 5140,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:218882>120000"
+    },
+    {
+      "full_name": "MediaBrowser/Emby",
+      "url": "https://github.com/MediaBrowser/Emby",
+      "stars": 5031,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:1567749>120000"
+    },
+    {
+      "full_name": "HearthSim/Hearthstone-Deck-Tracker",
+      "url": "https://github.com/HearthSim/Hearthstone-Deck-Tracker",
+      "stars": 4935,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:141898>120000"
+    },
+    {
+      "full_name": "dotnet/winforms",
+      "url": "https://github.com/dotnet/winforms",
+      "stars": 4884,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:274875>120000"
+    },
+    {
+      "full_name": "HotCakeX/Harden-Windows-Security",
+      "url": "https://github.com/HotCakeX/Harden-Windows-Security",
+      "stars": 4867,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:492686>120000"
+    },
+    {
+      "full_name": "microsoft/fluentui-blazor",
+      "url": "https://github.com/microsoft/fluentui-blazor",
+      "stars": 4862,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:233306>120000"
+    },
+    {
+      "full_name": "Justsenger/ExHyperV",
+      "url": "https://github.com/Justsenger/ExHyperV",
+      "stars": 4840,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:130328>120000"
+    },
+    {
+      "full_name": "cyanfish/naps2",
+      "url": "https://github.com/cyanfish/naps2",
+      "stars": 4823,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:125846>120000"
+    },
+    {
+      "full_name": "Azure/azure-powershell",
+      "url": "https://github.com/Azure/azure-powershell",
+      "stars": 4814,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:2568830>120000"
+    },
+    {
+      "full_name": "umlx5h/LLPlayer",
+      "url": "https://github.com/umlx5h/LLPlayer",
+      "stars": 4800,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:158932>120000"
+    },
+    {
+      "full_name": "microsoft/perfview",
+      "url": "https://github.com/microsoft/perfview",
+      "stars": 4790,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:293361>120000"
+    },
+    {
+      "full_name": "IvanMurzak/Unity-MCP",
+      "url": "https://github.com/IvanMurzak/Unity-MCP",
+      "stars": 4698,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:303164>120000"
+    },
+    {
+      "full_name": "stratumauth/app",
+      "url": "https://github.com/stratumauth/app",
+      "stars": 4649,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:128329>120000"
+    },
+    {
+      "full_name": "opserver/Opserver",
+      "url": "https://github.com/opserver/Opserver",
+      "stars": 4560,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:125092>120000"
+    },
+    {
+      "full_name": "SteveTheKiller/KillerPDF",
+      "url": "https://github.com/SteveTheKiller/KillerPDF",
+      "stars": 4467,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:311141>120000"
+    },
+    {
+      "full_name": "Cysharp/MagicOnion",
+      "url": "https://github.com/Cysharp/MagicOnion",
+      "stars": 4462,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:489695>120000"
+    },
+    {
+      "full_name": "dotnet/docfx",
+      "url": "https://github.com/dotnet/docfx",
+      "stars": 4452,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:161071>120000"
+    },
+    {
+      "full_name": "OptiKey/OptiKey",
+      "url": "https://github.com/OptiKey/OptiKey",
+      "stars": 4433,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:401396>120000"
+    },
+    {
+      "full_name": "LavaGang/MelonLoader",
+      "url": "https://github.com/LavaGang/MelonLoader",
+      "stars": 4371,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:558258>120000"
+    },
+    {
+      "full_name": "dotnetcore/WTM",
+      "url": "https://github.com/dotnetcore/WTM",
+      "stars": 4347,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:144770>120000"
+    },
+    {
+      "full_name": "cq-panda/Vue.NetCore",
+      "url": "https://github.com/cq-panda/Vue.NetCore",
+      "stars": 4235,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:127601>120000"
+    },
+    {
+      "full_name": "HJLebbink/asm-dude",
+      "url": "https://github.com/HJLebbink/asm-dude",
+      "stars": 4181,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:120060>120000"
+    },
+    {
+      "full_name": "keijiro/AICommand",
+      "url": "https://github.com/keijiro/AICommand",
+      "stars": 4097,
+      "language": "C#",
+      "reason": "excluded_insufficient_size_kb:33<50"
+    },
+    {
+      "full_name": "rnwood/smtp4dev",
+      "url": "https://github.com/rnwood/smtp4dev",
+      "stars": 4030,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:132421>120000"
+    },
+    {
+      "full_name": "ravendb/ravendb",
+      "url": "https://github.com/ravendb/ravendb",
+      "stars": 4022,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:979689>120000"
+    },
+    {
+      "full_name": "thomhurst/TUnit",
+      "url": "https://github.com/thomhurst/TUnit",
+      "stars": 3990,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:419826>120000"
+    },
+    {
+      "full_name": "wave-harmonic/crest",
+      "url": "https://github.com/wave-harmonic/crest",
+      "stars": 3953,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:276250>120000"
+    },
+    {
+      "full_name": "jhaizhou-ops/S2Arm",
+      "url": "https://github.com/jhaizhou-ops/S2Arm",
+      "stars": 3914,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:143785>120000"
+    },
+    {
+      "full_name": "space-wizards/space-station-14",
+      "url": "https://github.com/space-wizards/space-station-14",
+      "stars": 3912,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:1011010>120000"
+    },
+    {
+      "full_name": "Revolutionary-Games/Thrive",
+      "url": "https://github.com/Revolutionary-Games/Thrive",
+      "stars": 3897,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:210037>120000"
+    },
+    {
+      "full_name": "microsoft/mcp",
+      "url": "https://github.com/microsoft/mcp",
+      "stars": 3891,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:318936>120000"
+    },
+    {
+      "full_name": "SciSharp/LLamaSharp",
+      "url": "https://github.com/SciSharp/LLamaSharp",
+      "stars": 3826,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:412096>120000"
+    },
+    {
+      "full_name": "mathnet/mathnet-numerics",
+      "url": "https://github.com/mathnet/mathnet-numerics",
+      "stars": 3772,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:148402>120000"
+    },
+    {
+      "full_name": "dotnet/samples",
+      "url": "https://github.com/dotnet/samples",
+      "stars": 3746,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:287126>120000"
+    },
+    {
+      "full_name": "p-org/P",
+      "url": "https://github.com/p-org/P",
+      "stars": 3744,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:178420>120000"
+    },
+    {
+      "full_name": "SebLague/Geographical-Adventures",
+      "url": "https://github.com/SebLague/Geographical-Adventures",
+      "stars": 3676,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:1701164>120000"
+    },
+    {
+      "full_name": "playgameservices/play-games-plugin-for-unity",
+      "url": "https://github.com/playgameservices/play-games-plugin-for-unity",
+      "stars": 3662,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:1815809>120000"
+    },
+    {
+      "full_name": "elastic/elasticsearch-net",
+      "url": "https://github.com/elastic/elasticsearch-net",
+      "stars": 3650,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:769550>120000"
+    },
+    {
+      "full_name": "dafny-lang/dafny",
+      "url": "https://github.com/dafny-lang/dafny",
+      "stars": 3650,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:330570>120000"
+    },
+    {
+      "full_name": "Interkarma/daggerfall-unity",
+      "url": "https://github.com/Interkarma/daggerfall-unity",
+      "stars": 3590,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:139481>120000"
+    },
+    {
+      "full_name": "QianMo/X-PostProcessing-Library",
+      "url": "https://github.com/QianMo/X-PostProcessing-Library",
+      "stars": 3578,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:186054>120000"
+    },
+    {
+      "full_name": "opentk/opentk",
+      "url": "https://github.com/opentk/opentk",
+      "stars": 3545,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:167667>120000"
+    },
+    {
+      "full_name": "Megabit/Blazorise",
+      "url": "https://github.com/Megabit/Blazorise",
+      "stars": 3537,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:150398>120000"
+    },
+    {
+      "full_name": "fluentmigrator/fluentmigrator",
+      "url": "https://github.com/fluentmigrator/fluentmigrator",
+      "stars": 3517,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:142992>120000"
+    },
+    {
+      "full_name": "SteamAutoCracks/Steam-auto-crack",
+      "url": "https://github.com/SteamAutoCracks/Steam-auto-crack",
+      "stars": 3481,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:501867>120000"
+    },
+    {
+      "full_name": "libgit2/libgit2sharp",
+      "url": "https://github.com/libgit2/libgit2sharp",
+      "stars": 3475,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:167498>120000"
+    },
+    {
+      "full_name": "Azure-Samples/cognitive-services-speech-sdk",
+      "url": "https://github.com/Azure-Samples/cognitive-services-speech-sdk",
+      "stars": 3457,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:290821>120000"
+    },
+    {
+      "full_name": "SciSharp/TensorFlow.NET",
+      "url": "https://github.com/SciSharp/TensorFlow.NET",
+      "stars": 3386,
+      "language": "C#",
+      "reason": "excluded_excessive_size_kb:380809>120000"
+    },
+    {
+      "full_name": "mxgmn/WaveFunctionCollapse",
+      "url": "https://github.com/mxgmn/WaveFunctionCollapse",
+      "stars": 25551,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "ntdevlabs/tiny11builder",
+      "url": "https://github.com/ntdevlabs/tiny11builder",
+      "stars": 22554,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "thangchung/awesome-dotnet-core",
+      "url": "https://github.com/thangchung/awesome-dotnet-core",
+      "stars": 21469,
+      "reason": "insufficient_production_csharp_files:1"
+    },
+    {
+      "full_name": "BluePointLilac/ContextMenuManager",
+      "url": "https://github.com/BluePointLilac/ContextMenuManager",
+      "stars": 20493,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "MiniMax-AI/skills",
+      "url": "https://github.com/MiniMax-AI/skills",
+      "stars": 13913,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "Unity-Technologies/UnityCsReference",
+      "url": "https://github.com/Unity-Technologies/UnityCsReference",
+      "stars": 13082,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "OdysseusYuan/LKY_OfficeTools",
+      "url": "https://github.com/OdysseusYuan/LKY_OfficeTools",
+      "stars": 13058,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "dotnet/csharplang",
+      "url": "https://github.com/dotnet/csharplang",
+      "stars": 12743,
+      "reason": "insufficient_production_csharp_files:3"
+    },
+    {
+      "full_name": "File-New-Project/EarTrumpet",
+      "url": "https://github.com/File-New-Project/EarTrumpet",
+      "stars": 11585,
+      "reason": "no_szz_traces_on_production_csharp"
+    },
+    {
+      "full_name": "YSGStudyHards/DotNetGuide",
+      "url": "https://github.com/YSGStudyHards/DotNetGuide",
+      "stars": 11164,
+      "reason": "insufficient_production_csharp_files:1"
+    },
+    {
+      "full_name": "coding-horror/basic-computer-games",
+      "url": "https://github.com/coding-horror/basic-computer-games",
+      "stars": 11095,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "dodyg/practical-aspnetcore",
+      "url": "https://github.com/dodyg/practical-aspnetcore",
+      "stars": 10418,
+      "reason": "no_substantive_buggy_classes"
+    },
+    {
+      "full_name": "ZyperWave/ZyperWinOptimize",
+      "url": "https://github.com/ZyperWave/ZyperWinOptimize",
+      "stars": 8554,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "mxgmn/MarkovJunior",
+      "url": "https://github.com/mxgmn/MarkovJunior",
+      "stars": 8541,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "thebookisclosed/ViVe",
+      "url": "https://github.com/thebookisclosed/ViVe",
+      "stars": 8237,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "thangchung/clean-code-dotnet",
+      "url": "https://github.com/thangchung/clean-code-dotnet",
+      "stars": 7764,
+      "reason": "insufficient_production_csharp_files:1"
+    },
+    {
+      "full_name": "mob-sakai/UIEffect",
+      "url": "https://github.com/mob-sakai/UIEffect",
+      "stars": 7736,
+      "reason": "no_szz_traces_on_production_csharp"
+    },
+    {
+      "full_name": "xM4ddy/OFGB",
+      "url": "https://github.com/xM4ddy/OFGB",
+      "stars": 7516,
+      "reason": "insufficient_production_csharp_files:3"
+    },
+    {
+      "full_name": "builtbybel/Flyoobe",
+      "url": "https://github.com/builtbybel/Flyoobe",
+      "stars": 7364,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "randyrants/sharpkeys",
+      "url": "https://github.com/randyrants/sharpkeys",
+      "stars": 6997,
+      "reason": "insufficient_production_csharp_files:4"
+    },
+    {
+      "full_name": "EllanJiang/GameFramework",
+      "url": "https://github.com/EllanJiang/GameFramework",
+      "stars": 6940,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "EduardoPires/EquinoxProject",
+      "url": "https://github.com/EduardoPires/EquinoxProject",
+      "stars": 6785,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "Uahh/ToastFish",
+      "url": "https://github.com/Uahh/ToastFish",
+      "stars": 6602,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "devlooped/moq",
+      "url": "https://github.com/devlooped/moq",
+      "stars": 6410,
+      "reason": "no_szz_traces_on_production_csharp"
+    },
+    {
+      "full_name": "dorssel/usbipd-win",
+      "url": "https://github.com/dorssel/usbipd-win",
+      "stars": 6336,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "sta/websocket-sharp",
+      "url": "https://github.com/sta/websocket-sharp",
+      "stars": 6077,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "builtbybel/Bloatynosy",
+      "url": "https://github.com/builtbybel/Bloatynosy",
+      "stars": 5899,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "dockersamples/example-voting-app",
+      "url": "https://github.com/dockersamples/example-voting-app",
+      "stars": 5856,
+      "reason": "insufficient_production_csharp_files:1"
+    },
+    {
+      "full_name": "openiddict/openiddict-core",
+      "url": "https://github.com/openiddict/openiddict-core",
+      "stars": 5308,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "laochiangx/Common.Utility",
+      "url": "https://github.com/laochiangx/Common.Utility",
+      "stars": 5289,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "MicaForEveryone/MicaForEveryone",
+      "url": "https://github.com/MicaForEveryone/MicaForEveryone",
+      "stars": 5283,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "SpaceTimee/Sheas-Cealer",
+      "url": "https://github.com/SpaceTimee/Sheas-Cealer",
+      "stars": 5195,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "Ponderfly/GoogleTranslateIpCheck",
+      "url": "https://github.com/Ponderfly/GoogleTranslateIpCheck",
+      "stars": 5124,
+      "reason": "insufficient_production_csharp_files:1"
+    },
+    {
+      "full_name": "immense/Remotely",
+      "url": "https://github.com/immense/Remotely",
+      "stars": 5094,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "t1m0thyj/WinDynamicDesktop",
+      "url": "https://github.com/t1m0thyj/WinDynamicDesktop",
+      "stars": 5068,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "mouredev/one-day-one-language",
+      "url": "https://github.com/mouredev/one-day-one-language",
+      "stars": 5024,
+      "reason": "insufficient_production_csharp_files:1"
+    },
+    {
+      "full_name": "indiff/qttabbar",
+      "url": "https://github.com/indiff/qttabbar",
+      "stars": 4992,
+      "reason": "no_szz_traces_on_production_csharp"
+    },
+    {
+      "full_name": "dotnet/dotnet-docker",
+      "url": "https://github.com/dotnet/dotnet-docker",
+      "stars": 4881,
+      "reason": "no_szz_traces_on_production_csharp"
+    },
+    {
+      "full_name": "emoacht/Monitorian",
+      "url": "https://github.com/emoacht/Monitorian",
+      "stars": 4831,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "mcmonkeyprojects/SwarmUI",
+      "url": "https://github.com/mcmonkeyprojects/SwarmUI",
+      "stars": 4813,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "QianMo/Unity-Design-Pattern",
+      "url": "https://github.com/QianMo/Unity-Design-Pattern",
+      "stars": 4695,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "dotnetcore/Util",
+      "url": "https://github.com/dotnetcore/Util",
+      "stars": 4595,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "cmliu/SubsCheck-Win-GUI",
+      "url": "https://github.com/cmliu/SubsCheck-Win-GUI",
+      "stars": 4571,
+      "reason": "no_bug_fixing_commits_detected"
+    },
+    {
+      "full_name": "praeclarum/sqlite-net",
+      "url": "https://github.com/praeclarum/sqlite-net",
+      "stars": 4453,
+      "reason": "insufficient_production_csharp_files:4"
+    },
+    {
+      "full_name": "redis-windows/redis-windows",
+      "url": "https://github.com/redis-windows/redis-windows",
+      "stars": 4443,
+      "reason": "no_candidate_clean_classes"
+    },
+    {
+      "full_name": "UnityCommunity/UnityLibrary",
+      "url": "https://github.com/UnityCommunity/UnityLibrary",
+      "stars": 4420,
+      "reason": "no_bug_fixing_commits_detected"
+    }
+  ],
+  "sha256_checksum": "c7ff8436b3d9beae096df413985bf128095fc6b25cad0239cb27b452f07226c2",
+  "csv_path": "/Users/stefanapopa/Documents/8) DOCUMENTE BOGDAN/7_Projects/Applied-Computational-Intelligence-UBB/Year2_Semester1_ComputationalIntelligenceSoftwareEngineering/CISE_Project2/1_Database/Datasets/Processed/csharp_class_top200_v4_v4.0.0.csv"
+}

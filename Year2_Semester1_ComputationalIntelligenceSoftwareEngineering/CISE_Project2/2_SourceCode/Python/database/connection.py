@@ -54,6 +54,7 @@ class Database:
         migrations = [
             ("repositories", "description", "TEXT"),
             ("repositories", "license", "TEXT"),
+            ("repositories", "language", "TEXT DEFAULT 'C#'"),
             ("repositories", "default_branch", "TEXT DEFAULT 'main'"),
             ("repositories", "stars", "INTEGER DEFAULT 0"),
             ("repositories", "forks", "INTEGER DEFAULT 0"),
@@ -132,6 +133,11 @@ class Database:
             ("predictions", "loc", "INTEGER"),
             ("predictions", "cyclomatic_complexity", "INTEGER"),
             ("predictions", "file_summary_json", "TEXT"),
+            ("predictions", "classification_label", "TEXT"),
+            ("predictions", "localization_json", "TEXT"),
+            ("class_observations", "localization_status", "TEXT DEFAULT 'unavailable'"),
+            ("class_observations", "affected_methods_json", "TEXT"),
+            ("class_observations", "affected_line_ranges_json", "TEXT"),
         ]
         for table, col, col_type in migrations:
             try:

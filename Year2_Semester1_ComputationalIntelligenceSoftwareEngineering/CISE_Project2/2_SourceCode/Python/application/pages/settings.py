@@ -53,15 +53,15 @@ def render_settings(db: RepositoryDB, settings: AppSettings) -> None:
         if not Path(roslyn_proj).exists():
             st.warning(f"Roslyn project file not found at `{roslyn_proj}`.")
 
-        st.subheader("Risk Tiers and Privacy")
-        st.caption("Binary predictions apply each model bundle's stored optimized decision threshold; risk tiers organize triage priorities.")
+        st.subheader("Classifier Behavior and Privacy")
+        st.caption("Binary BUG / CLEAN classifications apply each trained bundle's CV-calibrated decision threshold.")
         col_p1, col_p2 = st.columns(2)
         with col_p1:
-            low_thresh = st.slider("Low risk ceiling", 0.10, 0.45, float(settings.prediction.low_risk_threshold), 0.05)
-            med_thresh = st.slider("Medium risk ceiling", 0.50, 0.85, float(settings.prediction.medium_risk_threshold), 0.05)
+            persist_hist = st.checkbox("Persist classification history in SQLite", value=settings.prediction.persist_history)
         with col_p2:
-            persist_hist = st.checkbox("Persist prediction history in SQLite", value=settings.prediction.persist_history)
             persist_src = st.checkbox("Store analyzed C# source code in prediction logs", value=settings.prediction.persist_source_code)
+        low_thresh = float(settings.prediction.low_risk_threshold)
+        med_thresh = float(settings.prediction.medium_risk_threshold)
 
         models = ModelManager(settings.storage.models_dir, db=db).list_saved_models()
         if models:

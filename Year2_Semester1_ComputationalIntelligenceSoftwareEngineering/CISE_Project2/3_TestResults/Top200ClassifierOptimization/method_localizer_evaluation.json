@@ -1,0 +1,41 @@
+{
+  "dev_methods": 54678,
+  "dev_classes": 2670,
+  "dev_repos": 157,
+  "holdout_methods": 12878,
+  "holdout_classes": 778,
+  "holdout_repos": 38,
+  "holdout_positive_rate": 0.1026,
+  "cv_threshold": 0.6,
+  "holdout_metrics": {
+    "threshold": 0.6,
+    "accuracy": 0.8262,
+    "precision": 0.2246,
+    "recall": 0.2831,
+    "f1": 0.2505,
+    "f05": 0.2343,
+    "fpr": 0.1117,
+    "fnr": 0.7169,
+    "roc_auc": 0.6611,
+    "pr_auc": 0.1906,
+    "brier_score": 0.1967,
+    "detected_defects": 374,
+    "total_defects": 1321,
+    "confusion_matrix": [
+      [
+        10266,
+        1291
+      ],
+      [
+        947,
+        374
+      ]
+    ],
+    "true_negatives": 10266,
+    "false_positives": 1291,
+    "false_negatives": 947,
+    "true_positives": 374
+  },
+  "holdout_top1_class_hit_rate": 0.4499,
+  "holdout_top3_class_hit_rate": 0.6864
+}

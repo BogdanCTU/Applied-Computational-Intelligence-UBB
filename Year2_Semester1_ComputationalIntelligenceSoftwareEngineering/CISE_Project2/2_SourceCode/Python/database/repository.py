@@ -23,7 +23,7 @@ class RepositoryDB:
         """Insert or update a repository record and return its ID."""
         sql = """
         INSERT INTO repositories (
-            full_name, name, owner, url, description, license,
+            full_name, name, owner, url, description, license, language,
             default_branch, stars, forks, size_kb, is_cloned,
             local_path, status, last_sync_at,
             selection_score, selection_rank, selection_reason, exclusion_reason,
@@ -32,7 +32,7 @@ class RepositoryDB:
             szz_traces_count, class_observations_count, processing_error, collection_run_id,
             updated_at
         ) VALUES (
-            :full_name, :name, :owner, :url, :description, :license,
+            :full_name, :name, :owner, :url, :description, :license, :language,
             :default_branch, :stars, :forks, :size_kb, :is_cloned,
             :local_path, :status, :last_sync_at,
             :selection_score, :selection_rank, :selection_reason, :exclusion_reason,
@@ -44,6 +44,7 @@ class RepositoryDB:
         ON CONFLICT(full_name) DO UPDATE SET
             description = COALESCE(excluded.description, repositories.description),
             license = COALESCE(excluded.license, repositories.license),
+            language = COALESCE(excluded.language, repositories.language),
             default_branch = COALESCE(excluded.default_branch, repositories.default_branch),
             stars = COALESCE(excluded.stars, repositories.stars),
             forks = COALESCE(excluded.forks, repositories.forks),
@@ -78,6 +79,7 @@ class RepositoryDB:
             "url": repo_data["url"],
             "description": repo_data.get("description"),
             "license": repo_data.get("license"),
+            "language": repo_data.get("language", "C#"),
             "default_branch": repo_data.get("default_branch", "main"),
             "stars": repo_data.get("stars", 0),
             "forks": repo_data.get("forks", 0),
@@ -776,6 +778,7 @@ class RepositoryDB:
             start_line, end_line, is_nested, enclosing_type_name,
             source_code, corrected_code, source_fingerprint, structural_fingerprint,
             label, label_confidence, szz_trace_count, blamed_lines_json,
+            localization_status, affected_methods_json, affected_line_ranges_json,
             evidence_category, bug_fixing_commit_message, issue_or_pr_url
         ) VALUES (
             :file_observation_id, :repository_id, :commit_sha, :parent_sha,
@@ -784,6 +787,7 @@ class RepositoryDB:
             :start_line, :end_line, :is_nested, :enclosing_type_name,
             :source_code, :corrected_code, :source_fingerprint, :structural_fingerprint,
             :label, :label_confidence, :szz_trace_count, :blamed_lines_json,
+            :localization_status, :affected_methods_json, :affected_line_ranges_json,
             :evidence_category, :bug_fixing_commit_message, :issue_or_pr_url
         )
         ON CONFLICT(repository_id, commit_sha, file_path, qualified_class_name, label)
@@ -797,6 +801,9 @@ class RepositoryDB:
             label_confidence = excluded.label_confidence,
             szz_trace_count = MAX(class_observations.szz_trace_count, excluded.szz_trace_count),
             blamed_lines_json = COALESCE(excluded.blamed_lines_json, class_observations.blamed_lines_json),
+            localization_status = COALESCE(excluded.localization_status, class_observations.localization_status),
+            affected_methods_json = COALESCE(excluded.affected_methods_json, class_observations.affected_methods_json),
+            affected_line_ranges_json = COALESCE(excluded.affected_line_ranges_json, class_observations.affected_line_ranges_json),
             evidence_category = excluded.evidence_category
         RETURNING id;
         """
@@ -824,6 +831,9 @@ class RepositoryDB:
             "label_confidence": obs_data.get("label_confidence", 1.0),
             "szz_trace_count": obs_data.get("szz_trace_count", 0),
             "blamed_lines_json": obs_data.get("blamed_lines_json"),
+            "localization_status": obs_data.get("localization_status", "unavailable"),
+            "affected_methods_json": obs_data.get("affected_methods_json"),
+            "affected_line_ranges_json": obs_data.get("affected_line_ranges_json"),
             "evidence_category": obs_data.get("evidence_category", "unknown"),
             "bug_fixing_commit_message": obs_data.get("bug_fixing_commit_message"),
             "issue_or_pr_url": obs_data.get("issue_or_pr_url"),
@@ -956,6 +966,9 @@ class RepositoryDB:
             co.label,
             co.label_confidence,
             co.szz_trace_count,
+            co.localization_status,
+            co.affected_methods_json,
+            co.affected_line_ranges_json,
             co.evidence_category,
             cf.status as feature_status,
             cf.feature_schema_version,
@@ -1221,6 +1234,9 @@ class RepositoryDB:
             co.label,
             co.label_confidence,
             co.szz_trace_count,
+            co.localization_status,
+            co.affected_methods_json,
+            co.affected_line_ranges_json,
             co.evidence_category,
             {feat_cols}
         FROM dataset_class_observations dco
@@ -1311,6 +1327,122 @@ class RepositoryDB:
     # ---------------------------------------------------------
     # Predictions History
     # ---------------------------------------------------------
+    def update_class_observation_localization(
+        self,
+        class_observation_id: int,
+        localization_status: str,
+        affected_methods_json: str,
+        affected_line_ranges_json: str,
+    ) -> None:
+        """Update historical localization metadata on an existing class observation."""
+        with self.db.session() as conn:
+            conn.execute(
+                """
+                UPDATE class_observations
+                SET localization_status = ?, affected_methods_json = ?, affected_line_ranges_json = ?
+                WHERE id = ?
+                """,
+                (localization_status, affected_methods_json, affected_line_ranges_json, class_observation_id),
+            )
+
+    def insert_class_bug_localization(self, loc_data: Dict[str, Any]) -> int:
+        """Insert or update a granular historical SZZ method/line localization record."""
+        sql = """
+        INSERT INTO class_bug_localizations (
+            class_observation_id, repository_id, commit_sha, bug_fix_commit_sha,
+            bug_inducing_commit_sha, file_path, qualified_class_name,
+            method_name, method_signature, method_start_line, method_end_line,
+            affected_lines_json, affected_line_ranges_json, localization_status, szz_confidence
+        ) VALUES (
+            :class_observation_id, :repository_id, :commit_sha, :bug_fix_commit_sha,
+            :bug_inducing_commit_sha, :file_path, :qualified_class_name,
+            :method_name, :method_signature, :method_start_line, :method_end_line,
+            :affected_lines_json, :affected_line_ranges_json, :localization_status, :szz_confidence
+        )
+        ON CONFLICT(class_observation_id, method_signature, bug_fix_commit_sha)
+        DO UPDATE SET
+            affected_lines_json = excluded.affected_lines_json,
+            affected_line_ranges_json = excluded.affected_line_ranges_json,
+            localization_status = excluded.localization_status,
+            szz_confidence = excluded.szz_confidence
+        RETURNING id;
+        """
+        payload = {
+            "class_observation_id": loc_data["class_observation_id"],
+            "repository_id": loc_data["repository_id"],
+            "commit_sha": loc_data["commit_sha"],
+            "bug_fix_commit_sha": loc_data.get("bug_fix_commit_sha") or "",
+            "bug_inducing_commit_sha": loc_data.get("bug_inducing_commit_sha"),
+            "file_path": loc_data["file_path"],
+            "qualified_class_name": loc_data["qualified_class_name"],
+            "method_name": loc_data.get("method_name"),
+            "method_signature": loc_data.get("method_signature") or "__class_scope__",
+            "method_start_line": loc_data.get("method_start_line"),
+            "method_end_line": loc_data.get("method_end_line"),
+            "affected_lines_json": loc_data.get("affected_lines_json", "[]"),
+            "affected_line_ranges_json": loc_data.get("affected_line_ranges_json", "[]"),
+            "localization_status": loc_data.get("localization_status", "verified_historical"),
+            "szz_confidence": loc_data.get("szz_confidence", 0.85),
+        }
+        with self.db.session() as conn:
+            row = conn.execute(sql, payload).fetchone()
+            return row["id"] if row else -1
+
+    def list_class_bug_localizations(
+        self,
+        repository_id: Optional[int] = None,
+        class_observation_id: Optional[int] = None,
+    ) -> List[Dict[str, Any]]:
+        sql = """
+        SELECT cbl.*, r.full_name as repository_name
+        FROM class_bug_localizations cbl
+        JOIN repositories r ON cbl.repository_id = r.id
+        WHERE 1=1
+        """
+        params: List[Any] = []
+        if repository_id is not None:
+            sql += " AND cbl.repository_id = ?"
+            params.append(repository_id)
+        if class_observation_id is not None:
+            sql += " AND cbl.class_observation_id = ?"
+            params.append(class_observation_id)
+        sql += " ORDER BY cbl.id ASC"
+        with self.db.session() as conn:
+            rows = conn.execute(sql, params).fetchall()
+            return [dict(r) for r in rows]
+
+    def find_verified_historical_localizations(
+        self,
+        source_fingerprint: Optional[str] = None,
+        structural_fingerprint: Optional[str] = None,
+    ) -> List[Dict[str, Any]]:
+        """Look up verified historical SZZ localizations matching a submitted class fingerprint."""
+        if not source_fingerprint and not structural_fingerprint:
+            return []
+        where_clauses = []
+        params: List[Any] = []
+        if source_fingerprint:
+            where_clauses.append("co.source_fingerprint = ?")
+            params.append(source_fingerprint)
+        if structural_fingerprint and not source_fingerprint:
+            where_clauses.append("co.structural_fingerprint = ?")
+            params.append(structural_fingerprint)
+        sql = f"""
+        SELECT
+            cbl.*,
+            r.full_name as repository_name,
+            co.source_fingerprint
+        FROM class_bug_localizations cbl
+        JOIN class_observations co ON cbl.class_observation_id = co.id
+        JOIN repositories r ON cbl.repository_id = r.id
+        WHERE co.label = 1 AND ({' OR '.join(where_clauses)})
+        ORDER BY cbl.szz_confidence DESC, cbl.id ASC
+        LIMIT 25
+        """
+        with self.db.session() as conn:
+            rows = conn.execute(sql, params).fetchall()
+            return [dict(r) for r in rows]
+
     def save_prediction(
         self,
         model_name: str,
@@ -1333,16 +1465,19 @@ class RepositoryDB:
         loc: Optional[int] = None,
         cyclomatic_complexity: Optional[int] = None,
         file_summary_json: Optional[str] = None,
+        classification_label: Optional[str] = None,
+        localization_json: Optional[str] = None,
     ) -> int:
+        resolved_cls_label = classification_label or ("BUG" if int(predicted_label) == 1 else "CLEAN")
         sql = """
         INSERT INTO predictions (
             model_id, model_name, granularity, dataset_version, decision_threshold,
             method_name, class_name, namespace_name, file_name,
             start_line, end_line, method_count, loc, cyclomatic_complexity,
             source_code, metrics_json, file_summary_json,
-            predicted_label, risk_score, risk_category
+            predicted_label, classification_label, risk_score, risk_category, localization_json
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         RETURNING id;
         """
         with self.db.session() as conn:
@@ -1372,8 +1507,10 @@ class RepositoryDB:
                     json.dumps(metrics),
                     file_summary_json,
                     predicted_label,
+                    resolved_cls_label,
                     risk_score,
                     risk_category,
+                    localization_json,
                 ),
             )
             return cursor.fetchone()["id"]

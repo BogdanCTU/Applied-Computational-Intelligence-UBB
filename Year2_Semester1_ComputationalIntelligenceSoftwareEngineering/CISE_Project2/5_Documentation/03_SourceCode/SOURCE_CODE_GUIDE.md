@@ -1,8 +1,8 @@
-# Source Code Architecture and Developer Guide
+# Source Code Architecture and Developer Guide (`v4.0.0`)
 
 **Source Root:** `2_SourceCode/`  
 **Runtimes:** Python >= 3.11 / .NET 9.0 SDK  
-**System:** CISE Project 2 — Machine Learning-Based Bug Detection in C# Source Code  
+**System:** CISE Project 2 — Machine Learning-Based C# Bug Detection Classifier  
 
 ---
 
@@ -11,72 +11,66 @@
 ```text
 2_SourceCode/
 ├── Python/
-│   ├── application/pages/     # 8 Streamlit UI pages (class/file detection, collection, SZZ, evaluation)
-│   ├── core/                  # Configuration, collection limits, precision targets, unpickle aliases
-│   ├── database/              # SQLite WAL connection, non-destructive migrations, typed CRUD
-│   ├── ml/                    # Preprocessing, nested GroupKFold, precision threshold tuning, 7 estimators, BugPredictor
-│   ├── repositories/          # Paginated GitHub client & ranking, full-history repo manager, fast git-log collector
+│   ├── application/pages/     # 8 Streamlit UI pages (BUG/CLEAN detection, collection, SZZ, evaluation)
+│   ├── core/                  # Configuration (target=200 repos, v4.0.0), precision targets, unpickle aliases
+│   ├── database/              # SQLite WAL connection, v4 migrations (class_bug_localizations), typed CRUD
+│   ├── ml/                    # Preprocessing, nested GroupKFold, threshold tuner, 7 estimators, BugPredictor
+│   ├── repositories/          # Star-ranked Top-200 GitHub client, full-history repo manager, fast git-log collector
 │   ├── services/
 │   │   ├── analyzer/          # Cached & --batch-stdin Roslyn .NET subprocess bridge
-│   │   ├── dataset/           # Class/method DatasetBuilder with deduplication, FeatureExtractor, manifest DatasetExporter
-│   │   ├── labeling/          # Class-level SZZ/HEAD LabelManager + preserved method labeling
+│   │   ├── dataset/           # Class/method DatasetBuilder with localization cols, FeatureExtractor, DatasetExporter
+│   │   ├── labeling/          # Class+method+line SZZ/HEAD LabelManager + backfill & method localization export
 │   │   └── mining/            # Strict BugFixDetector & whole-file cached SZZAnalyzer
 │   ├── utils/                 # Logging and production C# source classifier
 │   └── app.py                 # Streamlit main launcher and sidebar workspace summary
 ├── RoslynAnalyzer/
 │   ├── Program.cs             # .NET 9.0 Roslyn analyzer (40 class metrics, 26 method metrics, file metadata, --batch-stdin)
 │   └── RoslynAnalyzer.csproj  # Microsoft.CodeAnalysis.CSharp 4.12.0
-├── Tests/                     # Comprehensive pytest modules covering unit & integration workflows
-└── Scripts/                   # Resumable 100+ collection (run_100_repo_class_pipeline.py) & optimization runners
+├── Tests/                     # Automated pytest suite (including test_bug_classifier_and_localization.py)
+└── Scripts/                   # Top-200 collector (run_top200_csharp_pipeline.py) & optimizer (run_top200_classifier_optimization.py)
 ```
 
 ---
 
-## 2. Python Modules
+## 2. Python Modules & v4 Changes
 
 | Module | Path | Responsibility |
 | :--- | :--- | :--- |
-| Settings | `core/settings.py` | Pydantic `CollectionSettings`, `MLSettings` (precision targets), `RoslynSettings`, `PredictionSettings`, and `find_project_root()`. |
-| Database | `database/connection.py`, `schema.py`, `repository.py` | Idempotent SQLite migrations adding class/file/collection tables while preserving historical method tables. |
-| Roslyn Client | `services/analyzer/roslyn_client.py` | `analyze_source()`, `extract_classes()`, `find_enclosing_class()`, `analyze_batch()` (`--batch-stdin`), and SHA-256 response caching. |
-| Source Classifier | `utils/source_classifier.py` | Filters out test projects, test fixtures, build directories (`bin/`, `obj/`), and generated files (`*.g.cs`, `*.Designer.cs`). |
-| Repositories & Mining | `repositories/github_client.py`, `repository_manager.py`, `commit_collector.py` | Paginated C# discovery with composite ranking, full-history clone with timeout guards, and single-call `git log --numstat` mining. |
-| Bug-Fix & SZZ | `services/mining/bug_fix_detector.py`, `szz_analyzer.py` | Strict bug-fix commit classification (`strict_mode=True`) and cached whole-file `git blame -w -M -C`. |
-| Labeling & Datasets | `services/labeling/label_manager.py`, `services/dataset/` | Class-level SZZ attribution, HEAD candidate-clean sampling, fingerprint deduplication, and SHA-256 manifest export. |
-| ML & Prediction | `ml/cross_validation.py`, `experiment_runner.py`, `model_manager.py`, `predictor.py` | 7 retained model families, `select_precision_optimal_threshold()`, unified `ModelManager.list_saved_models()`, `BugPredictor.predict_csharp_file()`. |
-| Pipeline Scripts | `Scripts/run_100_repo_class_pipeline.py`, `Scripts/run_class_model_optimization.py` | Checkpointed 100+ repo collection and nested 5x4 `GroupKFold` + holdout precision optimization. |
+| Settings | `core/settings.py` | `CollectionSettings` (`target_repositories=200`, `max_repo_size_kb=120000`), `MLSettings` (`min_precision_target=0.75`), and `PredictionSettings` (`app_version="4.0.0"`). |
+| Database | `database/schema.py`, `connection.py`, `repository.py` | Non-destructive migrations adding `class_bug_localizations`, `localization_status`, `affected_methods_json`, `affected_line_ranges_json`, `classification_label`, `localization_json`; CRUD methods including `insert_class_bug_localization()` and `find_verified_historical_localizations()`. |
+| Roslyn Client | `services/analyzer/roslyn_client.py` | `analyze_source()`, `extract_classes()`, `find_enclosing_class()`, `analyze_batch()`, and corrected default Release DLL resolution (`bin/Release/net9.0/RoslynAnalyzer.dll`). |
+| Source Classifier | `utils/source_classifier.py` | Excludes test projects, test fixtures, `bin/`/`obj/` build dirs, and generated code (`*.g.cs`, `*.Designer.cs`). |
+| Repositories & Mining | `repositories/github_client.py`, `repository_manager.py`, `commit_collector.py` | `discover_top_csharp_repositories_by_stars()` (`sort="stars"&order="desc"`), full-history clone, and fast `git log --numstat` mining. |
+| Labeling & Datasets | `services/labeling/label_manager.py`, `services/dataset/` | `compress_line_ranges()`, SZZ class+method+line mapping, `extract_method_localization_examples()`, and v4 dataset manifest/CSV export (`65` columns). |
+| ML & Prediction | `ml/cross_validation.py`, `model_manager.py`, `predictor.py` | Added `fnr` metrics and `select_classifier_threshold()`; `ModelManager` filters out `method_localizer` from primary classifier listings; `BugPredictor` outputs `BUG`/`CLEAN`, auto-loads `method_localizer_top200_v4`, enforces incomplete-analysis refusal to label syntax-broken files `CLEAN`, and separates verified historical SZZ vs. ML suspicious methods vs. unavailable exact lines. |
+| Streamlit UI | `application/pages/bug_prediction.py` (plus sibling pages) | Fixed undefined `tab3`/`tab4` reference; added `format_class_verdict()` / `format_file_verdict()`; displays `BUG DETECTED` (`st.error`), `CLEAN` (`st.success`), and `ANALYSIS INCOMPLETE` (`st.warning`). |
+| Pipeline Scripts | `Scripts/run_top200_csharp_pipeline.py`, `Scripts/run_top200_classifier_optimization.py` | Top-200 star-ranked collector/exporter and nested 5×4 `GroupKFold` classifier + method localizer optimizer. |
 
 ---
 
 ## 3. Roslyn C# Analyzer (`2_SourceCode/RoslynAnalyzer/`)
 
-`Program.cs` (`AnalyzerVersion = "2.0.0"`, `FeatureSchemaVersion = "3.0.0"`) uses `CSharpParseOptions` with `LanguageVersion.Latest`:
-- **Targets:** Identifies namespaces (block and file-scoped), `class`, `struct`, `record` (and `record struct`), constructors (including primary constructors), properties, fields, methods, and nested types.
-- **Nested Type Isolation:** `GetTypeOwnedNodes<T>()` halts recursion at nested `TypeDeclarationSyntax` boundaries and subtracts nested type line spans from `class_loc`, ensuring nested classes are never double-counted inside outer classes.
-- **Local Function & Lambda Isolation:** Preserves `GetMethodOwnedDescendants<T>()` exclusion of local functions and lambda expressions in both method and class member metrics.
-- **Outputs:** Structured JSON containing `file_metadata`, `classes` (each with 40 `ClassMetrics` and owned `methods`), `methods`, `extraction_warnings`, and `parsing_diagnostics`.
-- **High-Throughput Mode:** `--batch-stdin` streams NDJSON requests through a single compiled .NET process.
+`Program.cs` (`AnalyzerVersion = "2.0.0"`, `FeatureSchemaVersion = "3.0.0"`) parses with `LanguageVersion.Latest`:
+- Extracts 40 isolated class metrics via `GetTypeOwnedNodes<T>()` (halting at nested type boundaries and subtracting nested line spans from `class_loc`) plus 26 owned method metrics per enclosed method.
+- Reports `parsing_diagnostics` (`SyntaxError` count and messages) so `BugPredictor.predict_csharp_file()` can detect incomplete files and never misclassify partially parsed files as `CLEAN`.
 
 ---
 
 ## 4. Build, Execution, and Testing
 
 ```bash
-# 1. Activate environment (macOS / Linux)
-source .venv/bin/activate
-
-# 2. Build .NET 9.0 Roslyn Analyzer
+# 1. Build .NET 9.0 Roslyn Analyzer (Release)
 dotnet build 2_SourceCode/RoslynAnalyzer/RoslynAnalyzer.csproj -c Release
 
-# 3. Run resumable 100+ repository collection & Dataset v3 export
-python 2_SourceCode/Scripts/run_100_repo_class_pipeline.py --target-repos 106
+# 2. Run Top-200 star-ranked repository collection & Dataset v4 export
+.venv/bin/python 2_SourceCode/Scripts/run_top200_csharp_pipeline.py --target-repos 200 --max-discover 500
 
-# 4. Run nested GroupKFold precision optimization across all 7 model families
-python 2_SourceCode/Scripts/run_class_model_optimization.py
+# 3. Run classifier & method localizer optimization (5x4 Nested GroupKFold + untouched holdout)
+.venv/bin/python 2_SourceCode/Scripts/run_top200_classifier_optimization.py
 
-# 5. Run complete automated test suite
-pytest
+# 4. Run full automated test suite
+.venv/bin/pytest 2_SourceCode/Tests/ -v
 
-# 6. Launch Streamlit workbench
-python -m streamlit run app.py
+# 5. Launch Streamlit web application
+.venv/bin/streamlit run 2_SourceCode/Python/app.py
 ```

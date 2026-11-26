@@ -1,19 +1,20 @@
-# Slide 5 — Machine Learning Results & Precision Target Achievement
+# Slide 5 — Classifier & Localizer Holdout Results (`v4.0.0`)
 
-## 7-Family Comparison (`5x4` Nested OOF vs. Untouched `22`-Repo Holdout)
+## Binary Class Classifier (`5×4` Nested OOF vs. Untouched `40`-Repo Holdout)
 
-| Model Family | Config ID | Inner $\tau$ | Nested OOF Prec / Rec / F1 | Holdout Prec | Holdout Rec | Holdout F1 | Holdout ROC-AUC |
-|---|---|---:|---|---:|---:|---:|---:|
-| **Random Forest (Champ)** | `rf_opt_depth12_leaf4_log2` | **`0.60`** | **82.30%** / 61.71% / **70.53%** | **83.43%** | **61.99%** | **71.13%** | **0.8449** |
-| Calibrated Ensemble | `calibrated_rf_sigmoid` | `0.64` | 81.56% / 61.71% / 70.26% | 83.09% | 61.56% | 70.72% | **0.8478** |
-| Extra Trees | `et_opt_depth10_leaf4_log2_bal` | `0.60` | 82.63% / 61.12% / 70.26% | 83.33% | 58.32% | 68.61% | 0.8368 |
-| HistGradientBoosting | `hgb_depth4_leaf25_unweighted` | `0.64` | 81.40% / 60.86% / 69.65% | 81.85% | 57.45% | 67.51% | **0.8502** |
-| Logistic Regression | `lr_std_l2_c01_bal` | `0.58` | 80.82% / 60.57% / 69.24% | 80.18% | 56.80% | 66.50% | 0.8184 |
-| Decision Tree | `dt_depth6_leaf10_bal` | `0.70` | 81.61% / 53.25% / 64.45% | **84.23%** | 50.76% | 63.34% | 0.7953 |
-| DummyClassifier | `dummy_stratified` | `0.30` | 49.43% / 49.49% / 49.46% | 44.83% | 47.73% | 46.23% | 0.4761 |
+| Model Family | Config ID | $\tau_{\text{CV}}$ | Nested OOF Prec / Rec / F1 | Holdout Prec | Holdout Rec | Holdout F1 | ROC-AUC | PR-AUC | FPR / FNR |
+|---|---|---:|---|---:|---:|---:|---:|---:|---|
+| **Random Forest (Champ)** | `rf_depth12_leaf4_log2_all40` | `0.52` | **77.66%** / **66.99%** / **71.93%** | **79.47%** | **62.02%** | **69.67%** | 0.8180 | **0.8104** | 15.71% / **37.98%** |
+| Random Forest (Pruned 30) | `rf_depth12_leaf4_corr_pruned` | `0.54` | 77.96% / 66.20% / 71.60% | 80.83% | 60.04% | 68.90% | 0.8186 | 0.8074 | 13.97% / 39.96% |
+| Calibrated Ensemble | `calibrated_rf_sigmoid` | `0.54` | 77.77% / 66.49% / 71.69% | 81.05% | 59.64% | 68.72% | 0.8182 | 0.8099 | 13.68% / 40.36% |
+| HistGradientBoosting | `hgb_depth5_leaf20_l2_2` | `0.58` | 77.90% / 64.41% / 70.51% | 81.84% | 58.85% | 68.47% | **0.8202** | 0.8078 | 12.80% / 41.15% |
+| Extra Trees | `et_depth12_leaf4_log2_bal` | `0.54` | **78.24%** / 64.24% / 70.55% | 79.17% | 56.78% | 66.13% | 0.8103 | 0.8014 | 14.65% / 43.22% |
+| Logistic Regression | `lr_std_l2_c01_bal` | `0.56` | **78.24%** / 62.57% / 69.53% | **81.89%** | 54.10% | 65.16% | 0.8041 | 0.7972 | **11.74%** / 45.90% |
+| Decision Tree | `dt_depth6_leaf12_bal` | `0.64` | 78.23% / 60.31% / 68.11% | 81.56% | 56.87% | 67.02% | 0.7951 | 0.7747 | 12.61% / 43.13% |
+| `DummyClassifier` | `dummy_stratified` | `0.30` | 45.57% / 46.10% / 45.84% | 51.93% | 47.97% | 49.87% | 0.5221 | 0.5067 | 43.55% / 52.03% |
 
-- **Precision Target Outcome:** **BOTH `>= 80%` preferred and `>= 75%` minimum precision achieved** (`82.30%` OOF / `83.43%` holdout, `TP=287, FP=57, FN=176, TN=461`, `FPR=11.00%`, `+13.82 pp` vs. v2 holdout precision `69.61%`).
-- **Top Drivers (Permutation Importance):** `class_loc` (`0.0118`), `total_property_access_count` (`0.0102`), `wmc_density` (`0.0102`), `total_method_call_count` (`0.0077`), `structural_density` (`0.0071`).
+- **Precision Target Exceeded:** **`79.47%` untouched holdout precision** (`>= 75%` target met cleanly without holdout tuning), Confusion Matrix `[[869, 162], [384, 627]]` (`627 / 1,011` bugs detected).
+- **Separate ML Method Localizer Holdout (`38` repos, `778` BUG classes, `12,878` methods):** **Top-1 Hit = `44.99%`**, **Top-3 Hit = `68.64%`**, **ROC-AUC = `0.6611`**, **Precision = `22.46%`**, **Recall = `28.31%`**, **FPR = `11.17%`**.
 
 ---
 

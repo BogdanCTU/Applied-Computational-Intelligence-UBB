@@ -137,18 +137,18 @@ class RoslynSettings(BaseModel):
 
 class CollectionSettings(BaseModel):
     """Resumable multi-repository mining and SZZ execution constraints."""
-    target_repositories: int = 105
+    target_repositories: int = 200
     max_concurrent_repos: int = 2
     clone_strategy: str = "full_history"  # Full history required for accurate SZZ blame
     clone_timeout_seconds: int = 180
-    commit_mining_limit: int = 250
-    max_bug_fixes_per_repo: int = 40
-    max_szz_files_per_fix: int = 8
-    max_deleted_lines_per_file: int = 25
+    commit_mining_limit: int = 200
+    max_bug_fixes_per_repo: int = 35
+    max_szz_files_per_fix: int = 6
+    max_deleted_lines_per_file: int = 20
     checkpoint_interval: int = 5
-    max_repo_size_kb: int = 60000
-    min_repo_size_kb: int = 100
-    min_stars: int = 50
+    max_repo_size_kb: int = 120000
+    min_repo_size_kb: int = 50
+    min_stars: int = 100
 
 
 class MLSettings(BaseModel):
@@ -160,13 +160,13 @@ class MLSettings(BaseModel):
     default_random_state: int = 42
     default_test_size: float = 0.20
     group_by: str = "repository"
-    preferred_precision_target: float = 0.80
+    preferred_precision_target: float = 0.78
     min_precision_target: float = 0.75
     min_recall_floor: float = 0.50
 
 
 class PredictionSettings(BaseModel):
-    """Real-time defect prediction presentation and privacy settings."""
+    """Real-time defect classifier presentation and privacy settings."""
     low_risk_threshold: float = 0.30
     medium_risk_threshold: float = 0.60
     persist_history: bool = True
@@ -176,9 +176,9 @@ class PredictionSettings(BaseModel):
 
 class AppSettings(BaseModel):
     """Overall application configuration."""
-    app_name: str = "C# Defect Predictor"
-    app_title: str = "Machine Learning-Based Bug Detection in C# Source Code"
-    app_version: str = "3.0.0"
+    app_name: str = "C# Bug Detection Classifier"
+    app_title: str = "Machine Learning-Based C# Bug Detection Classifier"
+    app_version: str = "4.0.0"
     debug: bool = False
     log_level: str = "INFO"
     storage: StorageSettings = Field(default_factory=StorageSettings)

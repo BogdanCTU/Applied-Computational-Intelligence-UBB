@@ -114,3 +114,33 @@ All metrics strictly exclude direct nested types (`GetTypeOwnedNodes<T>` AST iso
 3. Control Flow & Operators (9): `total_boolean_operator_count`, `total_logical_operator_count`, `total_conditional_expression_count`, `total_if_count`, `total_switch_count`, `total_loop_count`, `total_try_catch_count`, `total_throw_count`, `total_break_continue_count`
 4. Coupling & Memory (5): `total_method_call_count`, `total_field_access_count`, `total_property_access_count`, `total_assignment_count`, `total_object_creation_count`
 5. Modifiers & Derived Ratios (8): `static_method_count`, `async_method_count`, `generic_method_count`, `high_complexity_method_count`, `large_method_count`, `complexity_concentration`, `structural_density`, `wmc_density`
+
+---
+
+## Dataset Snapshot #4: `csharp_class_top200_v4` (Version 4.0.0 — Top-200 Star-Ranked Classifier Corpus)
+
+- **File**: `1_Database/Datasets/Processed/csharp_class_top200_v4_v4.0.0.csv`
+- **Metadata**: `1_Database/Datasets/Processed/csharp_class_top200_v4_v4.0.0_metadata.json`
+- **Manifest**: `1_Database/Datasets/Processed/csharp_class_top200_v4_v4.0.0_manifest.json`
+- **Collection Audit**: `1_Database/Datasets/Processed/collection_summary_top200_v4.json`, `1_Database/Datasets/Processed/discovered_top200_csharp_repos_v4.json`
+- **SHA-256 Checksum**: `c7ff8436b3d9beae096df413985bf128095fc6b25cad0239cb27b452f07226c2`
+- **Generation Date**: `2026-11-25T14:37:41Z` (Pipeline run `top200_v4_20261125_135308`, SQLite `dataset_id = 3`)
+- **Granularity**: **Class / Struct / Record** with `BUG` (`1`) / `CLEAN` (`0`) target and SZZ localization provenance
+- **Observation Count**: **`9,588` classes** (`4,425` `BUG` / `46.15%`, `5,163` `CLEAN` / `53.85%`) across **`200` public C# repositories** ranked by GitHub stars descending (`4,409` [`tmenier/Flurl`] to `121,429` [`2dust/v2rayN`]; `500` discovered, `367` eligible candidates, `179` documented exclusions, `0` failures)
+- **Columns**: **`65` exported CSV columns** (`25` provenance/identifier/localization/target columns + `40` Roslyn `v3.0.0` numeric class metrics with `0` missing values). Adds `localization_status`, `affected_methods_json`, and `affected_line_ranges_json` relative to v3 (`62` columns).
+
+### Duplicate & Leakage Audit Summary (`collection_summary_top200_v4.json`)
+
+- **Candidate Records Before Filtering**: `9,646`
+- **Intra-Repository Exact Duplicates Removed**: `41`
+- **Cross-Repository Exact Duplicates Removed**: `12`
+- **Repeated Structural Revision Duplicates Removed**: `5`
+- **Conflicting Candidate-Clean Excluded / Test Files Excluded**: `0` / `0`
+- **Legitimate Historical Revisions Retained**: `1,025` (isolated within single-repository groups during all splits)
+- **Final Retained Rows**: **`9,588`**
+
+### Auxiliary Corpus: `method_localization_top200_v4.csv`
+
+- **File**: `1_Database/Datasets/Processed/method_localization_top200_v4.csv`
+- **Row Count**: **`67,556` method observations** extracted from SZZ-localized `BUG` classes (`195` repositories with localized method spans; split strictly along the exact same `160` dev / `40` holdout repository boundary: `54,678` dev methods across `157` repos and `12,878` holdout methods across `38` repos, `10.26%` positive rate)
+- **Purpose**: Trains and evaluates `method_localizer_top200_v4.joblib` (26 method-level Roslyn features) strictly separate from class-level `BUG`/`CLEAN` feature importances.
