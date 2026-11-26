@@ -1,17 +1,8 @@
-# Slide 6 — Refactored Bug Detection GUI & Provenance Display
+# Slide 6 — Application Demo (CLI & Minimal 6-Page Streamlit GUI)
 
-## Primary `BUG DETECTED` / `CLEAN` Experience (`2_SourceCode/Python/application/pages/bug_prediction.py`)
-
-All `8` Streamlit pages share `ModelManager.list_saved_models()` with `class_bug_classifier_top200_v4` ($\tau = 0.520$) selected first:
-
-1. **Clear Binary Primary Verdict (`format_class_verdict`, `format_file_verdict`):**
-   - Displays **`BUG DETECTED`** (`st.error`) or **`CLEAN`** (`st.success`), with probability and model confidence placed secondary.
-2. **Multi-Class `.cs` Files & Partial-Analysis Safety (`predict_csharp_file`):**
-   - Evaluates each extracted `class`/`struct`/`record` independently, summarizes **`BUG`**, **`CLEAN`**, and **Failed/Syntax Error** counts, and displays **`ANALYSIS INCOMPLETE`** (`st.warning`) rather than `CLEAN` whenever any syntax error or failed class exists.
-3. **Strictly Provenance-Separated Bug Localization:**
-   - **Verified Historical SZZ Evidence:** Displayed ONLY on historical SQLite matches (`class_bug_localizations`), showing exact commit SHAs, affected methods, and line ranges.
-   - **ML-Estimated Suspicious Methods:** On unseen `BUG` classes, `method_localizer_top200_v4.joblib` ranks suspicious methods, while exact buggy lines are explicitly marked **`unavailable`**.
-
----
-
-*Previous:* [Machine Learning Results](05_MachineLearningResults.md) | *Next:* [Conclusion & Future Work](07_ConclusionAndFutureWork.md)
+- **CLI Smoke Verification (`python -m bug_detector detect ...`):**
+  - `verified_buggy.cs`: `ReadFirstLineLeak` -> `BUG` (`p=0.6518`), `UnsafeCastLength` -> `BUG` (`p=0.5655`), `GetUserNameLength` -> `UNCERTAIN` (`p=0.5241`).
+  - `verified_fixed.cs`: all 3 fixed methods classified `UNCERTAIN` (`p=0.4503`–`0.4834`, zero false-positive `BUG`s).
+  - `complex_clean_hard_negative.cs`: `BoundedLineProcessor.ParseValidEntries` -> `CLEAN` (`p=0.3865`).
+  - `malformed_syntax.cs`: `ANALYSIS_ERROR` (`Detected 2 C# syntax error(s)`).
+- **Streamlit UI (`streamlit run app.py`):** 6 pages (`Dashboard`, `Manual Detection`, `Results`, `Dataset Explorer`, `Model Training`, `Model Configuration`) with line-highlighted source inspection and Saabas tree-path local evidence.

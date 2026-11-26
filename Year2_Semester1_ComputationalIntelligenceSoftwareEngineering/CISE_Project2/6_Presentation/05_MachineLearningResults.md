@@ -1,21 +1,14 @@
-# Slide 5 — Classifier & Localizer Holdout Results (`v4.0.0`)
+# Slide 5 — Machine Learning Results (`A`–`I` & Independent Evaluation)
 
-## Binary Class Classifier (`5×4` Nested OOF vs. Untouched `40`-Repo Holdout)
+- **Champion:** `RandomForestClassifier` Experiment `I` (`536` features across all 5 groups; `rf_I_v5.0.0_20261126_150933`).
+- **Thresholds (OOF-Calibrated):** `threshold_low = 0.440`, `threshold_center = 0.470`, `threshold_high = 0.541`.
 
-| Model Family | Config ID | $\tau_{\text{CV}}$ | Nested OOF Prec / Rec / F1 | Holdout Prec | Holdout Rec | Holdout F1 | ROC-AUC | PR-AUC | FPR / FNR |
-|---|---|---:|---|---:|---:|---:|---:|---:|---|
-| **Random Forest (Champ)** | `rf_depth12_leaf4_log2_all40` | `0.52` | **77.66%** / **66.99%** / **71.93%** | **79.47%** | **62.02%** | **69.67%** | 0.8180 | **0.8104** | 15.71% / **37.98%** |
-| Random Forest (Pruned 30) | `rf_depth12_leaf4_corr_pruned` | `0.54` | 77.96% / 66.20% / 71.60% | 80.83% | 60.04% | 68.90% | 0.8186 | 0.8074 | 13.97% / 39.96% |
-| Calibrated Ensemble | `calibrated_rf_sigmoid` | `0.54` | 77.77% / 66.49% / 71.69% | 81.05% | 59.64% | 68.72% | 0.8182 | 0.8099 | 13.68% / 40.36% |
-| HistGradientBoosting | `hgb_depth5_leaf20_l2_2` | `0.58` | 77.90% / 64.41% / 70.51% | 81.84% | 58.85% | 68.47% | **0.8202** | 0.8078 | 12.80% / 41.15% |
-| Extra Trees | `et_depth12_leaf4_log2_bal` | `0.54` | **78.24%** / 64.24% / 70.55% | 79.17% | 56.78% | 66.13% | 0.8103 | 0.8014 | 14.65% / 43.22% |
-| Logistic Regression | `lr_std_l2_c01_bal` | `0.56` | **78.24%** / 62.57% / 69.53% | **81.89%** | 54.10% | 65.16% | 0.8041 | 0.7972 | **11.74%** / 45.90% |
-| Decision Tree | `dt_depth6_leaf12_bal` | `0.64` | 78.23% / 60.31% / 68.11% | 81.56% | 56.87% | 67.02% | 0.7951 | 0.7747 | 12.61% / 43.13% |
-| `DummyClassifier` | `dummy_stratified` | `0.30` | 45.57% / 46.10% / 45.84% | 51.93% | 47.97% | 49.87% | 0.5221 | 0.5067 | 43.55% / 52.03% |
+| Evaluation Split | Samples (Repos) | Accuracy | Precision | Recall | F1 | Specificity / FPR | ROC-AUC | PR-AUC |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Dev Nested CV OOF | `3,910` (`488`) | `0.5642` | `0.5085` | `0.6667` | `0.5770` | `0.4818` / `0.5182` | `0.6000` | `0.5287` |
+| Independent Test | `1,132` (`137`) | `0.5433` | `0.5028` | `0.6833` | `0.5793` | `0.4239` / `0.5761` | `0.5848` | `0.5586` |
+| Hard-Negative Test | `233` (`12`) | `0.8541` | — | — | — | `0.8541` / `0.1459` | — | — |
+| Temporal Test | `453` (`14`) | `0.5475` | `0.5473` | `0.4911` | `0.5176` | `0.6026` / `0.3974` | `0.5524` | `0.5365` |
 
-- **Precision Target Exceeded:** **`79.47%` untouched holdout precision** (`>= 75%` target met cleanly without holdout tuning), Confusion Matrix `[[869, 162], [384, 627]]` (`627 / 1,011` bugs detected).
-- **Separate ML Method Localizer Holdout (`38` repos, `778` BUG classes, `12,878` methods):** **Top-1 Hit = `44.99%`**, **Top-3 Hit = `68.64%`**, **ROC-AUC = `0.6611`**, **Precision = `22.46%`**, **Recall = `28.31%`**, **FPR = `11.17%`**.
-
----
-
-*Previous:* [Dataset & Methodology](04_DatasetAndMethodology.md) | *Next:* [Application Demo](06_ApplicationDemo.md)
+- On `hard_negative_test`, **selective FPR is `0.00%`** (`143` `CLEAN`, `90` `UNCERTAIN`, `0` confident false-positive `BUG`s).
+- Structural metrics alone (`A`) achieved only `0.5012` test PR-AUC vs. `0.5586` (`I`).
